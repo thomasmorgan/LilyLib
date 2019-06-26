@@ -122,6 +122,7 @@ class Section:
 class Note:
 
 	def __init__(self, note, duration="", dynamics=""):
+		note = note.replace("`", "'")
 		if note[-1] == "'":
 			dum = note.split("'", 1)
 			self.letter = dum[0]
