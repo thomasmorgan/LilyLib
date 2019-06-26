@@ -67,7 +67,9 @@ class Manuscript:
 
 		if index_of_stop > index_of_start:
 			notes = key.notes[index_of_start:index_of_stop + 1]
-
+		else:
+			notes = key.notes[index_of_stop:index_of_start + 1]
+			notes.reverse()
 
 		new_notes = []
 		for n in notes:
