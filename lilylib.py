@@ -148,7 +148,12 @@ class Note:
 class Chord:
 
 	def __init__(self, notes, duration="", dynamics=""):
-		self.notes = notes
+		self.notes = []
+		for note in notes:
+			if isinstance(note, Note):
+				self.notes.append(note)
+			else:
+				self.notes.append(Note(note))
 		self.duration = str(duration)
 		self.dynamics = str(dynamics)
 
