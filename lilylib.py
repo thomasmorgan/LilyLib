@@ -142,7 +142,7 @@ class Section:
 
 class Note:
 
-	def __init__(self, note, duration="", dynamics=""):
+	def __init__(self, note, duration="", dynamics="", art=""):
 		note = note.replace("`", "'")
 		if note[-1] == "'":
 			dum = note.split("'", 1)
@@ -157,9 +157,10 @@ class Note:
 			self.pitch = ""
 		self.duration = str(duration)
 		self.dynamics = str(dynamics)
+		self.articulation = str(art)
 
 	def __repr__(self):
-		rep = self.letter + self.pitch + self.duration
+		rep = self.letter + self.pitch + self.duration + self.articulation
 		if self.dynamics:
 			rep += ("\\" + self.dynamics)
 		return rep
