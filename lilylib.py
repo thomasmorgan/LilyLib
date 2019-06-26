@@ -171,7 +171,7 @@ class Chord:
 class Key:
 
 	def __init__(self):
-		letters = ['c', 'd' 'e', 'f', 'g', 'a', 'b']
+		letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
 		accents = ['ff', 'f', '', 's', 'ss']
 		pitches = [",,,", ",,", ",", "", "'", "''", "'''"]
 		self.all_notes = []
