@@ -22,16 +22,21 @@ class vgs1(Manuscript):
 		R = self.rest
 		LH = self.LH
 		octave = self.octave
+		interval = self.interval
 
 		self.sections["intro"].score["rh"] = [R("2.")]*2
-		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C(['g', 'a', 'c`']), c=N('ef'))
+		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C(['g', 'a', 'c`']), c='ef')
 
-		self.sections["octaves"].score["rh"] = [N('d`', duration='4.'), N("f`"), R(), N('ef`')]
-		self.sections["octaves"].score["lh"] = LH(a=octave('g,,'))
+		self.sections["octaves"].score["rh"] = [N('d`', duration='4.'), N('f`'), R(), N('ef`')]
+		self.sections["octaves"].score["lh"] = LH(a=octave('g,,')) + LH(a=octave('f,,'), b=interval('a', 2), c='f')
 
 		print(self)
 
 	def LH(self, a=N('g,'), b=None, c=N('d')):
+		if isinstance(a, str):
+			a = N(a)
+		if isinstance(c, str):
+			c = N(c)
 		if b is None:
 			b = self.interval(N('g'), 2)
 		return self.rhythm(8, [a, b, c])
