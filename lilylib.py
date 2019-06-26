@@ -110,6 +110,9 @@ class Manuscript:
 	def third(self, note, key=None):
 		return self.interval(note, 2, key)
 
+	def third_b(self, note, key=None):
+		return self.interval(note, -5, key)
+
 	def fourth(self, note, key=None):
 		return self.interval(note, 3, key)
 
@@ -118,6 +121,9 @@ class Manuscript:
 
 	def sixth(self, note, key=None):
 		return self.interval(note, 5, key)
+
+	def sixth_b(self, note, key=None):
+		return self.interval(note, -2, key)
 
 	def seventh(self, note, key=None):
 		return self.interval(note, 6, key)
