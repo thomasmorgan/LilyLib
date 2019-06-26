@@ -57,6 +57,9 @@ class Manuscript:
 		if key is None:
 			key = self.key
 
+		if not isinstance(note, Note):
+			note = Note(note)
+
 		if not key.includes(note.letter):
 			self.print_error("Cannot build interval on {}as it is not in {}".format(note, key.name))
 		
