@@ -68,6 +68,9 @@ class Manuscript:
 		new_note = key.notes[index_of_note + size]
 		return Chord([note, new_note])
 
+	def third(self, note, key=None):
+		return self.interval(note, 2, key)
+
 	def octave(self, note, key=None):
 		return self.interval(note, 7, key)
 

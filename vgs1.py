@@ -23,12 +23,13 @@ class vgs1(Manuscript):
 		LH = self.LH
 		octave = self.octave
 		interval = self.interval
+		third = self.third
 
 		self.sections["intro"].score["rh"] = [R("2.")]*2
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C(['g', 'a', 'c`']), c='ef')
 
 		self.sections["octaves"].score["rh"] = [N('d`', duration='4.'), N('f`'), R(), N('ef`')]
-		self.sections["octaves"].score["lh"] = LH(a=octave('g,,')) + LH(a=octave('f,,'), b=interval('a', 2), c='f')
+		self.sections["octaves"].score["lh"] = LH(a=octave('g,,')) + LH(a=octave('f,,'), b=third('a'), c='f')
 
 		print(self)
 
@@ -38,7 +39,7 @@ class vgs1(Manuscript):
 		if isinstance(c, str):
 			c = N(c)
 		if b is None:
-			b = self.interval(N('g'), 2)
+			b = self.third('g')
 		return self.rhythm(8, [a, b, c])
 		
 
