@@ -29,7 +29,7 @@ class vgs1(Manuscript):
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C(['g', 'a', 'c`']), c='ef')
 
 		self.sections["octaves"].score["rh"] = [N('d`', duration='4.'), N('f`'), R(), N('ef`')]
-		self.sections["octaves"].score["lh"] = LH(a=octave('g,,')) + LH(a=octave('f,,'), b=third('a'), c='f')
+		self.sections["octaves"].score["lh"] = LH(a=octave('g,,')) + LH(a=octave('f,,'), b=third('a'), c='f') + LH(a=octave('bf,,'), b=third('bf'), c='f') + LH(a=octave('c,'), b=C(['g', 'c`']), c='ef')
 
 		print(self)
 
