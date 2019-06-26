@@ -53,6 +53,29 @@ class Manuscript:
 	def print_error(self, message):
 		print("*** ERROR ***: {}".format(message))
 
+	def scale(self, start, stop, key=None):
+		if key is None:
+			key = self.key
+
+		if not isinstance(start, Note):
+			start = Note(start)
+		if not isinstance(stop, Note):
+			stop = Note(stop)
+		
+		index_of_start = [i for i, n in enumerate(key.notes) if n.letter == start.letter and n.pitch == start.pitch][0]
+		index_of_stop = [i for i, n in enumerate(key.notes) if n.letter == stop.letter and n.pitch == stop.pitch][0]
+
+		if index_of_stop > index_of_start:
+			notes = key.notes[index_of_start:index_of_stop + 1]
+
+
+		new_notes = []
+		for n in notes:
+			new_notes.append(Note(n.letter + n.pitch))
+
+		return new_notes
+
+
 	def interval(self, note, size, key=None):
 		if key is None:
 			key = self.key
