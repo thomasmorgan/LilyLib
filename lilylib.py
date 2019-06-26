@@ -78,20 +78,31 @@ class Manuscript:
 		return new_notes
 
 
-	def interval(self, note, size, key=None):
+	def interval(self, notes, size, key=None):
 		if key is None:
 			key = self.key
 
-		if not isinstance(note, Note):
-			note = Note(note)
+		is_list = True
+		if not isinstance(notes, list):
+			is_list = False
+			notes = [notes]
 
-		if not key.includes(note.letter):
-			self.print_error("Cannot build interval on {}as it is not in {}".format(note, key.name))
-		
-		index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
-		index_of_note = index_of_note[0]
-		new_note = key.notes[index_of_note + size]
-		return Chord([note, new_note])
+		new_notes = []
+		for note in notes:
+			if not isinstance(note, Note):
+				note = Note(note)
+
+			if not key.includes(note.letter):
+				self.print_error("Cannot build interval on {}as it is not in {}".format(note, key.name))
+			
+			index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
+			index_of_note = index_of_note[0]
+			new_note = key.notes[index_of_note + size]
+			new_notes.append(Chord([note, new_note]))
+		if is_list:
+			return new_notes
+		else:
+			return new_notes[0]
 
 	def second(self, note, key=None):
 		return self.interval(note, 1, key)
