@@ -17,13 +17,15 @@ class vgs1(Manuscript):
 
 		self.staves = [Treble("rh"), Bass("lh")]
 		self.tempo = t68()
-		self.create_sections(["intro", "octaves", "in_d"])
+		self.create_sections(["intro", "octaves", "in_d", "melody1"])
 
 		R = self.rest
 		LH = self.LH
+		LH_loop = self.LH_loop
 		octave = self.octave
 		interval = self.interval
 		third = self.third
+		rhythm = self.rhythm
 
 		self.sections["intro"].score["rh"] = [R("2.")]*2
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C(['g', 'a', 'c`']), c='ef')
@@ -33,6 +35,9 @@ class vgs1(Manuscript):
 
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
 		self.sections["in_d"].score["lh"] = LH(a='d,')*2 + LH(a='d,', b=third('a')) + LH(a='d,', b=C(['fs', 'a']))
+
+		self.sections["melody1"].score["rh"] = rhythm([4, 8], [R(), R(), R()])
+		self.sections["melody1"].score["lh"] = LH_loop()
 
 		print(self)
 
@@ -44,6 +49,14 @@ class vgs1(Manuscript):
 		if b is None:
 			b = self.third('g')
 		return self.rhythm(8, [a, b, c])
+
+	def LH_loop(self):
+		return(
+			self.LH()*2 + 
+			self.LH(b=self.third('a'))*2 +
+			self.LH()*2 +
+			self.LH(b=self.fourth('g'), c='ef')*2
+		)
 		
 
 vgs1()
