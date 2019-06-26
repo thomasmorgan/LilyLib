@@ -120,11 +120,11 @@ class Note:
 
 	def __init__(self, note, duration="", dynamics=""):
 		if note[-1] == "'":
-			dum = note.split("'")
+			dum = note.split("'", 1)
 			self.letter = dum[0]
 			self.pitch = dum[1] + "'"
 		elif note[-1] == ",":
-			dum = note.split(",")
+			dum = note.split(",", 1)
 			self.letter = dum[0]
 			self.pitch = dum[1] + ","
 		else:
