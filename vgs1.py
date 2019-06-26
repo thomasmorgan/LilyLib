@@ -25,7 +25,11 @@ class vgs1(Manuscript):
 		octave = self.octave
 		interval = self.interval
 		third = self.third
+		third_b = self.third_b
+		sixth_b = self.sixth_b
 		rhythm = self.rhythm
+		scale = self.scale
+		descending_melody = self.descending_melody
 
 		self.sections["intro"].score["rh"] = [R("2.")]*2
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C(['g', 'a', 'c`']), c='ef')
@@ -36,7 +40,7 @@ class vgs1(Manuscript):
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
 		self.sections["in_d"].score["lh"] = LH(a='d,')*2 + LH(a='d,', b=third('a')) + LH(a='d,', b=C(['fs', 'a']))
 
-		self.sections["melody1"].score["rh"] = rhythm([4, 8], [R(), R(), R()])
+		self.sections["melody1"].score["rh"] = rhythm([4, 8], [R(), R(), R()] + descending_melody())
 		self.sections["melody1"].score["lh"] = LH_loop()
 
 		print(self)
@@ -57,6 +61,11 @@ class vgs1(Manuscript):
 			self.LH()*2 +
 			self.LH(b=self.fourth('g'), c='ef')*2
 		)
+
+	def descending_melody(self):
+		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`')
+		melody = self.sixth_b(melody[0:5]) + self.third_b(melody[5:])
+		return melody
 		
 
 vgs1()
