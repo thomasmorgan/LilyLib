@@ -63,7 +63,7 @@ class vgs1(Manuscript):
 		)
 
 	def descending_melody(self):
-		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`') + [N('d`'), N('ef`'), N('ef`'), N('ef`'), N('ef`')]
+		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`') + self.notes(['d`'] + ['ef`']*4)
 		melody = self.sixth_b(melody[0:5], key=GMinorH()) + self.third_b(melody[5:8]) + [melody[8]] + self.sixth_b(melody[9:])
 		return melody
 		

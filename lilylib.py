@@ -53,6 +53,12 @@ class Manuscript:
 	def print_error(self, message):
 		print("*** ERROR ***: {}".format(message))
 
+	def notes(self, notes):
+		new_notes = []
+		for note in notes:
+			new_notes.append(Note(note))
+		return new_notes
+
 	def scale(self, start, stop, key=None):
 		if key is None:
 			key = self.key
