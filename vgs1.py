@@ -40,7 +40,7 @@ class vgs1(Manuscript):
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
 		self.sections["in_d"].score["lh"] = LH(a='d,')*2 + LH(a='d,', b=third('a')) + LH(a='d,', b=C(['fs', 'a']))
 
-		self.sections["melody1"].score["rh"] = rhythm([4, 8], [R(), R(), R()]) + descending_melody()
+		self.sections["melody1"].score["rh"] = [R("4."), R("4")] + descending_melody()
 		self.sections["melody1"].score["lh"] = LH_loop()
 
 		print(self)
