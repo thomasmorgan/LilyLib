@@ -17,14 +17,16 @@ class vgs1(Manuscript):
 
 		self.staves = [Treble("rh"), Bass("lh")]
 		self.tempo = t68()
-		self.create_sections(["intro", "octaves", "in_d", "melody1"])
+		self.create_sections(["intro", "octaves", "in_d", "melody1", "melody2"])
 
 		R = self.rest
 		LH = self.LH
 		LH_loop = self.LH_loop
 		octave = self.octave
 		interval = self.interval
+		second = self.second
 		third = self.third
+		fourth = self.fourth
 		third_b = self.third_b
 		sixth_b = self.sixth_b
 		rhythm = self.rhythm
@@ -42,6 +44,9 @@ class vgs1(Manuscript):
 
 		self.sections["melody1"].score["rh"] = [R("4."), R("4")] + descending_melody()
 		self.sections["melody1"].score["lh"] = LH_loop()
+
+		self.sections["melody2"].score["rh"] = [N("d`", duration="4."), R("4")] + descending_melody()[0:7]
+		self.sections["melody2"].score["lh"] = LH_loop()[0:18] + LH(b=third('bf'), c='g') + LH(b=second('bf', key=DMinorH()), c='g') + LH(a='f,', b=fourth('a'), c='f')*2 + LH(b=third('bf'), c='g') + LH(a='a,', b=N('cs`'), c='a') + LH(a='d', b=fourth('a'), c='f')*2
 
 		print(self)
 
