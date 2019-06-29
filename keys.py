@@ -56,6 +56,20 @@ class CMinor(Key):
 		self.name = "c minor"
 		self.filter_notes()
 
+class DMinor(Key):
+	def __init__(self):
+		super().__init__()
+		self.letters = ['c', 'd', 'e', 'f', 'g', 'a', 'bf']
+		self.name = "g minor"
+		self.filter_notes()
+
+class DMinorH(Key):
+	def __init__(self):
+		super().__init__()
+		self.letters = ['cs', 'd', 'e', 'f', 'g', 'a', 'bf']
+		self.name = "g minor"
+		self.filter_notes()
+
 class GMinor(Key):
 	def __init__(self):
 		super().__init__()
