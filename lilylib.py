@@ -260,7 +260,7 @@ class Key:
 	def __repr__(self):
 		string = "\\key " + self.name
 		string = string.replace(" minor", " \\minor")
-		string = string.replace(" major", "")
+		string = string.replace(" major", " \\major")
 		return string +'\n'
 
 	def includes(self, letter):
