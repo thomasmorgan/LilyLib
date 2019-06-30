@@ -54,9 +54,11 @@ class Manuscript:
 		print("*** ERROR ***: {}".format(message))
 
 	def notes(self, notes):
+		notes = notes.split(" ")
 		new_notes = []
 		for note in notes:
-			new_notes.append(Note(note))
+			if note:
+				new_notes.append(Note(note))
 		return new_notes
 
 	def scale(self, start, stop, key=None):

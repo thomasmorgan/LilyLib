@@ -75,18 +75,18 @@ class vgs1(Manuscript):
 
 	def descending_melody(self):
 		self.key = GMinorH()
-		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`') + self.notes(['d`'] + ['ef`']*4)
+		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`') + self.notes('d` ' + 'ef` '*4)
 		melody = self.rhythm([8, 4], self.sixth_b(melody[0:5]) + self.third_b(melody[5:8]) + [melody[8]] + self.sixth_b(melody[9:]))
 		
 		self.key = GMinor()
-		ornament = self.rhythm([16, 16, 8], self.sixth_b(self.notes(['ef`', 'f`', 'g`'])))
+		ornament = self.rhythm([16, 16, 8], self.sixth_b(self.notes('ef` f` g`')))
 		melody[-2:-1] = ornament
 		return melody
 
 	def wandering_melody(self):
 		def basic_scale():
 			return self.rhythm([8], self.scale('g`', 'd``') + self.scale('f``', 'd``'))
-		first_pass = [self.third_b('g`')] + basic_scale() + self.rhythm([4, 8], self.notes(['a``', 'f``', 'd``']))
+		first_pass = [self.third_b('g`')] + basic_scale() + self.rhythm([4, 8], self.notes('a`` f`` d``'))
 		first_pass[6] = self.fifth_b(first_pass[6])
 		first_pass[9] = self.fourth_b(first_pass[9])
 
