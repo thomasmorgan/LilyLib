@@ -1,6 +1,5 @@
 from lilylib import *
 from lilylib import Chord as C
-from lilylib import Note as N
 from keys import *
 from staves import *
 from tempi import *
@@ -23,7 +22,6 @@ class vgs1(Manuscript):
 		LH = self.LH
 		LH_loop = self.LH_loop
 		O = self.octave
-		interval = self.interval
 		second = self.second
 		third = self.third
 		third_b = self.third_b
@@ -31,24 +29,24 @@ class vgs1(Manuscript):
 		sixth_b = self.sixth_b
 		rhythm = self.rhythm
 		scale = self.scale
-		notes = self.notes
+		N = self.notes
 		descending_melody = self.descending_melody
 		wandering_melody = self.wandering_melody
 
 		self.sections["intro"].score["rh"] = R("2. 2.")
-		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C('g a c`'), c='ef')
+		self.sections["intro"].score["lh"] = LH()*3 + LH(b=[C('g a c`')], c='ef')
 
-		self.sections["octaves"].score["rh"] = [N('d`', dur='4.'), N('f`', art="~"), N('f`'), N('ef`')]
-		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=C('g c`'), c='ef')
+		self.sections["octaves"].score["rh"] = N('d`', dur='4.') + N('f`', art="~") + N('f` ef`')
+		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=fourth('g'), c='ef')
 
 		self.key = GMinorH()
-		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`')] + R("2.")
+		self.sections["in_d"].score["rh"] = N('d`', art="~") + N('d`') + R("2.")
 		self.sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
 		self.sections["melody1"].score["rh"] = R("4. 4") + descending_melody()
 		self.sections["melody1"].score["lh"] = LH_loop()
 
-		self.sections["melody2"].score["rh"] = [N("d`", dur="4.")] + R("4") + descending_melody()[0:7]
+		self.sections["melody2"].score["rh"] = N("d`", dur="4.") + R("4") + descending_melody()[0:7]
 		self.sections["melody2"].score["lh"] = LH_loop()[0:15]
 
 		self.key = DMinorH()
@@ -57,14 +55,14 @@ class vgs1(Manuscript):
 
 		print(self)
 
-	def LH(self, a=N('g,'), b=None, c=N('d')):
+	def LH(self, a=[Note('g,')], b=None, c=[Note('d')]):
 		if isinstance(a, str):
-			a = N(a)
+			a = self.notes(a)
 		if isinstance(c, str):
-			c = N(c)
+			c = self.notes(c)
 		if b is None:
 			b = self.third('g')
-		return self.rhythm(8, [a, b, c])
+		return self.rhythm(8, a + b + c)
 
 	def LH_loop(self):
 		return(
@@ -87,11 +85,11 @@ class vgs1(Manuscript):
 	def wandering_melody(self):
 		def basic_scale():
 			return self.rhythm([8], self.scale('g`', 'd``') + self.scale('f``', 'd``'))
-		first_pass = [self.third_b('g`')] + basic_scale() + self.rhythm([4, 8], self.notes('a`` f`` d``'))
-		first_pass[6] = self.fifth_b(first_pass[6])
-		first_pass[9] = self.fourth_b(first_pass[9])
+		first_pass = self.third_b('g`') + basic_scale() + self.rhythm([4, 8], self.notes('a`` f`` d``'))
+		first_pass[6:7] = self.fifth_b(first_pass[6:7])
+		first_pass[9:10] = self.fourth_b(first_pass[9:10])
 
-		second_pass = basic_scale()[1:] + self.rhythm(["4."], [self.third_b('d``')]) + self.rest("4")
+		second_pass = basic_scale()[1:] + self.rhythm(["4."], self.third_b('d``')) + self.rest("4")
 		second_pass[2:7] = self.third_b(second_pass[2:7])
 		return first_pass + second_pass
 		

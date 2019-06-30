@@ -53,12 +53,12 @@ class Manuscript:
 	def print_error(self, message):
 		print("*** ERROR ***: {}".format(message))
 
-	def notes(self, notes):
+	def notes(self, notes, dur="", art=""):
 		notes = notes.split(" ")
 		new_notes = []
 		for note in notes:
 			if note:
-				new_notes.append(Note(note))
+				new_notes.append(Note(note, dur=dur, art=art))
 		return new_notes
 
 	def scale(self, start, stop, key=None):
@@ -90,29 +90,27 @@ class Manuscript:
 		if key is None:
 			key = self.key
 
-		is_list = True
-		if not isinstance(notes, list):
-			is_list = False
+		if isinstance(notes, str):
+			notes = notes.split(" ")
+		if isinstance(notes, Note):
 			notes = [notes]
 
 		new_notes = []
 		for note in notes:
-			if not isinstance(note, Note):
-				note = Note(note)
+			if note:
+				if not isinstance(note, Note):
+					note = Note(note)
 
-			if not key.includes(note.letter):
-				self.print_error("Cannot build interval on {}as it is not in {}".format(note, key.name))
-			
-			index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
-			index_of_note = index_of_note[0]
-			new_note = key.notes[index_of_note + size]
-			new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
-			new_chord.dur = note.dur
-			new_notes.append(new_chord)
-		if is_list:
-			return new_notes
-		else:
-			return new_notes[0]
+				if not key.includes(note.letter):
+					self.print_error("Cannot build interval on {}as it is not in {}".format(note, key.name))
+				
+				index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
+				index_of_note = index_of_note[0]
+				new_note = key.notes[index_of_note + size]
+				new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
+				new_chord.dur = note.dur
+				new_notes.append(new_chord)
+		return new_notes
 
 	def second(self, note, key=None):
 		return self.interval(note, 1, key)
