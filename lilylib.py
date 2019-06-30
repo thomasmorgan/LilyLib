@@ -107,7 +107,7 @@ class Manuscript:
 			index_of_note = index_of_note[0]
 			new_note = key.notes[index_of_note + size]
 			new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
-			new_chord.duration = note.duration
+			new_chord.dur = note.dur
 			new_notes.append(new_chord)
 		if is_list:
 			return new_notes
@@ -151,7 +151,7 @@ class Manuscript:
 		if not isinstance(rhythm, list):
 			rhythm = [rhythm]
 		for i, n in enumerate(notes):
-			n.duration = str(rhythm[i % len(rhythm)])
+			n.dur = str(rhythm[i % len(rhythm)])
 		return notes
 
 	def create_sections(self, names):
@@ -159,8 +159,8 @@ class Manuscript:
 		for name in names:
 			self.sections[name] = Section(name=name, staves=self.staves)
 
-	def rest(self, duration=""):
-		return Note("r", duration=duration)
+	def rest(self, dur=""):
+		return Note("r", dur=dur)
 
 class Stave:
 
@@ -200,7 +200,7 @@ class Section:
 
 class Note:
 
-	def __init__(self, note, duration="", dynamics="", art=""):
+	def __init__(self, note, dur="", dynamics="", art=""):
 		note = note.replace("`", "'")
 		if note[-1] == "'":
 			dum = note.split("'", 1)
@@ -213,12 +213,12 @@ class Note:
 		else:
 			self.letter = note
 			self.pitch = ""
-		self.duration = str(duration)
+		self.dur = str(dur)
 		self.dynamics = str(dynamics)
 		self.articulation = str(art)
 
 	def __repr__(self):
-		rep = self.letter + self.pitch + self.duration + self.articulation
+		rep = self.letter + self.pitch + self.dur + self.articulation
 		if self.dynamics:
 			rep += ("\\" + self.dynamics)
 		return rep
@@ -231,7 +231,7 @@ class Note:
 
 class Chord:
 
-	def __init__(self, notes, duration="", dynamics=""):
+	def __init__(self, notes, dur="", dynamics=""):
 		self.notes = []
 		for note in notes.split(" "):
 			if isinstance(note, Note):
@@ -239,7 +239,7 @@ class Chord:
 			else:
 				if note:
 					self.notes.append(Note(note))
-		self.duration = str(duration)
+		self.dur = str(dur)
 		self.dynamics = str(dynamics)
 
 	def __repr__(self):
@@ -248,7 +248,7 @@ class Chord:
 			rep += note.chord_repr() + " "
 		if self.notes:
 			rep = rep[:-1]
-		rep += ">" + self.duration
+		rep += ">" + self.dur
 		if self.dynamics:
 			rep += ("\\" + self.dynamics)
 		return(rep)
