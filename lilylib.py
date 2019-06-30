@@ -104,8 +104,7 @@ class Manuscript:
 				if not key.includes(note.letter):
 					self.print_error("Cannot build interval on {}as it is not in {}".format(note, key.name))
 				
-				index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
-				index_of_note = index_of_note[0]
+				index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch][0]
 				new_note = key.notes[index_of_note + size]
 				new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
 				new_chord.dur = note.dur
