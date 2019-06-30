@@ -237,7 +237,9 @@ class Chord:
 
 	def __init__(self, notes, dur="", dynamics="", art=""):
 		self.notes = []
-		for note in notes.split(" "):
+		if isinstance(notes, str):
+			notes = notes.split(" ")
+		for note in notes:
 			if isinstance(note, Note):
 				self.notes.append(note)
 			else:
