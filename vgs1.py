@@ -60,8 +60,10 @@ class vgs1(Manuscript):
 			a = self.notes(a)
 		if isinstance(c, str):
 			c = self.notes(c)
+		c[0].articulation = ")"
 		if b is None:
 			b = self.third('g')
+		b[0].articulation = "("
 		return self.rhythm(8, a + b + c)
 
 	def LH_loop(self):

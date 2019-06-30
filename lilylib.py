@@ -235,7 +235,7 @@ class Note:
 
 class Chord:
 
-	def __init__(self, notes, dur="", dynamics=""):
+	def __init__(self, notes, dur="", dynamics="", art=""):
 		self.notes = []
 		for note in notes.split(" "):
 			if isinstance(note, Note):
@@ -245,6 +245,7 @@ class Chord:
 					self.notes.append(Note(note))
 		self.dur = str(dur)
 		self.dynamics = str(dynamics)
+		self.articulation = str(art)
 
 	def __repr__(self):
 		rep = "<"
@@ -252,7 +253,7 @@ class Chord:
 			rep += note.chord_repr() + " "
 		if self.notes:
 			rep = rep[:-1]
-		rep += ">" + self.dur
+		rep += ">" + self.dur + self.articulation
 		if self.dynamics:
 			rep += ("\\" + self.dynamics)
 		return(rep)
