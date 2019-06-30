@@ -106,7 +106,7 @@ class Manuscript:
 			index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
 			index_of_note = index_of_note[0]
 			new_note = key.notes[index_of_note + size]
-			new_chord = Chord([note, new_note])
+			new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
 			new_chord.duration = note.duration
 			new_notes.append(new_chord)
 		if is_list:
@@ -233,11 +233,12 @@ class Chord:
 
 	def __init__(self, notes, duration="", dynamics=""):
 		self.notes = []
-		for note in notes:
+		for note in notes.split(" "):
 			if isinstance(note, Note):
 				self.notes.append(note)
 			else:
-				self.notes.append(Note(note))
+				if note:
+					self.notes.append(Note(note))
 		self.duration = str(duration)
 		self.dynamics = str(dynamics)
 
