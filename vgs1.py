@@ -22,7 +22,7 @@ class vgs1(Manuscript):
 		R = self.rest
 		LH = self.LH
 		LH_loop = self.LH_loop
-		octave = self.octave
+		O = self.octave
 		interval = self.interval
 		second = self.second
 		third = self.third
@@ -39,7 +39,7 @@ class vgs1(Manuscript):
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C('g a c`'), c='ef')
 
 		self.sections["octaves"].score["rh"] = [N('d`', dur='4.'), N('f`', art="~"), N('f`'), N('ef`')]
-		self.sections["octaves"].score["lh"] = LH(a=octave('g,,')) + LH(a=octave('f,,'), b=third('a'), c='f') + LH(a=octave('bf,,'), b=third('bf'), c='f') + LH(a=octave('c,'), b=C('g c`'), c='ef')
+		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=C('g c`'), c='ef')
 
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
 		self.sections["in_d"].score["lh"] = LH(a='d,')*2 + LH(a='d,', b=third('a')) + LH(a='d,', b=C('fs a'))
