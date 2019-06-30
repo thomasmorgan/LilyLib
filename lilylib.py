@@ -160,7 +160,7 @@ class Manuscript:
 			self.sections[name] = Section(name=name, staves=self.staves)
 
 	def rest(self, dur=""):
-		return Note("r", dur=dur)
+		return [Note("r", dur=dur)]
 
 class Stave:
 

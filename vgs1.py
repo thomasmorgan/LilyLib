@@ -35,20 +35,20 @@ class vgs1(Manuscript):
 		descending_melody = self.descending_melody
 		wandering_melody = self.wandering_melody
 
-		self.sections["intro"].score["rh"] = [R("2.")]*2
+		self.sections["intro"].score["rh"] = R("2.")*2
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C('g a c`'), c='ef')
 
 		self.sections["octaves"].score["rh"] = [N('d`', dur='4.'), N('f`', art="~"), N('f`'), N('ef`')]
 		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=C('g c`'), c='ef')
 
 		self.key = GMinorH()
-		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
+		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`')] + R("2.")
 		self.sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
-		self.sections["melody1"].score["rh"] = [R("4."), R("4")] + descending_melody()
+		self.sections["melody1"].score["rh"] = R("4.") + R("4") + descending_melody()
 		self.sections["melody1"].score["lh"] = LH_loop()
 
-		self.sections["melody2"].score["rh"] = [N("d`", dur="4."), R("4")] + descending_melody()[0:7]
+		self.sections["melody2"].score["rh"] = [N("d`", dur="4.")] + R("4") + descending_melody()[0:7]
 		self.sections["melody2"].score["lh"] = LH_loop()[0:15]
 
 		self.key = DMinorH()
@@ -91,7 +91,7 @@ class vgs1(Manuscript):
 		first_pass[6] = self.fifth_b(first_pass[6])
 		first_pass[9] = self.fourth_b(first_pass[9])
 
-		second_pass = basic_scale()[1:] + self.rhythm(["4."], [self.third_b('d``')]) + [self.rest("4")]
+		second_pass = basic_scale()[1:] + self.rhythm(["4."], [self.third_b('d``')]) + self.rest("4")
 		second_pass[2:7] = self.third_b(second_pass[2:7])
 		return first_pass + second_pass
 		
