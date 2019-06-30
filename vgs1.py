@@ -41,6 +41,7 @@ class vgs1(Manuscript):
 		self.sections["octaves"].score["rh"] = [N('d`', dur='4.'), N('f`', art="~"), N('f`'), N('ef`')]
 		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=C('g c`'), c='ef')
 
+		self.key = GMinorH()
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
 		self.sections["in_d"].score["lh"] = LH(a='d,')*2 + LH(a='d,', b=third('a')) + LH(a='d,', b=C('fs a'))
 
@@ -74,13 +75,13 @@ class vgs1(Manuscript):
 		)
 
 	def descending_melody(self):
-		self.key = GMinorH()
 		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`') + self.notes('d` ' + 'ef` '*4)
 		melody = self.rhythm([8, 4], self.sixth_b(melody[0:5]) + self.third_b(melody[5:8]) + [melody[8]] + self.sixth_b(melody[9:]))
 		
 		self.key = GMinor()
 		ornament = self.rhythm([16, 16, 8], self.sixth_b(self.notes('ef` f` g`')))
 		melody[-2:-1] = ornament
+		self.key = GMinorH()
 		return melody
 
 	def wandering_melody(self):
