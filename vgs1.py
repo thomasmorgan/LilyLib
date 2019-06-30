@@ -22,6 +22,7 @@ class vgs1(Manuscript):
 		LH = self.LH
 		LH_loop = self.LH_loop
 		O = self.octave
+		CC = self.complex_chord
 		second = self.second
 		third = self.third
 		third_b = self.third_b
@@ -34,7 +35,7 @@ class vgs1(Manuscript):
 		wandering_melody = self.wandering_melody
 
 		self.sections["intro"].score["rh"] = R("2. 2.")
-		self.sections["intro"].score["lh"] = LH()*3 + LH(b=[C('g a c`')], c='ef')
+		self.sections["intro"].score["lh"] = LH()*3 + LH(b=CC('a', [-1, 0, 2]), c='ef')
 
 		self.sections["octaves"].score["rh"] = N('d`', dur='4.') + N('f`', art="~") + N('f` ef`')
 		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=fourth('g'), c='ef')
