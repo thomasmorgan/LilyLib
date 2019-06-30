@@ -35,7 +35,7 @@ class vgs1(Manuscript):
 		descending_melody = self.descending_melody
 		wandering_melody = self.wandering_melody
 
-		self.sections["intro"].score["rh"] = R("2.")*2
+		self.sections["intro"].score["rh"] = R("2. 2.")
 		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C('g a c`'), c='ef')
 
 		self.sections["octaves"].score["rh"] = [N('d`', dur='4.'), N('f`', art="~"), N('f`'), N('ef`')]
@@ -45,7 +45,7 @@ class vgs1(Manuscript):
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`')] + R("2.")
 		self.sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
-		self.sections["melody1"].score["rh"] = R("4.") + R("4") + descending_melody()
+		self.sections["melody1"].score["rh"] = R("4. 4") + descending_melody()
 		self.sections["melody1"].score["lh"] = LH_loop()
 
 		self.sections["melody2"].score["rh"] = [N("d`", dur="4.")] + R("4") + descending_melody()[0:7]

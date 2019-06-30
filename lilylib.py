@@ -160,7 +160,13 @@ class Manuscript:
 			self.sections[name] = Section(name=name, staves=self.staves)
 
 	def rest(self, dur=""):
-		return [Note("r", dur=dur)]
+		durs = dur.split(" ")
+
+		rests = []
+		for dur in durs:
+			if dur:
+				rests.append(Note("r", dur=dur))
+		return rests
 
 class Stave:
 
