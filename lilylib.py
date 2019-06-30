@@ -104,7 +104,9 @@ class Manuscript:
 			index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch]
 			index_of_note = index_of_note[0]
 			new_note = key.notes[index_of_note + size]
-			new_notes.append(Chord([note, new_note]))
+			new_chord = Chord([note, new_note])
+			new_chord.duration = note.duration
+			new_notes.append(new_chord)
 		if is_list:
 			return new_notes
 		else:
