@@ -124,8 +124,14 @@ class Manuscript:
 	def fourth(self, note, key=None):
 		return self.interval(note, 3, key)
 
+	def fourth_b(self, note, key=None):
+		return self.interval(note, -4, key)
+
 	def fifth(self, note, key=None):
 		return self.interval(note, 4, key)
+
+	def fifth_b(self, note, key=None):
+		return self.interval(note, -3, key)
 
 	def sixth(self, note, key=None):
 		return self.interval(note, 5, key)
