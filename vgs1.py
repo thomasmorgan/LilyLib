@@ -43,7 +43,7 @@ class vgs1(Manuscript):
 
 		self.key = GMinorH()
 		self.sections["in_d"].score["rh"] = [N('d`', art="~"), N('d`'), R("2.")]
-		self.sections["in_d"].score["lh"] = LH(a='d,')*2 + LH(a='d,', b=third('a')) + LH(a='d,', b=C('fs a'))
+		self.sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
 		self.sections["melody1"].score["rh"] = [R("4."), R("4")] + descending_melody()
 		self.sections["melody1"].score["lh"] = LH_loop()
@@ -53,7 +53,7 @@ class vgs1(Manuscript):
 
 		self.key = DMinorH()
 		self.sections["melody2"].score["rh"] += wandering_melody()
-		self.sections["melody2"].score["lh"] += LH_loop()[15:18] + LH(b=third('bf'), c='g') + LH(b=second('bf', key=DMinorH()), c='g') + LH(a='f,', b=fourth('a'), c='f')*2 + LH(b=third('bf'), c='g') + LH(a='a,', b=N('cs`'), c='a') + LH(a='d', b=fourth('a'), c='f')*2
+		self.sections["melody2"].score["lh"] += LH_loop()[15:18] + LH('g,', third('bf'), 'g') + LH('g,', second('bf', key=DMinorH()), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', N('cs`'), 'a') + LH('d', fourth('a'), 'f')*2
 
 		print(self)
 
