@@ -85,7 +85,7 @@ class Manuscript:
 
 		return new_notes
 
-	def complex_chord(self, root, notes, key=None):
+	def chord(self, root, notes, key=None):
 		if key is None:
 			key = self.key
 
@@ -93,7 +93,7 @@ class Manuscript:
 			root = Note(root)
 
 		if not key.includes(root.letter):
-					self.print_error("Cannot build complex chord on {}as it is not in {}".format(note, key.name))
+					self.print_error("Cannot build chord on {}as it is not in {}".format(note, key.name))
 
 		index_of_root = [i for i, n in enumerate(key.notes) if n.letter == root.letter and n.pitch == root.pitch][0]
 
