@@ -110,16 +110,17 @@ def interval(notes, size):
 			if not isinstance(note, Note):
 				note = Note(note)
 
-			if not key.includes(note.letter):
-				print(note.letter)
-				print(key.letters)
-				print_error("Cannot build interval on {} as it is not in {}".format(note, key.name))
-			
-			index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch][0]
-			new_note = key.notes[index_of_note + size]
-			new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
-			new_chord.dur = note.dur
-			new_notes.append(new_chord)
+			if note.letter == "r":
+				new_notes.append(note)
+			else:
+				if not key.includes(note.letter):
+					print_error("Cannot build interval on {} as it is not in {}".format(note, key.name))
+				
+				index_of_note = [i for i, n in enumerate(key.notes) if n.letter == note.letter and n.pitch == note.pitch][0]
+				new_note = key.notes[index_of_note + size]
+				new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
+				new_chord.dur = note.dur
+				new_notes.append(new_chord)
 	return new_notes
 
 I = interval
