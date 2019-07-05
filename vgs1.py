@@ -62,9 +62,14 @@ sections["melody2"].score["rh"] += wandering_melody()
 sections["melody2"].score["lh"] += LH_loop()[15:18] + LH('g,', third('bf'), 'g') + LH('g,', second('bf'), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', N('cs`'), 'a') + LH('d', fourth('a'), 'f')*2
 
 key = CMinorH()
-sections["bridge"].score["rh"] = (rhythm([8], notes('d``')) +
-								  V + rhythm([4, 8], notes('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`')) +
-								  CV + rhythm([8], notes('r f` g` r f` g` c`` c` g` af` d` b` c`` c` g` af` d` b`')) + EV)
+bridge_v1 = rhythm([4, 8], N('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`')) + rhythm([2], N('c``'))
+bridge_v2 = rhythm([8], N('r f` g`')*2) + third('r c` r r d` r')*2 + N('r ef` g`')*2
+
+key = GMinorH()
+bridge_v1 +=  R('8') + rhythm([8, 4], N('c`` ef`` a` ef`` a`')) + rhythm([2], N('ef``'))
+bridge_v2 += N('r ef` fs`')*3
+
+sections["bridge"].score["rh"] = rhythm([8], N('d``')) + V + bridge_v1 + CV + bridge_v2 + EV
 sections["bridge"].score["lh"] = []
 
 key = GMinor()
