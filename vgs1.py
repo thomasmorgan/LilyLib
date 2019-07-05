@@ -8,7 +8,7 @@ key = GMinor()
 
 staves = [Treble("rh"), Bass("lh")]
 tempo = t68()
-sections = create_sections(["intro", "octaves", "in_d", "melody1", "melody2"])
+sections = create_sections(["intro", "octaves", "in_d", "melody1", "melody2", "bridge"])
 
 def LH(a='g,', b=third('g'), c='d'):
 	a = notify(a)
@@ -57,9 +57,15 @@ sections["melody1"].score["lh"] = LH_loop()
 
 sections["melody2"].score["rh"] = N("d`", dur="4.") + R("4") + descending_melody()[0:7]
 sections["melody2"].score["lh"] = LH_loop()[0:15]
-
 key = DMinorH()
 sections["melody2"].score["rh"] += wandering_melody()
 sections["melody2"].score["lh"] += LH_loop()[15:18] + LH('g,', third('bf'), 'g') + LH('g,', second('bf'), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', N('cs`'), 'a') + LH('d', fourth('a'), 'f')*2
 
+key = CMinorH()
+sections["bridge"].score["rh"] = (rhythm([8], notes('d``')) +
+								  V + rhythm([4, 8], notes('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`')) +
+								  CV + rhythm([8], notes('r f` g` r f` g` c`` c` g` af` d` b` c`` c` g` af` d` b`')) + EV)
+sections["bridge"].score["lh"] = []
+
+key = GMinor()
 print_score()
