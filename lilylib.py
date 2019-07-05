@@ -183,6 +183,21 @@ def rest(dur=""):
 
 R = rest
 
+def voices():
+	return(["\n<<\n{"])
+
+V = voices()
+
+def change_voice():
+	return(["} \\\\ {"])
+
+CV = change_voice()
+
+def end_voices():
+	return(["}\n>>\n"])
+
+EV = end_voices()
+
 def print_score():
 	score = header() + start_score()
 	for stave in staves:
