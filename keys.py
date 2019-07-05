@@ -52,6 +52,13 @@ class BMajor(Key):
 class CMinor(Key):
 	def __init__(self):
 		super().__init__()
+		self.letters = ['c', 'd', 'ef', 'f', 'g', 'af', 'bf']
+		self.name = "c minor"
+		self.filter_notes()
+
+class CMinorH(Key):
+	def __init__(self):
+		super().__init__()
 		self.letters = ['c', 'd', 'ef', 'f', 'g', 'af', 'b']
 		self.name = "c minor"
 		self.filter_notes()
