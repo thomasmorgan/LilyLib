@@ -1,4 +1,4 @@
-from lilylib import Stave
+from models import Stave
 
 class Treble(Stave):
 

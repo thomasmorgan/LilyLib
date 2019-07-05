@@ -1,4 +1,4 @@
-from lilylib import Key
+from models import Key
 
 class CMajor(Key):
 	def __init__(self):
@@ -81,5 +81,5 @@ class GMinorH(Key):
 	def __init__(self):
 		super().__init__()
 		self.letters = ['c', 'd', 'ef', 'fs', 'g', 'a', 'bf']
-		self.name = "g minor"
+		self.name = "g minor harmonic"
 		self.filter_notes()

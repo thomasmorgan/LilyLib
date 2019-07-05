@@ -1,4 +1,4 @@
-from lilylib import Tempo
+from models import Tempo
 
 class t68(Tempo):
 

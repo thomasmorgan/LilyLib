@@ -1,99 +1,65 @@
-from lilylib import *
-from keys import *
-from staves import *
-from tempi import *
+exec(open("./lilylib.py").read())
 
-class vgs1(Manuscript):
+title = "Venetianisches Gondellied"
+subtitle = "(Venetian Gondola Song)"
+composer = "Felix Mendelssohn"
+opus = "Op. 19, No. 6"
+key = GMinor()
 
-	def __init__(self):
-		super().__init__()
-		self.title = "Venetianisches Gondellied"
-		self.subtitle = "(Venetian Gondola Song)"
-		self.composer = "Felix Mendelssohn"
-		self.opus = "Op. 19, No. 6"
-		self.key = GMinor()
+staves = [Treble("rh"), Bass("lh")]
+tempo = t68()
+sections = create_sections(["intro", "octaves", "in_d", "melody1", "melody2"])
 
-		self.staves = [Treble("rh"), Bass("lh")]
-		self.tempo = t68()
-		self.create_sections(["intro", "octaves", "in_d", "melody1", "melody2"])
+def LH(a='g,', b=third('g'), c='d'):
+	a = notify(a)
+	c = notify(c)
+	c[0].articulation = ")"
+	b[0].articulation = "("
+	return rhythm(8, a + b + c)
 
-		R = self.rest
-		LH = self.LH
-		LH_loop = self.LH_loop
-		O = self.octave
-		C = self.chord
-		second = self.second
-		third = self.third
-		third_b = self.third_b
-		fourth = self.fourth
-		sixth_b = self.sixth_b
-		rhythm = self.rhythm
-		scale = self.scale
-		N = self.notes
-		descending_melody = self.descending_melody
-		wandering_melody = self.wandering_melody
+def LH_loop():
+	return LH()*2 + LH(b=third('a'))*2 + LH()*2 + LH(b=fourth('g'), c='ef')*2
 
-		self.sections["intro"].score["rh"] = R("2. 2.")
-		self.sections["intro"].score["lh"] = LH()*3 + LH(b=C('a', [-1, 0, 2]), c='ef')
+def descending_melody():
+	melody = scale('d``', 'a`') + scale('c``', 'g`') + notes('d` ' + 'ef` '*4)
+	melody = rhythm([8, 4], sixth_b(melody[0:5]) + third_b(melody[5:8]) + [melody[8]] + sixth_b(melody[9:]))
+	
+	global key
+	key = GMinor()
+	ornament = rhythm([16, 16, 8], sixth_b(notes('ef` f` g`')))
+	melody[-2:-1] = ornament
+	key = GMinorH()
+	return melody
 
-		self.sections["octaves"].score["rh"] = N('d`', dur='4.') + N('f`', art="~") + N('f` ef`')
-		self.sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=fourth('g'), c='ef')
+def wandering_melody():
+	def basic_scale():
+		return rhythm([8], scale('g`', 'd``') + scale('f``', 'd``'))
+	first_pass = third_b('g`') + basic_scale() + rhythm([4, 8], notes('a`` f`` d``'))
+	first_pass[6:7] = fifth_b(first_pass[6:7])
+	first_pass[9:10] = fourth_b(first_pass[9:10])
 
-		self.key = GMinorH()
-		self.sections["in_d"].score["rh"] = N('d`', art="~") + N('d`') + R("2.")
-		self.sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
+	second_pass = basic_scale()[1:] + rhythm(["4."], third_b('d``')) + rest("4")
+	second_pass[2:7] = third_b(second_pass[2:7])
+	return first_pass + second_pass
 
-		self.sections["melody1"].score["rh"] = R("4. 4") + descending_melody()
-		self.sections["melody1"].score["lh"] = LH_loop()
+sections["intro"].score["rh"] = R("2. 2.")
+sections["intro"].score["lh"] = LH()*3 + LH(b=C('a', [-1, 0, 2]), c='ef')
 
-		self.sections["melody2"].score["rh"] = N("d`", dur="4.") + R("4") + descending_melody()[0:7]
-		self.sections["melody2"].score["lh"] = LH_loop()[0:15]
+sections["octaves"].score["rh"] = N('d`', dur='4.') + N('f`', art="~") + N('f` ef`')
+sections["octaves"].score["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=third('a'), c='f') + LH(a=O('bf,,'), b=third('bf'), c='f') + LH(a=O('c,'), b=fourth('g'), c='ef')
 
-		self.key = DMinorH()
-		self.sections["melody2"].score["rh"] += wandering_melody()
-		self.sections["melody2"].score["lh"] += LH_loop()[15:18] + LH('g,', third('bf'), 'g') + LH('g,', second('bf', key=DMinorH()), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', N('cs`'), 'a') + LH('d', fourth('a'), 'f')*2
+key = GMinorH()
+sections["in_d"].score["rh"] = N('d`', art="~") + N('d`') + R("2.")
+sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
-		print(self)
+sections["melody1"].score["rh"] = R("4. 4") + descending_melody()
+sections["melody1"].score["lh"] = LH_loop()
 
-	def LH(self, a=[Note('g,')], b=None, c=[Note('d')]):
-		if isinstance(a, str):
-			a = self.notes(a)
-		if isinstance(c, str):
-			c = self.notes(c)
-		c[0].articulation = ")"
-		if b is None:
-			b = self.third('g')
-		b[0].articulation = "("
-		return self.rhythm(8, a + b + c)
+sections["melody2"].score["rh"] = N("d`", dur="4.") + R("4") + descending_melody()[0:7]
+sections["melody2"].score["lh"] = LH_loop()[0:15]
 
-	def LH_loop(self):
-		return(
-			self.LH()*2 + 
-			self.LH(b=self.third('a'))*2 +
-			self.LH()*2 +
-			self.LH(b=self.fourth('g'), c='ef')*2
-		)
+key = DMinorH()
+sections["melody2"].score["rh"] += wandering_melody()
+sections["melody2"].score["lh"] += LH_loop()[15:18] + LH('g,', third('bf'), 'g') + LH('g,', second('bf'), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', N('cs`'), 'a') + LH('d', fourth('a'), 'f')*2
 
-	def descending_melody(self):
-		melody = self.scale('d``', 'a`') + self.scale('c``', 'g`') + self.notes('d` ' + 'ef` '*4)
-		melody = self.rhythm([8, 4], self.sixth_b(melody[0:5]) + self.third_b(melody[5:8]) + [melody[8]] + self.sixth_b(melody[9:]))
-		
-		self.key = GMinor()
-		ornament = self.rhythm([16, 16, 8], self.sixth_b(self.notes('ef` f` g`')))
-		melody[-2:-1] = ornament
-		self.key = GMinorH()
-		return melody
-
-	def wandering_melody(self):
-		def basic_scale():
-			return self.rhythm([8], self.scale('g`', 'd``') + self.scale('f``', 'd``'))
-		first_pass = self.third_b('g`') + basic_scale() + self.rhythm([4, 8], self.notes('a`` f`` d``'))
-		first_pass[6:7] = self.fifth_b(first_pass[6:7])
-		first_pass[9:10] = self.fourth_b(first_pass[9:10])
-
-		second_pass = basic_scale()[1:] + self.rhythm(["4."], self.third_b('d``')) + self.rest("4")
-		second_pass[2:7] = self.third_b(second_pass[2:7])
-		return first_pass + second_pass
-		
-
-vgs1()
+print_score()
