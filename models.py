@@ -70,6 +70,8 @@ class Key:
 		string = "\\key " + self.name
 		string = string.replace(" minor", " \\minor")
 		string = string.replace(" major", " \\major")
+		string = string.replace(" harmonic", "")
+		string = string.replace(" melodic", "")
 		return string +'\n'
 
 	def includes(self, letter):
