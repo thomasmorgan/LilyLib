@@ -21,14 +21,16 @@ def LH_loop():
 	return LH()*2 + LH(b=third('a'))*2 + LH()*2 + LH(b=fourth('g'), c='ef')*2
 
 def descending_melody():
-	melody = scale('d``', 'a`') + scale('c``', 'g`') + notes('d` ' + 'ef` '*4)
-	melody = rhythm([8, 4], sixth_b(melody[0:5]) + third_b(melody[5:8]) + [melody[8]] + sixth_b(melody[9:]))
-	
-	global key
-	key = GMinor()
+	melody = scale('d``', 'a`') + scale('c``', 'g`')
+	melody = rhythm([8, 4], melody)
+	melody = sixth_b(melody[0:5]) + third_b(melody[5:8])
+	return melody
+
+def end_bit():
+	melody = rhythm([8, 4], notes('d` ' + 'ef` '*4))
+	melody[1:] = sixth_b(melody[1:])
 	ornament = rhythm([16, 16, 8], sixth_b(notes('ef` f` g`')))
 	melody[-2:-1] = ornament
-	key = GMinorH()
 	return melody
 
 def wandering_melody():
@@ -53,6 +55,10 @@ sections["in_d"].score["rh"] = N('d`', art="~") + N('d`') + R("2.")
 sections["in_d"].score["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
 sections["melody1"].score["rh"] = R("4. 4") + descending_melody()
+key = GMinor()
+sections["melody1"].score["rh"] += end_bit()
+
+key = GMinorH()
 sections["melody1"].score["lh"] = LH_loop()
 
 sections["melody2"].score["rh"] = N("d`", dur="4.") + R("4") + descending_melody()[0:7]
