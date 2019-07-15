@@ -15,12 +15,10 @@ class Note:
 		self.dur = str(dur)
 
 	def __repr__(self):
-		rep = self.letter + self.pitch + self.dur
-		return rep
+		return self.letter + self.pitch + self.dur
 
 	def chord_repr(self):
-		rep = self.letter + self.pitch
-		return rep
+		return self.letter + self.pitch
 
 class Chord:
 	def __init__(self, notes, dur=""):
