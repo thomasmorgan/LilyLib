@@ -37,9 +37,15 @@ class Chord:
 			else:
 				if note:
 					self.notes.append(Note(note))
-		self.dur = str(dur)
-		self.dynamics = str(dynamics)
-		self.articulation = str(art)
+		self.dur = self.notes[0].dur
+		self.dynamics = self.notes[0].dynamics
+		self.articulation = self.notes[0].articulation
+		if dur:
+			self.dur = str(dur)
+		if dynamics:
+			self.dynamics = str(dynamics)
+		if art:
+			self.articulation = str(art)
 
 	def __repr__(self):
 		rep = "<"
