@@ -97,6 +97,13 @@ def chord(root, notes):
 
 C = chord
 
+def melody(*notes):
+	new_notes = []
+	for n in notes:
+		new_notes.append(notify(n))
+	return Melody(key, new_notes)
+
+M = melody
 
 def interval(notes, size):
 	if isinstance(notes, str):
