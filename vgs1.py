@@ -1,15 +1,21 @@
+# Load LilyLib
 exec(open("./lilylib.py").read())
 
+# basic info
 title = "Venetianisches Gondellied"
 subtitle = "(Venetian Gondola Song)"
 composer = "Felix Mendelssohn"
 opus = "Op. 19, No. 6"
-key = GMinor()
 
-staves = [Treble("rh"), Bass("lh")]
+# set starting key and metre
+key = GMinor()
 tempo = t68()
+
+# create staves and sections
+staves = [Treble("rh"), Bass("lh")]
 sections = create_sections(["intro", "octaves", "in_d", "melody1", "melody2"])
 
+# Define common motifs
 def LH(a='g,', b=third('g'), c='d'):
 	return M(a, b, c).r(8)
 
@@ -35,6 +41,8 @@ def wandering_melody():
 	second_pass = M(basic_scale()[1:]) + third_b('d``').r("4.") + M("r").r(4)
 	second_pass[2:7] = third_b(second_pass[2:7])
 	return first_pass + second_pass
+
+# write the various sections
 
 W("intro", "rh",
 	M("r r").r('2.'))
@@ -84,5 +92,6 @@ bridge_v2 += M('r ef` fs`')*3
 #	M('d``').r(8))# + V + bridge_v1 + CV + bridge_v2 + EV
 #W("bridge", "lh", [])
 
+# print the score
 key = GMinor()
 print_score()
