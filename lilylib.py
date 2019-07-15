@@ -74,7 +74,7 @@ def scale(start, stop):
 	for n in notes:
 		new_notes.append(Note(n.letter + n.pitch))
 
-	return new_notes
+	return M(new_notes)
 
 S = scale
 
@@ -128,7 +128,7 @@ def interval(notes, size):
 				new_chord = Chord(note.chord_repr() + " " + new_note.chord_repr())
 				new_chord.dur = note.dur
 				new_notes.append(new_chord)
-	return new_notes
+	return M(new_notes)
 
 I = interval
 
