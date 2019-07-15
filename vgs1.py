@@ -76,7 +76,7 @@ key = DMinorH()
 W("melody2", "rh", 
 	wandering_melody())
 W("melody2", "lh",
-	M(LH_loop()[15:18]) + LH('g,', third('bf'), 'g') + LH('g,', second('bf'), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', N('cs`'), 'a') + LH('d', fourth('a'), 'f')*2)
+	M(LH_loop()[15:18]) + LH('g,', third('bf'), 'g') + LH('g,', second('bf'), 'g') + LH('f,', fourth('a'), 'f')*2 + LH('g,', third('bf'), 'g') + LH('a,', 'cs`', 'a') + LH('d', fourth('a'), 'f')*2)
 
 key = CMinorH()
 bridge_v1 = M('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`').r(4, 8) + M('c``').r(2)
