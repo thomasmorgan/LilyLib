@@ -10,7 +10,7 @@ staves = [Treble("rh"), Bass("lh")]
 tempo = t68()
 sections = create_sections(["intro", "octaves", "in_d", "melody1", "melody2", "bridge"])
 
-def LH(a=N('g,'), b=third('g'), c=N('d')):
+def LH(a='g,', b=third('g'), c='d'):
 	return M(a, b, c).rhythm(8)
 
 def LH_loop():
