@@ -80,6 +80,76 @@ class Key:
 	def filter_notes(self):
 		self.notes = [n for n in self.all_notes if n.letter in self.letters]
 
+class Melody():
+	def __init__(self, key, *notes):
+		self.key = key
+		self.notes = self.flatten(notes)
+
+	def __repr__(self):
+		return " ".join(str(note) for note in self.notes)
+
+	def __add__(self, other_melody):
+		return Melody(self.key, self.notes + other_melody.notes)
+
+	def __radd__(self, other_melody):
+		return Melody(other_melody.key, other_melody.notes + self.notes)
+
+	def __mul__(self, number):
+		return Melody(self.key, self.notes*number)
+
+	def __rmul__(self, number):
+		return Melody(self.key, self.notes*number)
+
+	def __len__(self):
+		return len(self.notes)
+
+	def __iter__(self):
+		return self.notes.__iter__()
+
+	def __next__(self):
+		return self.notes.__next__()
+
+	def __getitem__(self, index):
+		return self.notes.__getitem__(index)
+
+	def __setitem__(self, index, value):
+		return self.notes.__setitem__(index, value)
+
+	def rhythm(self, *rhythm):
+		rhythm = self.flatten(rhythm)
+		for i, note in enumerate(self.notes):
+			note.dur = str(rhythm[i % len(rhythm)])
+		return self
+
+	def harmony(self, *harmony):
+		harmony = self.flatten(harmony)
+		new_notes = []
+		for i, note in enumerate(self.notes):
+			this_harmony = harmony[i % len(harmony)]
+			if this_harmony == 0 or note.letter == "r":
+				new_notes.append(note)
+			else:
+				if not self.key.includes(note.letter):
+					print_error("Cannot build interval on {} as it is not in {}".format(note, key.name))
+				index_of_note = [i for i, n in enumerate(self.key.notes) if n.letter == note.letter and n.pitch == note.pitch][0]
+				new_note = self.key.notes[index_of_note + this_harmony]
+				new_chord = Chord([note, new_note])
+				new_notes.append(new_chord)
+		self.notes = new_notes
+		return self
+
+
+	def flatten(self, List):
+		while any([isinstance(i, list) for i in List]):
+			new_list = []
+			for i in List:
+				if isinstance(i, list):
+					new_list += i
+				else:
+					new_list += [i]
+			List = new_list
+		return List
+
 class Section:
 	def __init__(self, name, staves):
 		self.name = name
