@@ -1,5 +1,5 @@
 class Note:
-	def __init__(self, note, dur="", dynamics="", art=""):
+	def __init__(self, note, dur=""):
 		note = note.replace("`", "'")
 		if note[-1] == "'":
 			dum = note.split("'", 1)
@@ -13,13 +13,9 @@ class Note:
 			self.letter = note
 			self.pitch = ""
 		self.dur = str(dur)
-		self.dynamics = str(dynamics)
-		self.articulation = str(art)
 
 	def __repr__(self):
-		rep = self.letter + self.pitch + self.dur + self.articulation
-		if self.dynamics:
-			rep += ("\\" + self.dynamics)
+		rep = self.letter + self.pitch + self.dur
 		return rep
 
 	def chord_repr(self):
@@ -27,7 +23,7 @@ class Note:
 		return rep
 
 class Chord:
-	def __init__(self, notes, dur="", dynamics="", art=""):
+	def __init__(self, notes, dur=""):
 		self.notes = []
 		if isinstance(notes, str):
 			notes = notes.split(" ")
@@ -38,14 +34,8 @@ class Chord:
 				if note:
 					self.notes.append(Note(note))
 		self.dur = self.notes[0].dur
-		self.dynamics = self.notes[0].dynamics
-		self.articulation = self.notes[0].articulation
 		if dur:
 			self.dur = str(dur)
-		if dynamics:
-			self.dynamics = str(dynamics)
-		if art:
-			self.articulation = str(art)
 
 	def __repr__(self):
 		rep = "<"
@@ -53,9 +43,7 @@ class Chord:
 			rep += note.chord_repr() + " "
 		if self.notes:
 			rep = rep[:-1]
-		rep += ">" + self.dur + self.articulation
-		if self.dynamics:
-			rep += ("\\" + self.dynamics)
+		rep += ">" + self.dur
 		return(rep)
 
 class Key:

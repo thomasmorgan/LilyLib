@@ -40,12 +40,12 @@ def end_score():
     	'>> }\n'
 	)
 
-def notes(notes, dur="", art=""):
+def notes(notes):
 	notes = notes.split(" ")
 	new_notes = []
 	for note in notes:
 		if note:
-			new_notes.append(Note(note, dur=dur, art=art))
+			new_notes.append(Note(note))
 	return new_notes
 
 N = notes
