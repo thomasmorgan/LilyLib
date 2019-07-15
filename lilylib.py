@@ -31,14 +31,10 @@ def header():
 	)
 
 def start_score():
-	return (
-		'\\score { <<\n'
-	)
+	return('\\score { <<\n')
 
 def end_score():
-	return (
-    	'>> }\n'
-	)
+	return('>> }\n')
 
 def notes(notes):
 	notes = notes.split(" ")
