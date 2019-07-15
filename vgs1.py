@@ -25,12 +25,6 @@ def LH_loop():
 def descending_melody():
 	return (S('d``', 'a`') + S('c``', 'g`')).r(8, 4).h([-2]*5 + [-5]*3)
 
-def end_bit():
-	melody = M('d` ' + 'ef` '*4).r(8, 4).h([0] + [-2]*4)
-	ornament = M('ef` f` g`').r(16, 16, 8).h(-2)
-	melody[-2:-1] = ornament
-	return melody
-
 def wandering_melody():
 	def basic_scale():
 		return (S('g`', 'd``') + S('f``', 'd``')).r(8)
@@ -62,9 +56,13 @@ W("in_d", "lh",
 
 W("melody1", "rh",
 	M("r r").r('4.', 4) + descending_melody())
+
 key = GMinor()
+ending = M('d` ' + 'ef` '*4).r(8, 4).h([0] + [-2]*4)
+ornament = M('ef` f` g`').r(16, 16, 8).h(-2)
+ending[-2:-1] = ornament
 W("melody1", "rh",
-	end_bit())
+	ending)
 
 key = GMinorH()
 W("melody1", "lh",
