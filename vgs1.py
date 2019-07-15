@@ -11,16 +11,13 @@ tempo = t68()
 sections = create_sections(["intro", "octaves", "in_d", "melody1", "melody2", "bridge"])
 
 def LH(a=N('g,'), b=third('g'), c=N('d')):
-	lh = M(a, b, c)
-	lh.rhythm(8)
-	return lh
+	return M(a, b, c).rhythm(8)
 
 def LH_loop():
 	return LH()*2 + LH(b=third('a'))*2 + LH()*2 + LH(b=fourth('g'), c='ef')*2
 
 def descending_melody():
-	melody = (S('d``', 'a`') + S('c``', 'g`')).rhythm(8, 4).harmony([-2]*5 + [-5]*3)
-	return melody
+	return (S('d``', 'a`') + S('c``', 'g`')).rhythm(8, 4).harmony([-2]*5 + [-5]*3)
 
 def end_bit():
 	melody = M('d` ' + 'ef` '*4).rhythm(8, 4).harmony([0] + [-2]*4)
