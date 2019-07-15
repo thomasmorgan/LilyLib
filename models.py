@@ -77,7 +77,10 @@ class Key:
 class Melody():
 	def __init__(self, key, *notes):
 		self.key = key
-		self.notes = self.flatten(notes)
+		if notes:
+			self.notes = self.flatten(notes)
+		else:
+			self.notes = []
 
 	def __repr__(self):
 		return " ".join(str(note) for note in self.notes)
@@ -115,6 +118,8 @@ class Melody():
 			note.dur = str(rhythm[i % len(rhythm)])
 		return self
 
+	r = rhythm
+
 	def harmony(self, *harmony):
 		harmony = self.flatten(harmony)
 		new_notes = []
@@ -132,6 +137,7 @@ class Melody():
 		self.notes = new_notes
 		return self
 
+	h = harmony
 
 	def flatten(self, List):
 		while any([isinstance(i, list) for i in List]):
@@ -149,7 +155,7 @@ class Section:
 		self.name = name
 		self.score = {}
 		for stave in staves:
-			self.score[stave.name] = []
+			self.score[stave.name] = Melody(key=Key())
 
 	def print_stave(self, stave):
 		return " ".join(str(note) for note in self.score[stave]) + "\n"

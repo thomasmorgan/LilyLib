@@ -180,6 +180,11 @@ def create_sections(names):
 		sections[name] = Section(name=name, staves=staves)
 	return sections
 
+def write_section(section, stave, contents):
+	sections[section].score[stave] += contents
+
+W = write_section
+
 def rest(dur=""):
 	durs = dur.split(" ")
 
