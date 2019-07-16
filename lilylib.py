@@ -44,8 +44,6 @@ def notes(notes):
 			new_notes.append(Note(note))
 	return new_notes
 
-N = notes
-
 def notify(n):
 	if isinstance(n, str):
 		return notes(n)
@@ -126,8 +124,6 @@ def interval(notes, size):
 				new_notes.append(new_chord)
 	return M(new_notes)
 
-I = interval
-
 def second(note):
 	return interval(note, 1)
 
@@ -162,13 +158,6 @@ def octave(note):
 	return interval(note, 7)
 
 O = octave
-
-def rhythm(rhythm, notes):
-	if not isinstance(rhythm, list):
-		rhythm = [rhythm]
-	for i, n in enumerate(notes):
-		n.dur = str(rhythm[i % len(rhythm)])
-	return notes
 
 def create_sections(names):
 	score = {}
