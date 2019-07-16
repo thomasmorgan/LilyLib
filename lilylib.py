@@ -47,6 +47,8 @@ def notes(notes):
 def notify(n):
 	if isinstance(n, str):
 		return notes(n)
+	if isinstance(n, Melody):
+		return n.notes
 	return n
 
 def scale(start, stop):
