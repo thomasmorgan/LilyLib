@@ -107,9 +107,23 @@ class Melody():
 		return self.notes.__next__()
 
 	def __getitem__(self, index):
+		new_start = index.start
+		new_stop = index.stop
+		if isinstance(new_start, int) and new_start > 0:
+			new_start -= 1
+		if isinstance(new_stop, int) and  new_stop > 0:
+			new_stop -= 1
+		index = slice(new_start, new_stop, index.step)
 		return Melody(self.key, self.notes.__getitem__(index))
 
 	def __setitem__(self, index, value):
+		new_start = index.start
+		new_stop = index.stop
+		if isinstance(new_start, int) and new_start > 0:
+			new_start -= 1
+		if isinstance(new_stop, int) and  new_stop > 0:
+			new_stop -= 1
+		index = slice(new_start, new_stop, index.step)
 		return Melody(self.key, self.notes.__setitem__(index, value))
 
 	def rhythm(self, *rhythm):
