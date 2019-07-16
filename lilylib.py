@@ -129,32 +129,52 @@ def interval(notes, size):
 def second(note):
 	return interval(note, 1)
 
+_2nd = second
+
 def third(note):
 	return interval(note, 2)
+
+_3rd = third
 
 def third_b(note):
 	return interval(note, -5)
 
+_3rd_ = third_b
+
 def fourth(note):
 	return interval(note, 3)
+
+_4th = fourth
 
 def fourth_b(note):
 	return interval(note, -4)
 
+_4th_ = fourth_b
+
 def fifth(note):
 	return interval(note, 4)
+
+_5th = fifth
 
 def fifth_b(note):
 	return interval(note, -3)
 
+_5th_ = fifth_b
+
 def sixth(note):
 	return interval(note, 5)
+
+_6th = sixth
 
 def sixth_b(note):
 	return interval(note, -2)
 
+_6th_ = sixth_b
+
 def seventh(note):
 	return interval(note, 6)
+
+_7th = seventh
 
 def octave(note):
 	return interval(note, 7)
