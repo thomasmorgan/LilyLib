@@ -165,14 +165,9 @@ def create_sections(names):
 		score[name] = Section(name=name, staves=staves)
 	return score
 
-def rest(dur=""):
-	durs = dur.split(" ")
 
-	rests = []
-	for dur in durs:
-		if dur:
-			rests.append(Note("r", dur=dur))
-	return rests
+def rest(*durs):
+	return M("r "*len(durs)).r(durs)
 
 R = rest
 
