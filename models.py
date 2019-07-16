@@ -105,10 +105,10 @@ class Melody():
 		return self.notes.__next__()
 
 	def __getitem__(self, index):
-		return self.notes.__getitem__(index)
+		return Melody(self.key, self.notes.__getitem__(index))
 
 	def __setitem__(self, index, value):
-		return self.notes.__setitem__(index, value)
+		return Melody(self.key, self.notes.__setitem__(index, value))
 
 	def rhythm(self, *rhythm):
 		rhythm = self.flatten(rhythm)
