@@ -151,15 +151,21 @@ class Melody():
 class Section:
 	def __init__(self, name, staves):
 		self.name = name
-		self.score = {}
-		for stave in staves:
-			self.score[stave.name] = Melody(key=Key())
+		self.staves = {}
+		for staff in staves:
+			self.staves[staff] = Melody(key=Key())
+
+	def __getitem__(self, index):
+		return self.staves.__getitem__(index)
+
+	def __setitem__(self, index, value):
+		return self.staves.__setitem__(index, value)
 
 	def print_stave(self, stave):
-		return " ".join(str(note) for note in self.score[stave]) + "\n"
+		return " ".join(str(note) for note in self[stave]) + "\n"
 
 	def print_score(self, index):
-		return " ".join(str(n) for n in self.score[index])
+		return " ".join(str(n) for n in self.staves[index])
 
 class Tempo:
 	def __init__(self):
