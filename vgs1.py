@@ -23,16 +23,16 @@ def LH_loop():
 	return LH()*2 + LH(b=third('a'))*2 + LH()*2 + LH(b=fourth('g'), c='ef')*2
 
 def descending_melody():
-	return (S('d``', 'a`') + S('c``', 'g`')).r(8, 4).h([-2]*5 + [-5]*3)
+	return (S('d``', 'a`') + S('c``', 'g`')).r(8, 4).h(["6th_"]*5 + ["3rd_"]*3)
 
 def wandering_melody():
 	def basic_scale():
 		return (S('g`', 'd``') + S('f``', 'd``')).r(8)
-	first_pass = M('g`').h(-5) + basic_scale() + M('a`` f`` d``').r(4, 8)
-	first_pass[6:7] = first_pass[6:7].h(-3)
-	first_pass[9:10] = first_pass[9:10].h(-4)
+	first_pass = third_b('g`') + basic_scale() + M('a`` f`` d``').r(4, 8)
+	first_pass[6:7] = fifth_b(first_pass[6:7])
+	first_pass[9:10] = fourth_b(first_pass[9:10])
 
-	second_pass = basic_scale()[1:] + M('d``').h(-5).r("4.") + M("r").r(4)
+	second_pass = basic_scale()[1:] + M('d``').h("3rd_").r("4.") + M("r").r(4)
 	second_pass[2:7] = second_pass[2:7].h(-5)
 	return first_pass + second_pass
 
@@ -50,8 +50,8 @@ score["in_d"]["lh"] = LH('d,')*2 + LH('d,', third('a')) + LH('d,', third('fs'))
 
 score["melody1"]["rh"] = M("r r").r('4.', 4) + descending_melody()
 key = GMinor()
-ending = M('d` ' + 'ef` '*4).r(8, 4).h([0] + [-2]*4)
-ornament = M('ef` f` g`').r(16, 16, 8).h(-2)
+ending = M('d` ' + 'ef` '*4).r(8, 4).h(["1st"] + ["6th_"]*4)
+ornament = M('ef` f` g`').r(16, 16, 8).h("6th_")
 ending[-2:-1] = ornament
 score["melody1"]["rh"] += ending
 
