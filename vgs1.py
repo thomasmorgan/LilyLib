@@ -29,8 +29,8 @@ def wandering_melody():
 	def basic_scale():
 		return (S('g`', 'd``') + S('f``', 'd``')).r(8)
 	first_pass = basic_scale() + M('a`` f`` d``').r(4, 8)
-	first_pass[6:7] = _5th_(first_pass[6:7])
-	first_pass[9:10] = _4th_(first_pass[9:10])
+	first_pass[6] = _5th_(first_pass[6])
+	first_pass[9] = _4th_(first_pass[9])
 
 	second_pass = basic_scale()[2:] + _3rd_('d``').r("4.") + R(4)
 	#second_pass[2:7] = _3rd_(second_pass[2:7])
