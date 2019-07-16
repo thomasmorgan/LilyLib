@@ -32,8 +32,8 @@ def wandering_melody():
 	first_pass[6:7] = _5th_(first_pass[6:7])
 	first_pass[9:10] = _4th_(first_pass[9:10])
 
-	second_pass = basic_scale()[1:] + M('d``').h("3rd_").r("4.") + M("r").r(4)
-	second_pass[2:7] = second_pass[2:7].h(-5)
+	second_pass = basic_scale()[1:] + _3rd_('d``').r("4.") + R(4)
+	second_pass[2:7] = _3rd_(second_pass[2:7])
 	return first_pass + second_pass
 
 # write the various sections
@@ -62,7 +62,7 @@ score["melody2"]["rh"] = M("d` r").r("4.", 4) + M(descending_melody()[0:7])
 score["melody2"]["lh"] = M(LH_loop()[0:15])
 key = DMinorH()
 score["melody2"]["rh"] += wandering_melody()
-score["melody2"]["lh"] += M(LH_loop()[15:18]) + LH('g,', _3rd('bf'), 'g') + LH('g,', 2nd('bf'), 'g') + LH('f,', _4th('a'), 'f')*2 + LH('g,', _3rd('bf'), 'g') + LH('a,', 'cs`', 'a') + LH('d', _4th('a'), 'f')*2
+score["melody2"]["lh"] += M(LH_loop()[15:18]) + LH('g,', _3rd('bf'), 'g') + LH('g,', _2nd('bf'), 'g') + LH('f,', _4th('a'), 'f')*2 + LH('g,', _3rd('bf'), 'g') + LH('a,', 'cs`', 'a') + LH('d', _4th('a'), 'f')*2
 
 # key = CMinorH()
 # bridge_v1 = M('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`').r(4, 8) + M('c``').r(2)
