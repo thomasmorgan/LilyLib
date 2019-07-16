@@ -38,7 +38,7 @@ def wandering_melody():
 
 # write the various sections
 
-score["intro"]["rh"] = M("r r").r('2.')
+score["intro"]["rh"] = R("2.")*2
 score["intro"]["lh"] = LH()*3 + LH(b=C('a', [-1, 0, 2]), c='ef')
 
 score["octaves"]["rh"] = M('d` f` f` ef`').r('4.')
