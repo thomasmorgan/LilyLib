@@ -87,7 +87,7 @@ def chord(root, notes):
 		new_notes.append(new_note)
 
 	chord = Chord(new_notes)
-	return [chord]
+	return M(chord)
 
 C = chord
 
