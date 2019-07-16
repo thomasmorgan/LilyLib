@@ -171,15 +171,10 @@ def rhythm(rhythm, notes):
 	return notes
 
 def create_sections(names):
-	sections = {}
+	score = {}
 	for name in names:
-		sections[name] = Section(name=name, staves=staves)
-	return sections
-
-def write_section(section, stave, contents):
-	sections[section].score[stave] += contents
-
-W = write_section
+		score[name] = Section(name=name, staves=staves)
+	return score
 
 def rest(dur=""):
 	durs = dur.split(" ")
@@ -208,16 +203,16 @@ def end_voices():
 EV = end_voices()
 
 def print_score():
-	score = header() + start_score()
+	printed_score = header() + start_score()
 	for stave in staves:
-		score += stave.start()
-		score += str(key)
-		score += str(tempo)
-		for section in sections:
-			score += sections[section].print_stave(stave.name)
-		score += stave.end()
-	score += end_score()
-	print(score)
+		printed_score += stave.start()
+		printed_score += str(key)
+		printed_score += str(tempo)
+		for section in score:
+			printed_score += score[section].print_stave(stave.name)
+		printed_score += stave.end()
+	printed_score += end_score()
+	print(printed_score)
 
 
 
