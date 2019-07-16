@@ -1,3 +1,5 @@
+from util import *
+
 class Note:
 	def __init__(self, note, dur=""):
 		note = note.replace("`", "'")
@@ -76,7 +78,7 @@ class Melody():
 	def __init__(self, key, *notes):
 		self.key = key
 		if notes:
-			self.notes = self.flatten(notes)
+			self.notes = flatten(notes)
 		else:
 			self.notes = []
 
@@ -111,7 +113,7 @@ class Melody():
 		return Melody(self.key, self.notes.__setitem__(index, value))
 
 	def rhythm(self, *rhythm):
-		rhythm = self.flatten(rhythm)
+		rhythm = flatten(rhythm)
 		for i, note in enumerate(self.notes):
 			note.dur = str(rhythm[i % len(rhythm)])
 		return self
@@ -119,7 +121,7 @@ class Melody():
 	r = rhythm
 
 	def harmony(self, *harmony):
-		harmony = self.flatten(harmony)
+		harmony = flatten(harmony)
 		new_notes = []
 		for i, note in enumerate(self.notes):
 			this_harmony = harmony[i % len(harmony)]
@@ -136,17 +138,6 @@ class Melody():
 		return self
 
 	h = harmony
-
-	def flatten(self, List):
-		while any([isinstance(i, list) for i in List]):
-			new_list = []
-			for i in List:
-				if isinstance(i, list):
-					new_list += i
-				else:
-					new_list += [i]
-			List = new_list
-		return List
 
 class Section:
 	def __init__(self, name, staves):
