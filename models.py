@@ -125,6 +125,7 @@ class Melody():
 		new_notes = []
 		for i, note in enumerate(self.notes):
 			this_harmony = harmony[i % len(harmony)]
+			this_harmony = map_harmony_to_int(this_harmony)
 			if this_harmony == 0 or note.letter == "r":
 				new_notes.append(note)
 			else:
