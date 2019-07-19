@@ -164,7 +164,7 @@ class Melody():
 
 	h = harmony
 
-	def harmony_letter(self, *args):
+	def harmony_note(self, *args):
 		notes = []
 		harmonies = []
 		for i, arg in enumerate(args):
@@ -184,7 +184,7 @@ class Melody():
 						self.notes[i] = new_chord
 		return self
 
-	hl = harmony_letter
+	hn = harmony_note
 
 
 class Section:
