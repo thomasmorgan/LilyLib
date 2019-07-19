@@ -164,6 +164,20 @@ class Melody():
 
 	h = harmony
 
+	def harmony_letter(self, letter, harmony):
+		harmony = map_harmony_to_int(harmony)
+		letter = str(Note(letter))
+		for i, note in enumerate(self.notes):
+			if note.letter + note.pitch == letter:
+				index_of_note = [i for i, n in enumerate(self.key.notes) if n.letter == note.letter and n.pitch == note.pitch][0]
+				new_note = self.key.notes[index_of_note + harmony]
+				new_chord = Chord([note, new_note])
+				self.notes[i] = new_chord
+		return self
+
+	hl = harmony_letter
+
+
 class Section:
 	def __init__(self, name, staves):
 		self.name = name
