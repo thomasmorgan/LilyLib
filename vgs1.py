@@ -41,14 +41,14 @@ def wandering_melody():
 score["intro"]["rh"] = R("2.")*2
 score["intro"]["lh"] = LH()*3 + LH(b=C('a', [-1, 0, 2]), c='ef')
 
-score["octaves"]["rh"] = M('d` f` f` ef`').r('4.')
+score["octaves"]["rh"] = M('d` f` f` ef`').r('4.') + M('d` r').r('2.')
 score["octaves"]["lh"] = LH(a=O('g,,')) + LH(a=O('f,,'), b=_3rd('a'), c='f') + LH(a=O('bf,,'), b=_3rd('bf'), c='f') + LH(a=O('c,'), b=_4th('g'), c='ef')
 
 key = GMinorH()
-score["in_d"]["rh"] = M('d` r').r('2.')
+score["in_d"]["rh"] = M()
 score["in_d"]["lh"] = LH('d,')*2 + LH('d,', _3rd('a')) + LH('d,', _3rd('fs'))
 
-score["melody1"]["rh"] = M("r r").r('4.', 4) + descending_melody()
+score["melody1"]["rh"] = R('4.', 4) + descending_melody()
 key = GMinor()
 ending = M('d` ' + 'ef` '*4).r(8, 4).h(["1st"] + ["6th_"]*4)
 ornament = M('ef` f` g`').r(16, 16, 8).h("6th_")
