@@ -164,15 +164,24 @@ class Melody():
 
 	h = harmony
 
-	def harmony_letter(self, letter, harmony):
-		harmony = map_harmony_to_int(harmony)
-		letter = str(Note(letter))
-		for i, note in enumerate(self.notes):
-			if note.letter + note.pitch == letter:
-				index_of_note = [i for i, n in enumerate(self.key.notes) if n.letter == note.letter and n.pitch == note.pitch][0]
-				new_note = self.key.notes[index_of_note + harmony]
-				new_chord = Chord([note, new_note])
-				self.notes[i] = new_chord
+	def harmony_letter(self, *args):
+		notes = []
+		harmonies = []
+		for i, arg in enumerate(args):
+			if i % 2 == 0:
+				notes.append(arg)
+			else:
+				harmonies.append(arg)
+		for note, harmony in zip(notes, harmonies):
+			harmony = map_harmony_to_int(harmony)
+			note = str(Note(note))
+			for i, n in enumerate(self.notes):
+				if not isinstance(n, Chord):
+					if n.chord_repr() == note:
+						index_of_note = [i for i, nn in enumerate(self.key.notes) if nn.letter == n.letter and nn.pitch == n.pitch][0]
+						new_note = self.key.notes[index_of_note + harmony]
+						new_chord = Chord([n, new_note])
+						self.notes[i] = new_chord
 		return self
 
 	hl = harmony_letter
