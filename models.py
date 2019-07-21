@@ -186,6 +186,27 @@ class Melody():
 
 	hn = harmony_note
 
+	def harmony_position(self, *args):
+		positions = []
+		harmonies = []
+		for i, arg in enumerate(args):
+			if i % 2 == 0:
+				positions.append(arg)
+			else:
+				harmonies.append(arg)
+
+		for position, harmony in zip(positions, harmonies):
+			harmony = map_harmony_to_int(harmony)
+			current_note = self[position].notes[0]
+			index_of_note = [i for i, nn in enumerate(self.key.notes) if nn.letter == current_note.letter and nn.pitch == current_note.pitch][0]
+			new_note = self.key.notes[index_of_note + harmony]
+			new_chord = Chord([current_note, new_note])
+			self[position] = new_chord
+
+		return self
+
+	hp = harmony_position
+
 
 class Section:
 	def __init__(self, name, staves):
