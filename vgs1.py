@@ -13,7 +13,7 @@ tempo = t68()
 
 # create staves and sections
 staves = [Treble("rh"), Bass("lh")]
-score = create_sections(["intro", "octaves", "in_d", "melody1", "melody2"])
+score = create_sections(["intro", "octaves", "in_d", "melody1", "melody2", "bridge"])
 
 # Define common motifs
 def LH(a='g,', b=_3rd('g'), c='d'):
@@ -62,17 +62,16 @@ key = DMinorH()
 score["melody2"]["rh"] += wandering_melody()
 score["melody2"]["lh"] += M(LH_loop()[16:19]) + LH('g,', _3rd('bf'), 'g') + LH('g,', _2nd('bf'), 'g') + LH('f,', _4th('a'), 'f')*2 + LH('g,', _3rd('bf'), 'g') + LH('a,', 'cs`', 'a') + LH('d', _4th('a'), 'f')*2
 
-# key = CMinorH()
-# bridge_v1 = M('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`').r(4, 8) + M('c``').r(2)
-# bridge_v2 = M('r f` g`').r(8)*2 + _3rd('r c` r r d` r')*2 + M('r ef` g`')*2
+key = CMinorH()
+bridge_v1 = M('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`').r(4, 8) + M('c``').r(2)
+bridge_v2 = M('r f` g`').r(8)*2 + _3rd('r c` r r d` r')*2 + M('r ef` g`')*2
 
-# key = GMinorH()
-# bridge_v1 += M('r').r(8) + M('c`` ef`` a` ef`` a`').r(8, 4) + M('ef``').r(2)
-# bridge_v2 += M('r ef` fs`')*3
+key = GMinorH()
+bridge_v1 += M('r').r(8) + M('c`` ef`` a` ef`` a`').r(8, 4) + M('ef``').r(2)
+bridge_v2 += M('r ef` fs`')*3
 
-#W("bridge", "rh",
-#	M('d``').r(8))# + V + bridge_v1 + CV + bridge_v2 + EV
-#W("bridge", "lh", [])
+score["bridge"]["rh"] = M('d``').r(8) + V + bridge_v1 + CV + bridge_v2 + EV
+score["bridge"]["lh"] = M()
 
 # print the score
 key = GMinor()
