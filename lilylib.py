@@ -194,17 +194,17 @@ def rest(*durs):
 R = rest
 
 def voices():
-	return(["\n<<\n{"])
+	return(M(notes("\n<<\n{")))
 
 V = voices()
 
 def change_voice():
-	return(["} \\\\ {"])
+	return(M(notes("} \\\\ {")))
 
 CV = change_voice()
 
 def end_voices():
-	return(["}\n>>\n"])
+	return(M(notes("}\n>>\n")))
 
 EV = end_voices()
 
