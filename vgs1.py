@@ -63,14 +63,14 @@ score["melody2"]["rh"] += wandering_melody()
 score["melody2"]["lh"] += M(LH_loop()[16:19]) + LH('g,', _3rd('bf'), 'g') + LH('g,', _2nd('bf'), 'g') + LH('f,', _4th('a'), 'f')*2 + LH('g,', _3rd('bf'), 'g') + LH('a,', 'cs`', 'a') + LH('d', _4th('a'), 'f')*2
 
 key = CMinorH()
-bridge_v1 = M('f`` d`` c`` b` c`` g` af` b` c`` g` af` b`').r(4, 8) + M('c``').r(2)
+bridge_v1 = (M('f`` d`` c``') + M('b` c`` g` af`')*2 + M('b`')).r(4, 8) + M('c``').r(2)
 bridge_v2 = M('r f` g`').r(8)*2 + _3rd('r c` r r d` r')*2 + M('r ef` g`')*2
 
 key = GMinorH()
-bridge_v1 += M('r').r(8) + M('c`` ef`` a` ef`` a`').r(8, 4) + M('ef``').r(2)
-bridge_v2 += M('r ef` fs`')*3
+bridge_v1 += R(8) + M('c`` ef`` a` ef`` a`').r(8, 4) + M('ef``').r(2) + R(8) + M('d`` c`` bf`').r(8, 4) + M('a` bf` g`')
+bridge_v2 += M('r ef` fs`')*2 + M('r ef`', _3rd('fs`')) + M('r ef` a`') + M('r d` g`') + M('r cs` g`')
 
-score["bridge"]["rh"] = M('d``').r(8) + V + bridge_v1 + CV + bridge_v2 + EV
+score["bridge"]["rh"] = M('d``').r(8) + V + bridge_v1 + CV + bridge_v2 + EV  +  C('d``', [0, -3, -5, -7]) + M('d``')*5
 score["bridge"]["lh"] = M()
 
 # print the score
