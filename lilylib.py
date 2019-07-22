@@ -97,6 +97,7 @@ def melody(*notes):
 	new_notes = []
 	for n in notes:
 		new_notes.append(notify(n))
+	new_notes = flatten(new_notes)
 	return Melody(key, new_notes)
 
 M = melody
