@@ -16,7 +16,9 @@ staves = [Treble("rh"), Bass("lh")]
 score = create_sections(["intro", "octaves", "in_d", "melody1", "melody2", "bridge"])
 
 # Define common motifs
-def LH(a='g,', b=_3rd('g'), c='d'):
+def LH(a='g,', b=None, c='d'):
+	if not b:
+		b = _3rd('g')
 	return M(a, b, c).r(8)
 
 def LH_loop():
