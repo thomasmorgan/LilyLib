@@ -2,15 +2,22 @@ from models import Letter, Pitch
 
 print("Testing Letter class", end="")
 
+letter = Letter('b')
+letter = Letter('ff')
+letter = Letter('css')
 letter = Letter('a')
+
+print(".", end="")
+
 assert isinstance(letter, Letter)
+
+print(".", end="")
+
 assert letter.letter == 'a'
 
 print(".", end="")
 
-letter = Letter('b')
-letter = Letter('ff')
-letter = Letter('css')
+assert str(letter) == 'a'
 
 print(".", end="")
 
@@ -25,15 +32,22 @@ print(" passed!")
 
 print("Testing Pitch class", end="")
 
+pitch = Pitch('')
+pitch = Pitch(',')
+pitch = Pitch('``')
 pitch = Pitch(',,')
+
+print(".", end="")
+
 assert isinstance(pitch, Pitch)
+
+print(".", end="")
+
 assert pitch.pitch == ',,'
 
 print(".", end="")
 
-pitch = Pitch('')
-pitch = Pitch(',')
-pitch = Pitch('``')
+assert str(pitch) == ',,'
 
 print(".", end="")
 
