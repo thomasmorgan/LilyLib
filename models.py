@@ -291,22 +291,17 @@ class Tempo:
 		return "\\time {}\n".format(self.name)
 
 class Stave:
-	def __init__(self, name=None):
-		if name is None:
-			try:
-				self.name = self.type
-			except:
-				self.name = None
-		else:
-			self.name = name
+    def __init__(self, clef=None):
+        self.clef = clef
 
-	def start(self):
-		return (
-			'<< \\new Staff {\n' +
-			'\\clef {}\n'.format(self.type)
-		)
+    def start(self):
+        return (
+            '<< \\new Staff {\n\\clef {}\n'.format(self.clef)
+        )
 
-	def end(self):
-		return (
-			'} >>\n'
-		)
+    def end(self):
+        return (
+            '} >>\n'
+        )
+
+
