@@ -292,10 +292,10 @@ class Tempo:
 
 class Stave:
     def __init__(self, clef):
+        if clef not in ['treble', 'bass', 'G', '"G2"', 'french', 'GG', 'tenorG', 'soprano', 'mezzosoprano', 'C', 'alto', 'tenor', 'baritone']:
+            raise ValueError('{} is not a permitted clef'.format(clef))
+
         self.clef = clef
+        self.start = '<< \\new Staff {{\n\\clef {}\n'.format(self.clef)
+        self.end = '} >>\n'
 
-    def start(self):
-        return '<< \\new Staff {\n\\clef {}\n'.format(self.clef)
-
-    def end(self):
-        return '} >>\n'
