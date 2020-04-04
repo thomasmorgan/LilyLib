@@ -1,4 +1,4 @@
-from models import Letter, Pitch
+from models import Letter, Pitch, Tone
 
 ##########################
 # Tests for Letter class #
@@ -65,5 +65,44 @@ except ValueError:
     pass
 else:
     raise ValueError("Error, letter ,` created. This should not be possible.")
+
+print(" passed!")
+
+########################
+# Tests for Tone class #
+########################
+
+print("Testing Tone class", end="")
+
+tone = Tone('a')
+tone = Tone('fs,')
+tone = Tone('dss``')
+tone = Tone('ef,,')
+
+print(".", end="")
+
+assert isinstance(tone, Tone)
+assert str(tone) == 'ef,,'
+
+print(".", end="")
+
+assert isinstance(tone.letter, Letter)
+assert tone.letter.letter == 'ef'
+assert str(tone.letter) == 'ef'
+
+print(".", end="")
+
+assert isinstance(tone.pitch, Pitch)
+assert tone.pitch.pitch == ",,"
+assert str(tone.pitch) == ',,'
+
+print(".", end="")
+
+try:
+    tone = Tone(',,')
+except ValueError:
+    pass
+else:
+    raise ValueError("Error, tone ,, created. This should not be possible.")
 
 print(" passed!")
