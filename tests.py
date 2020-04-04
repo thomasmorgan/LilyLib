@@ -1,5 +1,9 @@
 from models import Letter, Pitch
 
+##########################
+# Tests for Letter class #
+##########################
+
 print("Testing Letter class", end="")
 
 letter = Letter('b')
@@ -29,6 +33,10 @@ else:
     raise ValueError("Error, letter fa created. This should not be possible.")
 
 print(" passed!")
+
+#########################
+# Tests for Pitch class #
+#########################
 
 print("Testing Pitch class", end="")
 
