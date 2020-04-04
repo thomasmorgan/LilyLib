@@ -34,6 +34,28 @@ class Pitch:
     def __str__(self):
         return self.pitch
 
+
+class Tone:
+    """ The sound of a single note. """
+    """ Has a letter and a pitch, but no duration etc. """
+
+    def __init__(self, tone):
+        if tone[-1] == "`":
+            tone = tone.split("`", 1)
+            self.letter = Letter(tone[0])
+            self.pitch = Pitch(tone[1] + "`")
+        elif tone[-1] == ",":
+            tone = tone.split(",", 1)
+            self.letter = Letter(tone[0])
+            self.pitch = Pitch(tone[1] + ",")
+        else:
+            self.letter = Letter(tone)
+            self.pitch = Pitch("")
+
+    def __str__(self):
+        return str(self.letter) + str(self.pitch)
+
+
 class Note:
 	def __init__(self, note, dur=""):
 		note = note.replace("`", "'")
