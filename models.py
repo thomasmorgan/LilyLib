@@ -16,7 +16,7 @@ class Letter:
         else:
             self.letter = letter
 
-    def __repr__(self):
+    def __str__(self):
         return self.letter
 
 
@@ -31,7 +31,7 @@ class Pitch:
         else:
             self.pitch = pitch
 
-    def __repr__(self):
+    def __str__(self):
         return self.pitch
 
 class Note:
