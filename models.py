@@ -1,5 +1,24 @@
 from util import print_error, flatten, map_harmony_to_int
 
+
+class Letter:
+    """ A letter associated with a note, e.g. a or bf """
+
+    def __init__(self, letter):
+        permitted_letters = []
+        letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+        accents = ['ff', 'f', '', 's', 'ss']
+        for l in letters:
+            for a in accents:
+                permitted_letters.append(l + a)
+        if letter not in permitted_letters:
+            raise ValueError("{} is not a valid letter".format(letter))
+        else:
+            self.letter = letter
+
+    def __repr__(self):
+        return self.letter
+
 class Note:
 	def __init__(self, note, dur=""):
 		note = note.replace("`", "'")
