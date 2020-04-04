@@ -1,4 +1,4 @@
-from models import Letter, Pitch, Tone
+from models import Letter, Pitch, Tone, Stave
 
 ##########################
 # Tests for Letter class #
@@ -104,5 +104,29 @@ except ValueError:
     pass
 else:
     raise ValueError("Error, tone ,, created. This should not be possible.")
+
+print(" passed!")
+
+########################
+# Tests for Stave class #
+########################
+
+print("Testing Stave class", end="")
+
+staff = Stave('bass')
+staff = Stave('treble')
+
+print(".", end="")
+
+assert isinstance(staff, Stave)
+assert staff.start == '<< \\new Staff {\n\\clef treble\n'
+assert staff.end == '} >>\n'
+
+try:
+    staff = Stave('troble')
+except ValueError:
+    pass
+else:
+    raise ValueError("Error, troble clef created. This should not be possible.")
 
 print(" passed!")
