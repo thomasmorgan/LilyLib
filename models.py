@@ -1,4 +1,4 @@
-from util import *
+from util import print_error, flatten, map_harmony_to_int
 
 class Note:
 	def __init__(self, note, dur=""):
