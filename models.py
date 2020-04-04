@@ -19,6 +19,21 @@ class Letter:
     def __repr__(self):
         return self.letter
 
+
+class Pitch:
+    """ A pitch associated with a note, e.g. ' (written as `) or , """
+
+    def __init__(self, pitch):
+        pitch = pitch.replace("`", "'")
+        pitches = [",,,", ",,", ",", "", "'", "''", "'''"]
+        if pitch not in pitches:
+            raise ValueError("{} is not a valid pitch".format(pitch))
+        else:
+            self.pitch = pitch
+
+    def __repr__(self):
+        return self.pitch
+
 class Note:
 	def __init__(self, note, dur=""):
 		note = note.replace("`", "'")
