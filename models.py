@@ -299,3 +299,10 @@ class Stave:
         self.start = '<< \\new Staff {{\n\\clef {}\n'.format(self.clef)
         self.end = '} >>\n'
 
+
+class Tempo:
+    def __init__(self, tempo):
+        self.tempo = "4/4"
+
+    def __str__(self):
+        return "\\time {}\n".format(self.tempo)
