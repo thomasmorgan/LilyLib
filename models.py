@@ -57,26 +57,8 @@ class Tone:
 
 
 class Note:
-	def __init__(self, note, dur=""):
-		note = note.replace("`", "'")
-		if note[-1] == "'":
-			dum = note.split("'", 1)
-			self.letter = dum[0]
-			self.pitch = dum[1] + "'"
-		elif note[-1] == ",":
-			dum = note.split(",", 1)
-			self.letter = dum[0]
-			self.pitch = dum[1] + ","
-		else:
-			self.letter = note
-			self.pitch = ""
-		self.dur = str(dur)
-
-	def __repr__(self):
-		return self.letter + self.pitch + self.dur
-
-	def chord_repr(self):
-		return self.letter + self.pitch
+    """ The sounding of a single tone for a specified time. """
+    """ Prints as a single note in sheet music. """
 
 class Chord:
 	def __init__(self, notes, dur=""):
@@ -270,6 +252,12 @@ class Section:
 		self.staves = {}
 		for staff in staves:
 			self.staves[staff] = Melody(key=Key())
+    def __init__(self, tone, dur):
+        if isinstance(tone, Tone):
+            self.tone = tone
+        else:
+            self.tone = Tone(tone)
+        self.dur = dur
 
 	def __getitem__(self, index):
 		return self.staves.__getitem__(index)
