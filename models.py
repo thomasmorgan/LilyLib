@@ -84,11 +84,11 @@ class Chord:
                 self.tones.append(tone)
             else:
                 if tone:
-                    self.notes.append(Tone(tone))
+                    self.tones.append(Tone(tone))
         self.dur = dur
 
     def __repr__(self):
-        return("<" + " ".join([(t.letter + t.pitch) for t in self.tones]) + ">" + str(self.dur))
+        return("<" + " ".join([(t.letter.letter + t.pitch.pitch) for t in self.tones]) + ">" + str(self.dur))
 
 
 class Stave:
