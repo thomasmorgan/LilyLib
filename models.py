@@ -92,6 +92,9 @@ class Chord:
 
 
 class Stave:
+    """ A musical stave. """
+    """ It has a clef, and optionally a name if multiple staves have the same clef. """
+
     def __init__(self, clef, name=None):
         if clef not in ['treble', 'bass', 'G', '"G2"', 'french', 'GG', 'tenorG', 'soprano', 'mezzosoprano', 'C', 'alto', 'tenor', 'baritone']:
             raise ValueError('{} is not a permitted clef'.format(clef))
