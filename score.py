@@ -1,5 +1,7 @@
+from models import Note, Chord
 from staves import Treble, Bass
 from keys import CMajor
+from util import flatten
 
 
 class Score:
@@ -20,7 +22,7 @@ class Score:
             printed_score += stave.start
             printed_score += str(self.key)
             printed_score += "\\time {}\n".format(self.tempo)
-            printed_score += str(self.score[stave.name])
+            printed_score += self.print_stave(stave.name)
             printed_score += stave.end
         printed_score += self.end_score()
         return(printed_score)
@@ -48,3 +50,13 @@ class Score:
 
     def end_score(self):
         return('>> }\n')
+
+    def print_stave(self, name):
+        stave = self.score[name]
+        if isinstance(stave, Note) or isinstance(stave, Chord):
+            return(str(stave))
+        elif isinstance(stave, list):
+            stave = [str(s) for s in flatten(stave)]
+            return(" ".join(stave))
+        else:
+            raise TypeError("stave with value {} cannot be printed".format(stave))
