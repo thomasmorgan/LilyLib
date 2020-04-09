@@ -116,8 +116,8 @@ class Key:
         accents = ['ff', 'f', '', 's', 'ss']
         pitches = [",,,", ",,", ",", "", "`", "``", "```"]
         self.all_tones = []
-        for l in letters:
-            for p in pitches:
+        for p in pitches:
+            for l in letters:
                 for a in accents:
                     self.all_tones.append(Tone(l + a + p))
 
