@@ -54,6 +54,13 @@ class Score:
 
     def print_stave(self, name):
         stave = self.score[name]
+    def create_sections(self, *sections):
+        self.sections = sections
+        for stave in self.staves:
+            self.score[stave.name] = {}
+            for section in sections:
+                self.score[stave.name][section] = ""
+
         if isinstance(stave, Note) or isinstance(stave, Chord):
             return(str(stave))
         elif isinstance(stave, list):
