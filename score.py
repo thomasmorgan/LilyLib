@@ -22,7 +22,7 @@ class Score:
             printed_score += stave.start
             printed_score += str(self.key)
             printed_score += "\\time {}\n".format(self.tempo)
-            printed_score += self.print_stave(stave.name)
+            printed_score += self.print_stave(stave)
             printed_score += stave.end
         printed_score += self.end_score()
         printed_score = printed_score.replace("`", "'")
@@ -52,8 +52,6 @@ class Score:
     def end_score(self):
         return('>> }\n')
 
-    def print_stave(self, name):
-        stave = self.score[name]
     def create_sections(self, *sections):
         self.sections = sections
         for stave in self.staves:
@@ -61,6 +59,11 @@ class Score:
             for section in sections:
                 self.score[stave.name][section] = ""
 
+    def print_stave(self, stave):
+        if type(self.score[stave.name]) is dict:
+            return " ".join([str(note) for note in flatten([self.score[stave.name][section] for section in self.sections])])
+
+        stave = self.score[stave.name]
         if isinstance(stave, Note) or isinstance(stave, Chord):
             return(str(stave))
         elif isinstance(stave, list):
