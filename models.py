@@ -138,6 +138,22 @@ class Key:
     def filter_notes(self):
         self.tones = [n for n in self.all_tones if n.letter.letter in self.letters]
 
+    def scale(self, start, stop):
+        try:
+            start_index = [i for i, tone in enumerate(self.tones) if str(tone) == start][0]
+            stop_index = [i for i, tone in enumerate(self.tones) if str(tone) == stop][0]
+        except IndexError:
+            raise ValueError("Cannot write scale from {} to {} in key {}".format(start, stop, self))
+
+        if stop_index >= start_index:
+            step = 1
+        elif stop_index < start_index:
+            stop_index -= 1
+            step = -1
+
+        return self.tones[start_index:stop_index + 1:step]
+
+
 # class Melody():
 # 	def __init__(self, key, *notes):
 # 		self.key = key
