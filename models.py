@@ -1,6 +1,3 @@
-from util import print_error, flatten, map_harmony_to_int
-
-
 class Letter:
     """ A letter associated with a note, e.g. a or bf """
 
