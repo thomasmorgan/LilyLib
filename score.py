@@ -25,6 +25,7 @@ class Score:
             printed_score += self.print_stave(stave.name)
             printed_score += stave.end
         printed_score += self.end_score()
+        printed_score = printed_score.replace("`", "'")
         return(printed_score)
 
     def header(self):

@@ -24,8 +24,7 @@ class Pitch:
     """ A pitch associated with a note, e.g. ' (written as `) or , """
 
     def __init__(self, pitch):
-        pitch = pitch.replace("`", "'")
-        pitches = [",,,", ",,", ",", "", "'", "''", "'''"]
+        pitches = [",,,", ",,", ",", "", "`", "``", "```"]
         if pitch not in pitches:
             raise ValueError("{} is not a valid pitch".format(pitch))
         else:
