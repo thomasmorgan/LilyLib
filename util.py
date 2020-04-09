@@ -10,7 +10,7 @@ def flatten(List):
                 new_list += i
             else:
                 new_list += [i]
-                List = new_list
+        List = new_list
     return List
 
 
