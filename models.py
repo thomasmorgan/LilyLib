@@ -145,7 +145,7 @@ class Key:
         if stop_index >= start_index:
             step = 1
         elif stop_index < start_index:
-            stop_index -= 1
+            stop_index -= 2
             step = -1
 
         return self.tones[start_index:stop_index + 1:step]
