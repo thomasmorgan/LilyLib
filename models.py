@@ -7,9 +7,12 @@ class Tone:
         if not isinstance(tone, str):
             raise ValueError("Tones must be created with a string, not {}".format(tone))
 
+        valid_letters = []
         letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
         accents = ['ff', 'f', '', 's', 'ss']
-        valid_letters = [l + a for l, a in zip(letters, accents)]
+        for l in letters:
+            for a in accents:
+                valid_letters.append(l + a)
         valid_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
 
         if tone[-1] == "`":
