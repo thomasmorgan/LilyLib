@@ -113,7 +113,12 @@ class Key:
                     self.all_tones.append(Tone(l + a + p))
 
         self.define()
-        self.filter_notes()
+
+        self.tones = [n for n in self.all_tones if n.letter in self.letters]
+
+        index_of_root = self.letters.index(self.root)
+        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
 
     def define(self):
         raise NotImplementedError("Key.define must be overwritten.")
@@ -128,9 +133,6 @@ class Key:
 
     def includes(self, letter):
         return letter in self.letters
-
-    def filter_notes(self):
-        self.tones = [n for n in self.all_tones if n.letter in self.letters]
 
     def scale(self, start, stop):
         try:
