@@ -72,6 +72,18 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
+    def notes(self, notes, dur):
+        notes = flatten([notes])
+        new_notes = []
+        for note in notes:
+            if isinstance(note, str):
+                note = note.split(" ")
+                for n in note:
+                    new_notes.append(Note(n, dur))
+            else:
+                new_notes.append(Note(note, dur))
+        return new_notes
+
     def scale(self, start, stop, key=None, dur=None):
         if isinstance(start, Note):
             start = str(start)
