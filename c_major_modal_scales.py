@@ -1,6 +1,7 @@
 from piece import Piece
 from models import Note
 from keys import CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor
+from util import flatten
 
 
 class CMajorModalScales(Piece):
@@ -26,11 +27,9 @@ class CMajorModalScales(Piece):
             self.score["bass"]["looped"] += [Note(t, 8) for t in self.key.scale(start[:-1], start)]
 
         keys = [CMajor, BMajor, AMajor, GMajor, FMajor, EMajor, DMajor, CMajor]
-        self.score["treble"]["super"] = []
-        self.score["bass"]["super"] = []
-        for start, key in zip(self.key.scale('c```', 'c``'), keys):
-            self.score["treble"]["super"] += self.scale(str(start), str(start)[:-1], key=key, dur=8)
-            self.score["bass"]["super"] += self.scale(str(start)[:-1], str(start)[:-2], key=key, dur=8)
+        notes = self.key.scale('c```', 'c``')
+        self.score["treble"]["super"] = flatten([self.scale(str(start), str(start)[:-1], key=key, dur=8) for start, key in zip(notes, keys)])
+        self.score["bass"]["super"] = flatten([self.scale(str(start)[:-1], str(start)[:-2], key=key, dur=8) for start, key in zip(notes, keys)])
 
         print(self)
 
