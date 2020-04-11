@@ -1,4 +1,4 @@
-from models import Note, Chord
+from models import Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor
 from util import flatten
@@ -71,3 +71,25 @@ class Piece:
             return(" ".join(stave))
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
+
+    def scale(self, start, stop, key=None, dur=None):
+        if isinstance(start, Note):
+            start = str(start)
+        if isinstance(stop, Note):
+            stop = str(stop)
+
+        if key is None:
+            key = self.key
+        elif isinstance(key, Key):
+            pass
+        elif issubclass(key, Key):
+            key = key()
+        else:
+            raise ValueError("Cannot create scale in key {}".format(key))
+
+        scale = key.scale(start=start, stop=stop)
+
+        if dur is not None:
+            scale = [Note(tone, dur) for tone in scale]
+
+        return scale
