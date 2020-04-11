@@ -3,19 +3,34 @@ class Tone:
     """ Has a letter and a pitch, but no duration etc. """
 
     def __init__(self, tone):
+
         if not isinstance(tone, str):
-            raise ValueError("Tone's must be created with a string, not {}".format(tone))
+            raise ValueError("Tones must be created with a string, not {}".format(tone))
+
+        letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+        accents = ['ff', 'f', '', 's', 'ss']
+        valid_letters = [l + a for l, a in zip(letters, accents)]
+        valid_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
+
         if tone[-1] == "`":
             tone = tone.split("`", 1)
-            self.letter = tone[0]
-            self.pitch = tone[1] + "`"
+            letter = tone[0]
+            pitch = tone[1] + "`"
         elif tone[-1] == ",":
             tone = tone.split(",", 1)
-            self.letter = tone[0]
-            self.pitch = tone[1] + ","
+            letter = tone[0]
+            pitch = tone[1] + ","
         else:
-            self.letter = tone
-            self.pitch = ""
+            letter = tone
+            pitch = ""
+
+        if letter not in valid_letters:
+            raise ValueError("Cannot create Tone with letter {}".format(letter))
+        if pitch not in valid_pitches:
+            raise ValueError("Cannot create Tone with pitch {}".format(pitch))
+
+        self.letter = letter
+        self.pitch = pitch
 
     def __str__(self):
         return self.letter + self.pitch
