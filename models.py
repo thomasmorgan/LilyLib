@@ -38,6 +38,11 @@ class Tone:
     def __str__(self):
         return self.letter + self.pitch
 
+    def shift(self, shift):
+        current_index = self.valid_pitches.index(self.pitch)
+        new_pitch = self.valid_pitches[current_index + shift]
+        return Tone(self.letter + new_pitch)
+
 
 class Note:
     """ The sounding of a single tone for a specified time. """
