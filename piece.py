@@ -4,7 +4,7 @@ from keys import CMajor
 from util import flatten
 
 
-class Score:
+class Piece:
 
     def __init__(self):
         self.title = ""

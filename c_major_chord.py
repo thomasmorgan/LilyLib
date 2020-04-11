@@ -1,8 +1,8 @@
-from score import Score
+from piece import Piece
 from models import Chord
 
 
-class CMajorChord(Score):
+class CMajorChord(Piece):
 
     def __init__(self):
         super().__init__()
