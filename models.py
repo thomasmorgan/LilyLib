@@ -112,8 +112,11 @@ class Key:
                 for a in accents:
                     self.all_tones.append(Tone(l + a + p))
 
-        self.letters = None
-        self.name = None
+        self.define()
+        self.filter_notes()
+
+    def define(self):
+        raise NotImplementedError("Key.define must be overwritten.")
 
     def __str__(self):
         string = "\\key " + self.name
