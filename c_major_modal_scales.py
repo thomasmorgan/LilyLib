@@ -28,8 +28,8 @@ class CMajorModalScales(Piece):
 
         keys = [CMajor, BMajor, AMajor, GMajor, FMajor, EMajor, DMajor, CMajor]
         notes = self.key.scale('c```', 'c``')
-        self.score["treble"]["super"] = flatten([self.scale(str(start), str(start)[:-1], key=key, dur=8) for start, key in zip(notes, keys)])
-        self.score["bass"]["super"] = flatten([self.scale(str(start)[:-1], str(start)[:-2], key=key, dur=8) for start, key in zip(notes, keys)])
+        self.score["treble"]["super"] = [self.scale(str(start), str(start)[:-1], key=key, dur=8) for start, key in zip(notes, keys)]
+        self.score["bass"]["super"] = [self.scale(str(start)[:-1], str(start)[:-2], key=key, dur=8) for start, key in zip(notes, keys)]
 
         print(self)
 
