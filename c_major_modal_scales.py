@@ -26,9 +26,9 @@ class CMajorModalScales(Piece):
             self.score["bass"]["looped"] += [Note(t, 8) for t in self.key.scale(start[:-1], start)]
 
         keys = [CMajor, BMajor, AMajor, GMajor, FMajor, EMajor, DMajor, CMajor]
-        notes = self.key.scale('c```', 'c``')
-        self.score["treble"]["super"] = [self.scale(str(start), str(start.shift(-1)), key=key, dur=8) for start, key in zip(notes, keys)]
-        self.score["bass"]["super"] = [self.scale(str(start.shift(-1)), str(start.shift(-2)), key=key, dur=8) for start, key in zip(notes, keys)]
+        tones = self.key.scale('c```', 'c``')
+        self.score["treble"]["super"] = [self.scale(start, start.shift(-1), key=key, dur=16) * 2 for start, key in zip(tones, keys)]
+        self.score["bass"]["super"] = [self.scale(start.shift(-1), start.shift(-2), key=key, dur=8) for start, key in zip(tones, keys)]
 
         print(self)
 
