@@ -15,6 +15,11 @@ class Piece:
         self.tempo = "4/4"
         self.key = CMajor()
         self.score = {}
+        self.write_score()
+        print(self)
+
+    def write_score(self):
+        raise NotImplementedError("You must overwrite write_score to create a piece")
 
     def __str__(self):
         printed_score = self.header() + self.start_score()

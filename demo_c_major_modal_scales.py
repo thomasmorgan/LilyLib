@@ -5,8 +5,7 @@ from keys import CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor
 
 class CMajorModalScales(Piece):
 
-    def __init__(self):
-        super().__init__()
+    def write_score(self):
         self.title = "C Major Modal Scales"
         self.create_sections("basic", "notes", "scale", "looped", "super")
 
@@ -41,8 +40,6 @@ class CMajorModalScales(Piece):
         tones = self.key.scale('c```', 'c``')
         self.score["treble"]["super"] = [self.scale(start, start.shift(-1), key=key, dur=16) * 2 for start, key in zip(tones, keys)]
         self.score["bass"]["super"] = [self.scale(start.shift(-1), start.shift(-2), key=key, dur=8) for start, key in zip(tones, keys)]
-
-        print(self)
 
 
 CMajorModalScales()
