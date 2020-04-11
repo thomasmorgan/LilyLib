@@ -1,4 +1,4 @@
-from models import Note, Chord, Key
+from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor
 from util import flatten
@@ -85,9 +85,9 @@ class Piece:
         return new_notes
 
     def scale(self, start, stop, key=None, dur=None):
-        if isinstance(start, Note):
+        if isinstance(start, Tone):
             start = str(start)
-        if isinstance(stop, Note):
+        if isinstance(stop, Tone):
             stop = str(stop)
 
         if key is None:
