@@ -1,55 +1,24 @@
-class Letter:
-    """ A letter associated with a note, e.g. a or bf """
-
-    def __init__(self, letter):
-        permitted_letters = []
-        letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
-        accents = ['ff', 'f', '', 's', 'ss']
-        for l in letters:
-            for a in accents:
-                permitted_letters.append(l + a)
-        if letter not in permitted_letters:
-            raise ValueError("{} is not a valid letter".format(letter))
-        else:
-            self.letter = letter
-
-    def __str__(self):
-        return self.letter
-
-
-class Pitch:
-    """ A pitch associated with a note, e.g. ' (written as `) or , """
-
-    def __init__(self, pitch):
-        pitches = [",,,", ",,", ",", "", "`", "``", "```"]
-        if pitch not in pitches:
-            raise ValueError("{} is not a valid pitch".format(pitch))
-        else:
-            self.pitch = pitch
-
-    def __str__(self):
-        return self.pitch
-
-
 class Tone:
     """ The sound of a single note. """
     """ Has a letter and a pitch, but no duration etc. """
 
     def __init__(self, tone):
+        if not isinstance(tone, str):
+            raise ValueError("Tone's must be created with a string, not {}".format(tone))
         if tone[-1] == "`":
             tone = tone.split("`", 1)
-            self.letter = Letter(tone[0])
-            self.pitch = Pitch(tone[1] + "`")
+            self.letter = tone[0]
+            self.pitch = tone[1] + "`"
         elif tone[-1] == ",":
             tone = tone.split(",", 1)
-            self.letter = Letter(tone[0])
-            self.pitch = Pitch(tone[1] + ",")
+            self.letter = tone[0]
+            self.pitch = tone[1] + ","
         else:
-            self.letter = Letter(tone)
-            self.pitch = Pitch("")
+            self.letter = tone
+            self.pitch = ""
 
     def __str__(self):
-        return str(self.letter) + str(self.pitch)
+        return self.letter + self.pitch
 
 
 class Note:
@@ -86,7 +55,7 @@ class Chord:
         self.dur = dur
 
     def __repr__(self):
-        return("<" + " ".join([(t.letter.letter + t.pitch.pitch) for t in self.tones]) + ">" + str(self.dur))
+        return("<" + " ".join([(t.letter + t.pitch) for t in self.tones]) + ">" + str(self.dur))
 
 
 class Stave:
@@ -135,7 +104,7 @@ class Key:
         return letter in self.letters
 
     def filter_notes(self):
-        self.tones = [n for n in self.all_tones if n.letter.letter in self.letters]
+        self.tones = [n for n in self.all_tones if n.letter in self.letters]
 
     def scale(self, start, stop):
         try:
