@@ -59,8 +59,10 @@ class Note:
     def __init__(self, tone, dur):
         if isinstance(tone, Tone):
             self.tone = tone
-        else:
+        elif isinstance(tone, str):
             self.tone = Tone(tone)
+        else:
+            raise ValueError("Cannot create note with {} as tone. tone must be a Tone or string.".format(tone))
         self.dur = dur
 
     def __repr__(self):
