@@ -89,7 +89,7 @@ class Piece:
                 new_notes.append(Note(note, dur))
         return new_notes
 
-    def series(self, mode, start, stop=None, length=None, key=None, dur=None, step=1):
+    def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
         if mode not in ["scale", "arpeggio"]:
             raise ValueError("{} is not a valid mode for piece.series".format(mode))
 
@@ -103,17 +103,17 @@ class Piece:
             raise ValueError("Cannot create {} in key {}".format(mode, key))
 
         if mode == "scale":
-            series = key.scale(start=start, stop=stop, length=length, step=step)
+            series = key.scale(start=start, stop_or_length=stop_or_length, step=step)
         elif mode == "arpeggio":
-            series = key.arpeggio(start=start, stop=stop, length=length, step=step)
+            series = key.arpeggio(start=start, stop_or_length=stop_or_length, step=step)
 
         if dur is not None:
             series = [Note(tone, dur) for tone in series]
 
         return series
 
-    def scale(self, start, stop=None, length=None, key=None, dur=None, step=1):
-        return self.series("scale", start, stop, length, key, dur, step)
+    def scale(self, start, stop_or_length, key=None, dur=None, step=1):
+        return self.series("scale", start, stop_or_length, key, dur, step)
 
-    def arpeggio(self, start, stop=None, length=None, key=None, dur=None, step=1):
-        return self.series("arpeggio", start, stop, length, key, dur, step)
+    def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1):
+        return self.series("arpeggio", start, stop_or_length, key, dur, step)

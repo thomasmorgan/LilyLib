@@ -134,14 +134,15 @@ class Key:
     def includes(self, letter):
         return letter in self.letters
 
-    def series(self, mode, start, stop=None, length=None, step=1):
+    def series(self, mode, start, stop_or_length, step=1):
         if mode not in ["scale", "arpeggio"]:
             raise ValueError("{} is not a valid mode for key.series".format(mode))
 
-        if stop is None and length is None:
-            raise ValueError("Cannot generate {} without specifying length or stopping point.".format(mode))
-        if (stop is not None) and (length is not None):
-            raise ValueError("Cannot generate {} when both length and stopping point are specified.".format(mode))
+        if not (isinstance(start, Tone) or isinstance(start, str)):
+            raise ValueError("{} is not a valid start for key.series, must be a Tone or str".format(mode))
+
+        if not (isinstance(stop_or_length, Tone) or isinstance(stop_or_length, str) or isinstance(stop_or_length, int)):
+            raise ValueError("{} is not a valid stop_or_length for key.series, must be a Tone, str or int".format(mode))
 
         if not isinstance(step, int):
             raise ValueError("{} step must be an int, not {}".format(mode, step))
@@ -154,15 +155,15 @@ class Key:
         try:
             start_index = [str(t) for t in tones].index(str(start))
         except ValueError:
-            raise ValueError("Cannot write {} from {} in key {}.".format(mode, start, self))
+            raise ValueError("{} is not a valid start for a {} in key {}.".format(start, mode, self))
 
-        if stop is not None:
-            try:
-                stop_index = [str(t) for t in tones].index(str(stop))
-            except ValueError:
-                raise ValueError("Cannot write {} to {} in key {}.".format(mode, stop, self))
+        if isinstance(stop_or_length, int):
+            stop_index = start_index + (stop_or_length - 1) * step
         else:
-            stop_index = start_index + length - 1
+            try:
+                stop_index = [str(t) for t in tones].index(str(stop_or_length))
+            except ValueError:
+                raise ValueError("{} is not a valid stop for a {} in key {}.".format(stop_or_length, mode, self))
 
         if stop_index >= start_index:
             stop_index += 1
@@ -172,11 +173,11 @@ class Key:
 
         return tones[start_index:stop_index:step]
 
-    def scale(self, start, stop=None, length=None, step=1):
-        return self.series("scale", start, stop, length, step)
+    def scale(self, start, stop_or_length, step=1):
+        return self.series("scale", start, stop_or_length, step)
 
-    def arpeggio(self, start, stop=None, length=None, step=1):
-        return self.series("arpeggio", start, stop, length, step)
+    def arpeggio(self, start, stop_or_length, step=1):
+        return self.series("arpeggio", start, stop_or_length, step)
 
 
 # class Melody():
