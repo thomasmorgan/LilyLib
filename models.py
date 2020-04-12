@@ -150,6 +150,21 @@ class Key:
 
         return self.tones[start_index:stop_index:step]
 
+    def arpeggio(self, start, stop):
+        try:
+            start_index = [str(t) for t in self.arpeggio_tones].index(str(start))
+            stop_index = [str(t) for t in self.arpeggio_tones].index(str(stop))
+        except ValueError:
+            raise ValueError("Cannot write arpeggio from {} to {} in key {}".format(start, stop, self))
+
+        if stop_index >= start_index:
+            stop_index += 1
+            step = 1
+        elif stop_index < start_index:
+            stop_index -= 1
+            step = -1
+
+        return self.arpeggio_tones[start_index:stop_index:step]
 
 
 # class Melody():
