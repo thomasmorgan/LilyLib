@@ -1,4 +1,4 @@
-from models import Tone, Note, Chord, Key
+from models import Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor
 from util import flatten
@@ -89,11 +89,9 @@ class Piece:
                 new_notes.append(Note(note, dur))
         return new_notes
 
-    def scale(self, start, stop, key=None, dur=None):
-        if isinstance(start, Tone):
-            start = str(start)
-        if isinstance(stop, Tone):
-            stop = str(stop)
+    def series(self, mode, start, stop, key=None, dur=None):
+        if mode not in ["scale", "arpeggio"]:
+            raise ValueError("{} is not a valid mode for piece.series".format(mode))
 
         if key is None:
             key = self.key
@@ -102,33 +100,20 @@ class Piece:
         elif issubclass(key, Key):
             key = key()
         else:
-            raise ValueError("Cannot create scale in key {}".format(key))
+            raise ValueError("Cannot create {} in key {}".format(mode, key))
 
-        scale = key.scale(start=start, stop=stop)
+        if mode == "scale":
+            series = key.scale(start=start, stop=stop)
+        elif mode == "arpeggio":
+            series = key.arpeggio(start=start, stop=stop)
 
         if dur is not None:
-            scale = [Note(tone, dur) for tone in scale]
+            series = [Note(tone, dur) for tone in series]
 
-        return scale
+        return series
+
+    def scale(self, start, stop, key=None, dur=None):
+        return self.series("scale", start, stop, key, dur)
 
     def arpeggio(self, start, stop, key=None, dur=None):
-        if isinstance(start, Tone):
-            start = str(start)
-        if isinstance(stop, Tone):
-            stop = str(stop)
-
-        if key is None:
-            key = self.key
-        elif isinstance(key, Key):
-            pass
-        elif issubclass(key, Key):
-            key = key()
-        else:
-            raise ValueError("Cannot create arpeggio in key {}".format(key))
-
-        arpeggio = key.arpeggio(start=start, stop=stop)
-
-        if dur is not None:
-            arpeggio = [Note(tone, dur) for tone in arpeggio]
-
-        return arpeggio
+        return self.series("arpeggio", start, stop, key, dur)
