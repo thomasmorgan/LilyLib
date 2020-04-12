@@ -134,7 +134,7 @@ class Key:
     def includes(self, letter):
         return letter in self.letters
 
-    def series(self, mode, start, stop=None, length=None):
+    def series(self, mode, start, stop=None, length=None, step=1):
         if mode not in ["scale", "arpeggio"]:
             raise ValueError("{} is not a valid mode for key.series".format(mode))
 
@@ -142,6 +142,9 @@ class Key:
             raise ValueError("Cannot generate {} without specifying length or stopping point.".format(mode))
         if (stop is not None) and (length is not None):
             raise ValueError("Cannot generate {} when both length and stopping point are specified.".format(mode))
+
+        if not isinstance(step, int):
+            raise ValueError("{} step must be an int, not {}".format(mode, step))
 
         if mode == "scale":
             tones = self.tones
@@ -163,18 +166,17 @@ class Key:
 
         if stop_index >= start_index:
             stop_index += 1
-            step = 1
         elif stop_index < start_index:
             stop_index -= 1
-            step = -1
+            step *= -1
 
         return tones[start_index:stop_index:step]
 
-    def scale(self, start, stop=None, length=None):
-        return self.series("scale", start, stop, length)
+    def scale(self, start, stop=None, length=None, step=1):
+        return self.series("scale", start, stop, length, step)
 
-    def arpeggio(self, start, stop=None, length=None):
-        return self.series("arpeggio", start, stop, length)
+    def arpeggio(self, start, stop=None, length=None, step=1):
+        return self.series("arpeggio", start, stop, length, step)
 
 
 # class Melody():
