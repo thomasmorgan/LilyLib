@@ -136,18 +136,20 @@ class Key:
 
     def scale(self, start, stop):
         try:
-            start_index = [i for i, tone in enumerate(self.tones) if str(tone) == start][0]
-            stop_index = [i for i, tone in enumerate(self.tones) if str(tone) == stop][0]
-        except IndexError:
-            raise ValueError("Cannot write scale from {} to {} in key {}".format(start, stop, self))
+            start_index = [str(t) for t in self.tones].index(str(start))
+            stop_index = [str(t) for t in self.tones].index(str(stop))
+        except ValueError:
+            raise ValueError("Cannot write scale from {} to {} in key {}.".format(start, stop, self))
 
         if stop_index >= start_index:
+            stop_index += 1
             step = 1
         elif stop_index < start_index:
-            stop_index -= 2
+            stop_index -= 1
             step = -1
 
-        return self.tones[start_index:stop_index + 1:step]
+        return self.tones[start_index:stop_index:step]
+
 
 
 # class Melody():
