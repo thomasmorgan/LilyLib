@@ -134,12 +134,20 @@ class Key:
     def includes(self, letter):
         return letter in self.letters
 
-    def scale(self, start, stop):
+    def series(self, start, stop, mode):
+        if mode not in ["scale", "arpeggio"]:
+            raise ValueError("{} is not a valid mode for key.series".format(mode))
+
+        if mode == "scale":
+            tones= self.tones
+        elif mode == "arpeggio":
+            tones = self.arpeggio_tones
+
         try:
-            start_index = [str(t) for t in self.tones].index(str(start))
-            stop_index = [str(t) for t in self.tones].index(str(stop))
+            start_index = [str(t) for t in tones].index(str(start))
+            stop_index = [str(t) for t in tones].index(str(stop))
         except ValueError:
-            raise ValueError("Cannot write scale from {} to {} in key {}.".format(start, stop, self))
+            raise ValueError("Cannot write {} from {} to {} in key {}.".format(mode, start, stop, self))
 
         if stop_index >= start_index:
             stop_index += 1
@@ -148,23 +156,13 @@ class Key:
             stop_index -= 1
             step = -1
 
-        return self.tones[start_index:stop_index:step]
+        return tones[start_index:stop_index:step]
+
+    def scale(self, start, stop):
+        return self.series(start, stop, "scale")
 
     def arpeggio(self, start, stop):
-        try:
-            start_index = [str(t) for t in self.arpeggio_tones].index(str(start))
-            stop_index = [str(t) for t in self.arpeggio_tones].index(str(stop))
-        except ValueError:
-            raise ValueError("Cannot write arpeggio from {} to {} in key {}".format(start, stop, self))
-
-        if stop_index >= start_index:
-            stop_index += 1
-            step = 1
-        elif stop_index < start_index:
-            stop_index -= 1
-            step = -1
-
-        return self.arpeggio_tones[start_index:stop_index:step]
+        return self.series(start, stop, "arpeggio")
 
 
 # class Melody():
