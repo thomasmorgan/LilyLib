@@ -110,3 +110,25 @@ class Piece:
             scale = [Note(tone, dur) for tone in scale]
 
         return scale
+
+    def arpeggio(self, start, stop, key=None, dur=None):
+        if isinstance(start, Tone):
+            start = str(start)
+        if isinstance(stop, Tone):
+            stop = str(stop)
+
+        if key is None:
+            key = self.key
+        elif isinstance(key, Key):
+            pass
+        elif issubclass(key, Key):
+            key = key()
+        else:
+            raise ValueError("Cannot create arpeggio in key {}".format(key))
+
+        arpeggio = key.arpeggio(start=start, stop=stop)
+
+        if dur is not None:
+            arpeggio = [Note(tone, dur) for tone in arpeggio]
+
+        return arpeggio
