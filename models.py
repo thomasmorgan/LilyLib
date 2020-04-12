@@ -139,7 +139,7 @@ class Key:
             raise ValueError("{} is not a valid mode for key.series".format(mode))
 
         if mode == "scale":
-            tones= self.tones
+            tones = self.tones
         elif mode == "arpeggio":
             tones = self.arpeggio_tones
 
