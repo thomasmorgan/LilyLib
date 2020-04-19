@@ -90,7 +90,7 @@ class Piece:
         return new_notes
 
     def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
-        if mode not in ["scale", "arpeggio"]:
+        if mode not in ["scale", "arpeggio", "chromatic"]:
             raise ValueError("{} is not a valid mode for piece.series".format(mode))
 
         if key is None:
@@ -106,6 +106,8 @@ class Piece:
             series = key.scale(start=start, stop_or_length=stop_or_length, step=step)
         elif mode == "arpeggio":
             series = key.arpeggio(start=start, stop_or_length=stop_or_length, step=step)
+        elif mode == "chromatic":
+            series = key.chromatic(start=start, stop_or_length=stop_or_length, step=step)
 
         if dur is not None:
             series = [Note(tone, dur) for tone in series]
@@ -117,3 +119,6 @@ class Piece:
 
     def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1):
         return self.series("arpeggio", start, stop_or_length, key, dur, step)
+
+    def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
+        return self.series("chromatic", start, stop_or_length, key, dur, step)
