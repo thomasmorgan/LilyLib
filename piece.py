@@ -90,9 +90,6 @@ class Piece:
         return new_notes
 
     def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
-        if mode not in ["scale", "arpeggio", "chromatic"]:
-            raise ValueError("{} is not a valid mode for piece.series".format(mode))
-
         if key is None:
             key = self.key
         elif isinstance(key, Key):
@@ -102,12 +99,7 @@ class Piece:
         else:
             raise ValueError("Cannot create {} in key {}".format(mode, key))
 
-        if mode == "scale":
-            series = key.scale(start=start, stop_or_length=stop_or_length, step=step)
-        elif mode == "arpeggio":
-            series = key.arpeggio(start=start, stop_or_length=stop_or_length, step=step)
-        elif mode == "chromatic":
-            series = key.chromatic(start=start, stop_or_length=stop_or_length, step=step)
+        series = key.series(mode=mode, start=start, stop_or_length=stop_or_length, step=step)
 
         if dur is not None:
             series = [Note(tone, dur) for tone in series]
