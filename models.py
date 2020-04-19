@@ -103,6 +103,16 @@ class Key:
     """ Needs to be subclassed to be meaningful. """
 
     def __init__(self):
+        self.create_all_tones()
+        self.define()
+
+        self.tones = [n for n in self.all_tones if n.letter in self.letters]
+
+        index_of_root = self.letters.index(self.root)
+        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
+
+    def create_all_tones(self):
         letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
         accents = ['ff', 'f', '', 's', 'ss']
         pitches = [",,,", ",,", ",", "", "`", "``", "```"]
@@ -111,14 +121,6 @@ class Key:
             for l in letters:
                 for a in accents:
                     self.all_tones.append(Tone(l + a + p))
-
-        self.define()
-
-        self.tones = [n for n in self.all_tones if n.letter in self.letters]
-
-        index_of_root = self.letters.index(self.root)
-        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
 
     def define(self):
         raise NotImplementedError("Key.define must be overwritten.")
