@@ -123,6 +123,7 @@ class Key:
             for l in letters:
                 for a in accents:
                     self.all_tones.append(Tone(l + a + p))
+        self.all_letters = [str(t) for t in self.all_tones if t.pitch == '']
 
     def create_scale_tones(self):
         self.tones = [n for n in self.all_tones if n.letter in self.letters]
