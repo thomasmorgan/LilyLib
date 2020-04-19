@@ -113,6 +113,7 @@ class Key:
 
         self.create_scale_tones()
         self.create_arpeggio_tones()
+        self.create_chromatic_tones()
 
     def create_all_tones(self):
         letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
@@ -132,6 +133,67 @@ class Key:
         index_of_root = self.letters.index(self.root)
         self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
         self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
+
+    def create_chromatic_tones(self):
+        # first add all letters from the main scale
+        chromatic_letters = self.letters
+
+        # we need to know which letters are equivalent to avoid duplicates
+        equivalents = {
+            'cf': 'b',
+            'c': 'bs',
+            'cs': 'df',
+            'df': 'cs',
+            'd': 'd',
+            'ds': 'ef',
+            'ef': 'ds',
+            'e': 'ff',
+            'es': 'f',
+            'ff': 'e',
+            'f': 'es',
+            'fs': 'gf',
+            'gf': 'fs',
+            'g': 'g',
+            'gs': 'af',
+            'af': 'gs',
+            'a': 'a',
+            'as': 'bf',
+            'bf': 'as',
+            'b': 'cf',
+            'bs': 'c'
+        }
+
+        # the add all natural letters if an equiavlent is not already there
+        for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
+            if l not in chromatic_letters and equivalents[l] not in chromatic_letters:
+                chromatic_letters.append(l)
+
+        # then add all letters that fit the bias if the equiavlent is not already there
+        if self.bias() == "sharp":
+            for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
+                if l not in chromatic_letters and equivalents[l] not in chromatic_letters:
+                    chromatic_letters.append(l)
+        if self.bias() == "flat":
+            for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
+                if l not in chromatic_letters and equivalents[l] not in chromatic_letters:
+                    chromatic_letters.append(l)
+
+        # then order the letters and create the tones
+        self.chromatic_letters = [l for l in self.all_letters if l in chromatic_letters]
+        self.chromatic_tones = [t for t in self.all_tones if t.letter in self.chromatic_letters]
+
+    def bias(self):
+        num_sharps = len([l for l in self.letters if "s" in l])
+        num_flats = len([l for l in self.letters if "f" in l and l not in ['f', 'fs', 'fss']])
+
+        if "harmonic" in self.name:
+            num_flats -= 1
+
+        if num_sharps < num_flats:
+            return "flat"
+        else:
+            return "sharp"
+
     def define(self):
         raise NotImplementedError("Key.define must be overwritten.")
 
