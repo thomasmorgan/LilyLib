@@ -3,9 +3,11 @@ from demo_c_major_chord import CMajorChord
 from demo_c_major_scale import CMajorScale
 from demo_c_major_modal_scales import CMajorModalScales
 from demo_arpeggios import Arpeggios
+from demo_chromatic_scales import ChromaticScales
 
 MiddleC()
 CMajorChord()
 CMajorScale()
 CMajorModalScales()
 Arpeggios()
+ChromaticScales()
