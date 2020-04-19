@@ -209,7 +209,7 @@ class Key:
         return letter in self.letters
 
     def series(self, mode, start, stop_or_length, step=1):
-        if mode not in ["scale", "arpeggio"]:
+        if mode not in ["scale", "arpeggio", "chromatic"]:
             raise ValueError("{} is not a valid mode for key.series".format(mode))
 
         if not (isinstance(start, Tone) or isinstance(start, str)):
@@ -225,6 +225,8 @@ class Key:
             tones = self.tones
         elif mode == "arpeggio":
             tones = self.arpeggio_tones
+        elif mode == "chromatic":
+            tones = self.chromatic_tones
 
         try:
             start_index = [str(t) for t in tones].index(str(start))
@@ -252,6 +254,9 @@ class Key:
 
     def arpeggio(self, start, stop_or_length, step=1):
         return self.series("arpeggio", start, stop_or_length, step)
+
+    def chromatic(self, start, stop_or_length, step=1):
+        return self.series("chromatic", start, stop_or_length, step)
 
 
 # class Melody():
