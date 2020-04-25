@@ -15,7 +15,11 @@ class Piece:
         self.tempo = "4/4"
         self.key = CMajor()
         self.score = {}
+        self.details()
         print(self)
+
+    def details():
+        raise NotImplementedError("You must overwrite details to create a piece")
 
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")

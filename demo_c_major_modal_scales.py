@@ -5,10 +5,11 @@ from keys import CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor
 
 class CMajorModalScales(Piece):
 
-    def write_score(self):
+    def details(self):
         self.title = "C Major Modal Scales"
         self.create_sections("basic", "notes", "scale", "looped", "super")
 
+    def write_score(self):
         # The basic section manually builds a scale note by note
         self.score["treble"]["basic"] = [Note("c`", 8), Note("d`", 8), Note("e`", 8), Note("f`", 8), Note("g`", 8), Note("a`", 8), Note("b`", 8), Note("c``", 8)]
         self.score["bass"]["basic"] = [Note("c", 8), Note("d", 8), Note("e", 8), Note("f", 8), Note("g", 8), Note("a", 8), Note("b", 8), Note("c`", 8)]

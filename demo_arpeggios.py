@@ -5,11 +5,11 @@ from keys import EMajor, FMajor
 
 class Arpeggios(Piece):
 
-    def write_score(self):
+    def details(self):
         self.title = "Arpeggios"
-
         self.create_sections("basic", "notes", "arpeggio", "length", 'stepped')
 
+    def write_score(self):
         # The basic section manually builds a scale note by note
         self.score["treble"]["basic"] = [Note("c`", 8), Note("e`", 8), Note("g`", 8), Note("c``", 8)]
         self.score["bass"]["basic"] = [Note("c", 8), Note("e", 8), Note("g", 8), Note("c`", 8)]
