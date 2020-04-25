@@ -23,9 +23,10 @@ class Piece:
 
     def __str__(self):
         printed_score = self.header() + self.start_score()
+        initial_key = str(self.key)
         for stave in self.staves:
             printed_score += stave.start
-            printed_score += str(self.key)
+            printed_score += initial_key
             printed_score += "\\time {}\n".format(self.tempo)
             printed_score += self.print_stave(stave)
             printed_score += stave.end
