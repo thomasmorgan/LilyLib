@@ -16,8 +16,8 @@ class ChromaticScales(Piece):
 
         self.key = FMajor()
 
-        self.score["treble"] += self.chromatic('f`', 'f``', dur=16)
-        self.score["bass"] += self.chromatic('f', 'f`', dur=16,)
+        self.score["treble"] += [self.key] + self.chromatic('f`', 'f``', dur=16)
+        self.score["bass"] += [self.key] + self.chromatic('f', 'f`', dur=16,)
         self.score["treble"][-1].dur = 4
         self.score["bass"][-1].dur = 4
 
