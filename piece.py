@@ -15,7 +15,6 @@ class Piece:
         self.tempo = "4/4"
         self.key = CMajor()
         self.score = {}
-        self.write_score()
         print(self)
 
     def write_score(self):
@@ -24,6 +23,7 @@ class Piece:
     def __str__(self):
         printed_score = self.header() + self.start_score()
         initial_key = str(self.key)
+        self.write_score()
         for stave in self.staves:
             printed_score += stave.start
             printed_score += initial_key
