@@ -3,6 +3,8 @@ from staves import Treble, Bass
 from keys import CMajor
 from util import flatten
 
+from itertools import cycle
+
 
 class Piece:
 
@@ -84,14 +86,18 @@ class Piece:
 
     def notes(self, notes, dur):
         notes = flatten([notes])
+        dur = flatten([dur])
         new_notes = []
-        for note in notes:
+
+        zip_list = zip(notes, cycle(dur)) if len(notes) > len(dur) else zip(cycle(notes), dur)
+
+        for note, d in zip_list:
             if isinstance(note, str):
                 note = note.split(" ")
                 for n in note:
-                    new_notes.append(Note(n, dur))
+                    new_notes.append(Note(n, d))
             else:
-                new_notes.append(Note(note, dur))
+                new_notes.append(Note(note, d))
         return new_notes
 
     def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
