@@ -1,6 +1,7 @@
 class Tone:
     """ The sound of a single note. """
     """ Has a letter and a pitch, but no duration etc. """
+    """ Rests are tones, they have the letter r. """
 
     def __init__(self, tone):
 
@@ -8,32 +9,39 @@ class Tone:
             raise ValueError("Tones must be created with a string, not {}".format(tone))
 
         self.valid_letters = []
-        letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
-        accents = ['ff', 'f', '', 's', 'ss']
-        for l in letters:
-            for a in accents:
-                self.valid_letters.append(l + a)
-        self.valid_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
-
-        if tone[-1] == "`":
-            tone = tone.split("`", 1)
-            letter = tone[0]
-            pitch = tone[1] + "`"
-        elif tone[-1] == ",":
-            tone = tone.split(",", 1)
-            letter = tone[0]
-            pitch = tone[1] + ","
+        self.valid_pitches = []
+        if tone == 'r':
+            self.valid_letters.append('r')
+            self.valid_pitches.append('')
+            self.letter = 'r'
+            self.pitch = ''
         else:
-            letter = tone
-            pitch = ""
+            letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+            accents = ['ff', 'f', '', 's', 'ss']
+            for l in letters:
+                for a in accents:
+                    self.valid_letters.append(l + a)
+            self.valid_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
 
-        if letter not in self.valid_letters:
-            raise ValueError("Cannot create Tone with letter {}".format(letter))
-        if pitch not in self.valid_pitches:
-            raise ValueError("Cannot create Tone with pitch {}".format(pitch))
+            if tone[-1] == "`":
+                tone = tone.split("`", 1)
+                letter = tone[0]
+                pitch = tone[1] + "`"
+            elif tone[-1] == ",":
+                tone = tone.split(",", 1)
+                letter = tone[0]
+                pitch = tone[1] + ","
+            else:
+                letter = tone
+                pitch = ""
 
-        self.letter = letter
-        self.pitch = pitch
+            if letter not in self.valid_letters:
+                raise ValueError("Cannot create Tone with letter {}".format(letter))
+            if pitch not in self.valid_pitches:
+                raise ValueError("Cannot create Tone with pitch {}".format(pitch))
+
+            self.letter = letter
+            self.pitch = pitch
 
     def __str__(self):
         return self.letter + self.pitch
