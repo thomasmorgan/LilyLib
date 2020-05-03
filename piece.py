@@ -100,6 +100,9 @@ class Piece:
                 new_notes.append(Note(note, d))
         return new_notes
 
+    def rests(self, dur):
+        return self.notes('r', dur)
+
     def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
         if key is None:
             key = self.key
