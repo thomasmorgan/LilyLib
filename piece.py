@@ -1,4 +1,4 @@
-from models import Note, Chord, Key
+from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor
 from util import flatten
@@ -84,21 +84,19 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
+    def tones(self, tones):
+        tones = flatten([tones])
+        tones = flatten([t.split(' ') for t in tones if isinstance(t, str)])
+
+        return [Tone(t) for t in tones]
+
     def notes(self, notes, dur):
-        notes = flatten([notes])
+        tones = self.tones(notes)
         dur = flatten([dur])
-        new_notes = []
 
-        zip_list = zip(notes, cycle(dur)) if len(notes) > len(dur) else zip(cycle(notes), dur)
+        zip_list = zip(tones, cycle(dur)) if len(tones) > len(dur) else zip(cycle(tones), dur)
 
-        for note, d in zip_list:
-            if isinstance(note, str):
-                note = note.split(" ")
-                for n in note:
-                    new_notes.append(Note(n, d))
-            else:
-                new_notes.append(Note(note, d))
-        return new_notes
+        return [Note(t, d) for t, d in zip_list]
 
     def rests(self, dur):
         return self.notes('r', dur)
