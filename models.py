@@ -114,7 +114,7 @@ class Key:
         self.create_all_tones()
 
         # define must be overwritten in sublcasses to:
-        # 1. set the root note
+        # 1. set the root letter
         # 2. set the included letters
         # 3. set the key's name
         self.define()
