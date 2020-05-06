@@ -87,16 +87,14 @@ class Piece:
     def tones(self, tones):
         tones = flatten([tones])
         tones = flatten([t.split(' ') for t in tones if isinstance(t, str)])
-
         return [Tone(t) for t in tones]
 
     def notes(self, notes, dur):
-        tones = self.tones(notes)
+        notes = flatten([notes])
+        notes = flatten([self.tones(n) if isinstance(n, str) else n for n in notes])
         dur = flatten([dur])
-
-        zip_list = zip(tones, cycle(dur)) if len(tones) > len(dur) else zip(cycle(tones), dur)
-
-        return [Note(t, d) for t, d in zip_list]
+        zip_list = zip(notes, cycle(dur)) if len(notes) > len(dur) else zip(cycle(notes), dur)
+        return [Note(n, d) for n, d in zip_list]
 
     def rests(self, dur):
         return self.notes('r', dur)
