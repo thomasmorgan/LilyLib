@@ -101,7 +101,7 @@ class Piece:
     def rests(self, dur):
         return self.notes('r', dur)
 
-    def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
+    def series(self, mode, start, stop_or_length, key=None, dur=None, step=1, root=None):
         if key is None:
             key = self.key
         elif isinstance(key, Key):
@@ -111,7 +111,7 @@ class Piece:
         else:
             raise ValueError("Cannot create {} in key {}".format(mode, key))
 
-        series = key.series(mode=mode, start=start, stop_or_length=stop_or_length, step=step)
+        series = key.series(mode=mode, start=start, stop_or_length=stop_or_length, step=step, root=root)
 
         if dur is not None:
             series = [Note(tone, dur) for tone in series]
@@ -121,8 +121,8 @@ class Piece:
     def scale(self, start, stop_or_length, key=None, dur=None, step=1):
         return self.series("scale", start, stop_or_length, key, dur, step)
 
-    def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1):
-        return self.series("arpeggio", start, stop_or_length, key, dur, step)
+    def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1, root=None):
+        return self.series("arpeggio", start, stop_or_length, key, dur, step, root)
 
     def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
         return self.series("chromatic", start, stop_or_length, key, dur, step)
