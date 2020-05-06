@@ -138,9 +138,12 @@ class Key:
         self.tones = [n for n in self.all_tones if n.letter in self.letters]
 
     def create_arpeggio_tones(self):
-        index_of_root = self.letters.index(self.root)
-        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
+        self.arpeggio_letters = {}
+        self.arpeggio_tones = {}
+        for root in self.letters:
+            index_of_root = self.letters.index(root)
+            self.arpeggio_letters[root] = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+            self.arpeggio_tones[root] = [t for t in self.all_tones if t.letter in self.arpeggio_letters[root]]
 
     def create_chromatic_tones(self):
         # first add all letters from the main scale
