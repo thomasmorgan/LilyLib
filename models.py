@@ -219,7 +219,7 @@ class Key:
     def includes(self, letter):
         return letter in self.letters
 
-    def series(self, mode, start, stop_or_length, step=1):
+    def series(self, mode, start, stop_or_length, step=1, root=None):
         if mode not in ["scale", "arpeggio", "chromatic"]:
             raise ValueError("{} is not a valid mode for key.series".format(mode))
 
@@ -235,7 +235,10 @@ class Key:
         if mode == "scale":
             tones = self.tones
         elif mode == "arpeggio":
-            tones = self.arpeggio_tones
+            if root is None:
+                tones = self.arpeggio_tones[self.root]
+            else:
+                tones = self.arpeggio_tones[root]
         elif mode == "chromatic":
             tones = self.chromatic_tones
 
@@ -263,8 +266,8 @@ class Key:
     def scale(self, start, stop_or_length, step=1):
         return self.series("scale", start, stop_or_length, step)
 
-    def arpeggio(self, start, stop_or_length, step=1):
-        return self.series("arpeggio", start, stop_or_length, step)
+    def arpeggio(self, start, stop_or_length, step=1, root=None):
+        return self.series("arpeggio", start, stop_or_length, step, root)
 
     def chromatic(self, start, stop_or_length, step=1):
         return self.series("chromatic", start, stop_or_length, step)
