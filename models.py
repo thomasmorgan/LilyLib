@@ -182,59 +182,6 @@ class Key:
         string = string.replace(" melodic", "")
         return string + '\n'
 
-    def series(self, mode, start, stop_or_length, step=1, root=None):
-        if mode not in ["scale", "arpeggio", "chromatic"]:
-            raise ValueError("{} is not a valid mode for key.series".format(mode))
-
-        if not (isinstance(start, Tone) or isinstance(start, str)):
-            raise ValueError("{} is not a valid start for key.series, must be a Tone or str".format(mode))
-
-        if not (isinstance(stop_or_length, Tone) or isinstance(stop_or_length, str) or isinstance(stop_or_length, int)):
-            raise ValueError("{} is not a valid stop_or_length for key.series, must be a Tone, str or int".format(mode))
-
-        if not isinstance(step, int):
-            raise ValueError("{} step must be an int, not {}".format(mode, step))
-
-        if mode == "scale":
-            tones = self.tones
-        elif mode == "arpeggio":
-            if root is None:
-                tones = self.arpeggio_tones
-            else:
-                tones = self.arpeggio_tones
-        elif mode == "chromatic":
-            tones = self.all_tones
-
-        try:
-            start_index = [str(t) for t in tones].index(str(start))
-        except ValueError:
-            raise ValueError("{} is not a valid start for a {} in key {}.".format(start, mode, self))
-
-        if isinstance(stop_or_length, int):
-            stop_index = start_index + (stop_or_length - 1) * step
-        else:
-            try:
-                stop_index = [str(t) for t in tones].index(str(stop_or_length))
-            except ValueError:
-                raise ValueError("{} is not a valid stop for a {} in key {}.".format(stop_or_length, mode, self))
-
-        if stop_index >= start_index:
-            stop_index += 1
-        elif stop_index < start_index:
-            stop_index -= 1
-            step *= -1
-
-        return tones[start_index:stop_index:step]
-
-    def scale(self, start, stop_or_length, step=1):
-        return self.series("scale", start, stop_or_length, step)
-
-    def arpeggio(self, start, stop_or_length, step=1, root=None):
-        return self.series("arpeggio", start, stop_or_length, step, root)
-
-    def chromatic(self, start, stop_or_length, step=1):
-        return self.series("chromatic", start, stop_or_length, step)
-
 
 # class Melody():
 # 	def __init__(self, key, *notes):

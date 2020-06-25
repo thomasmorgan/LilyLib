@@ -99,7 +99,16 @@ class Piece:
     def rests(self, dur):
         return self.notes('r', dur)
 
-    def series(self, mode, start, stop_or_length, key=None, dur=None, step=1, root=None):
+    def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
+        if mode not in ["scale", "arpeggio", "chromatic"]:
+            raise ValueError("{} is not a valid mode for key.series".format(mode))
+
+        if not (isinstance(start, Tone) or isinstance(start, str)):
+            raise ValueError("{} is not a valid start for key.series, must be a Tone or str".format(mode))
+
+        if not (isinstance(stop_or_length, Tone) or isinstance(stop_or_length, str) or isinstance(stop_or_length, int)):
+            raise ValueError("{} is not a valid stop_or_length for key.series, must be a Tone, str or int".format(mode))
+
         if key is None:
             key = self.key
         elif isinstance(key, Key):
@@ -109,7 +118,36 @@ class Piece:
         else:
             raise ValueError("Cannot create {} in key {}".format(mode, key))
 
-        series = key.series(mode=mode, start=start, stop_or_length=stop_or_length, step=step, root=root)
+        if not isinstance(step, int):
+            raise ValueError("{} step must be an int, not {}".format(mode, step))
+
+        if mode == "scale":
+            tones = key.tones
+        elif mode == "arpeggio":
+            tones = key.arpeggio_tones
+        elif mode == "chromatic":
+            tones = key.all_tones
+
+        try:
+            start_index = [str(t) for t in tones].index(str(start))
+        except ValueError:
+            raise ValueError("{} is not a valid start for a {} in key {}.".format(start, mode, key))
+
+        if isinstance(stop_or_length, int):
+            stop_index = start_index + (stop_or_length - 1) * step
+        else:
+            try:
+                stop_index = [str(t) for t in tones].index(str(stop_or_length))
+            except ValueError:
+                raise ValueError("{} is not a valid stop for a {} in key {}.".format(stop_or_length, mode, key))
+
+        if stop_index >= start_index:
+            stop_index += 1
+        elif stop_index < start_index:
+            stop_index -= 1
+            step *= -1
+
+        series = tones[start_index:stop_index:step]
 
         if dur is not None:
             series = [Note(tone, dur) for tone in series]
@@ -119,8 +157,8 @@ class Piece:
     def scale(self, start, stop_or_length, key=None, dur=None, step=1):
         return self.series("scale", start, stop_or_length, key, dur, step)
 
-    def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1, root=None):
-        return self.series("arpeggio", start, stop_or_length, key, dur, step, root)
+    def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1):
+        return self.series("arpeggio", start, stop_or_length, key, dur, step)
 
     def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
         return self.series("chromatic", start, stop_or_length, key, dur, step)
