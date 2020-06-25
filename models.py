@@ -53,7 +53,8 @@ class Tone:
 
 
 class Note:
-    """ The sounding of a single tone for a specified time. """
+    """ The sounding of a single tone for a specified duration. """
+    """ Defined by a Tone and an int dur. """
     """ Prints as a single note in sheet music. """
 
     def __init__(self, tone, dur):
@@ -63,9 +64,13 @@ class Note:
             self.tone = Tone(tone)
         else:
             raise ValueError("Cannot create note with {} as tone. tone must be a Tone or string.".format(tone))
-        self.dur = dur
 
-    def __repr__(self):
+        if isinstance(dur, int):
+            self.dur = dur
+        else:
+            raise ValueError("Cannot create note with {} as dur. dur must be an int.".format(dur))
+
+    def __str__(self):
         return str(self.tone) + str(self.dur)
 
 
