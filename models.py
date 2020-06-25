@@ -1,3 +1,6 @@
+import util
+
+
 class Tone:
     """ The sound of a single note. """
     """ Has a letter and a pitch, but no duration etc. """
@@ -115,91 +118,49 @@ class Stave:
 
 
 class Key:
-    """ A collection of tones contained by a key signature. """
+    """ A collection of sets of tones represented by a key signature. """
     """ Needs to be subclassed to be meaningful. """
 
     def __init__(self):
-        self.create_all_tones()
-
-        # define must be overwritten in sublcasses to:
+        # define must be overwritten in subclasses to:
         # 1. set the root letter
         # 2. set the included letters
         # 3. set the key's name
         self.define()
 
+        self.create_all_tones()
         self.create_scale_tones()
         self.create_arpeggio_tones()
-        self.create_chromatic_tones()
-
-    def create_all_tones(self):
-        letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
-        accents = ['ff', 'f', '', 's', 'ss']
-        pitches = [",,,", ",,", ",", "", "`", "``", "```"]
-        self.all_tones = []
-        for p in pitches:
-            for l in letters:
-                for a in accents:
-                    self.all_tones.append(Tone(l + a + p))
-        self.all_letters = [str(t) for t in self.all_tones if t.pitch == '']
 
     def create_scale_tones(self):
         self.tones = [n for n in self.all_tones if n.letter in self.letters]
 
     def create_arpeggio_tones(self):
-        self.arpeggio_letters = {}
-        self.arpeggio_tones = {}
-        for root in self.letters:
-            index_of_root = self.letters.index(root)
-            self.arpeggio_letters[root] = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-            self.arpeggio_tones[root] = [t for t in self.all_tones if t.letter in self.arpeggio_letters[root]]
+        index_of_root = self.letters.index(self.root)
+        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
 
-    def create_chromatic_tones(self):
+    def create_all_tones(self):
         # first add all letters from the main scale
-        chromatic_letters = self.letters
-
-        # we need to know which letters are equivalent to avoid duplicates
-        equivalents = {
-            'cf': 'b',
-            'c': 'bs',
-            'cs': 'df',
-            'df': 'cs',
-            'd': 'd',
-            'ds': 'ef',
-            'ef': 'ds',
-            'e': 'ff',
-            'es': 'f',
-            'ff': 'e',
-            'f': 'es',
-            'fs': 'gf',
-            'gf': 'fs',
-            'g': 'g',
-            'gs': 'af',
-            'af': 'gs',
-            'a': 'a',
-            'as': 'bf',
-            'bf': 'as',
-            'b': 'cf',
-            'bs': 'c'
-        }
+        all_letters = [l for l in self.letters]
 
         # the add all natural letters if an equiavlent is not already there
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in chromatic_letters and equivalents[l] not in chromatic_letters:
-                chromatic_letters.append(l)
+            if l not in all_letters and util.equivalent_letters[l] not in all_letters:
+                all_letters.append(l)
 
         # then add all letters that fit the bias if the equiavlent is not already there
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in chromatic_letters and equivalents[l] not in chromatic_letters:
-                    chromatic_letters.append(l)
+                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
+                    all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in chromatic_letters and equivalents[l] not in chromatic_letters:
-                    chromatic_letters.append(l)
+                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
+                    all_letters.append(l)
 
         # then order the letters and create the tones
-        self.chromatic_letters = [l for l in self.all_letters if l in chromatic_letters]
-        self.chromatic_tones = [t for t in self.all_tones if t.letter in self.chromatic_letters]
+        self.all_tones = [t for t in util.all_tones() if t.letter in all_letters]
 
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
