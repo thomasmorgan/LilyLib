@@ -141,15 +141,13 @@ class Key:
         self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
 
     def create_all_tones(self):
-        # first add all letters from the main scale
-        all_letters = [l for l in self.letters]
+        # creates a list of all *unique* tones
 
-        # the add all natural letters if an equiavlent is not already there
+        all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
             if l not in all_letters and util.equivalent_letters[l] not in all_letters:
                 all_letters.append(l)
 
-        # then add all letters that fit the bias if the equiavlent is not already there
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
                 if l not in all_letters and util.equivalent_letters[l] not in all_letters:
@@ -159,7 +157,6 @@ class Key:
                 if l not in all_letters and util.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
 
-        # then order the letters and create the tones
         self.all_tones = [t for t in util.all_tones() if t.letter in all_letters]
 
     def bias(self):
@@ -184,9 +181,6 @@ class Key:
         string = string.replace(" harmonic", "")
         string = string.replace(" melodic", "")
         return string + '\n'
-
-    def includes(self, letter):
-        return letter in self.letters
 
     def series(self, mode, start, stop_or_length, step=1, root=None):
         if mode not in ["scale", "arpeggio", "chromatic"]:
@@ -377,6 +371,11 @@ class Key:
 
 
 class Section:
+    """ A section of a piece. """
+    """ E.g. Intro, Coda, etc. """
+    """ Has a name, and a dictionary of staves. """
+    """ Note the stave dicxtionary does not hold stave objects, but lists of notes/chords instead. """
+
     def __init__(self, name, staves):
         self.name = name
         self.staves = {}
@@ -397,6 +396,9 @@ class Section:
 
 
 class Tempo:
+    """ A time signature. """
+    """ Defaults to 4/4. """
+
     def __init__(self, tempo):
         self.tempo = "4/4"
 
