@@ -25,12 +25,11 @@ class CMajorModalScales(Piece):
         # The looped section programmatically builds a series of scales
         # Note the start values are just strings, and so they can be modified by adding or removing `
         # Note also that the score ends up being a list-of-lists-of-notes, but nested lists are fine
-        # Finally note it uses key.scale to get a tone of scales, and then converts each tone to a Note
         self.score["treble"]["looped"] = []
         self.score["bass"]["looped"] = []
         for start in ['f`', 'g`', 'a`', 'b`', 'c``']:
-            self.score["treble"]["looped"] += [Note(t, 8) for t in self.key.scale(start, start + '`')]
-            self.score["bass"]["looped"] += [Note(t, 8) for t in self.key.scale(start[:-1], start)]
+            self.score["treble"]["looped"] += self.scale(start, start + '`', dur=8)
+            self.score["bass"]["looped"] += self.scale(start[:-1], start, dur=8)
 
         # The super section programmatically builds a series of scales in different keys
         # Note the use of key.scale to build a series of tones to start each scale but that self.scale it used to actually build the scales.
@@ -38,7 +37,7 @@ class CMajorModalScales(Piece):
         # Note also the use of Tone.shift to change the pitches of the Tones that define the limits of the scale
         # Finally, note how we use zip and list comprehension to avoid the need for a for loop, and use * 2 to double the scales in the treble clef
         keys = [CMajor, BMajor, AMajor, GMajor, FMajor, EMajor, DMajor, CMajor]
-        tones = self.key.scale('c```', 'c``')
+        tones = self.scale('c```', 'c``')
         self.score["treble"]["super"] = [self.scale(start, start.shift(-1), key=key, dur=16) * 2 for start, key in zip(tones, keys)]
         self.score["bass"]["super"] = [self.scale(start.shift(-1), start.shift(-2), key=key, dur=8) for start, key in zip(tones, keys)]
 
