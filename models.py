@@ -75,7 +75,9 @@ class Note:
 
 
 class Chord:
-    """ The simultaneous sounding of multiple tones. """
+    """ The simultaneous sounding of multiple tones for a specified duration. """
+    """ Note that Chord contain multiple (durationless) Tones, they are not composed of Notes. """
+    """ If a chord is passed Notes as an argument they will be converted to Tones. """
     """ Prints as a chord in sheet music. """
 
     def __init__(self, tones, dur):
@@ -85,13 +87,14 @@ class Chord:
         for tone in tones:
             if isinstance(tone, Tone):
                 self.tones.append(tone)
+            elif isinstance(tone, Note):
+                self.tones.append(tone.tone)
             else:
-                if tone:
-                    self.tones.append(Tone(tone))
+                self.tones.append(Tone(tone))
         self.dur = dur
 
-    def __repr__(self):
-        return("<" + " ".join([(t.letter + t.pitch) for t in self.tones]) + ">" + str(self.dur))
+    def __str__(self):
+        return("<" + " ".join([str(t) for t in self.tones]) + ">" + str(self.dur))
 
 
 class Stave:
