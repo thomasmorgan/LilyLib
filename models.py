@@ -137,8 +137,8 @@ class Key:
 
     def create_arpeggio_tones(self):
         index_of_root = self.letters.index(self.root)
-        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
+        arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_tones = [t for t in self.all_tones if t.letter in arpeggio_letters]
 
     def create_all_tones(self):
         # creates a list of all *unique* tones
@@ -199,11 +199,11 @@ class Key:
             tones = self.tones
         elif mode == "arpeggio":
             if root is None:
-                tones = self.arpeggio_tones[self.root]
+                tones = self.arpeggio_tones
             else:
-                tones = self.arpeggio_tones[root]
+                tones = self.arpeggio_tones
         elif mode == "chromatic":
-            tones = self.chromatic_tones
+            tones = self.all_tones
 
         try:
             start_index = [str(t) for t in tones].index(str(start))
