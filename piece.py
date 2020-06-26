@@ -195,3 +195,12 @@ class Piece:
 
     def triplets(self, notes):
         return ['\\tuplet 3/2 {'] + notes + ['}']
+
+    def voices(self, *voices):
+        score = ["<<\n"]
+        for i, voice in enumerate(voices):
+            score += ["{", voice, "}\n"]
+            if i < (len(voices) - 1):
+                score += ["\\\\\n"]
+        score += [">>\n"]
+        return score
