@@ -1,7 +1,8 @@
 from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor
-from util import flatten
+from util import flatten, all_pitches
+import copy
 
 from itertools import cycle
 
@@ -101,13 +102,13 @@ class Piece:
 
     def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
         if mode not in ["scale", "arpeggio", "chromatic"]:
-            raise ValueError("{} is not a valid mode for key.series".format(mode))
+            raise ValueError("{} is not a valid mode for piece.series".format(mode))
 
         if not (isinstance(start, Tone) or isinstance(start, str)):
-            raise ValueError("{} is not a valid start for key.series, must be a Tone or str".format(mode))
+            raise ValueError("{} is not a valid start for piece.series, must be a Tone or str".format(mode))
 
         if not (isinstance(stop_or_length, Tone) or isinstance(stop_or_length, str) or isinstance(stop_or_length, int)):
-            raise ValueError("{} is not a valid stop_or_length for key.series, must be a Tone, str or int".format(mode))
+            raise ValueError("{} is not a valid stop_or_length for piece.series, must be a Tone, str or int".format(mode))
 
         if key is None:
             key = self.key
@@ -162,3 +163,32 @@ class Piece:
 
     def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
         return self.series("chromatic", start, stop_or_length, key, dur, step)
+
+    def transpose(self, notes, shift, mode="octave"):
+        if not isinstance(shift, int):
+            raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
+        if mode not in ["octave", "scale", "semitone"]:
+            raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
+
+        notes = copy.deepcopy(notes)
+
+        if isinstance(notes, list):
+            for i, n in enumerate(notes):
+                notes[i] = self.transpose(n, shift, mode)
+
+        elif isinstance(notes, Chord):
+            for i, n in enumerate(notes.notes):
+                notes.notes[i] = self.transpose(n, shift, mode)
+
+        elif isinstance(notes, Note):
+            notes.tone = self.transpose(notes.tone, shift, mode)
+
+        elif isinstance(notes, Tone):
+            if mode == "octave":
+                notes.pitch = all_pitches()[all_pitches().index(notes.pitch) + shift]
+            elif mode == "scale":
+                notes = self.key.tones[self.key.tones.index(notes) + shift]
+            elif mode == "semitone":
+                notes = self.key.all_tones[self.key.all_tones.index(notes) + shift]
+
+        return notes
