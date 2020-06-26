@@ -65,16 +65,9 @@ class Piece:
     def end_score(self):
         return('>> }\n')
 
-    def create_sections(self, *sections):
-        self.sections = sections
-        for stave in self.staves:
-            self.score[stave.name] = {}
-            for section in sections:
-                self.score[stave.name][section] = ""
-
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
-            return " ".join([str(note) for note in flatten([self.score[stave.name][section] for section in self.sections])])
+            return " ".join([str(note) for note in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
         if isinstance(stave, Note) or isinstance(stave, Chord):

@@ -295,31 +295,6 @@ class Key:
 # 	hp = harmony_position
 
 
-class Section:
-    """ A section of a piece. """
-    """ E.g. Intro, Coda, etc. """
-    """ Has a name, and a dictionary of staves. """
-    """ Note the stave dicxtionary does not hold stave objects, but lists of notes/chords instead. """
-
-    def __init__(self, name, staves):
-        self.name = name
-        self.staves = {}
-        for staff in staves:
-            self.staves[staff] = None
-
-    def __getitem__(self, index):
-        return self.staves.__getitem__(index)
-
-    def __setitem__(self, index, value):
-        return self.staves.__setitem__(index, value)
-
-    def print_stave(self, stave):
-        return " ".join(str(note) for note in self[stave]) + "\n"
-
-    def print_score(self, index):
-        return " ".join(str(n) for n in self.staves[index])
-
-
 class Tempo:
     """ A time signature. """
     """ Defaults to 4/4. """
