@@ -45,10 +45,10 @@ class Note:
         else:
             raise ValueError("Cannot create note with {} as tone. tone must be a Tone or string.".format(tone))
 
-        if isinstance(dur, int):
+        if isinstance(dur, int) or isinstance(dur, str):
             self.dur = dur
         else:
-            raise ValueError("Cannot create note with {} as dur. dur must be an int.".format(dur))
+            raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
 
     def __str__(self):
         return str(self.tone) + str(self.dur)
