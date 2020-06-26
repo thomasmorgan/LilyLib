@@ -194,7 +194,7 @@ class Piece:
         return notes
 
     def triplets(self, notes):
-        return ['\\tuplet 3/2 {'] + notes + ['}']
+        return ['\\tuplet 3/2 {', notes, '}']
 
     def voices(self, *voices):
         score = ["<<\n"]
