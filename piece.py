@@ -192,3 +192,6 @@ class Piece:
                 notes = self.key.all_tones[self.key.all_tones.index(notes) + shift]
 
         return notes
+
+    def triplets(self, notes):
+        return ['\\tuplet 3/2 {'] + notes + ['}']
