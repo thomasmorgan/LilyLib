@@ -1,7 +1,11 @@
+def all_pitches():
+    return [",,,", ",,", ",", "", "`", "``", "```"]
+
+
 def all_tones():
     from models import Tone
     all_tones = []
-    for p in [",,,", ",,", ",", "", "`", "``", "```"]:
+    for p in all_pitches():
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
             for a in ['ff', 'f', '', 's', 'ss']:
                 all_tones.append(Tone(l + a + p))

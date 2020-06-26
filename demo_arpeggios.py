@@ -27,5 +27,5 @@ class Arpeggios(Piece):
         self.score["bass"]["length"] = self.arpeggio('f', 4, key=FMajor, dur=8)
 
         starts = self.arpeggio('c`', 'c``')
-        self.score['treble']['stepped'] = [[self.arpeggio(start, start.shift(1), step=step, dur=16) for step in [3, 3, 1]] for start in starts]
-        self.score['bass']['stepped'] = [[self.arpeggio(start.shift(-1), start, step=step, dur=16) for step in [1, 3, 3]] for start in starts]
+        self.score['treble']['stepped'] = [[self.arpeggio(start, self.transpose(start, 1), step=step, dur=16) for step in [3, 3, 1]] for start in starts]
+        self.score['bass']['stepped'] = [[self.arpeggio(self.transpose(start, -1), start, step=step, dur=16) for step in [1, 3, 3]] for start in starts]
