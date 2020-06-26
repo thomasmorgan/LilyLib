@@ -34,12 +34,12 @@ class CMajorModalScales(Piece):
         # The super section programmatically builds a series of scales in different keys
         # Note the use of key.scale to build a series of tones to start each scale but that self.scale it used to actually build the scales.
         # This is because key.scale returns a scale of durationless tones, while self.scale returns a scale of proper Notes
-        # Note also the use of Tone.shift to change the pitches of the Tones that define the limits of the scale
+        # Note also the use of Piece.transpose() to change the pitches of the Tones that define the limits of the scale
         # Finally, note how we use zip and list comprehension to avoid the need for a for loop, and use * 2 to double the scales in the treble clef
         keys = [CMajor, BMajor, AMajor, GMajor, FMajor, EMajor, DMajor, CMajor]
         tones = self.scale('c```', 'c``')
-        self.score["treble"]["super"] = [self.scale(start, start.shift(-1), key=key, dur=16) * 2 for start, key in zip(tones, keys)]
-        self.score["bass"]["super"] = [self.scale(start.shift(-1), start.shift(-2), key=key, dur=8) for start, key in zip(tones, keys)]
+        self.score["treble"]["super"] = [self.scale(start, self.transpose(start, -1), key=key, dur=16) * 2 for start, key in zip(tones, keys)]
+        self.score["bass"]["super"] = [self.scale(self.transpose(start, -1), self.transpose(start, -2), key=key, dur=8) for start, key in zip(tones, keys)]
 
 
 CMajorModalScales()

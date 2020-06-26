@@ -2,13 +2,22 @@ def all_pitches():
     return [",,,", ",,", ",", "", "`", "``", "```"]
 
 
+def all_letters():
+    all_letters = []
+    letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+    accents = ['ff', 'f', '', 's', 'ss']
+    for l in letters:
+        for a in accents:
+            all_letters.append(l + a)
+    return all_letters
+
+
 def all_tones():
     from models import Tone
     all_tones = []
     for p in all_pitches():
-        for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            for a in ['ff', 'f', '', 's', 'ss']:
-                all_tones.append(Tone(l + a + p))
+        for l in all_letters():
+            all_tones.append(Tone(l + p))
     return all_tones
 
 
