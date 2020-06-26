@@ -11,48 +11,25 @@ class Tone:
         if not isinstance(tone, str):
             raise ValueError("Tones must be created with a string, not {}".format(tone))
 
-        self.valid_letters = []
-        self.valid_pitches = []
         if tone == 'r':
-            self.valid_letters.append('r')
-            self.valid_pitches.append('')
             self.letter = 'r'
             self.pitch = ''
         else:
-            letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
-            accents = ['ff', 'f', '', 's', 'ss']
-            for l in letters:
-                for a in accents:
-                    self.valid_letters.append(l + a)
-            self.valid_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
-
-            if tone[-1] == "`":
-                tone = tone.split("`", 1)
-                letter = tone[0]
-                pitch = tone[1] + "`"
-            elif tone[-1] == ",":
-                tone = tone.split(",", 1)
-                letter = tone[0]
-                pitch = tone[1] + ","
+            if tone[-1] in ["`", ","]:
+                split = tone.split(tone[-1], 1)
+                self.letter = split[0]
+                self.pitch = split[1] + tone[-1]
             else:
-                letter = tone
-                pitch = ""
+                self.letter = tone
+                self.pitch = ""
 
-            if letter not in self.valid_letters:
-                raise ValueError("Cannot create Tone with letter {}".format(letter))
-            if pitch not in self.valid_pitches:
-                raise ValueError("Cannot create Tone with pitch {}".format(pitch))
-
-            self.letter = letter
-            self.pitch = pitch
+            if self.letter not in util.all_letters():
+                raise ValueError("Cannot create Tone with letter {}".format(self.letter))
+            if self.pitch not in util.all_pitches():
+                raise ValueError("Cannot create Tone with pitch {}".format(self.pitch))
 
     def __str__(self):
         return self.letter + self.pitch
-
-    def shift(self, shift):
-        current_index = self.valid_pitches.index(self.pitch)
-        new_pitch = self.valid_pitches[current_index + shift]
-        return Tone(self.letter + new_pitch)
 
 
 class Note:
@@ -142,6 +119,7 @@ class Key:
 
     def create_all_tones(self):
         # creates a list of all *unique* tones
+        # effectively a chromatic scale
 
         all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
