@@ -65,7 +65,7 @@ class Chord:
     """ If a chord is passed Notes as an argument they will be converted to Tones. """
     """ Prints as a chord in sheet music. """
 
-    def __init__(self, tones, dur):
+    def __init__(self, tones, dur, ornamentation=""):
         self.tones = []
         if isinstance(tones, str):
             tones = tones.split(" ")
@@ -76,10 +76,19 @@ class Chord:
                 self.tones.append(tone.tone)
             else:
                 self.tones.append(Tone(tone))
-        self.dur = dur
+
+        if isinstance(dur, int) or isinstance(dur, str):
+            self.dur = dur
+        else:
+            raise ValueError("Cannot create chord with {} as dur. dur must be an int or string.".format(dur))
+
+        if isinstance(ornamentation, str):
+            self.ornamentation = ornamentation
+        else:
+            raise ValueError("Cannot create chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
-        return("<" + " ".join([str(t) for t in self.tones]) + ">" + str(self.dur))
+        return "<" + " ".join([str(t) for t in self.tones]) + ">" + str(self.dur) + self.ornamentation
 
 
 class Stave:
