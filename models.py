@@ -37,7 +37,7 @@ class Note:
     """ Defined by a Tone and an int dur. """
     """ Prints as a single note in sheet music. """
 
-    def __init__(self, tone, dur):
+    def __init__(self, tone, dur, ornamentation=""):
         if isinstance(tone, Tone):
             self.tone = tone
         elif isinstance(tone, str):
@@ -50,8 +50,13 @@ class Note:
         else:
             raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
 
+        if isinstance(ornamentation, str):
+            self.ornamentation = ornamentation
+        else:
+            raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+
     def __str__(self):
-        return str(self.tone) + str(self.dur)
+        return str(self.tone) + str(self.dur) + self.ornamentation
 
 
 class Chord:
