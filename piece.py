@@ -2,9 +2,9 @@ from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor
 from util import flatten, all_pitches
-import copy
 
 from itertools import cycle
+from copy import deepcopy
 
 
 class Piece:
@@ -169,7 +169,7 @@ class Piece:
         if mode not in ["octave", "scale", "semitone"]:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
-        notes = copy.deepcopy(notes)
+        notes = deepcopy(notes)
 
         if isinstance(notes, list):
             for i, n in enumerate(notes):
