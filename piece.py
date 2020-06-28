@@ -207,3 +207,7 @@ class Piece:
     def repeat(self, notes, times=2):
         return ["\\repeat volta ", str(times), '{', notes, '}']
 
+    def name(self, notes, name):
+        index = next(i for i, note in enumerate(notes) if isinstance(note, Note) or isinstance(note, Chord))
+        notes[index] = deepcopy(notes[index])
+        notes[index].ornamentation += ('^"' + name + '"')
