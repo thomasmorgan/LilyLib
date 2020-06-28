@@ -62,6 +62,13 @@ def flatten(List):
     return List
 
 
+def subset(List, *indexes):
+    new_list = []
+    for i in indexes:
+        new_list.append(List[i - 1])
+    return new_list
+
+
 def map_harmony_to_int(harmony):
     if not isinstance(harmony, str):
         return harmony
