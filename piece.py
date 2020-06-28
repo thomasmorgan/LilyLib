@@ -99,39 +99,11 @@ class Piece:
     def rests(self, dur):
         return self.notes('r', dur)
 
-    def series(self, mode, start, stop_or_length, key=None, dur=None, step=1):
-        if mode not in ["scale", "arpeggio", "chromatic"]:
-            raise ValueError("{} is not a valid mode for piece.series".format(mode))
-
-        if not (isinstance(start, Tone) or isinstance(start, str)):
-            raise ValueError("{} is not a valid start for piece.series, must be a Tone or str".format(mode))
-
-        if not (isinstance(stop_or_length, Tone) or isinstance(stop_or_length, str) or isinstance(stop_or_length, int)):
-            raise ValueError("{} is not a valid stop_or_length for piece.series, must be a Tone, str or int".format(mode))
-
-        if key is None:
-            key = self.key
-        elif isinstance(key, Key):
-            pass
-        elif issubclass(key, Key):
-            key = key()
-        else:
-            raise ValueError("Cannot create {} in key {}".format(mode, key))
-
-        if not isinstance(step, int):
-            raise ValueError("{} step must be an int, not {}".format(mode, step))
-
-        if mode == "scale":
-            tones = key.tones
-        elif mode == "arpeggio":
-            tones = key.arpeggio_tones
-        elif mode == "chromatic":
-            tones = key.all_tones
-
+    def series(self, tones, start, stop_or_length, dur=None, step=1):
         try:
             start_index = [str(t) for t in tones].index(str(start))
         except ValueError:
-            raise ValueError("{} is not a valid start for a {} in key {}.".format(start, mode, key))
+            raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(str(start), [str(t) for t in tones]))
 
         if isinstance(stop_or_length, int):
             stop_index = start_index + (stop_or_length - 1) * step
@@ -139,7 +111,10 @@ class Piece:
             try:
                 stop_index = [str(t) for t in tones].index(str(stop_or_length))
             except ValueError:
-                raise ValueError("{} is not a valid stop for a {} in key {}.".format(stop_or_length, mode, key))
+                raise ValueError("{} is not a valid stop for tone series {}.".format(str(stop_or_length), [str(t) for t in tones]))
+
+        if not isinstance(step, int):
+            raise ValueError("series step must be an int, not {}".format(step))
 
         if stop_index >= start_index:
             stop_index += 1
@@ -154,14 +129,27 @@ class Piece:
 
         return series
 
+    def keyify(self, key):
+        if key is None:
+            key = self.key
+        elif issubclass(key, Key):
+            key = key()
+        else:
+            raise ValueError("{} is not a valid key".format(key))
+
+        return key
+
     def scale(self, start, stop_or_length, key=None, dur=None, step=1):
-        return self.series("scale", start, stop_or_length, key, dur, step)
+        key = self.keyify(key)
+        return self.series(key.tones, start, stop_or_length, dur, step)
 
     def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1):
-        return self.series("arpeggio", start, stop_or_length, key, dur, step)
+        key = self.keyify(key)
+        return self.series(key.arpeggio_tones, start, stop_or_length, dur, step)
 
     def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
-        return self.series("chromatic", start, stop_or_length, key, dur, step)
+        key = self.keyify(key)
+        return self.series(key.all_tones, start, stop_or_length, dur, step)
 
     def transpose(self, notes, shift, mode="octave"):
         if not isinstance(shift, int):
