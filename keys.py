@@ -90,3 +90,10 @@ class GMinorH(Key):
         self.root = 'g'
         self.letters = ['c', 'd', 'ef', 'fs', 'g', 'a', 'bf']
         self.name = "g minor harmonic"
+
+
+class AMinor(Key):
+    def define(self):
+        self.root = 'a'
+        self.letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+        self.name = "a minor"
