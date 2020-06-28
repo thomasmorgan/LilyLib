@@ -203,3 +203,7 @@ class Piece:
                 score += ["\\\\\n"]
         score += [">>\n"]
         return score
+
+    def repeat(self, notes, times=2):
+        return ["\\repeat volta ", str(times), '{', notes, '}']
+
