@@ -151,6 +151,11 @@ class Key:
 
         self.all_tones = [t for t in util.all_tones() if t.letter in all_letters]
 
+    def scale_subset(self, *positions):
+        index_of_root = self.letters.index(self.root)
+        custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
+        return [t for t in self.all_tones if t.letter in custom_letters]
+
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
         num_flats = len([l for l in self.letters if "f" in l and l not in ['f', 'fs', 'fss']])
