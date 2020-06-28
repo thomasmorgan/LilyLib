@@ -204,3 +204,6 @@ class Piece:
         index = next(i for i, note in enumerate(notes) if isinstance(note, Note) or isinstance(note, Chord))
         notes[index] = deepcopy(notes[index])
         notes[index].ornamentation += ('^"' + name + '"')
+
+    def tempo_change(self, tempo):
+        return ["\\time {}".format(tempo)]
