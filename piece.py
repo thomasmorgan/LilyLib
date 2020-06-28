@@ -198,7 +198,7 @@ class Piece:
     def voices(self, *voices):
         score = ["<<\n"]
         for i, voice in enumerate(voices):
-            score += ["{", voice, "}\n"]
+            score.extend(["{"] + voice + ["}\n"])
             if i < (len(voices) - 1):
                 score += ["\\\\\n"]
         score += [">>\n"]
