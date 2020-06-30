@@ -1,6 +1,6 @@
 from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
-from keys import CMajor
+from keys import CMajor, major_keys, minor_keys, harmonic_keys
 from util import flatten, all_pitches
 
 from itertools import cycle
@@ -214,3 +214,112 @@ class Piece:
 
     def tempo_change(self, tempo):
         return ["\\time {}".format(tempo)]
+
+    def relative_key(self, mode, relationship):
+        key_class = type(self.key)
+        if "major" in self.key.name:
+            index_of_class = major_keys().index(key_class)
+        elif "harmonic" in self.key.name:
+            index_of_class = harmonic_keys().index(key_class)
+        else:
+            index_of_class = minor_keys().index(key_class)
+
+        if mode == "major":
+            return (major_keys() * 2)[index_of_class + relationship]()
+        if mode == "minor":
+            return (minor_keys() * 2)[index_of_class + relationship]()
+        if mode == "harmonic":
+            return (harmonic_keys() * 2)[index_of_class + relationship]()
+
+    def relative_major_key(self, relationship):
+        return self.relative_key("major", relationship)
+
+    def relative_minor_key(self, relationship):
+        return self.relative_key("minor", relationship)
+
+    def relative_harmonic_key(self, relationship):
+        return self.relative_key("harmonic", relationship)
+
+    @property
+    def I(self):
+        return self.relative_major_key(0)
+
+    @property
+    def II(self):
+        return self.relative_major_key(1)
+
+    @property
+    def III(self):
+        return self.relative_major_key(2)
+
+    @property
+    def IV(self):
+        return self.relative_major_key(3)
+
+    @property
+    def V(self):
+        return self.relative_major_key(4)
+
+    @property
+    def VI(self):
+        return self.relative_major_key(5)
+
+    @property
+    def VII(self):
+        return self.relative_major_key(6)
+
+    @property
+    def i(self):
+        return self.relative_minor_key(0)
+
+    @property
+    def ii(self):
+        return self.relative_minor_key(1)
+
+    @property
+    def iii(self):
+        return self.relative_minor_key(2)
+
+    @property
+    def iv(self):
+        return self.relative_minor_key(3)
+
+    @property
+    def v(self):
+        return self.relative_minor_key(4)
+
+    @property
+    def vi(self):
+        return self.relative_minor_key(5)
+
+    @property
+    def vii(self):
+        return self.relative_minor_key(6)
+
+    @property
+    def ih(self):
+        return self.relative_harmonic_key(0)
+
+    @property
+    def iih(self):
+        return self.relative_harmonic_key(1)
+
+    @property
+    def iiih(self):
+        return self.relative_harmonic_key(2)
+
+    @property
+    def ivh(self):
+        return self.relative_harmonic_key(3)
+
+    @property
+    def vh(self):
+        return self.relative_harmonic_key(4)
+
+    @property
+    def vih(self):
+        return self.relative_harmonic_key(5)
+
+    @property
+    def viih(self):
+        return self.relative_harmonic_key(6)
