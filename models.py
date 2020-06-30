@@ -1,4 +1,4 @@
-import util
+from util import all_letters, all_pitches, all_tones, equivalent_letters
 
 
 class Tone:
@@ -23,9 +23,9 @@ class Tone:
                 self.letter = tone
                 self.pitch = ""
 
-            if self.letter not in util.all_letters():
+            if self.letter not in all_letters():
                 raise ValueError("Cannot create Tone with letter {}".format(self.letter))
-            if self.pitch not in util.all_pitches():
+            if self.pitch not in all_pitches():
                 raise ValueError("Cannot create Tone with pitch {}".format(self.pitch))
 
     def __str__(self):
@@ -137,19 +137,19 @@ class Key:
 
         all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in all_letters and util.equivalent_letters[l] not in all_letters:
+            if l not in all_letters and equivalent_letters[l] not in all_letters:
                 all_letters.append(l)
 
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
+                if l not in all_letters and equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
+                if l not in all_letters and equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
 
-        self.all_tones = [t for t in util.all_tones() if t.letter in all_letters]
+        self.all_tones = [t for t in all_tones() if t.letter in all_letters]
 
     def scale_subset(self, *positions):
         index_of_root = self.letters.index(self.root)
