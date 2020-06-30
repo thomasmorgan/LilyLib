@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 def all_pitches():
     return [",,,", ",,", ",", "", "`", "``", "```"]
 
@@ -67,6 +70,10 @@ def subset(List, *indexes):
     for i in indexes:
         new_list.append(List[i - 1])
     return new_list
+
+
+def copy(List):
+    return [deepcopy(x) for x in List]
 
 
 def map_harmony_to_int(harmony):
