@@ -151,7 +151,7 @@ class Key:
 
         self.all_tones = [t for t in all_tones() if t.letter in all_letters]
 
-    def scale_subset(self, *positions):
+    def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
         custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
         return [t for t in self.all_tones if t.letter in custom_letters]
