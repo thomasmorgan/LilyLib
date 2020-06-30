@@ -147,3 +147,14 @@ class BMinorH(Key):
         self.letters = ['cs', 'd', 'e', 'fs', 'g', 'as', 'b']
         self.name = "b minor harmonic"
 
+
+def major_keys():
+    return [CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor]
+
+
+def minor_keys():
+    return [CMinor, DMinor, EMinor, FMinor, GMinor, AMinor, BMinor]
+
+
+def harmonic_keys():
+    return [CMinorH, DMinorH, EMinorH, FMinorH, GMinorH, AMinorH, BMinorH]
