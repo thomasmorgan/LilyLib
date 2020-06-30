@@ -149,7 +149,7 @@ class Piece:
 
     def arpeggio7(self, start, stop_or_length, key=None, dur=None, step=1):
         key = self.keyify(key)
-        arpeggio7_tones = key.scale_subset(1, 3, 5, 7)
+        arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
         return self.series(arpeggio7_tones, start, stop_or_length, dur, step)
 
     def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
