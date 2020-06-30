@@ -61,21 +61,49 @@ class CMinorH(Key):
     def define(self):
         self.root = 'c'
         self.letters = ['c', 'd', 'ef', 'f', 'g', 'af', 'b']
-        self.name = "c minor"
+        self.name = "c minor harmonic"
 
 
 class DMinor(Key):
     def define(self):
         self.root = 'd'
         self.letters = ['c', 'd', 'e', 'f', 'g', 'a', 'bf']
-        self.name = "g minor"
+        self.name = "d minor"
 
 
 class DMinorH(Key):
     def define(self):
         self.root = 'd'
         self.letters = ['cs', 'd', 'e', 'f', 'g', 'a', 'bf']
-        self.name = "g minor"
+        self.name = "d minor harmonic"
+
+
+class EMinor(Key):
+    def define(self):
+        self.root = 'e'
+        self.letters = ['c', 'd', 'e', 'fs', 'g', 'a', 'b']
+        self.name = "e minor"
+
+
+class EMinorH(Key):
+    def define(self):
+        self.root = 'e'
+        self.letters = ['c', 'ds', 'e', 'fs', 'g', 'a', 'b']
+        self.name = "e minor harmonic"
+
+
+class FMinor(Key):
+    def define(self):
+        self.root = 'f'
+        self.letters = ['c', 'df', 'ef', 'f', 'g', 'af', 'bf']
+        self.name = "f minor"
+
+
+class FMinorH(Key):
+    def define(self):
+        self.root = 'f'
+        self.letters = ['c', 'df', 'e', 'f', 'g', 'af', 'bf']
+        self.name = "f minor harmonic"
 
 
 class GMinor(Key):
@@ -97,3 +125,25 @@ class AMinor(Key):
         self.root = 'a'
         self.letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
         self.name = "a minor"
+
+
+class AMinorH(Key):
+    def define(self):
+        self.root = 'a'
+        self.letters = ['c', 'd', 'e', 'f', 'gs', 'a', 'b']
+        self.name = "a minor harmonic"
+
+
+class BMinor(Key):
+    def define(self):
+        self.root = 'b'
+        self.letters = ['cs', 'd', 'e', 'fs', 'g', 'a', 'b']
+        self.name = "b minor"
+
+
+class BMinorH(Key):
+    def define(self):
+        self.root = 'b'
+        self.letters = ['cs', 'd', 'e', 'fs', 'g', 'as', 'b']
+        self.name = "b minor harmonic"
+
