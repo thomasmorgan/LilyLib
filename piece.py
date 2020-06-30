@@ -203,6 +203,8 @@ class Piece:
         return score
 
     def repeat(self, notes, times=2):
+        if times > 2:
+            notes[-1].ornamentation += '^"x' + str(times) + '"'
         return ["\\repeat volta " + str(times) + '{'] + notes + ['}']
 
     def name(self, notes, name):
