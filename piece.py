@@ -156,6 +156,11 @@ class Piece:
         key = self.keyify(key)
         return self.series(key.all_tones, start, stop_or_length, dur, step)
 
+    def scale_subset(self, positions, start, stop_or_length, key=None, dur=None, step=1):
+        key = self.keyify(key)
+        custom_tones = key.scale_subset(positions)
+        return self.series(custom_tones, start, stop_or_length, dur, step)
+
     def transpose(self, notes, shift, mode="octave"):
         if not isinstance(shift, int):
             raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
