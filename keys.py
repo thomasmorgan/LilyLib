@@ -317,12 +317,12 @@ class BMinorH(Key):
 
 
 def major_keys():
-    return [CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor]
+    return [CFlatMajor(), CMajor(), CSharpMajor(), DFlatMajor(), DMajor(), EFlatMajor(), EMajor(), FMajor(), FSharpMajor(), GFlatMajor(), GMajor(), AFlatMajor(), AMajor(), BFlatMajor(), BMajor()]
 
 
 def minor_keys():
-    return [CMinor, DMinor, EMinor, FMinor, GMinor, AMinor, BMinor]
+    return [CMinor(), CSharpMinor(), DMinor(), DSharpMinor(), EFlatMinor(), EMinor(), FMinor(), FSharpMinor(), GMinor(), GSharpMinor(), AFlatMinor(), AMinor(), ASharpMinor(), BFlatMinor(), BMinor()]
 
 
 def harmonic_keys():
-    return [CMinorH, DMinorH, EMinorH, FMinorH, GMinorH, AMinorH, BMinorH]
+    return [CMinorH(), CSharpMinorH(), DMinorH(), DSharpMinorH(), EFlatMinorH(), EMinorH(), FMinorH(), FSharpMinorH(), GMinorH(), GSharpMinorH(), AFlatMinorH(), AMinorH(), ASharpMinorH(), BFlatMinorH(), BMinorH()]
