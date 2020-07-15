@@ -132,6 +132,8 @@ class Piece:
     def keyify(self, key):
         if key is None:
             key = self.key
+        elif isinstance(key, Key):
+            pass
         elif issubclass(key, Key):
             key = key()
         else:
