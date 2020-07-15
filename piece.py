@@ -1,7 +1,7 @@
 from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor, major_keys, minor_keys, harmonic_keys
-from util import flatten, all_pitches
+from util import flatten, all_pitches, equivalent_letters
 
 from itertools import cycle
 from copy import deepcopy
@@ -219,20 +219,28 @@ class Piece:
         return ["\\time {}".format(tempo)]
 
     def relative_key(self, mode, relationship):
-        key_class = type(self.key)
-        if "major" in self.key.name:
-            index_of_class = major_keys().index(key_class)
-        elif "harmonic" in self.key.name:
-            index_of_class = harmonic_keys().index(key_class)
-        else:
-            index_of_class = minor_keys().index(key_class)
+        my_root = self.key.root
+        index_of_my_root = self.key.letters.index(my_root)
+        new_index = index_of_my_root + relationship
+        new_root = (self.key.letters * 2)[new_index]
 
         if mode == "major":
-            return (major_keys() * 2)[index_of_class + relationship]()
-        if mode == "minor":
-            return (minor_keys() * 2)[index_of_class + relationship]()
-        if mode == "harmonic":
-            return (harmonic_keys() * 2)[index_of_class + relationship]()
+            key_list = major_keys()
+        elif mode == "minor":
+            key_list = minor_keys()
+        elif mode == "harmonic":
+            key_list = harmonic_keys()
+
+        try:
+            new_key = [key for key in key_list if key.root == new_root][0]
+        except IndexError:
+            try:
+                new_root2 = equivalent_letters[new_root]
+                new_key = [key for key in key_list if key.root == new_root2][0]
+            except IndexError:
+                raise IndexError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
+
+        return new_key
 
     def relative_major_key(self, relationship):
         return self.relative_key("major", relationship)
