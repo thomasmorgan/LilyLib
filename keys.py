@@ -24,8 +24,8 @@ class CSharpMajor(Key):
 
 class DFlatMajor(Key):
     def define(self):
-        self.root = 'db'
-        self.letters = ['c', 'db', 'eb', 'f', 'gb', 'ab', 'bb']
+        self.root = 'df'
+        self.letters = ['c', 'df', 'eb', 'f', 'gf', 'af', 'bf']
         self.name = "d flat major"
 
 
@@ -38,8 +38,8 @@ class DMajor(Key):
 
 class EFlatMajor(Key):
     def define(self):
-        self.root = 'eb'
-        self.letters = ['c', 'd', 'eb', 'f', 'g', 'ab', 'bb']
+        self.root = 'ef'
+        self.letters = ['c', 'd', 'ef', 'f', 'g', 'af', 'bf']
         self.name = "e flat major"
 
 
@@ -80,8 +80,8 @@ class GMajor(Key):
 
 class AFlatMajor(Key):
     def define(self):
-        self.root = 'ab'
-        self.letters = ['c', 'db', 'eb', 'f', 'g', 'ab', 'bb']
+        self.root = 'af'
+        self.letters = ['c', 'df', 'ef', 'f', 'g', 'af', 'bf']
         self.name = "a flat major"
 
 
@@ -94,8 +94,8 @@ class AMajor(Key):
 
 class BFlatMajor(Key):
     def define(self):
-        self.root = 'bb'
-        self.letters = ['c', 'd', 'eb', 'f', 'g', 'a', 'bb']
+        self.root = 'bf'
+        self.letters = ['c', 'd', 'ef', 'f', 'g', 'a', 'bf']
         self.name = "b flat major"
 
 
