@@ -8,11 +8,32 @@ class CMajor(Key):
         self.name = "c major"
 
 
+class CSharpMajor(Key):
+    def define(self):
+        self.root = 'cs'
+        self.letters = ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']
+        self.name = "c sharp major"
+
+
+class DFlatMajor(Key):
+    def define(self):
+        self.root = 'db'
+        self.letters = ['c', 'db', 'eb', 'f', 'gb', 'ab', 'bb']
+        self.name = "d flat major"
+
+
 class DMajor(Key):
     def define(self):
         self.root = 'd'
         self.letters = ['cs', 'd', 'e', 'fs', 'g', 'a', 'b']
         self.name = "d major"
+
+
+class EFlatMajor(Key):
+    def define(self):
+        self.root = 'eb'
+        self.letters = ['c', 'd', 'eb', 'f', 'g', 'ab', 'bb']
+        self.name = "e flat major"
 
 
 class EMajor(Key):
@@ -29,6 +50,13 @@ class FMajor(Key):
         self.name = "f major"
 
 
+class FSharpMajor(Key):
+    def define(self):
+        self.root = 'fs'
+        self.letters = ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'b']
+        self.name = "f sharp major"
+
+
 class GMajor(Key):
     def define(self):
         self.root = 'g'
@@ -36,11 +64,25 @@ class GMajor(Key):
         self.name = "g major"
 
 
+class AFlatMajor(Key):
+    def define(self):
+        self.root = 'ab'
+        self.letters = ['c', 'db', 'eb', 'f', 'g', 'ab', 'bb']
+        self.name = "a flat major"
+
+
 class AMajor(Key):
     def define(self):
         self.root = 'a'
         self.letters = ['cs', 'd', 'e', 'fs', 'gs', 'a', 'b']
         self.name = "a major"
+
+
+class BFlatMajor(Key):
+    def define(self):
+        self.root = 'bb'
+        self.letters = ['c', 'd', 'eb', 'f', 'g', 'a', 'bb']
+        self.name = "b flat major"
 
 
 class BMajor(Key):
@@ -64,6 +106,20 @@ class CMinorH(Key):
         self.name = "c minor harmonic"
 
 
+class CSharpMinor(Key):
+    def define(self):
+        self.root = 'cs'
+        self.letters = ['cs', 'ds', 'e', 'fs', 'gs', 'a', 'b']
+        self.name = "c sharp minor"
+
+
+class CSharpMinorH(Key):
+    def define(self):
+        self.root = 'cs'
+        self.letters = ['cs', 'ds', 'e', 'fs', 'gs', 'a', 'bs']
+        self.name = "c sharp minor harmonic"
+
+
 class DMinor(Key):
     def define(self):
         self.root = 'd'
@@ -76,6 +132,34 @@ class DMinorH(Key):
         self.root = 'd'
         self.letters = ['cs', 'd', 'e', 'f', 'g', 'a', 'bf']
         self.name = "d minor harmonic"
+
+
+class DSharpMinor(Key):
+    def define(self):
+        self.root = 'ds'
+        self.letters = ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'b']
+        self.name = "d sharp minor"
+
+
+class DSharpMinorH(Key):
+    def define(self):
+        self.root = 'ds'
+        self.letters = ['css', 'ds', 'es', 'fs', 'gs', 'as', 'b']
+        self.name = "d sharp minor harmonic"
+
+
+class EFlatMinor(Key):
+    def define(self):
+        self.root = 'ef'
+        self.letters = ['cf', 'df', 'ef', 'f', 'gf', 'af', 'bf']
+        self.name = "e flat minor"
+
+
+class EFlatMinorH(Key):
+    def define(self):
+        self.root = 'ef'
+        self.letters = ['cf', 'd', 'ef', 'f', 'gf', 'af', 'bf']
+        self.name = "e flat minor harmonic"
 
 
 class EMinor(Key):
@@ -106,6 +190,20 @@ class FMinorH(Key):
         self.name = "f minor harmonic"
 
 
+class FSharpMinor(Key):
+    def define(self):
+        self.root = 'fs'
+        self.letters = ['cs', 'd', 'e', 'fs', 'gs', 'a', 'b']
+        self.name = "f sharp minor"
+
+
+class FSharpMinorH(Key):
+    def define(self):
+        self.root = 'fs'
+        self.letters = ['cs', 'd', 'es', 'fs', 'gs', 'a', 'b']
+        self.name = "f sharp minor harmonic"
+
+
 class GMinor(Key):
     def define(self):
         self.root = 'g'
@@ -120,6 +218,34 @@ class GMinorH(Key):
         self.name = "g minor harmonic"
 
 
+class GSharpMinor(Key):
+    def define(self):
+        self.root = 'gs'
+        self.letters = ['cs', 'ds', 'e', 'fs', 'gs', 'as', 'b']
+        self.name = "g sharp minor"
+
+
+class GSharpMinorH(Key):
+    def define(self):
+        self.root = 'gs'
+        self.letters = ['cs', 'ds', 'e', 'fss', 'gs', 'as', 'b']
+        self.name = "g sharp minor harmonic"
+
+
+class AFlatMinor(Key):
+    def define(self):
+        self.root = 'af'
+        self.letters = ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']
+        self.name = "a flat minor"
+
+
+class AFlatMinorH(Key):
+    def define(self):
+        self.root = 'af'
+        self.letters = ['cf', 'df', 'ef', 'ff', 'g', 'af', 'bf']
+        self.name = "a flat minor harmonic"
+
+
 class AMinor(Key):
     def define(self):
         self.root = 'a'
@@ -132,6 +258,34 @@ class AMinorH(Key):
         self.root = 'a'
         self.letters = ['c', 'd', 'e', 'f', 'gs', 'a', 'b']
         self.name = "a minor harmonic"
+
+
+class ASharpMinor(Key):
+    def define(self):
+        self.root = 'as'
+        self.letters = ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']
+        self.name = "a sharp minor"
+
+
+class ASharpMinorH(Key):
+    def define(self):
+        self.root = 'as'
+        self.letters = ['cs', 'ds', 'es', 'fs', 'gss', 'as', 'bs']
+        self.name = "a sharp minor harmonic"
+
+
+class BFlatMinor(Key):
+    def define(self):
+        self.root = 'bf'
+        self.letters = ['c', 'df', 'ef', 'f', 'gf', 'af', 'bf']
+        self.name = "b flat minor"
+
+
+class BFlatMinorH(Key):
+    def define(self):
+        self.root = 'bf'
+        self.letters = ['c', 'df', 'ef', 'f', 'gf', 'a', 'bf']
+        self.name = "b flat minor harmonic"
 
 
 class BMinor(Key):
