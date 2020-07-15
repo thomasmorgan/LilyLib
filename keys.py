@@ -1,6 +1,13 @@
 from models import Key
 
 
+class CFlatMajor(Key):
+    def define(self):
+        self.root = 'cf'
+        self.letters = ['cf', 'fd', 'ef', 'ff', 'gf', 'af', 'bf']
+        self.name = "c flat major"
+
+
 class CMajor(Key):
     def define(self):
         self.root = 'c'
@@ -55,6 +62,13 @@ class FSharpMajor(Key):
         self.root = 'fs'
         self.letters = ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'b']
         self.name = "f sharp major"
+
+
+class GFlatMajor(Key):
+    def define(self):
+        self.root = 'gf'
+        self.letters = ['cf', 'df', 'ef', 'f', 'gf', 'af', 'bf']
+        self.name = "g flat major"
 
 
 class GMajor(Key):
