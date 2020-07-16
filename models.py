@@ -181,6 +181,98 @@ class Key:
         string = string.replace(" melodic", "")
         return string + '\n'
 
+    def relative_letter(self, relative_position):
+        index_of_root = self.letters.index(self.root)
+        new_index = index_of_root + relative_position
+        return (self.letters * 2)[new_index]
+
+    @property
+    def tonic(self):
+        return self.relative_letter(0)
+
+    @property
+    def supertonic(self):
+        return self.relative_letter(1)
+
+    @property
+    def mediant(self):
+        return self.relative_letter(2)
+
+    @property
+    def subdominant(self):
+        return self.relative_letter(3)
+
+    @property
+    def dominant(self):
+        return self.relative_letter(4)
+
+    @property
+    def submediant(self):
+        return self.relative_letter(5)
+
+    @property
+    def leading(self):
+        return self.relative_letter(6)
+
+    @property
+    def subtonic(self):
+        return self.leading
+
+    @property
+    def i(self):
+        return self.tonic
+
+    @property
+    def ii(self):
+        return self.supertonic
+
+    @property
+    def iii(self):
+        return self.mediant
+
+    @property
+    def iv(self):
+        return self.subdominant
+
+    @property
+    def v(self):
+        return self.dominant
+
+    @property
+    def vi(self):
+        return self.submediant
+
+    @property
+    def vii(self):
+        return self.leading
+
+    @property
+    def I(self):
+        return self.tonic
+
+    @property
+    def II(self):
+        return self.supertonic
+
+    @property
+    def III(self):
+        return self.mediant
+
+    @property
+    def IV(self):
+        return self.subdominant
+
+    @property
+    def V(self):
+        return self.dominant
+
+    @property
+    def VI(self):
+        return self.submediant
+
+    @property
+    def VII(self):
+        return self.leading
 
 # class Melody():
 # 	def __init__(self, key, *notes):
