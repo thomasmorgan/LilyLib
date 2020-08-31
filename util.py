@@ -65,11 +65,15 @@ def flatten(List):
     return List
 
 
-def subset(List, *indexes):
+def pattern(List, *indexes):
     new_list = []
     for i in indexes:
         new_list.append(List[i - 1])
     return new_list
+
+
+def subset(List, start, stop):
+    return List[start - 1:stop]
 
 
 def copy(List):
