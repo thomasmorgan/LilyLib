@@ -170,25 +170,30 @@ class Piece:
         notes = deepcopy(notes)
 
         if isinstance(notes, list):
-            for i, n in enumerate(notes):
-                notes[i] = self.transpose(n, shift, mode)
+            return [self.transpose(n, shift, mode) for n in notes]
 
         elif isinstance(notes, Chord):
-            for i, n in enumerate(notes.notes):
-                notes.notes[i] = self.transpose(n, shift, mode)
+            notes.notes = self.transpose(notes.notes, shift, mode)
+            return notes
 
         elif isinstance(notes, Note):
-            notes.tone = self.transpose(notes.tone, shift, mode)
+            return self.transpose(notes.tone, shift, mode)
 
         elif isinstance(notes, Tone):
             if mode == "octave":
                 notes.pitch = all_pitches()[all_pitches().index(notes.pitch) + shift]
             elif mode == "scale":
-                notes = self.key.tones[self.key.tones.index(notes) + shift]
+                letter_tones = [str(t) for t in self.key.tones]
+                notes = Tone(letter_tones[letter_tones.index(str(notes)) + shift])
             elif mode == "semitone":
                 notes = self.key.all_tones[self.key.all_tones.index(notes) + shift]
+            return notes
 
-        return notes
+        elif isinstance(notes, str):
+            return " ".join([str(t) for t in (self.transpose(self.tones(notes), shift, mode))])
+
+        else:
+            raise ValueError("Cannot transpose {} as it is a {}".format(notes, type(notes)))
 
     def triplets(self, notes):
         return ['\\tuplet 3/2 {'] + notes + ['}']
