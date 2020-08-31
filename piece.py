@@ -131,15 +131,13 @@ class Piece:
 
     def keyify(self, key):
         if key is None:
-            key = self.key
+            return self.key
         elif isinstance(key, Key):
-            pass
+            return key
         elif issubclass(key, Key):
-            key = key()
+            return key()
         else:
             raise ValueError("{} is not a valid key".format(key))
-
-        return key
 
     def scale(self, start, stop_or_length, key=None, dur=None, step=1):
         key = self.keyify(key)
