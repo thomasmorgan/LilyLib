@@ -6,8 +6,10 @@ class Tone:
     """ Has a letter and a pitch, but no duration etc. """
     """ Rests are tones, they have the letter r. """
 
-    def __init__(self, tone):
+    def __init__(self, tone, override=False):
 
+        if not override:
+            raise ValueError("You are trying to create a new Tone. All necessary tones are created once and should just be shared from then on. If you must create a new tone pass override=True.")
         if not isinstance(tone, str):
             raise ValueError("Tones must be created with a string, not {}".format(tone))
 
