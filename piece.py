@@ -1,7 +1,7 @@
 from models import Tone, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor, major_keys, minor_keys, harmonic_keys
-from util import flatten, all_pitches, equivalent_letters
+from util import flatten, all_pitches, equivalent_letters, duplicate
 
 from itertools import cycle
 from copy import deepcopy
@@ -161,39 +161,39 @@ class Piece:
         custom_tones = key.scale_subset(positions)
         return self.series(custom_tones, start, stop_or_length, dur, step)
 
-    def transpose(self, notes, shift, mode="octave"):
+    def transpose(self, item, shift, mode="octave"):
         if not isinstance(shift, int):
             raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
         if mode not in ["octave", "scale", "semitone"]:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
-        notes = deepcopy(notes)
+        item = duplicate(item)
 
-        if isinstance(notes, list):
-            return [self.transpose(n, shift, mode) for n in notes]
+        if isinstance(item, list):
+            return [self.transpose(n, shift, mode) for n in item]
 
-        elif isinstance(notes, Chord):
-            notes.notes = self.transpose(notes.notes, shift, mode)
-            return notes
+        elif isinstance(item, Chord):
+            item.tones = self.transpose(item.tones, shift, mode)
+            return item
 
-        elif isinstance(notes, Note):
-            return self.transpose(notes.tone, shift, mode)
+        elif isinstance(item, Note):
+            return self.transpose(item.tone, shift, mode)
 
-        elif isinstance(notes, Tone):
+        elif isinstance(item, Tone):
             if mode == "octave":
-                notes.pitch = all_pitches()[all_pitches().index(notes.pitch) + shift]
+                item.pitch = all_pitches()[all_pitches().index(item.pitch) + shift]
             elif mode == "scale":
                 letter_tones = [str(t) for t in self.key.tones]
-                notes = Tone(letter_tones[letter_tones.index(str(notes)) + shift])
+                item = Tone(letter_tones[letter_tones.index(str(item)) + shift])
             elif mode == "semitone":
-                notes = self.key.all_tones[self.key.all_tones.index(notes) + shift]
-            return notes
+                item = self.key.all_tones[self.key.all_tones.index(item) + shift]
+            return item
 
-        elif isinstance(notes, str):
-            return " ".join([str(t) for t in (self.transpose(self.tones(notes), shift, mode))])
+        elif isinstance(item, str):
+            return " ".join([str(t) for t in (self.transpose(self.tones(item), shift, mode))])
 
         else:
-            raise ValueError("Cannot transpose {} as it is a {}".format(notes, type(notes)))
+            raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
 
     def triplets(self, notes):
         return ['\\tuplet 3/2 {'] + notes + ['}']
