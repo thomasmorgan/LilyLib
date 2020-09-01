@@ -1,6 +1,17 @@
 from copy import deepcopy
 
 
+def duplicate(item):
+    if isinstance(item, list):
+        return [duplicate(i) for i in item]
+
+    elif isinstance(item, str):
+        return copy.deepcopy(item)
+
+    else:
+        return item.duplicate()
+
+
 def all_pitches():
     return [",,,", ",,", ",", "", "`", "``", "```"]
 

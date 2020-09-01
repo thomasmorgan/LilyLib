@@ -31,6 +31,9 @@ class Tone:
     def __str__(self):
         return self.letter + self.pitch
 
+    def duplicate(self):
+        return self
+
 
 class Note:
     """ The sounding of a single tone for a specified duration. """
@@ -57,6 +60,9 @@ class Note:
 
     def __str__(self):
         return str(self.tone) + str(self.dur) + self.ornamentation
+
+    def duplicate(self):
+        return Note(self.tone, self.dur, self.ornamentation)
 
 
 class Chord:
@@ -89,6 +95,9 @@ class Chord:
 
     def __str__(self):
         return "<" + " ".join([str(t) for t in self.tones]) + ">" + str(self.dur) + self.ornamentation
+
+    def duplicate(self):
+        return Chord(self.tones, self.dur, self.ornamentation)
 
 
 class Stave:
