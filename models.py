@@ -339,8 +339,7 @@ class Key:
 
 
 class Tempo:
-    """ A time signature. """
-    """ Defaults to 4/4. """
+    """ A time signature. Defaults to 4/4. """
 
     def __init__(self, tempo):
         self.tempo = "4/4"
