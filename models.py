@@ -93,26 +93,20 @@ class ToneSpace():
 
 
 class Note:
-    """ The sounding of a single tone for a specified duration. """
-    """ Defined by a Tone and an int dur. """
-    """ Prints as a single note in sheet music. """
+    """ The sounding of a single Tone for a specified duration. Can be printed as sheet music. """
 
     def __init__(self, tone, dur, ornamentation=""):
-        if isinstance(tone, Tone):
-            self.tone = tone
-        elif isinstance(tone, str):
-            self.tone = Tone(tone)
-        else:
-            raise ValueError("Cannot create note with {} as tone. tone must be a Tone or string.".format(tone))
+        self.check_init_arguments(tone, dur, ornamentation)
+        self.tone = tone
+        self.dur = dur
+        self.ornamentation = ornamentation
 
-        if isinstance(dur, int) or isinstance(dur, str):
-            self.dur = dur
-        else:
+    def check_init_arguments(self, tone, dur, ornamentation):
+        if not isinstance(tone, Tone):
+            raise ValueError("Cannot create note with {} as tone. tone must be a Tone.".format(tone))
+        if not isinstance(dur, int) and not isinstance(dur, str):
             raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
-
-        if isinstance(ornamentation, str):
-            self.ornamentation = ornamentation
-        else:
+        if not isinstance(ornamentation, str):
             raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
