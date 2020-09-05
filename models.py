@@ -39,6 +39,59 @@ class Tone:
         return self
 
 
+class ToneSpace():
+    """ An object that contains the full set of permissable Tones used to create Notes and Chords. """
+
+    def __init__(self):
+        self.create_tones()
+
+    def create_tones(self):
+        all_tones = []
+        for p in self.all_pitches:
+            for l in self.all_letters:
+                all_tones.append(Tone(l + p, True))
+        self.tones = all_tones
+
+    all_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
+
+    @property
+    def all_letters(self):
+        all_letters = []
+        letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+        accents = ['ff', 'f', '', 's', 'ss']
+        for l in letters:
+            for a in accents:
+                all_letters.append(l + a)
+        return all_letters
+
+    equivalent_letters = {
+        'cf': 'b',
+        'c': 'bs',
+        'cs': 'df',
+        'df': 'cs',
+        'd': 'd',
+        'ds': 'ef',
+        'ef': 'ds',
+        'e': 'ff',
+        'es': 'f',
+        'ff': 'e',
+        'f': 'es',
+        'fs': 'gf',
+        'gf': 'fs',
+        'g': 'g',
+        'gs': 'af',
+        'af': 'gs',
+        'a': 'a',
+        'as': 'bf',
+        'bf': 'as',
+        'b': 'cf',
+        'bs': 'c'
+    }
+
+    def tone_with_string(self, string):
+        return [t for t in self.tones if str(t) == string][0]
+
+
 class Note:
     """ The sounding of a single tone for a specified duration. """
     """ Defined by a Tone and an int dur. """
