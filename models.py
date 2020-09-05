@@ -146,8 +146,7 @@ class Chord:
 
 
 class Stave:
-    """ A musical stave. """
-    """ It has a clef, and optionally a name if multiple staves have the same clef. """
+    """ A musical stave. It has a clef, and optionally a name if multiple staves have the same clef. """
 
     def __init__(self, clef, name=None):
         if clef not in ['treble', 'bass', 'G', '"G2"', 'french', 'GG', 'tenorG', 'soprano', 'mezzosoprano', 'C', 'alto', 'tenor', 'baritone']:
@@ -158,6 +157,7 @@ class Stave:
             self.name = name
         else:
             self.name = clef
+
         self.start = '<< \\new Staff {{\n\\clef {}\n'.format(self.clef)
         self.end = '} >>\n'
 
