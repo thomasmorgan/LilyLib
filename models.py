@@ -1,4 +1,3 @@
-from util import all_letters, all_pitches, all_tones, equivalent_letters
 
 
 class Tone:
