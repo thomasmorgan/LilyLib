@@ -117,32 +117,26 @@ class Note:
 
 
 class Chord:
-    """ The simultaneous sounding of multiple tones for a specified duration. """
-    """ Note that Chord contain multiple (durationless) Tones, they are not composed of Notes. """
-    """ If a chord is passed Notes as an argument they will be converted to Tones. """
-    """ Prints as a chord in sheet music. """
+    """ The simultaneous sounding of multiple Tones for a specified duration."""
 
     def __init__(self, tones, dur, ornamentation=""):
-        self.tones = []
-        if isinstance(tones, str):
-            tones = tones.split(" ")
+        self.check_init_arguments(tones, dur, ornamentation)
+        self.tones = tones
+        self.dur = dur
+        self.ornamentation = ornamentation
+
+    def check_init_arguments(self, tones, dur, ornamentation):
+        if not isinstance(tones, list):
+            raise ValueError("Cannot create note with {} as tones. tone must be a list.".format(tones))
+
         for tone in tones:
-            if isinstance(tone, Tone):
-                self.tones.append(tone)
-            elif isinstance(tone, Note):
-                self.tones.append(tone.tone)
-            else:
-                self.tones.append(Tone(tone))
+            if not isinstance(tones, Tone):
+                raise ValueError("Cannot create note with {} as tone. tone must be a Tone.".format(tone))
 
-        if isinstance(dur, int) or isinstance(dur, str):
-            self.dur = dur
-        else:
-            raise ValueError("Cannot create chord with {} as dur. dur must be an int or string.".format(dur))
-
-        if isinstance(ornamentation, str):
-            self.ornamentation = ornamentation
-        else:
-            raise ValueError("Cannot create chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+        if not isinstance(dur, int) and not isinstance(dur, str):
+            raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
+        if not isinstance(ornamentation, str):
+            raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
         return "<" + " ".join([str(t) for t in self.tones]) + ">" + str(self.dur) + self.ornamentation
