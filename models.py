@@ -163,47 +163,56 @@ class Stave:
 
 
 class Key:
-    """ A collection of sets of tones represented by a key signature. """
-    """ Needs to be subclassed to be meaningful. """
+    """ A set of Tones represented by a key signature. Needs to be subclassed to be meaningful.
+    Key.tonespace.tones returns every possible Tone
+    Key.all_tones returns all unique tones in the key (i.e. excluding equivalent tones)
+    Key.tones returns all Tones in the scale of the key
+    Key.arpeggio_tones returns all Tones in the arpeggio of the key. """
 
     def __init__(self):
         # define must be overwritten in subclasses to:
         # 1. set the root letter
         # 2. set the included letters
         # 3. set the key's name
+        self.root = None
+        self.letters = None
+        self.name = None
         self.define()
+        self.confirm_definition()
 
-        self.create_all_tones()
-        self.create_scale_tones()
-        self.create_arpeggio_tones()
+        self.tonespace = ToneSpace()
+        self.init_all_tones()
+        self.init_scale_tones()
+        self.init_arpeggio_tones()
 
-    def create_scale_tones(self):
-        self.tones = [n for n in self.all_tones if n.letter in self.letters]
+    def confirm_definition(self):
+        if None in [self.root, self.letters, self.name]:
+            raise ValueError("Must define root, letters and name of Key {}".format(self))
 
-    def create_arpeggio_tones(self):
-        index_of_root = self.letters.index(self.root)
-        arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if t.letter in arpeggio_letters]
-
-    def create_all_tones(self):
-        # creates a list of all *unique* tones
-        # effectively a chromatic scale
-
+    def init_all_tones(self):
         all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in all_letters and equivalent_letters[l] not in all_letters:
+            if l not in all_letters and self.tonespace.equivalent_letters[l] not in all_letters:
                 all_letters.append(l)
 
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in all_letters and equivalent_letters[l] not in all_letters:
+                if l not in all_letters and self.tonespace.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in all_letters and equivalent_letters[l] not in all_letters:
+                if l not in all_letters and self.tonespace.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
 
-        self.all_tones = [t for t in all_tones() if t.letter in all_letters]
+        self.all_tones = [t for t in self.tonespace.tones if t.letter in all_letters]
+
+    def init_scale_tones(self):
+        self.tones = [t for t in self.all_tones if t.letter in self.letters]
+
+    def init_arpeggio_tones(self):
+        index_of_root = self.letters.index(self.root)
+        arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_tones = [t for t in self.all_tones if t.letter in arpeggio_letters]
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
