@@ -1,33 +1,36 @@
-
-
 class Tone:
-    """ The sound of a single note. """
-    """ Has a letter and a pitch, but no duration etc. """
-    """ Rests are tones, they have the letter r. """
+    """ The frequency of a single note. A Tone has a letter and a pitch, but no duration etc.
+    Rests are tones too, they have the letter r, and no pitch. Tones cannot be printed as sheet music.
 
-    def __init__(self, tone, override=False):
+    Tones are created from a string, e.g. "c`" for middle c.
 
+    A unique set of Tones is created within a ToneSpace when a Key is created, and these Tones should be used
+    as necessary without creating more. To dissuade users from creating more Tones than necessary the init
+    function will raise an error unless "override=True" is passed."""
+
+    def __init__(self, tone_string, override=False):
+        self.check_init_arguments(tone_string, override)
+        self.assign_letter_and_pitch(tone_string)
+
+    def check_init_arguments(self, tone_string, override):
         if not override:
             raise ValueError("You are trying to create a new Tone. All necessary tones are created once and should just be shared from then on. If you must create a new tone pass override=True.")
-        if not isinstance(tone, str):
-            raise ValueError("Tones must be created with a string, not {}".format(tone))
 
-        if tone == 'r':
+        if not isinstance(tone_string, str):
+            raise ValueError("Tones must be created with a string, not {}".format(tone_string))
+
+    def assign_letter_and_pitch(self, tone_string):
+        if tone_string == 'r':
             self.letter = 'r'
             self.pitch = ''
         else:
-            if tone[-1] in ["`", ","]:
-                split = tone.split(tone[-1], 1)
+            if tone_string[-1] in ["`", ","]:
+                split = tone_string.split(tone_string[-1], 1)
                 self.letter = split[0]
-                self.pitch = split[1] + tone[-1]
+                self.pitch = split[1] + tone_string[-1]
             else:
-                self.letter = tone
+                self.letter = tone_string
                 self.pitch = ""
-
-            if self.letter not in all_letters():
-                raise ValueError("Cannot create Tone with letter {}".format(self.letter))
-            if self.pitch not in all_pitches():
-                raise ValueError("Cannot create Tone with pitch {}".format(self.pitch))
 
     def __str__(self):
         return self.letter + self.pitch
