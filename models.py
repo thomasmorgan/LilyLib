@@ -336,13 +336,3 @@ class Key:
     @property
     def VII(self):
         return self.leading
-
-
-class Tempo:
-    """ A time signature. Defaults to 4/4. """
-
-    def __init__(self, tempo):
-        self.tempo = "4/4"
-
-    def __str__(self):
-        return "\\time {}\n".format(self.tempo)
