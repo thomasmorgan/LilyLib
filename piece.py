@@ -120,7 +120,7 @@ class Piece:
     def rests(self, dur):
         return self.notes('r', dur)
 
-    def series(self, tones, start, stop_or_length, dur=None, step=1):
+    def series(self, tones, start, stop_or_length, dur, step=1):
         try:
             start_index = [str(t) for t in tones].index(str(start))
         except ValueError:
