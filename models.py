@@ -169,7 +169,7 @@ class Key:
     Key.tones returns all Tones in the scale of the key
     Key.arpeggio_tones returns all Tones in the arpeggio of the key. """
 
-    def __init__(self):
+    def __init__(self, tonespace):
         # define must be overwritten in subclasses to:
         # 1. set the root letter
         # 2. set the included letters
@@ -180,7 +180,7 @@ class Key:
         self.define()
         self.confirm_definition()
 
-        self.tonespace = ToneSpace()
+        self.tonespace = tonespace
         self.init_all_tones()
         self.init_scale_tones()
         self.init_arpeggio_tones()
