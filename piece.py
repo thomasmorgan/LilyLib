@@ -127,7 +127,10 @@ class Piece:
             raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(str(start), [str(t) for t in tones]))
 
         if isinstance(stop_or_length, int):
-            stop_index = start_index + (stop_or_length - 1) * step
+            if stop_or_length > 0:
+                stop_index = start_index + (stop_or_length - 1) * step
+            else:
+                stop_index = start_index + (stop_or_length + 1) * step
         else:
             try:
                 stop_index = [str(t) for t in tones].index(str(stop_or_length))
