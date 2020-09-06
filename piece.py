@@ -146,25 +146,24 @@ class Piece:
         series = tones[start_index:stop_index:step]
         return [Note(tone, dur) for tone in series]
 
-
-    def scale(self, start, stop_or_length, key=None, dur=None, step=1):
+    def scale(self, start, stop_or_length, dur, key=None, step=1):
         key = self.keyify(key)
         return self.series(key.tones, start, stop_or_length, dur, step)
 
-    def arpeggio(self, start, stop_or_length, key=None, dur=None, step=1):
+    def arpeggio(self, start, stop_or_length, dur, key=None, step=1):
         key = self.keyify(key)
         return self.series(key.arpeggio_tones, start, stop_or_length, dur, step)
 
-    def arpeggio7(self, start, stop_or_length, key=None, dur=None, step=1):
+    def arpeggio7(self, start, stop_or_length, dur, key=None, step=1):
         key = self.keyify(key)
         arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
         return self.series(arpeggio7_tones, start, stop_or_length, dur, step)
 
-    def chromatic(self, start, stop_or_length, key=None, dur=None, step=1):
+    def chromatic(self, start, stop_or_length, dur, key=None, step=1):
         key = self.keyify(key)
         return self.series(key.all_tones, start, stop_or_length, dur, step)
 
-    def scale_subset(self, positions, start, stop_or_length, key=None, dur=None, step=1):
+    def scale_subset(self, positions, start, stop_or_length, dur, key=None, step=1):
         key = self.keyify(key)
         custom_tones = key.scale_subset(positions)
         return self.series(custom_tones, start, stop_or_length, dur, step)
