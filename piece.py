@@ -16,9 +16,13 @@ class Piece:
         self.opus = ""
         self.staves = [Treble(), Bass()]
         self.tempo = "4/4"
-        self.key = CMajor()
+        self.key = CMajor
         self.score = {}
+        self.tonespace = ToneSpace()
+
         self.details()
+
+        self.key = self.keyify(self.key)
         print(self)
 
     def details():
