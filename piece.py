@@ -1,7 +1,7 @@
-from models import Tone, Note, Chord, Key
+from models import Tone, ToneSpace, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor, major_keys, minor_keys, harmonic_keys
-from util import flatten, all_pitches, equivalent_letters, duplicate
+from util import flatten, duplicate
 
 from itertools import cycle
 from copy import deepcopy
@@ -97,7 +97,7 @@ class Piece:
     def tones(self, tones):
         tones = flatten([tones])
         tones = flatten([t.split(' ') for t in tones if isinstance(t, str)])
-        return [Tone(t) for t in tones]
+        return [self.key.tonespace.tone_with_string(t) for t in tones]
 
     def notes(self, notes, dur, ornamentation=""):
         notes = flatten([notes])
