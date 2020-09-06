@@ -188,7 +188,7 @@ class Piece:
 
         elif isinstance(item, Tone):
             if mode == "octave":
-                item.pitch = all_pitches()[all_pitches().index(item.pitch) + shift]
+                item.pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
             elif mode == "scale":
                 letter_tones = [str(t) for t in self.key.tones]
                 item = Tone(letter_tones[letter_tones.index(str(item)) + shift])
@@ -247,7 +247,7 @@ class Piece:
             new_key = [key for key in key_list if key.root == new_root][0]
         except IndexError:
             try:
-                new_root2 = equivalent_letters[new_root]
+                new_root2 = self.key.tonespace.equivalent_letters[new_root]
                 new_key = [key for key in key_list if key.root == new_root2][0]
             except IndexError:
                 raise IndexError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
