@@ -112,6 +112,11 @@ class Piece:
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
         return [Note(n, d, o) for i, n, d, o in zip_list]
 
+    def chord(self, tones, dur, ornamentation=""):
+        tones = flatten([tones])
+        tones = flatten([self.tones(t) if isinstance(t, str) else t for t in tones])
+        return Chord(tones, dur, ornamentation)
+
     def rests(self, dur):
         return self.notes('r', dur)
 
