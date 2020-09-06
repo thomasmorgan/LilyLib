@@ -144,11 +144,7 @@ class Piece:
             step *= -1
 
         series = tones[start_index:stop_index:step]
-
-        if dur is not None:
-            series = [Note(tone, dur) for tone in series]
-
-        return series
+        return [Note(tone, dur) for tone in series]
 
 
     def scale(self, start, stop_or_length, key=None, dur=None, step=1):
