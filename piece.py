@@ -28,6 +28,18 @@ class Piece:
     def details():
         raise NotImplementedError("You must overwrite details to create a piece")
 
+    def keyify(self, key):
+        if key is None:
+            return self.key
+        elif isinstance(key, Key):
+            return key
+        else:
+            try:
+                if issubclass(key, Key):
+                    return key(self.tonespace)
+            except TypeError:
+                raise ValueError("{} is not a valid key".format(key))
+
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
 
@@ -133,15 +145,6 @@ class Piece:
 
         return series
 
-    def keyify(self, key):
-        if key is None:
-            return self.key
-        elif isinstance(key, Key):
-            return key
-        elif issubclass(key, Key):
-            return key()
-        else:
-            raise ValueError("{} is not a valid key".format(key))
 
     def scale(self, start, stop_or_length, key=None, dur=None, step=1):
         key = self.keyify(key)
