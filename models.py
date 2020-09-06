@@ -130,7 +130,7 @@ class Chord:
             raise ValueError("Cannot create note with {} as tones. tone must be a list.".format(tones))
 
         for tone in tones:
-            if not isinstance(tones, Tone):
+            if not isinstance(tone, Tone):
                 raise ValueError("Cannot create note with {} as tone. tone must be a Tone.".format(tone))
 
         if not isinstance(dur, int) and not isinstance(dur, str):
