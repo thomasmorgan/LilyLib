@@ -196,10 +196,12 @@ class Piece:
 
         elif isinstance(item, Tone):
             if mode == "octave":
-                item.pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
+                new_pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
+                new_tone_string = item.letter + new_pitch
+                item = self.key.tonespace.tone_with_string(new_tone_string)
             elif mode == "scale":
-                letter_tones = [str(t) for t in self.key.tones]
-                item = Tone(letter_tones[letter_tones.index(str(item)) + shift])
+                current_index = self.key.tones.index(item)
+                item = self.key.tones[current_index + shift]
             elif mode == "semitone":
                 item = self.key.all_tones[self.key.all_tones.index(item) + shift]
             return item
