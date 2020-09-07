@@ -121,6 +121,11 @@ class Piece:
         return self.notes('r', dur)
 
     def series(self, tones, start, stop_or_length, dur, step=1):
+        if isinstance(start, Note):
+            start = start.tone
+        if isinstance(stop_or_length, Note):
+            stop_or_length = stop_or_length.tone
+
         try:
             start_index = [str(t) for t in tones].index(str(start))
         except ValueError:
