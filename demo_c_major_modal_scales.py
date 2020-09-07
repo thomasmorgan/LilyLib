@@ -1,6 +1,5 @@
 from piece import Piece
 from keys import CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor
-from util import flatten
 
 
 class CMajorModalScales(Piece):
