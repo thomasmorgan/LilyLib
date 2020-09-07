@@ -30,7 +30,7 @@ class CMajorModalScales(Piece):
         # Note the start values are just strings, and so they can be modified by adding or removing `
         # Note also that the score ends up being a list-of-lists-of-notes, but nested lists are fine
         looped = {"treble": []}
-        for start in ['f`', 'g`', 'a`', 'b`', 'c``']:
+        for start in self.scale('f`', 'c``', 8):
             looped["treble"] += self.scale(start, 8, 8)
         looped["bass"] = self.transpose(looped["treble"], -1)
 
