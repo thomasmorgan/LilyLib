@@ -121,38 +121,61 @@ class Piece:
         return self.notes('r', dur)
 
     def series(self, tones, start, stop_or_length, dur, step=1):
-        if isinstance(start, Note):
-            start = start.tone
-        if isinstance(stop_or_length, Note):
-            stop_or_length = stop_or_length.tone
+        start, stop_or_length = self.validate_series_args(tones, start, stop_or_length, dur, step)
 
-        try:
-            start_index = [str(t) for t in tones].index(str(start))
-        except ValueError:
-            raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(str(start), [str(t) for t in tones]))
+        start_index = tones.index(start)
 
-        if isinstance(stop_or_length, int):
+        if isinstance(stop_or_length, Tone):
+            stop_index = tones.index(stop_or_length)
+        else:
             if stop_or_length > 0:
                 stop_index = start_index + (stop_or_length - 1) * step
             else:
                 stop_index = start_index + (stop_or_length + 1) * step
-        else:
-            try:
-                stop_index = [str(t) for t in tones].index(str(stop_or_length))
-            except ValueError:
-                raise ValueError("{} is not a valid stop for tone series {}.".format(str(stop_or_length), [str(t) for t in tones]))
+
+        stop_index = self.make_stop_inclusive(start_index, stop_index)
+        if stop_index < start_index:
+            step = -step
+
+        series = tones[start_index:stop_index:step]
+        return [Note(tone, dur) for tone in series]
+
+    def validate_series_args(self, tones, start, stop_or_length, dur, step):
+        if not isinstance(tones, list):
+            raise ValueError("series arg tones cannot be {}, it must be a list".format(tones))
+
+        for t in tones:
+            if not isinstance(t, Tone):
+                raise ValueError("series arg tones cannot contain {}, it must be a list of tones".format(t))
+
+        start = self.tonify(start)
+        if start not in tones:
+            raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(start, tones))
+
+        if not isinstance(stop_or_length, int):
+            stop_or_length = self.tonify(stop_or_length)
+            if stop_or_length not in tones:
+                raise ValueError("Cannot stop series on {} as it it not in tones: {}.".format(stop_or_length, tones))
 
         if not isinstance(step, int):
             raise ValueError("series step must be an int, not {}".format(step))
 
-        if stop_index >= start_index:
-            stop_index += 1
-        elif stop_index < start_index:
-            stop_index -= 1
-            step *= -1
+        return start, stop_or_length
 
-        series = tones[start_index:stop_index:step]
-        return [Note(tone, dur) for tone in series]
+    def tonify(self, item):
+        if isinstance(item, Note):
+            return item.tone
+        if isinstance(item, Tone):
+            return item
+        if isinstance(item, str):
+            return self.tonespace.tone_with_string(item)
+        raise ValueError("Cannot tonify {}, can only tonify Notes, Tones and strings".format(item))
+
+    def make_stop_inclusive(self, start, stop):
+        if stop >= start:
+            return stop + 1
+        else:
+            return stop - 1
 
     def scale(self, start, stop_or_length, dur, key=None, step=1):
         key = self.keyify(key)
