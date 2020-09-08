@@ -200,24 +200,9 @@ class Piece:
         return self.series(custom_tones, start, stop_or_length, dur, step)
 
     def transpose(self, item, shift, mode="octave"):
-        if not isinstance(shift, int):
-            raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
-        if mode not in ["octave", "scale", "semitone"]:
-            raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
+        self.validate_transpose_args(shift, mode)
 
-        item = duplicate(item)
-
-        if isinstance(item, list):
-            return [self.transpose(n, shift, mode) for n in item]
-
-        elif isinstance(item, Chord):
-            item.tones = self.transpose(item.tones, shift, mode)
-            return item
-
-        elif isinstance(item, Note):
-            return self.transpose(item.tone, shift, mode)
-
-        elif isinstance(item, Tone):
+        if isinstance(item, Tone):
             if mode == "octave":
                 new_pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
                 new_tone_string = item.letter + new_pitch
@@ -229,11 +214,26 @@ class Piece:
                 item = self.key.all_tones[self.key.all_tones.index(item) + shift]
             return item
 
+        elif isinstance(item, Note):
+            return Note(self.transpose(item.tone, shift, mode), item.dur, item.ornamentation)
+
+        elif isinstance(item, Chord):
+            return Chord(self.transpose(item.tones, shift, mode), item.dur, item.ornamentation)
+
+        elif isinstance(item, list):
+            return [self.transpose(subitem, shift, mode) for subitem in item]
+
         elif isinstance(item, str):
-            return " ".join([str(t) for t in (self.transpose(self.tones(item), shift, mode))])
+            return " ".join([str(t) for t in self.transpose(self.tones(item), shift, mode)])
 
         else:
             raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
+
+    def validate_transpose_args(self, shift, mode):
+        if not isinstance(shift, int):
+            raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
+        if mode not in ["octave", "scale", "semitone"]:
+            raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
     def triplets(self, notes):
         return ['\\tuplet 3/2 {'] + notes + ['}']
