@@ -6,6 +6,7 @@ import keys
 
 from itertools import cycle
 from copy import deepcopy
+from inspect import isclass
 
 
 class Piece:
@@ -35,12 +36,10 @@ class Piece:
             return self.key
         elif isinstance(key, Key):
             return key
+        elif isclass(key) and issubclass(key, Key):
+            return key(self.tonespace)
         else:
-            try:
-                if issubclass(key, Key):
-                    return key(self.tonespace)
-            except TypeError:
-                raise ValueError("{} is not a valid key".format(key))
+            raise ValueError("{} is not a valid key".format(key))
 
     def set_key(self, key):
         self.key = self.keyify(key)
