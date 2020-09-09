@@ -18,7 +18,7 @@ class Piece:
         self.opus = ""
         self.staves = [Treble(), Bass()]
         self.tempo = "4/4"
-        self.key = keys.CMajor
+        self.key = "C Major"
         self.score = {}
         self.tonespace = ToneSpace()
         self.create_key_dictionary()
@@ -38,6 +38,14 @@ class Piece:
             return key
         elif isclass(key) and issubclass(key, Key):
             return key(self.tonespace)
+        elif isinstance(key, str):
+            try:
+                key = key.split(" ")
+                letter = key[0].lower()
+                mode = key[1].lower()
+                return self.key_dictionary[mode][letter]
+            except Exception:
+                raise ValueError("{} is not a valid string format for a key".format(key))
         else:
             raise ValueError("{} is not a valid key".format(key))
 

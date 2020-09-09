@@ -1,5 +1,4 @@
 from piece import Piece
-from keys import FMajor, CMajor
 from util import flatten, pattern, subset
 
 
@@ -8,8 +7,8 @@ class MadRush(Piece):
     def details(self):
         self.title = "Mad Rush"
         self.composer = "Philip Glass"
-        self.key = CMajor()
         self.tempo = "4/4"
+        self.key = "F Major"
 
     def write_score(self):
 
