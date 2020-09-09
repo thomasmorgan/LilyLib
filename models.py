@@ -116,6 +116,14 @@ class Note:
     def duplicate(self):
         return Note(self.tone, self.dur, self.ornamentation)
 
+    @property
+    def letter(self):
+        return self.tone.letter
+
+    @property
+    def pitch(self):
+        return self.tone.pitch
+
 
 class Chord:
     """ The simultaneous sounding of multiple Tones for a specified duration."""
