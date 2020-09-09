@@ -233,7 +233,10 @@ class Piece:
             return [self.transpose(subitem, shift, mode) for subitem in item]
 
         elif isinstance(item, str):
-            return " ".join([str(t) for t in self.transpose(self.tones(item), shift, mode)])
+            try:
+                return " ".join([str(t) for t in self.transpose(self.tones(item), shift, mode)])
+            except Exception:
+                return item
 
         else:
             raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
