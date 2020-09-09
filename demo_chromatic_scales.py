@@ -18,4 +18,5 @@ class ChromaticScales(Piece):
         self.score["bass"] = self.transpose(self.score["treble"], -1)
 
 
-ChromaticScales()
+def main():
+    ChromaticScales()

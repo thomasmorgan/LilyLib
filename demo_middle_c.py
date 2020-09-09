@@ -11,4 +11,5 @@ class MiddleC(Piece):
         self.score["bass"] = self.notes("c`", 1)
 
 
-MiddleC()
+def main():
+    MiddleC()

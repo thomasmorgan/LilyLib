@@ -29,4 +29,5 @@ class PreludeInC(Piece):
             self.motif(s)
 
 
-PreludeInC()
+def main():
+    PreludeInC()

@@ -117,4 +117,5 @@ class MadRush(Piece):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/7)\n }\n }\n }')
 
 
-MadRush()
+def main():
+    MadRush()

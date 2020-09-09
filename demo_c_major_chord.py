@@ -11,4 +11,5 @@ class CMajorChord(Piece):
         self.score["bass"] = self.chord("c, c", 1)
 
 
-CMajorChord()
+def main():
+    CMajorChord()

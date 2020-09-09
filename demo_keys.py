@@ -18,4 +18,5 @@ class AllKeys(Piece):
                 self.score["bass"] += self.key_signature + self.notes(self.key.root, 1)
 
 
-AllKeys()
+def main():
+    AllKeys()

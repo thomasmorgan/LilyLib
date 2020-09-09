@@ -41,4 +41,5 @@ class Arpeggios(Piece):
             self.score[staff] = [basic[staff], notes[staff], arpeggio[staff], length[staff], stepped[staff]]
 
 
-Arpeggios()
+def main():
+    Arpeggios()
