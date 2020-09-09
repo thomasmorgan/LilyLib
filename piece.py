@@ -1,7 +1,7 @@
 from models import Tone, ToneSpace, Note, Chord, Key
 from staves import Treble, Bass
 from keys import CMajor, major_keys, minor_keys, harmonic_keys
-from util import flatten, duplicate
+from util import flatten
 
 from itertools import cycle
 from copy import deepcopy
@@ -22,7 +22,7 @@ class Piece:
 
         self.details()
 
-        self.key = self.keyify(self.key)
+        self.set_key(self.key)
         print(self)
 
     def details():
@@ -39,6 +39,13 @@ class Piece:
                     return key(self.tonespace)
             except TypeError:
                 raise ValueError("{} is not a valid key".format(key))
+
+    def set_key(self, key):
+        self.key = self.keyify(key)
+
+    @property
+    def key_signature(self):
+        return [str(self.key)]
 
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
