@@ -50,6 +50,7 @@ class ToneSpace():
         for p in self.all_pitches:
             for l in self.all_letters:
                 all_tones.append(Tone(l + p, True))
+        all_tones.append(Tone("r", True))
         self.tones = all_tones
 
     all_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
