@@ -1,5 +1,4 @@
 from piece import Piece
-from keys import EMajor, FMajor
 
 
 class Arpeggios(Piece):
@@ -22,14 +21,14 @@ class Arpeggios(Piece):
 
         # The arpeggio section uses the arpeggio function to build a scale from one note to the next
         arpeggio = {
-            "treble": self.arpeggio('e`', 'e``', 8, key=EMajor),
-            "bass": self.arpeggio('e', 4, 8, key=EMajor)
+            "treble": self.arpeggio('e`', 'e``', 8, key="E Major"),
+            "bass": self.arpeggio('e', 4, 8, key="E Major")
         }
 
         # The length section uses the arpeggio function to build an arpeggio, but specifies a length, rather than a stop note
         length = {
-            "treble": self.arpeggio('f`', 4, 8, key=FMajor),
-            "bass": self.arpeggio('f', 4, 8, key=FMajor)
+            "treble": self.arpeggio('f`', 4, 8, key="F Major"),
+            "bass": self.arpeggio('f', 4, 8, key="F Major")
         }
 
         starts = self.arpeggio('c`', 'c``')

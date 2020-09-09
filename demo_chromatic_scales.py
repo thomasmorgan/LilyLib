@@ -1,5 +1,4 @@
 from piece import Piece
-from keys import FMajor
 
 
 class ChromaticScales(Piece):
@@ -12,7 +11,7 @@ class ChromaticScales(Piece):
         self.score["treble"] = self.chromatic('c`', 'c``', 16)
         self.score["treble"][-1].dur = 4
 
-        self.set_key(FMajor)
+        self.set_key("f major")
         self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', 16)
         self.score["treble"][-1].dur = 4
 
