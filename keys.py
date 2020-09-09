@@ -314,15 +314,3 @@ class BMinorH(Key):
         self.root = 'b'
         self.letters = ['cs', 'd', 'e', 'fs', 'g', 'as', 'b']
         self.name = "b minor harmonic"
-
-
-def major_keys():
-    return [CFlatMajor(), CMajor(), CSharpMajor(), DFlatMajor(), DMajor(), EFlatMajor(), EMajor(), FMajor(), FSharpMajor(), GFlatMajor(), GMajor(), AFlatMajor(), AMajor(), BFlatMajor(), BMajor()]
-
-
-def minor_keys():
-    return [CMinor(), CSharpMinor(), DMinor(), DSharpMinor(), EFlatMinor(), EMinor(), FMinor(), FSharpMinor(), GMinor(), GSharpMinor(), AFlatMinor(), AMinor(), ASharpMinor(), BFlatMinor(), BMinor()]
-
-
-def harmonic_keys():
-    return [CMinorH(), CSharpMinorH(), DMinorH(), DSharpMinorH(), EFlatMinorH(), EMinorH(), FMinorH(), FSharpMinorH(), GMinorH(), GSharpMinorH(), AFlatMinorH(), AMinorH(), ASharpMinorH(), BFlatMinorH(), BMinorH()]

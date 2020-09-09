@@ -1,7 +1,8 @@
 from models import Tone, ToneSpace, Note, Chord, Key
 from staves import Treble, Bass
-from keys import CMajor, major_keys, minor_keys, harmonic_keys
 from util import flatten
+
+import keys
 
 from itertools import cycle
 from copy import deepcopy
@@ -16,9 +17,10 @@ class Piece:
         self.opus = ""
         self.staves = [Treble(), Bass()]
         self.tempo = "4/4"
-        self.key = CMajor
+        self.key = keys.CMajor
         self.score = {}
         self.tonespace = ToneSpace()
+        self.create_key_dictionary()
 
         self.details()
 
@@ -46,6 +48,61 @@ class Piece:
     @property
     def key_signature(self):
         return [str(self.key)]
+
+    def create_key_dictionary(self):
+        self.key_dictionary = {
+            "major": {
+                "cf": keys.CFlatMajor(self.tonespace),
+                "c": keys.CMajor(self.tonespace),
+                "cs": keys.CSharpMajor(self.tonespace),
+                "df": keys.DFlatMajor(self.tonespace),
+                "d": keys.DMajor(self.tonespace),
+                "ef": keys.EFlatMajor(self.tonespace),
+                "e": keys.EMajor(self.tonespace),
+                "f": keys.FMajor(self.tonespace),
+                "fs": keys.FSharpMajor(self.tonespace),
+                "gf": keys.GFlatMajor(self.tonespace),
+                "g": keys.GMajor(self.tonespace),
+                "af": keys.AFlatMajor(self.tonespace),
+                "a": keys.AMajor(self.tonespace),
+                "bf": keys.BFlatMajor(self.tonespace),
+                "b": keys.BMajor(self.tonespace)
+            },
+            "minor": {
+                "c": keys.CMinor(self.tonespace),
+                "cs": keys.CSharpMinor(self.tonespace),
+                "d": keys.DMinor(self.tonespace),
+                "ds": keys.DSharpMinor(self.tonespace),
+                "ef": keys.EFlatMinor(self.tonespace),
+                "e": keys.EMinor(self.tonespace),
+                "f": keys.FMinor(self.tonespace),
+                "fs": keys.FSharpMinor(self.tonespace),
+                "g": keys.GMinor(self.tonespace),
+                "gs": keys.GSharpMinor(self.tonespace),
+                "af": keys.AFlatMinor(self.tonespace),
+                "a": keys.AMinor(self.tonespace),
+                "as": keys.ASharpMinor(self.tonespace),
+                "bf": keys.BFlatMinor(self.tonespace),
+                "b": keys.BMinor(self.tonespace)
+            },
+            "harmonic": {
+                "c": keys.CMinorH(self.tonespace),
+                "cs": keys.CSharpMinorH(self.tonespace),
+                "d": keys.DMinorH(self.tonespace),
+                "ds": keys.DSharpMinorH(self.tonespace),
+                "ef": keys.EFlatMinorH(self.tonespace),
+                "e": keys.EMinorH(self.tonespace),
+                "f": keys.FMinorH(self.tonespace),
+                "fs": keys.FSharpMinorH(self.tonespace),
+                "g": keys.GMinorH(self.tonespace),
+                "gs": keys.GSharpMinorH(self.tonespace),
+                "af": keys.AFlatMinorH(self.tonespace),
+                "a": keys.AMinorH(self.tonespace),
+                "as": keys.ASharpMinorH(self.tonespace),
+                "bf": keys.BFlatMinorH(self.tonespace),
+                "b": keys.BMinorH(self.tonespace)
+            }
+        }
 
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
@@ -281,23 +338,14 @@ class Piece:
         new_index = index_of_my_root + relationship
         new_root = (self.key.letters * 2)[new_index]
 
-        if mode == "major":
-            key_list = major_keys()
-        elif mode == "minor":
-            key_list = minor_keys()
-        elif mode == "harmonic":
-            key_list = harmonic_keys()
-
         try:
-            new_key = [key for key in key_list if key.root == new_root][0]
-        except IndexError:
+            return self.key_dictionary[mode][new_root]
+        except KeyError:
             try:
                 new_root2 = self.key.tonespace.equivalent_letters[new_root]
-                new_key = [key for key in key_list if key.root == new_root2][0]
-            except IndexError:
-                raise IndexError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
-
-        return new_key
+                return self.key_dictionary[mode][new_root2]
+            except KeyError:
+                raise KeyError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
 
     def relative_major_key(self, relationship):
         return self.relative_key("major", relationship)
