@@ -38,7 +38,7 @@ class MadRush(Piece):
         sections['A1'] = {
             'treble': self.rests(1) * 4,
             'bass1': doublet_bar(chord1[-2:], bars=2) + self.notes([chord2[1], chord2[3]], 8) + doublet_bar(chord2[2:], 1.75),
-            'bass2': self.notes([chord1[0]] * 2 + [chord2[0]] * 2, 1, ["~", ""])
+            'bass2': self.notes([chord1[0]] * 2 + [chord2[0]] * 2, 1, "~ ")
         }
 
         sections['A2'] = {}
