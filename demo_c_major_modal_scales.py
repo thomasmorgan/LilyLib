@@ -44,5 +44,5 @@ class CMajorModalScales(Piece):
             self.score[staff] = [basic[staff], notes[staff], scale[staff], looped[staff], smart[staff]]
 
 
-def main():
+if __name__ == "__main__":
     CMajorModalScales()

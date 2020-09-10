@@ -29,5 +29,5 @@ class PreludeInC(Piece):
             self.motif(s)
 
 
-def main():
+if __name__ == "__main__":
     PreludeInC()

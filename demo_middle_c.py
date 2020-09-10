@@ -11,5 +11,5 @@ class MiddleC(Piece):
         self.score["bass"] = self.notes("c`", 1)
 
 
-def main():
+if __name__ == "__main__":
     MiddleC()

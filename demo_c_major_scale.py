@@ -11,5 +11,5 @@ class CMajorScale(Piece):
         self.score["bass"] = self.scale("c`", "c", 8) + self.scale("c", 8, 8)
 
 
-def main():
+if __name__ == "__main__":
     CMajorScale()
