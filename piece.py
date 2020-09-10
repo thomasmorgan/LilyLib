@@ -176,6 +176,7 @@ class Piece:
         dur = flatten([dur])
         dur = flatten([d.split(" ") if isinstance(d, str) else d for d in dur])
         orn = flatten([ornamentation])
+        orn = flatten([o.split(" ") if isinstance(o, str) and '"' not in o else o for o in orn])
 
         max_length = max([len(tones), len(dur), len(orn)])
 
