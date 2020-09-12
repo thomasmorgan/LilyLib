@@ -47,6 +47,14 @@ def copy(List):
     return [deepcopy(x) for x in List]
 
 
+def merge(*motifs):
+    merged = motifs[0]
+    for motif in motifs[1:]:
+        for key in merged:
+            merged[key] += motif[key]
+    return merged
+
+
 def map_harmony_to_int(harmony):
     if not isinstance(harmony, str):
         return harmony
