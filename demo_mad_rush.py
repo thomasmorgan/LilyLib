@@ -22,7 +22,7 @@ class MadRush(Piece):
             return self.notes(note_pair, 8) * int(4 * bars)
 
         def arpeggio1(arp, bars=1, tempo=True):
-            notes = pattern(arp, 1, 2, 3, 4, 3, 2, 1) * int(4 * bars)
+            notes = pattern(arp, 1, 2, 3, 4, 3, 2) * int(4 * bars)
             if tempo:
                 notes = self.tempo_change("12/8") + notes
             return notes
@@ -34,46 +34,49 @@ class MadRush(Piece):
             if chord == "root":
                 motif = {
                     'treble': triplet_bar(pattern(root_chord, 6, 5), bars=bars),
-                    'bass1': doublet_bar(pattern(root_chord, 2, 3), bars=bars)
+                    'bass1': doublet_bar(pattern(root_chord, 2, 3), bars=bars),
+                    'bass2': self.notes(pattern(root_chord, 1, 1), 1, "~ ") * int(bars / 2)
                 }
             elif chord == "iii":
                 motif = {
                     'treble': triplet_bar(pattern(iii_chord, 6, 4), bars=bars),
-                    'bass1': doublet_bar(pattern(iii_chord, 2, 3), bars=bars)
+                    'bass1': doublet_bar(pattern(iii_chord, 2, 3), bars=bars),
+                    'bass2': self.notes(pattern(iii_chord, 1, 1), 1, "~ ") * int(bars / 2)
                 }
                 if 'low first' in tweaks:
                     motif['bass1'][0] = iii_chord[0]
+                    motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
             elif chord == "iii7":
                 motif = {
                     'treble': triplet_bar(pattern(iii7_chord, 6, 4), bars=bars),
                     'bass1': doublet_bar(pattern(iii7_chord, 2, 3), bars=bars)
                 }
 
+            if 'no treble' in tweaks:
+                motif['treble'] = self.rests(1) * bars
+
             return motif
 
         def merge(*motifs):
             combined = {
                 'treble': [],
-                'bass1': []
+                'bass1': [],
+                'bass2': []
             }
             for motif in motifs:
                 combined['treble'] += motif['treble']
                 combined['bass1'] += motif['bass1']
+                combined['bass2'] += motif['bass2']
             return combined
 
         sections = {}
 
-        sections['A1'] = {
-            'treble': self.rests(1) * 4,
-            'bass1': merge(A_motif('root', 2), A_motif('iii', 2, 'low first'))['bass1'],
-            'bass2': self.notes(pattern(root_chord, 1, 1) + self.transpose(pattern(iii_chord, 3, 3), -2), 1, "~ ")
-        }
+        sections['A1'] = merge(A_motif('root', 2, 'no treble'), A_motif('iii', 2, 'no treble', 'low first'))
 
         sections['A2'] = merge(A_motif('root', 2), A_motif('iii', 2))
-        sections['A2']['bass2'] = self.notes(pattern(root_chord, 1, 1) + pattern(iii_chord, 1, 1), 1, "~ ")
 
-        sections['A3'] = merge(A_motif('root', 1), A_motif('iii7', 0.5), A_motif('root', 0.5), A_motif('iii', 2))
-        sections['A3']['bass2'] = self.notes(pattern(root_chord, 1), 1) + self.notes(pattern(iii7_chord, 1, 1) + pattern(root_chord, 1, 1), 4) + self.notes(pattern(iii_chord, 1, 1), 1, "~ ")
+        # sections['A3'] = merge(A_motif('root', 1), A_motif('iii7', 0.5), A_motif('root', 0.5), A_motif('iii', 2))
+        # sections['A3']['bass2'] = self.notes(pattern(root_chord, 1), 1) + self.notes(pattern(iii7_chord, 1, 1) + pattern(root_chord, 1, 1), 4) + self.notes(pattern(iii_chord, 1, 1), 1, "~ ")
 
         # sections['A3'] = {}
         # sections['A3'] = {
@@ -122,7 +125,7 @@ class MadRush(Piece):
         for section in sections:
             self.name(sections[section]['treble'], section)
 
-        A = ['A1', 'A2', 'A3']
+        A = ['A1', 'A2']
 
         structure = [A]
 
