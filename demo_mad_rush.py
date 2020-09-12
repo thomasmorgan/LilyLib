@@ -11,9 +11,9 @@ class MadRush(Piece):
 
     def write_score(self):
 
-        root_chord = self.arpeggio(self.key.root, 6)
-        iii_chord = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in root_chord]
-        iii7_chord = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in root_chord]
+        root = self.arpeggio(self.key.root, 6)
+        iii = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in root]
+        iii7 = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in root]
 
         def triplet_bar(note_pair, bars=1):
             return self.triplets(self.notes(note_pair, 8) * int(6 * bars))
@@ -31,26 +31,24 @@ class MadRush(Piece):
             return arpeggio1(arp, tempo=False) + self.tempo_change("14/8") + pattern(arp, 1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2) * 2
 
         def A_motif(chord, bars, *tweaks):
-            if chord == "root":
-                motif = {
-                    'treble': triplet_bar(pattern(root_chord, 6, 5), bars=bars),
-                    'bass1': doublet_bar(pattern(root_chord, 2, 3), bars=bars),
-                    'bass2': self.notes(pattern(root_chord, 1, 1), 1, "~ ") * int(bars / 2)
-                }
-            elif chord == "iii":
-                motif = {
-                    'treble': triplet_bar(pattern(iii_chord, 6, 4), bars=bars),
-                    'bass1': doublet_bar(pattern(iii_chord, 2, 3), bars=bars),
-                    'bass2': self.notes(pattern(iii_chord, 1, 1), 1, "~ ") * int(bars / 2)
-                }
-                if 'low first' in tweaks:
-                    motif['bass1'][0] = iii_chord[0]
-                    motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
-            elif chord == "iii7":
-                motif = {
-                    'treble': triplet_bar(pattern(iii7_chord, 6, 4), bars=bars),
-                    'bass1': doublet_bar(pattern(iii7_chord, 2, 3), bars=bars)
-                }
+            motif = {}
+
+            if chord == root:
+                motif['treble'] = triplet_bar(pattern(chord, 6, 5), bars=bars)
+            else:
+                motif['treble'] = triplet_bar(pattern(chord, 6, 4), bars=bars)
+
+            motif['bass1'] = doublet_bar(pattern(chord, 2, 3), bars=bars)
+
+            if 'crotchet bass' in tweaks:
+                motif['bass2'] = self.notes(pattern(chord, 1), 4) * int(bars * 4)
+            else:
+                motif['bass2'] = flatten([self.notes(pattern(chord, 1), 1, "~") for i in range(bars)])
+                motif['bass2'][-1].ornamentation = ""
+
+            if 'low first' in tweaks:
+                motif['bass1'][0] = chord[0]
+                motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
 
             if 'no treble' in tweaks:
                 motif['treble'] = self.rests(1) * bars
@@ -71,11 +69,11 @@ class MadRush(Piece):
 
         sections = {}
 
-        sections['A1'] = merge(A_motif('root', 2, 'no treble'), A_motif('iii', 2, 'no treble', 'low first'))
+        sections['A1'] = merge(A_motif(root, 2, 'no treble'), A_motif(iii, 2, 'no treble', 'low first'))
 
-        sections['A2'] = merge(A_motif('root', 2), A_motif('iii', 2))
+        sections['A2'] = merge(A_motif(root, 2), A_motif(iii, 2))
 
-        # sections['A3'] = merge(A_motif('root', 1), A_motif('iii7', 0.5), A_motif('root', 0.5), A_motif('iii', 2))
+        sections['A3'] = merge(A_motif(root, 1), A_motif(iii7, 0.5, "crotchet bass"), A_motif(root, 0.5, "crotchet bass"), A_motif(iii, 2))
         # sections['A3']['bass2'] = self.notes(pattern(root_chord, 1), 1) + self.notes(pattern(iii7_chord, 1, 1) + pattern(root_chord, 1, 1), 4) + self.notes(pattern(iii_chord, 1, 1), 1, "~ ")
 
         # sections['A3'] = {}
@@ -125,7 +123,7 @@ class MadRush(Piece):
         for section in sections:
             self.name(sections[section]['treble'], section)
 
-        A = ['A1', 'A2']
+        A = ['A1', 'A2', 'A3']
 
         structure = [A]
 
