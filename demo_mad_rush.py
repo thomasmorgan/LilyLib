@@ -1,5 +1,5 @@
 from piece import Piece
-from util import flatten, pattern
+from util import flatten, pattern, subset, select
 
 
 class MadRush(Piece):
@@ -14,6 +14,8 @@ class MadRush(Piece):
         root = self.arpeggio(self.key.root, 6)
         iii = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in root]
         iii7 = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in root]
+        ii = self.transpose(root, 1, "scale")
+        ii7 = self.transpose(select(ii, 1), -1, "scale") + subset(ii, 2, 6)
 
         def triplet_bar(note_pair, bars=1):
             return self.triplets(self.notes(note_pair, 8) * int(6 * bars))
@@ -35,16 +37,19 @@ class MadRush(Piece):
 
             if chord == root:
                 motif['treble'] = triplet_bar(pattern(chord, [6, 5]), bars=bars)
+            elif chord == ii and 'low triplets' in tweaks:
+                motif['treble'] = triplet_bar(pattern(chord, [5, 4]), bars=bars)
             else:
                 motif['treble'] = triplet_bar(pattern(chord, [6, 4]), bars=bars)
 
             motif['bass1'] = doublet_bar(pattern(chord, [2, 3]), bars=bars)
 
             if 'crotchet bass' in tweaks:
-                motif['bass2'] = self.notes(pattern(chord, [1]), 4) * int(bars * 4)
+                motif['bass2'] = self.notes(select(chord, 1), 4) * int(bars * 4)
             else:
-                motif['bass2'] = self.notes(pattern(chord, [1] * bars), 1, "~")
-                motif['bass2'][-1].ornamentation = ""
+                motif['bass2'] = self.notes(select(chord, 1) * bars, 1, "~")
+                if 'extend tie' not in tweaks:
+                    motif['bass2'][-1].ornamentation = ""
 
             if 'low first' in tweaks:
                 motif['bass1'][0] = chord[0]
@@ -73,59 +78,18 @@ class MadRush(Piece):
 
         sections['A2'] = merge(A_motif(root, 2), A_motif(iii, 2))
 
-        sections['A3'] = merge(A_motif(root, 1), A_motif(iii7, 0.5, "crotchet bass"), A_motif(root, 0.5, "crotchet bass"), A_motif(iii, 2))
-        # sections['A3']['bass2'] = self.notes(pattern(root_chord, 1), 1) + self.notes(pattern(iii7_chord, 1, 1) + pattern(root_chord, 1, 1), 4) + self.notes(pattern(iii_chord, 1, 1), 1, "~ ")
+        sections['A3'] = merge(A_motif(root, 1), A_motif(iii7, 0.5, 'crotchet bass'), A_motif(root, 0.5, 'crotchet bass'), A_motif(iii, 2))
 
-        # sections['A3'] = {}
-        # sections['A3'] = {
-        #     'treble': triplet_bar(pattern(root_chord, 6, 5), bars=1) + triplet_bar(pattern(iii7_chord, 7, 5), bars=0.5) + triplet_bar(pattern(root_chord, 6, 5), bars=0.5) + triplet_bar(pattern(iii_chord, 6, 4), bars=2),
-        #     'bass1': doublet_bar(pattern(root_chord, 2, 3), bars=1) + doublet_bar(pattern(iii7_chord, 2, 3), bars=0.5) + doublet_bar(pattern(root_chord, 2, 3), bars=0.5) + doublet_bar(pattern(iii_chord, 2, 3), bars=2),
-        #     'bass2': self.notes(pattern(root_chord, 1), 1) + self.notes(pattern(iii7_chord, 1, 1) + pattern(root_chord, 1, 1), 4) + self.notes(pattern(iii_chord, 1) * 2, 1, "~ ")
-        # }
+        sections['A4'] = merge(A_motif(ii, 1, 'low triplets', 'extend tie'), A_motif(ii, 1), A_motif(root, 2))
 
-        #     'A3': {
-        #         'treble': self.repeat(triplet_bar("c`` a`") + triplet_bar('c`` g`', 0.5) + triplet_bar("c`` a`", 0.5) + triplet_bar('c`` e`', 2)),
-        #         'bass1': doublet_bar("a c`", 4),
-        #         'bass2': self.notes('f', 1) + self.notes('g g f f', 4) + self.notes('e e', 1, "~ ")
-        #     },
-        #     'A4': {
-        #         'treble': self.repeat(triplet_bar("bf` g`") + triplet_bar('d`` g`') + triplet_bar('c`` a`', 2)),
-        #         'bass1': doublet_bar('bf d`', 2) + doublet_bar('a c`', 2),
-        #         'bass2': self.notes("g g f f", 1, "~ ")
-        #     },
-        #     'A5': {
-        #         'treble': triplet_bar("bf` g`") + triplet_bar('d`` g`') + triplet_bar('c`` a`', 2),
-        #         'bass1': doublet_bar('bf d`', 2) + doublet_bar('a c`', 2),
-        #         'bass2': self.notes('g', 1) + self.notes('f f g g', 4) + self.notes('f f', 1, "~ ")
-        #     },
-        #     'B1': {
-        #         'treble': self.repeat(arp1(self.arpeggio7('a`', 'f``', dur=16), 2) + arp2(self.arpeggio('a`', 'a``', key=AMinor, dur=16))),
-        #         'bass': arp1(self.arpeggio('f', 'f,', dur=16), 2) + arp2(self.arpeggio('e', 'e,', key=AMinor, dur=16))
-        #     }
-        # }
-
-        # sections.update({
-        #     'B2': copy_section('B1')
-        # })
-        # sections['B2']['treble'] = self.repeat(sections['B2']['treble'][1:-1], 3)
-        # sections['B2']['treble'][26].tone.letter = 'g'
-        # sections['B2']['treble'][32].tone.letter = 'g'
-        # sections['B2']['bass'][24].tone.letter = 'g'
-        # sections['B2']['bass'][30].tone.letter = 'g'
-
-        # sections.update({
-        #     'B3': {
-        #         'treble': self.repeat(arp1(self.arpeggio7('g`', 'f``', key=GMinor, dur=16), 2) + arp2(self.arpeggio7('a`', 'f``'))),
-        #         'bass': arp1(self.arpeggio('g', 'g,', key=GMinor, dur=16), 2) + arp2(self.arpeggio('f', 'f,', dur=16))
-        #     }
-        # })
+        sections['A5'] = merge(A_motif(ii, 1, 'low triplets'), A_motif(ii7, 0.5, 'crotchet bass'), A_motif(ii, 0.5, 'crotchet bass'), A_motif(root, 2))
 
         for section in sections:
             self.name(sections[section]['treble'], section)
 
-        A = ['A1', 'A2', 'A3']
+        A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
-        structure = [A]
+        structure = [A, A, 'A1']
 
         self.score["treble"] = []
         self.score["bass"] = []
@@ -137,7 +101,7 @@ class MadRush(Piece):
                 self.score['bass'] += sections[section]['bass']
 
     def end_score(self):
-        return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/7)\n }\n }\n }')
+        return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/8)\n }\n }\n }')
 
 
 if __name__ == "__main__":
