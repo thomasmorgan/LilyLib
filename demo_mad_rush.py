@@ -1,5 +1,5 @@
 from piece import Piece
-from util import flatten, pattern, subset, select
+from util import flatten, pattern, subset, select, merge
 
 
 class MadRush(Piece):
@@ -59,18 +59,6 @@ class MadRush(Piece):
                 motif['treble'] = self.rests(1) * bars
 
             return motif
-
-        def merge(*motifs):
-            combined = {
-                'treble': [],
-                'bass1': [],
-                'bass2': []
-            }
-            for motif in motifs:
-                combined['treble'] += motif['treble']
-                combined['bass1'] += motif['bass1']
-                combined['bass2'] += motif['bass2']
-            return combined
 
         sections = {}
 
