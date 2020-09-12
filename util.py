@@ -28,7 +28,7 @@ def flatten(List):
     return List
 
 
-def pattern(List, *indexes):
+def pattern(List, indexes):
     new_list = []
     for i in indexes:
         new_list.append(List[i - 1])

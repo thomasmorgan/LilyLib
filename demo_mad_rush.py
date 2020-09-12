@@ -28,22 +28,22 @@ class MadRush(Piece):
             return notes
 
         def arpeggio2(arp):
-            return arpeggio1(arp, tempo=False) + self.tempo_change("14/8") + pattern(arp, 1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2) * 2
+            return arpeggio1(arp, tempo=False) + self.tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
 
         def A_motif(chord, bars, *tweaks):
             motif = {}
 
             if chord == root:
-                motif['treble'] = triplet_bar(pattern(chord, 6, 5), bars=bars)
+                motif['treble'] = triplet_bar(pattern(chord, [6, 5]), bars=bars)
             else:
-                motif['treble'] = triplet_bar(pattern(chord, 6, 4), bars=bars)
+                motif['treble'] = triplet_bar(pattern(chord, [6, 4]), bars=bars)
 
-            motif['bass1'] = doublet_bar(pattern(chord, 2, 3), bars=bars)
+            motif['bass1'] = doublet_bar(pattern(chord, [2, 3]), bars=bars)
 
             if 'crotchet bass' in tweaks:
-                motif['bass2'] = self.notes(pattern(chord, 1), 4) * int(bars * 4)
+                motif['bass2'] = self.notes(pattern(chord, [1]), 4) * int(bars * 4)
             else:
-                motif['bass2'] = flatten([self.notes(pattern(chord, 1), 1, "~") for i in range(bars)])
+                motif['bass2'] = self.notes(pattern(chord, [1] * bars), 1, "~")
                 motif['bass2'][-1].ornamentation = ""
 
             if 'low first' in tweaks:
