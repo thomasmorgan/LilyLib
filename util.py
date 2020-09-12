@@ -28,6 +28,10 @@ def flatten(List):
     return List
 
 
+def select(List, index):
+    return [List[index - 1]]
+
+
 def pattern(List, indexes):
     new_list = []
     for i in indexes:
