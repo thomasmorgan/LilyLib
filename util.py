@@ -40,7 +40,13 @@ def pattern(List, indexes):
 
 
 def subset(List, start, stop):
-    return List[start - 1:stop]
+    if stop >= start:
+        return List[start - 1:stop]
+    else:
+        if stop == 1:
+            return List[start - 1::-1]
+        else:
+            return List[start - 1:stop - 2:-1]
 
 
 def copy(List):
