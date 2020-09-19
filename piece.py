@@ -363,6 +363,24 @@ class Piece:
     def relative_harmonic_key(self, relationship):
         return self.relative_key("harmonic", relationship)
 
+    def relative_cis_key(self, relationship, harmonic=False):
+        if "major" in self.key.name:
+            return self.relative_major_key(relationship)
+        else:
+            if harmonic:
+                return self.relative_harmonic_key(relationship)
+            else:
+                return self.relative_minor_key(relationship)
+
+    def relative_trans_key(self, relationship, harmonic=False):
+        if "minor" in self.key.name:
+            return self.relative_major_key(relationship)
+        else:
+            if harmonic:
+                return self.relative_harmonic_key(relationship)
+            else:
+                return self.relative_minor_key(relationship)
+
     @property
     def I(self):
         return self.relative_major_key(0)
@@ -446,3 +464,59 @@ class Piece:
     @property
     def viih(self):
         return self.relative_harmonic_key(6)
+
+    @property
+    def Ic(self):
+        return self.relative_cis_key(0)
+
+    @property
+    def IIc(self):
+        return self.relative_cis_key(1)
+
+    @property
+    def IIIc(self):
+        return self.relative_cis_key(2)
+
+    @property
+    def IVc(self):
+        return self.relative_cis_key(3)
+
+    @property
+    def Vc(self):
+        return self.relative_cis_key(4)
+
+    @property
+    def VIc(self):
+        return self.relative_cis_key(5)
+
+    @property
+    def VIIc(self):
+        return self.relative_cis_key(6)
+
+    @property
+    def It(self):
+        return self.relative_trans_key(0)
+
+    @property
+    def IIt(self):
+        return self.relative_trans_key(1)
+
+    @property
+    def IIIt(self):
+        return self.relative_trans_key(2)
+
+    @property
+    def IVt(self):
+        return self.relative_trans_key(3)
+
+    @property
+    def Vt(self):
+        return self.relative_trans_key(4)
+
+    @property
+    def VIt(self):
+        return self.relative_trans_key(5)
+
+    @property
+    def VIIt(self):
+        return self.relative_trans_key(6)
