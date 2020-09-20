@@ -11,6 +11,8 @@ class MadRush(Piece):
 
     def write_score(self):
 
+        sections = {}
+
         aI = self.arpeggio(self.key.root, 6)
         aiii = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in aI]
         aiii7 = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in aI]
@@ -26,9 +28,9 @@ class MadRush(Piece):
         def A_motif(chord, bars, *tweaks):
             motif = {}
 
-            if chord == root:
+            if chord == aI:
                 motif['treble'] = triplet_bar(pattern(chord, [6, 5]), bars=bars)
-            elif chord == ii and 'low triplets' in tweaks:
+            elif chord == aii and 'low triplets' in tweaks:
                 motif['treble'] = triplet_bar(pattern(chord, [5, 4]), bars=bars)
             else:
                 motif['treble'] = triplet_bar(pattern(chord, [6, 4]), bars=bars)
@@ -51,26 +53,26 @@ class MadRush(Piece):
 
             return motif
 
-        sections = {}
+        sections['A1'] = merge(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
+        sections['A2'] = merge(A_motif(aI, 2), A_motif(aiii, 2))
+        sections['A3'] = merge(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
+        sections['A4'] = merge(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
+        sections['A5'] = merge(A_motif(aii, 1, 'low triplets'), A_motif(aii7, 0.5, 'crotchet bass'), A_motif(aii, 0.5, 'crotchet bass'), A_motif(aI, 2))
 
-        sections['A1'] = merge(A_motif(root, 2, 'no treble'), A_motif(iii, 2, 'no treble', 'low first'))
+        sections['A1.'] = {'treble': self.tempo_change('4/4') + duplicate(sections['A1']['treble']), 'bass1': duplicate(sections['A1']['bass1']), 'bass2': duplicate(sections['A1']['bass2'])}
 
-        sections['A2'] = merge(A_motif(root, 2), A_motif(iii, 2))
+        A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
-        sections['A3'] = merge(A_motif(root, 1), A_motif(iii7, 0.5, 'crotchet bass'), A_motif(root, 0.5, 'crotchet bass'), A_motif(iii, 2))
+
         def arpeggio_bar(arp, bars):
             return self.notes(pattern(arp, [1, 2, 3, 4, 3, 2]), 16) * int(4 * bars)
 
-        sections['A4'] = merge(A_motif(ii, 1, 'low triplets', 'extend tie'), A_motif(ii, 1), A_motif(root, 2))
         def altpeggio_bar(arp, bars):
             return self.tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
 
-        sections['A5'] = merge(A_motif(ii, 1, 'low triplets'), A_motif(ii7, 0.5, 'crotchet bass'), A_motif(ii, 0.5, 'crotchet bass'), A_motif(root, 2))
 
         for section in sections:
             self.name(sections[section]['treble'], section)
-
-        A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
         structure = [A, A, 'A1']
 
