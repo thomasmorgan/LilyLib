@@ -11,11 +11,11 @@ class MadRush(Piece):
 
     def write_score(self):
 
-        root = self.arpeggio(self.key.root, 6)
-        iii = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in root]
-        iii7 = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in root]
-        ii = self.transpose(root, 1, "scale")
-        ii7 = self.transpose(select(ii, 1), -1, "scale") + subset(ii, 2, 6)
+        aI = self.arpeggio(self.key.root, 6)
+        aiii = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in aI]
+        aiii7 = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in aI]
+        aii = self.transpose(aI, 1, "scale")
+        aii7 = self.transpose(select(aii, 1), -1, "scale") + subset(aii, 2, 6)
 
         def triplet_bar(note_pair, bars=1):
             return self.triplets(self.notes(note_pair, 8) * int(6 * bars))
