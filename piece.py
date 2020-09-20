@@ -365,23 +365,17 @@ class Piece:
     def relative_harmonic_key(self, relationship):
         return self.relative_key("harmonic", relationship)
 
-    def relative_cis_key(self, relationship, harmonic=False):
+    def relative_cis_key(self, relationship):
         if "major" in self.key.name:
             return self.relative_major_key(relationship)
         else:
-            if harmonic:
-                return self.relative_harmonic_key(relationship)
-            else:
-                return self.relative_minor_key(relationship)
+            return self.relative_minor_key(relationship)
 
-    def relative_trans_key(self, relationship, harmonic=False):
+    def relative_trans_key(self, relationship):
         if "minor" in self.key.name:
             return self.relative_major_key(relationship)
         else:
-            if harmonic:
-                return self.relative_harmonic_key(relationship)
-            else:
-                return self.relative_minor_key(relationship)
+            return self.relative_minor_key(relationship)
 
     @property
     def I(self):
