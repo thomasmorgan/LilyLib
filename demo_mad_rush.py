@@ -76,6 +76,20 @@ class MadRush(Piece):
         def altpeggio_bar(arp, bars):
             return self.tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
 
+        def B_motif(chord, bars, *tweaks):
+            motif = {}
+
+            if 'alt' not in tweaks:
+                motif['treble'] = arpeggio_bar(subset(chord, 5, 8), bars=bars)
+                motif['bass'] = arpeggio_bar(subset(chord, 4, 1), bars=bars)
+            else:
+                motif['treble'] = altpeggio_bar(subset(chord, 5, 8), bars=bars)
+                motif['bass'] = altpeggio_bar(subset(chord, 4, 1), bars=bars)
+
+            if 'tempo' in tweaks:
+                motif['treble'] = self.tempo_change("12/8") + motif['treble']
+
+            return motif
 
         for section in sections:
             self.name(sections[section]['treble'], section)
