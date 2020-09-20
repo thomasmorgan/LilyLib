@@ -23,15 +23,6 @@ class MadRush(Piece):
         def doublet_bar(note_pair, bars=1):
             return self.notes(note_pair, 8) * int(4 * bars)
 
-        def arpeggio1(arp, bars=1, tempo=True):
-            notes = pattern(arp, 1, 2, 3, 4, 3, 2) * int(4 * bars)
-            if tempo:
-                notes = self.tempo_change("12/8") + notes
-            return notes
-
-        def arpeggio2(arp):
-            return arpeggio1(arp, tempo=False) + self.tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
-
         def A_motif(chord, bars, *tweaks):
             motif = {}
 
@@ -67,8 +58,12 @@ class MadRush(Piece):
         sections['A2'] = merge(A_motif(root, 2), A_motif(iii, 2))
 
         sections['A3'] = merge(A_motif(root, 1), A_motif(iii7, 0.5, 'crotchet bass'), A_motif(root, 0.5, 'crotchet bass'), A_motif(iii, 2))
+        def arpeggio_bar(arp, bars):
+            return self.notes(pattern(arp, [1, 2, 3, 4, 3, 2]), 16) * int(4 * bars)
 
         sections['A4'] = merge(A_motif(ii, 1, 'low triplets', 'extend tie'), A_motif(ii, 1), A_motif(root, 2))
+        def altpeggio_bar(arp, bars):
+            return self.tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
 
         sections['A5'] = merge(A_motif(ii, 1, 'low triplets'), A_motif(ii7, 0.5, 'crotchet bass'), A_motif(ii, 0.5, 'crotchet bass'), A_motif(root, 2))
 
