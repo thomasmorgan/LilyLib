@@ -91,6 +91,13 @@ class MadRush(Piece):
 
             return motif
 
+        sections['B1'] = merge(B_motif(bI7, 2, 'tempo'), B_motif(biii, 1), B_motif(biii, 1, 'alt'))
+        sections['B2'] = merge(B_motif(bI7, 1, 'tempo'), B_motif(biii7, 0.5), B_motif(bI7, 0.5), B_motif(biii, 1), B_motif(biii, 1, 'alt'))
+        sections['B3'] = merge(B_motif(bii7, 2, 'tempo'), B_motif(bI7, 1), B_motif(bI7, 1, 'alt'))
+        sections['B4'] = merge(B_motif(bii7, 1, 'tempo'), B_motif(bii7d5, 1), B_motif(bI7, 1), B_motif(bI7, 1, 'alt'))
+
+        B = ['B1', 'B1', 'B2', 'B2', 'B2', 'B3', 'B3', 'B4']
+
         for section in sections:
             self.name(sections[section]['treble'], section)
 
