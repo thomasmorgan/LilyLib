@@ -1,5 +1,5 @@
 from piece import Piece
-from util import flatten, pattern, subset, select, merge
+from util import flatten, pattern, subset, select, merge, duplicate
 
 
 class MadRush(Piece):
