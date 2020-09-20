@@ -98,16 +98,14 @@ class MadRush(Piece):
 
         B = ['B1', 'B1', 'B2', 'B2', 'B2', 'B3', 'B3', 'B4']
 
-        def combine(lh, rh, bars):
-            lh = A_motif(lh, bars)
-            rh = B_motif(rh, bars)
+        def combine(lh, rh):
             return {
-                'treble': self.triplets(rh['treble']),
-                'bass1': lh['bass1'],
-                'bass2': lh['bass2'],
+                'treble': self.triplets(subset(sections[rh]['treble'], 2, 7) * 8 + subset(sections[rh]['treble'], 56, 61) * 8),
+                'bass1': sections[lh]['bass1'],
+                'bass2': sections[lh]['bass2'],
             }
 
-        sections['C1'] = merge(combine(aI, bI7, 2), combine(aiii, biii, 2))
+        sections['C1'] = combine('A2', 'B1')
 
         for section in sections:
             self.name(sections[section]['treble'], section)
