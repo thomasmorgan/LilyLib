@@ -42,7 +42,9 @@ class Piece:
             try:
                 key = key.split(" ")
                 letter = key[0].lower()
-                mode = key[1].lower()
+                mode = " ".join(key[1:]).lower()
+                if 'harmonic' in mode:
+                    mode = 'harmonic'
                 return self.key_dictionary[mode][letter]
             except Exception:
                 raise ValueError("{} is not a valid string format for a key".format(key))
