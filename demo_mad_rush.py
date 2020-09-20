@@ -106,11 +106,14 @@ class MadRush(Piece):
             }
 
         sections['C1'] = combine('A2', 'B1')
+        sections['C2'] = combine('A3', 'B2')
+
+        C = ['C1', 'C1', 'C2', 'C2']
 
         for section in sections:
             self.name(sections[section]['treble'], section)
 
-        structure = [A, A, 'A1']
+        structure = [A, A, 'A1', B, 'A1.', C]
 
         self.score["treble"] = []
         self.score["bass"] = []
