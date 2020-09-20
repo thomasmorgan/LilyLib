@@ -63,6 +63,12 @@ class MadRush(Piece):
 
         A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
+        bI7 = self.arpeggio(self.transpose(self.key.root, -1), 4) + self.arpeggio7(self.transpose(self.key.root, 9, 'scale'), 4)
+        biii = self.arpeggio(self.transpose(self.key.root, -8, 'scale'), 4, key=self.IIIt)
+        biii += self.arpeggio(self.transpose(self.key.root, 9, 'scale'), 4, key=self.IIIt)
+        biii7 = [self.transpose(t, i, 'scale') for t, i in zip(bI7, [1, 0, 0, 1, -1, 0, 0, 0])]
+        bii7 = self.transpose(subset(bI7, 1, 4), 1, 'scale') + self.transpose(subset(bI7, 5, 7), -1, 'scale') + select(bI7, 8)
+        bii7d5 = [self.transpose(t, i, 'semitone') for t, i in zip(bii7, [0, 0, -1, 0, 0, 0, -1, 0])]
 
         def arpeggio_bar(arp, bars):
             return self.notes(pattern(arp, [1, 2, 3, 4, 3, 2]), 16) * int(4 * bars)
