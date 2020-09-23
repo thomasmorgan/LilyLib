@@ -61,7 +61,7 @@ class MadRush(Piece):
 
         sections['A1.'] = {'treble': self.tempo_change('4/4') + duplicate(sections['A1']['treble']), 'bass1': duplicate(sections['A1']['bass1']), 'bass2': duplicate(sections['A1']['bass2'])}
 
-        A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
+        A = ['A1.', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
         bI7 = self.arpeggio(self.transpose(self.key.root, -1), 4) + self.arpeggio7(self.transpose(self.key.root, 9, 'scale'), 4)
         biii = self.arpeggio(self.transpose(self.key.root, -8, 'scale'), 4, key=self.IIIt)
@@ -112,12 +112,31 @@ class MadRush(Piece):
 
         C = ['C1', 'C1', 'C2', 'C2', 'C3', 'C3', 'C4']
 
-        D = []
+        def D_motif(chord, section):
+            motif = {}
+            motif['bass1'] = sections[section]['bass1']
+            motif['bass2'] = sections[section]['bass2']
+            if len(chord) == 3:
+                motif['treble'] = self.harmonize(self.notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1)
+            else:
+                motif['treble'] = self.harmonize(self.notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1)
+            return motif
+
+        diii = self.transpose(self.transpose(self.arpeggio(self.key.root, 3), 2, "scale"), 1)
+        dI = [self.transpose(self.key.root, 2)]
+        dii = self.transpose([self.key.root, self.ii.iv], 2) + [self.transpose(self.key.iv, 1)]
+
+        sections['D1'] = D_motif(diii, 'A2')
+        sections['D2'] = D_motif(diii, 'A3')
+        sections['D3'] = D_motif(dI * 2, 'A4')
+        sections['D4'] = D_motif(dii, 'A5')
+
+        D = ['D1', 'D1', 'D2', 'D2', 'D3', 'D3', 'D4']
 
         for section in sections:
             self.name(sections[section]['treble'], section)
 
-        structure = [A, A, 'A1', B, 'A1.', C, 'A1', C, 'A1', B, A, A, 'A1', B, 'A1', D]
+        structure = [A, A, 'A1', B, 'A1.', C, 'A1', C, 'A1', B, A, A, 'A1', B, 'A1.', D, D, 'A1']
 
         self.score["treble"] = []
         self.score["bass"] = []
