@@ -11,6 +11,8 @@ class MadRush(Piece):
 
     def write_score(self):
 
+        mode = "full"
+
         sections = {}
 
         aI = self.arpeggio(self.key.root, 6)
@@ -54,14 +56,13 @@ class MadRush(Piece):
             return motif
 
         sections['A1'] = merge(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
+        sections['A1']['treble'] = self.tempo_change('4/4') + sections['A1']['treble']
         sections['A2'] = merge(A_motif(aI, 2), A_motif(aiii, 2))
         sections['A3'] = merge(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
         sections['A4'] = merge(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
         sections['A5'] = merge(A_motif(aii, 1, 'low triplets'), A_motif(aii7, 0.5, 'crotchet bass'), A_motif(aii, 0.5, 'crotchet bass'), A_motif(aI, 2))
 
-        sections['A1.'] = {'treble': self.tempo_change('4/4') + duplicate(sections['A1']['treble']), 'bass1': duplicate(sections['A1']['bass1']), 'bass2': duplicate(sections['A1']['bass2'])}
-
-        A = ['A1.', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
+        A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
         bI7 = self.arpeggio(self.transpose(self.key.root, -1), 4) + self.arpeggio7(self.transpose(self.key.root, 9, 'scale'), 4)
         biii = self.arpeggio(self.transpose(self.key.root, -8, 'scale'), 4, key=self.IIIt)
@@ -106,6 +107,7 @@ class MadRush(Piece):
             }
 
         sections['C1'] = combine('A2', 'B1')
+        sections['C1']['treble'] = self.tempo_change('4/4') + sections['C1']['treble']
         sections['C2'] = combine('A3', 'B2')
         sections['C3'] = combine('A4', 'B3')
         sections['C4'] = combine('A5', 'B4')
@@ -136,11 +138,17 @@ class MadRush(Piece):
         for section in sections:
             self.name(sections[section]['treble'], section)
 
-        structure = [A, A, 'A1', B, 'A1.', C, 'A1', C, 'A1', B, A, A, 'A1', B, 'A1.', D, D, 'A1']
+        structure = [A, A, 'A1', B, 'A1', C, 'A1', C, 'A1', B, A, A, 'A1', B, 'A1', D, D, 'A1']
 
         self.score["treble"] = []
         self.score["bass"] = []
-        for section in flatten(structure):
+
+        if mode == "full":
+            sections_to_print = flatten(structure)
+        elif mode == "summary":
+            sections_to_print = sections
+
+        for section in sections_to_print:
             self.score["treble"] += sections[section]['treble'] + ["\\break"]
             if 'B' not in section:
                 self.score['bass'] += self.voices(sections[section]['bass1'], sections[section]['bass2'])
