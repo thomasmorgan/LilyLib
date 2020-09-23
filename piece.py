@@ -313,6 +313,25 @@ class Piece:
         if mode not in ["octave", "scale", "semitone"]:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
+    def harmonize(self, notes, intervals, mode="octave"):
+        chords = []
+        if not isinstance(notes, list):
+            notes = [notes]
+        if not isinstance(intervals, list):
+            intervals = [intervals]
+        if not isinstance(mode, list):
+            mode = [mode]
+        max_length = max([len(notes), len(intervals), len(mode)])
+        zip_list = zip(range(max_length), cycle(notes), cycle(intervals), cycle(mode))
+        for i, note, interval, mode in zip_list:
+            chord = [note]
+            if not isinstance(interval, list):
+                interval = [interval]
+            for intrvl in interval:
+                chord.append(self.transpose(note, intrvl, mode))
+            chords.append(self.chord([c.tone for c in chord], note.dur, note.ornamentation))
+        return chords
+
     def triplets(self, notes):
         return ['\\tuplet 3/2 {'] + notes + ['}']
 
