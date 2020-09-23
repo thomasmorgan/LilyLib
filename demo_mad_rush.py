@@ -141,8 +141,8 @@ class MadRush(Piece):
         self.score["treble"] = []
         self.score["bass"] = []
         for section in flatten(structure):
-            self.score["treble"] += sections[section]['treble']
-            if 'A' in section or 'C' in section:
+            self.score["treble"] += sections[section]['treble'] + ["\\break"]
+            if 'B' not in section:
                 self.score['bass'] += self.voices(sections[section]['bass1'], sections[section]['bass2'])
             else:
                 self.score['bass'] += sections[section]['bass']
