@@ -149,7 +149,7 @@ class MadRush(Piece):
             sections_to_print = sections
 
         for section in sections_to_print:
-            self.score["treble"] += sections[section]['treble'] + ["\\break"]
+            self.score["treble"] += sections[section]['treble'] + ["\\break\n"]
             if 'B' not in section:
                 self.score['bass'] += self.voices(sections[section]['bass1'], sections[section]['bass2'])
             else:
