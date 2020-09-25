@@ -117,7 +117,7 @@ class Piece:
         raise NotImplementedError("You must overwrite write_score to create a piece")
 
     def __str__(self):
-        printed_score = self.header() + self.start_score()
+        printed_score = self.header() + self.subtext() + self.start_score()
         initial_key = str(self.key)
         self.write_score()
         for stave in self.staves:
@@ -147,6 +147,9 @@ class Piece:
             + '    opus = "{}"\n'.format(self.opus)
             + '}\n'
         )
+
+    def subtext(self):
+        return ""
 
     def start_score(self):
         return('\\score { <<\n')
