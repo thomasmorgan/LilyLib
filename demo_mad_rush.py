@@ -141,7 +141,7 @@ class MadRush(Piece):
 
         diii = self.transpose(self.transpose(self.arpeggio(self.key.root, 3), 2, "scale"), 1)
         dI = [self.transpose(self.key.root, 2)]
-        dii = self.transpose([self.key.root, self.ii.iv], 2) + [self.transpose(self.key.iv, 1)]
+        dii = self.transpose([self.key.root, self.transpose(self.IIt.v, -1, "semitone")], 2) + [self.transpose(self.key.v, 2)]
 
         sections['D1'] = D_motif(diii, 'A2')
         sections['D2'] = D_motif(diii, 'A3')
