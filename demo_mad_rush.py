@@ -8,23 +8,24 @@ class MadRush(Piece):
         self.title = "Mad Rush"
         self.composer = "Philip Glass"
         self.key = "F Major"
+        self.summary = True
 
     def subtext(self):
-        return"""
-            \\markup {
-                \\column {
-                    \\line {\\bold {Overall:} \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{C}, A1, \\bold{C}, A1, \\bold{B}, \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{D}, \\bold{D}, A1}
-                    \\line {\\bold {Section A:} A1, A2, A2, A3, A3, A4, A4, A5}
-                    \\line {\\bold {Section B:} B1, B1, B2, B2, B2, B3, B3, B4}
-                    \\line {\\bold {Section C:} C1, C1, C2, C2, C3, C3, C4}
-                    \\line {\\bold {Section D:} D1, D1, D2, D2, D3, D3, D4}
-                }
-            }"""
+        if self.summary:
+            return"""
+                \\markup {
+                    \\column {
+                        \\line {\\bold {Overall:} \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{C}, A1, \\bold{C}, A1, \\bold{B}, \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{D}, \\bold{D}, A1}
+                        \\line {\\bold {Section A:} A1, A2, A2, A3, A3, A4, A4, A5}
+                        \\line {\\bold {Section B:} B1, B1, B2, B2, B2, B3, B3, B4}
+                        \\line {\\bold {Section C:} C1, C1, C2, C2, C3, C3, C4}
+                        \\line {\\bold {Section D:} D1, D1, D2, D2, D3, D3, D4}
+                    }
+                }"""
+        else:
+            return ""
 
     def write_score(self):
-
-        mode = "full"
-
         sections = {}
 
         aI = self.arpeggio(self.key.root, 6)
@@ -155,10 +156,10 @@ class MadRush(Piece):
         self.score["treble"] = []
         self.score["bass"] = []
 
-        if mode == "full":
-            sections_to_print = flatten(structure)
-        elif mode == "summary":
+        if self.summary:
             sections_to_print = sections
+        else:
+            sections_to_print = flatten(structure)
 
         for section in sections_to_print:
             self.score["treble"] += sections[section]['treble'] + ["\\break\n"]
