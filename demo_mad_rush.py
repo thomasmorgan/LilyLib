@@ -16,10 +16,12 @@ class MadRush(Piece):
                 \\markup {
                     \\column {
                         \\line {\\bold {Overall:} \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{C}, A1, \\bold{C}, A1, \\bold{B}, \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{D}, \\bold{D}, A1}
+                        \\line { - }
                         \\line {\\bold {Section A:} A1, A2, A2, A3, A3, A4, A4, A5}
                         \\line {\\bold {Section B:} B1, B1, B2, B2, B2, B3, B3, B4}
                         \\line {\\bold {Section C:} C1, C1, C2, C2, C3, C3, C4}
                         \\line {\\bold {Section D:} D1, D1, D2, D2, D3, D3, D4}
+                        \\line { - }
                     }
                 }"""
         else:
