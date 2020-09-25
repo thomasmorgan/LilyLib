@@ -6,6 +6,7 @@ from demo_arpeggios import Arpeggios
 from demo_chromatic_scales import ChromaticScales
 from demo_keys import AllKeys
 from demo_mad_rush import MadRush
+from demo_mad_rush_keyless import MadRushKeyless
 
 MiddleC()
 CMajorChord()
@@ -15,3 +16,4 @@ Arpeggios()
 ChromaticScales()
 AllKeys()
 MadRush()
+MadRushKeyless()
