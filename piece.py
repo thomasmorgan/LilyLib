@@ -268,6 +268,12 @@ class Piece:
         arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
         return self.series(arpeggio7_tones, start, stop_or_length, dur, step)
 
+    def dominant7(self, start, stop_or_length, dur=None, key=None, step=1):
+        key = self.keyify(key)
+        dominant7_letters = key.arpeggio_letters + [key.relative_chromatic_letter(10)]
+        dominant7_tones = [t for t in key.all_tones if t.letter in dominant7_letters]
+        return self.series(dominant7_tones, start, stop_or_length, dur, step)
+
     def chromatic(self, start, stop_or_length, dur=None, key=None, step=1):
         key = self.keyify(key)
         return self.series(key.all_tones, start, stop_or_length, dur, step)
