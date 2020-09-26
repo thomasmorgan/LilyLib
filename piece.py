@@ -228,12 +228,12 @@ class Piece:
 
         start = self.tonify(start)
         if start not in tones:
-            raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(start, tones))
+            raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(start, [str(t) for t in tones]))
 
         if not isinstance(stop_or_length, int):
             stop_or_length = self.tonify(stop_or_length)
             if stop_or_length not in tones:
-                raise ValueError("Cannot stop series on {} as it it not in tones: {}.".format(stop_or_length, tones))
+                raise ValueError("Cannot stop series on {} as it it not in tones: {}.".format(stop_or_length, [str(t) for t in tones]))
 
         if not isinstance(step, int):
             raise ValueError("series step must be an int, not {}".format(step))
