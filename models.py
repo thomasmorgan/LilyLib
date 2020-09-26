@@ -213,6 +213,7 @@ class Key:
                 if l not in all_letters and self.tonespace.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
 
+        self.all_letters = [l for l in self.tonespace.all_letters if l in all_letters]
         self.all_tones = [t for t in self.tonespace.tones if t.letter in all_letters]
 
     def init_scale_tones(self):
@@ -220,8 +221,8 @@ class Key:
 
     def init_arpeggio_tones(self):
         index_of_root = self.letters.index(self.root)
-        arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if t.letter in arpeggio_letters]
+        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_tones = [t for t in self.all_tones if t.letter in self.arpeggio_letters]
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
@@ -257,6 +258,11 @@ class Key:
         index_of_root = self.letters.index(self.root)
         new_index = index_of_root + relative_position
         return (self.letters * 2)[new_index]
+
+    def relative_chromatic_letter(self, relative_position):
+        index_of_root = self.all_letters.index(self.root)
+        new_index = index_of_root + relative_position
+        return (self.all_letters * 2)[new_index]
 
     @property
     def tonic(self):
