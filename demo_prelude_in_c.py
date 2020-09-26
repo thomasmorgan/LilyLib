@@ -1,4 +1,5 @@
 from piece import Piece
+from util import pattern
 
 
 class PreludeInC(Piece):
@@ -7,26 +8,25 @@ class PreludeInC(Piece):
         self.title = "Prelude in C"
         self.composer = "J. S. Bach"
         self.opus = "BVW 846"
-        self.tempo = "4/4"
-
-    def motif(self, tones):
-        notes = self.notes(tones, 16)
-        self.score["bass"] += 2 * (notes[0:2] + self.rests([8, 4]))
-        self.score["treble"] += 2 * (self.rests(8) + 2 * (notes[2:]))
 
     def write_score(self):
-        self.score["treble"] = []
-        self.score["bass"] = []
+        notes, tones, arpeggio, dominant7, rests, voices = self.notes, self.tones, self.arpeggio, self.dominant7, self.rests, self.voices
+        ii, V = 'D Minor', 'G Major'
+        self.score["treble"], self.score["bass"] = [], []
+
+        def motif(tones):
+            self.score["bass"] += 2 * voices(rests(16) + notes(pattern(tones, [2, 2]), ['8.', 4], "~ "), notes(pattern(tones, [1]), 2))
+            self.score["treble"] += 2 * (rests(8) + notes(pattern(tones, [3, 4, 5, 3, 4, 5]), 16)) + ["\n"]
 
         shapes = [
-            self.arpeggio('c`', 'e``'),
-            self.tones('c` d`') + self.arpeggio('a`', 'f``', root='d'),
-            self.arpeggio('b', 'g`', root='g') + self.arpeggio('d``', 'f``', root='d'),
-            self.arpeggio('c`', 'e``')
+            arpeggio('c`', 'e``'),
+            tones('c` d`') + arpeggio('a`', 'f``', key=ii),
+            pattern(dominant7('b', 'f``', key=V), [1, 2, 4, 6, 7]),
+            arpeggio('c`', 'e``')
         ]
 
         for s in shapes:
-            self.motif(s)
+            motif(s)
 
 
 if __name__ == "__main__":
