@@ -274,6 +274,12 @@ class Piece:
         dominant7_tones = [t for t in key.all_tones if t.letter in dominant7_letters]
         return self.series(dominant7_tones, start, stop_or_length, dur, step)
 
+    def diminished7(self, start, stop_or_length, dur=None, key=None, step=1):
+        key = self.keyify(key)
+        diminished7_letters = [key.relative_chromatic_letter(i) for i in [0, 3, 6, 9]]
+        diminished7_tones = [t for t in key.all_tones if t.letter in diminished7_letters]
+        return self.series(diminished7_tones, start, stop_or_length, dur, step)
+
     def chromatic(self, start, stop_or_length, dur=None, key=None, step=1):
         key = self.keyify(key)
         return self.series(key.all_tones, start, stop_or_length, dur, step)
