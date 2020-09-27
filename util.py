@@ -39,6 +39,10 @@ def pattern(List, indexes):
     return new_list
 
 
+def remove(List, indexes):
+    return [j for i, j in enumerate(List) if (i + 1) not in indexes]
+
+
 def subset(List, start, stop):
     if stop >= start:
         return List[start - 1:stop]
