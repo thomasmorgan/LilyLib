@@ -28,8 +28,8 @@ def flatten(List):
     return List
 
 
-def select(List, index):
-    return [List[index - 1]]
+def select(List, indexes):
+    return [j for i, j in enumerate(List) if (i + 1) in indexes]
 
 
 def pattern(List, indexes):
