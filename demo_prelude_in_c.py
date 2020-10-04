@@ -13,7 +13,7 @@ class PreludeInC(Piece):
 
     def write_score(self):
         notes, tones, chord, rests, voices = self.notes, self.tones, self.chord, self.rests, self.voices
-        arpeggio, arpeggio7, dominant7, diminished7 = self.arpeggio, self.arpeggio7, self.dominant7, self.diminished7
+        scale, arpeggio, arpeggio7, dominant7, diminished7 = self.scale, self.arpeggio, self.arpeggio7, self.dominant7, self.diminished7
         transpose = self.transpose
         self.score["treble"], self.score["bass"] = [], []
 
@@ -57,9 +57,31 @@ class PreludeInC(Piece):
         bar[19] = (arpeggio('c', 'e`'), 'I')
         bar[20] = (remove(dominant7('c', 'e`'), [2]), 'I D7')
 
+        bar[21] = (remove(arpeggio7('f,', 'e`', key='F Major'), [2, 3, 4]), 'IV7')
+        bar[22] = (remove(diminished7('fs,', 'ds`'), [2, 4, 5]), 'I d7')
+        bar[23] = (tones('af, f b c` d`'), 'IV ?')
+        bar[24] = (remove(arpeggio7('g,', 'd`', key='G Major'), [2, 3]), 'V7')
+
+        bar[25] = (remove(arpeggio('g,', 'e`'), [2]), 'I')
+        bar[26] = (tones('g, d g c` f`'), 'V 4/7')
+        bar[27] = (remove(dominant7('g,', 'f`', key='G Major'), [2, 4, 7]), 'V D7')
+        bar[28] = (tones('g,') + remove(diminished7('ds', 'fs`'), [2, 5]), 'V/i d7')
+
+        bar[29] = (remove(arpeggio('g,', 'g`'), [2, 6]), 'I')
+        bar[30] = bar[26]
+        bar[31] = bar[27]
+        bar[32] = (remove(dominant7('c,', 'e`'), [2, 3, 4, 6, 9]), 'I D7')
+
         for c in bar:
             if c:
                 motif(c)
+
+        self.score['treble'] += rests(8) + pattern(notes('d', 16) + arpeggio('f', 'f`', 16, key='F Major'), [2, 3, 4, 5, 4, 3, 4, 3, 2, 3, 2, 1, 2, 1])
+        self.score['treble'] += rests(8) + pattern(dominant7('g`', 'f``', 16, key='G Major'), [1, 2, 3, 4, 3, 2, 3, 2, 1, 2]) + pattern(scale('c`', 'e`', 16), [1, 3, 2, 1])
+        self.score["bass"] += 2 * voices(rests(16) + notes('b,', ['8.', 4, 2], "~ ~ "), notes('c,', 1))
+
+        self.score['treble'] += [chord(arpeggio('e`', 'c``'), 1)]
+        self.score['bass'] += [chord('c, c', 1)]
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/16)\n }\n }\n }')
