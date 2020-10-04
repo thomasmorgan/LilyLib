@@ -66,7 +66,7 @@ class PreludeInC(Piece):
                 motif(c)
 
         self.score['treble'] += rests(8) + pattern(notes('d', 16) + arpeggio('f', 'f`', 16, key='F Major'), [2, 3, 4, 5, 4, 3, 4, 3, 2, 3, 2, 1, 2, 1])
-        self.score['treble'] += rests(8) + pattern(dominant7('g`', 'f``', 16, key='G Major'), [1, 2, 3, 4, 3, 2, 3, 2, 1, 2]) + pattern(scale('c`', 'e`', 16), [1, 3, 2, 1])
+        self.score['treble'] += rests(8) + pattern(dominant7('g`', 'f``', 16, key='G Major'), [1, 2, 3, 4, 3, 2, 3, 2, 1, 2]) + pattern(scale('d`', 'f`', 16), [1, 3, 2, 1])
         self.score["bass"] += 2 * voices(rests(16) + notes('b,', ['8.', 4, 2], "~ ~ "), notes('c,', 1))
 
         self.score['treble'] += [chord(arpeggio('e`', 'c``'), 1)]
