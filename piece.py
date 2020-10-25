@@ -216,7 +216,7 @@ class Piece:
         series = tones[start_index:stop_index:step]
         if not dur:
             return series
-        return [Note(tone, dur) for tone in series]
+        return self.notes(series, dur)
 
     def validate_series_args(self, tones, start, stop_or_length, dur, step):
         if not isinstance(tones, list):

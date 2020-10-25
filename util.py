@@ -28,18 +28,21 @@ def flatten(List):
     return List
 
 
-def select(List, indexes):
+def select(List, *indexes):
+    indexes = flatten(list(indexes))
     return [j for i, j in enumerate(List) if (i + 1) in indexes]
 
 
-def pattern(List, indexes):
+def pattern(List, *indexes):
+    indexes = flatten(list(indexes))
     new_list = []
     for i in indexes:
         new_list.append(List[i - 1])
     return new_list
 
 
-def remove(List, indexes):
+def remove(List, *indexes):
+    indexes = flatten(list(indexes))
     return [j for i, j in enumerate(List) if (i + 1) not in indexes]
 
 
