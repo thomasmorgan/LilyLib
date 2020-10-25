@@ -33,8 +33,8 @@ class PreludeInC(Piece):
         bar = [''] * 40
 
         bar[1] = (arpeggio('c`', 'e``'), 'I')
-        bar[2] = (tones('c` d`') + arpeggio('a`', 'f``', key='D Minor'), 'ii D7')
-        bar[3] = (select(dominant7('b', 'f``', key='G Major'), [1, 2, 4, 6, 7]), 'V D7')
+        bar[2] = (remove(dominant7('c`', 'f``', key='D Minor'), 3, 5), 'ii D7')
+        bar[3] = (remove(dominant7('b', 'f``', key='G Major'), 3, 5), 'V D7')
         bar[4] = bar[1]
 
         bar[5] = (remove(arpeggio('c`', 'a``', key='A Minor'), [4]), 'vi')

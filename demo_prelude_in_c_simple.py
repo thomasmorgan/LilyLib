@@ -1,5 +1,5 @@
 from piece import Piece
-from util import pattern
+from util import pattern, select
 
 
 class PreludeInC(Piece):
@@ -15,8 +15,8 @@ class PreludeInC(Piece):
 
         def motif(c):
             tones = self.tones(c)
-            self.score["bass"] += 2 * voices(rests(16) + notes(pattern(tones, [2, 2]), ['8.', 4], "~ "), notes(pattern(tones, [1]), 2))
-            self.score["treble"] += 2 * (rests(8) + notes(pattern(tones, [3, 4, 5, 3, 4, 5]), 16)) + ["\n"]
+            self.score["bass"] += 2 * voices(rests(16) + notes(select(tones, 2), ['8.', 4], "~ "), notes(select(tones, 1), 2))
+            self.score["treble"] += 2 * (rests(8) + notes(pattern(tones, 2 * [3, 4, 5]), 16))
 
         bar = [''] * 40
 
