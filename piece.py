@@ -296,6 +296,9 @@ class Piece:
         self.validate_transpose_args(shift, mode)
 
         if isinstance(item, Tone):
+            if item.letter == 'r':
+                return item
+
             if mode == "octave":
                 new_pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
                 new_tone_string = item.letter + new_pitch
