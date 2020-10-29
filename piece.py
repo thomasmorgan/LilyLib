@@ -58,6 +58,9 @@ class Piece:
     def key_signature(self):
         return [str(self.key)]
 
+    def clef(self, clef):
+        return ['\\clef {}'.format(clef)]
+
     def create_key_dictionary(self):
         self.key_dictionary = {
             "major": {
