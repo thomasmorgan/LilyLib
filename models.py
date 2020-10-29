@@ -90,7 +90,10 @@ class ToneSpace():
     }
 
     def tone_with_string(self, string):
-        return [t for t in self.tones if str(t) == string][0]
+        try:
+            return [t for t in self.tones if str(t) == string][0]
+        except IndexError:
+            raise IndexError("Cannot find tone with string: {}".format(string))
 
 
 class Note:
