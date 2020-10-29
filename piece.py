@@ -356,6 +356,9 @@ class Piece:
     def grace(self, notes):
         return ['\\grace {'] + notes + ['}']
 
+    def ottava(self, notes, shift):
+        return ['\\ottava #{}'.format(shift)] + notes + ['\\ottava #0']
+
     def voices(self, *voices):
         score = ["<<\n"]
         for i, voice in enumerate(voices):
