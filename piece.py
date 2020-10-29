@@ -353,6 +353,9 @@ class Piece:
     def triplets(self, notes):
         return ['\\tuplet 3/2 {'] + notes + ['}']
 
+    def grace(self, notes):
+        return ['\\grace {'] + notes + ['}']
+
     def voices(self, *voices):
         score = ["<<\n"]
         for i, voice in enumerate(voices):
