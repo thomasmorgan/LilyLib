@@ -355,7 +355,8 @@ class Piece:
             if not isinstance(interval, list):
                 interval = [interval]
             for intrvl in interval:
-                chord.append(self.transpose(note, intrvl, mode))
+                if intrvl != 0:
+                    chord.append(self.transpose(note, intrvl, mode))
             chords.append(self.chord([c.tone for c in chord], note.dur, note.ornamentation))
         return chords
 
