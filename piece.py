@@ -353,7 +353,7 @@ class Piece:
         for i, note, interval, mode in zip_list:
             chord = [note]
             if not isinstance(interval, list):
-                interval = [interval]
+                interval = flatten([interval])
             for intrvl in interval:
                 if intrvl != 0:
                     chord.append(self.transpose(note, intrvl, mode))
