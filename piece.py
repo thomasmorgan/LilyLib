@@ -319,6 +319,12 @@ class Piece:
         elif isinstance(item, list):
             return [self.transpose(subitem, shift, mode) for subitem in item]
 
+        elif isinstance(item, dict):
+            new_dict = {}
+            for key in item:
+                new_dict[key] = self.transpose(item[key], shift, mode)
+            return new_dict
+
         elif isinstance(item, str):
             try:
                 return " ".join([str(t) for t in self.transpose(self.tones(item), shift, mode)])
