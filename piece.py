@@ -250,6 +250,8 @@ class Piece:
             return item
         if isinstance(item, str):
             return self.tonespace.tone_with_string(item)
+        if isinstance(item, list):
+            return[self.tonify(subitem) for subitem in list]
         raise ValueError("Cannot tonify {}, can only tonify Notes, Tones and strings".format(item))
 
     def make_stop_inclusive(self, start, stop):
