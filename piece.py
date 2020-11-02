@@ -254,6 +254,22 @@ class Piece:
             return[self.tonify(subitem) for subitem in list]
         raise ValueError("Cannot tonify {}, can only tonify Notes, Tones and strings".format(item))
 
+    def add(self, chords, tones):
+        tones = self.tonify(tones)
+        tones = flatten([tones])
+        chords = flatten([chords])
+        for c in chords:
+            for t in tones:
+                if t not in c.tones:
+                    c.tones.append(t)
+
+    def remove(self, chords, tones):
+        tones = self.tonify(tones)
+        tones = flatten([tones])
+        chords = flatten([chords])
+        for c in chords:
+            c.tones = [t for t in c.tones if t not in tones]
+
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
             return stop + 1
