@@ -317,16 +317,19 @@ class Piece:
             if item.letter == 'r':
                 return item
 
-            if mode == "octave":
-                new_pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
-                new_tone_string = item.letter + new_pitch
-                item = self.key.tonespace.tone_with_string(new_tone_string)
-            elif mode == "scale":
-                current_index = self.key.tones.index(item)
-                item = self.key.tones[current_index + shift]
-            elif mode == "semitone":
-                item = self.key.all_tones[self.key.all_tones.index(item) + shift]
-            return item
+            try:
+                if mode == "octave":
+                    new_pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
+                    new_tone_string = item.letter + new_pitch
+                    item = self.key.tonespace.tone_with_string(new_tone_string)
+                elif mode == "scale":
+                    current_index = self.key.tones.index(item)
+                    item = self.key.tones[current_index + shift]
+                elif mode == "semitone":
+                    item = self.key.all_tones[self.key.all_tones.index(item) + shift]
+                return item
+            except ValueError:
+                return self.transpose(self.tonespace.tone_with_string(self.tonespace.equivalent_letters[item.letter] + item.pitch), shift, mode)
 
         elif isinstance(item, Note):
             return Note(self.transpose(item.tone, shift, mode), item.dur, item.ornamentation)
