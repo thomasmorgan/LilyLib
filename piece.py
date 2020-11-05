@@ -240,9 +240,10 @@ class Piece:
         tones = flatten([tonify(tones)])
         chords = flatten([chords])
         for c in chords:
-            for t in tones:
-                if t not in c.tones:
-                    c.tones.append(t)
+            if isinstance(c, Chord):
+                for t in tones:
+                    if t not in c.tones:
+                        c.tones.append(t)
 
     def remove(self, chords, tones):
         tones = flatten(tonify(tones))
