@@ -1,5 +1,6 @@
 from piece import Piece
 from util import pattern, select
+from tonespace import tonify
 
 
 class PreludeInC(Piece):
@@ -14,7 +15,7 @@ class PreludeInC(Piece):
         self.score["treble"], self.score["bass"] = [], []
 
         def motif(c):
-            tones = self.tones(c)
+            tones = tonify(c)
             self.score["bass"] += 2 * voices(rests(16) + notes(select(tones, 2), ['8.', 4], "~ "), notes(select(tones, 1), 2))
             self.score["treble"] += 2 * (rests(8) + notes(pattern(tones, 2 * [3, 4, 5]), 16))
 

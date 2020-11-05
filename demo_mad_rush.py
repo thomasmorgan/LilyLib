@@ -34,7 +34,7 @@ class MadRush(Piece):
         aiii = self.arpeggio('e', 6, key='A Minor')
         aiii7 = pattern(self.arpeggio7('g', 7, key='A Minor'), [1, 2, 3, 5, 6, 7])
         aii = self.arpeggio('g', 6, key='G Minor')
-        aii7 = self.tones('f') + subset(aii, 2, 6)
+        aii7 = ['f'] + subset(aii, 2, 6)
 
         def triplet_bar(note_pair, bars=1):
             return self.triplets(self.notes(note_pair, 8) * int(6 * bars))
@@ -139,8 +139,8 @@ class MadRush(Piece):
             return motif
 
         diii = self.arpeggio('a`', 3, key='A Minor')
-        dI = self.tones('f`` f``')
-        dii = self.tones('f`` df`` c``')
+        dI = ['f``', 'f``']
+        dii = ['f``', 'df``', 'c``']
 
         sections['D1'] = D_motif(diii, 'A2')
         sections['D2'] = D_motif(diii, 'A3')

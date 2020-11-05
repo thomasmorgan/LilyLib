@@ -28,6 +28,15 @@ def flatten(List):
     return List
 
 
+def split_and_flatten(item):
+    item = flatten([item])
+    for subitem in item:
+        if not isinstance(subitem, str) and not isinstance(subitem, int):
+            raise ValueError("Cannot split and flatten {} as it is not a string or int".format(subitem))
+
+    return flatten([subitem.split(" ") if isinstance(subitem, str) else subitem for subitem in item])
+
+
 def select(List, *indexes):
     indexes = flatten(list(indexes))
     return [j for i, j in enumerate(List) if (i + 1) in indexes]

@@ -1,5 +1,6 @@
 from piece import Piece
 from util import flatten, pattern, subset, select, merge
+from tonespace import separate
 
 
 class MadRushKeyless(Piece):
@@ -31,8 +32,8 @@ class MadRushKeyless(Piece):
         sections = {}
 
         aI = self.arpeggio(self.key.root, 6)
-        aiii = [self.transpose(t, -1, "scale") if t.letter == self.key.root else t for t in aI]
-        aiii7 = [self.transpose(t, 1, "scale") if t.letter == self.key.root else t for t in aI]
+        aiii = [self.transpose(t, -1, "scale") if separate(t)[0] == self.key.root else t for t in aI]
+        aiii7 = [self.transpose(t, 1, "scale") if separate(t)[0] == self.key.root else t for t in aI]
         aii = self.transpose(aI, 1, "scale")
         aii7 = self.transpose(select(aii, 1), -1, "scale") + subset(aii, 2, 6)
 

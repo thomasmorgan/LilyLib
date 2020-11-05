@@ -1,5 +1,6 @@
 from piece import Piece
 from util import pattern, select, remove, subset
+from tonespace import tonify
 
 
 class PreludeInC(Piece):
@@ -12,16 +13,16 @@ class PreludeInC(Piece):
         self.annotate = True
 
     def write_score(self):
-        notes, tones, chord, rests, voices = self.notes, self.tones, self.chord, self.rests, self.voices
+        notes, chord, rests, voices = self.notes, self.chord, self.rests, self.voices
         scale, arpeggio, arpeggio7, dominant7, diminished7 = self.scale, self.arpeggio, self.arpeggio7, self.dominant7, self.diminished7
         transpose = self.transpose
         self.score["treble"], self.score["bass"] = [], []
 
         def motif(c):
-            tones = c[0]
+            tones = tonify(c[0])
             if self.summary:
-                bass = [chord(subset(tones, 1, 2), 4)]
-                treble = [chord(subset(tones, 3, 5), 4)]
+                bass = chord(subset(tones, 1, 2), 4)
+                treble = chord(subset(tones, 3, 5), 4)
             else:
                 bass = 2 * voices(rests(16) + notes(pattern(tones, [2, 2]), ['8.', 4], "~ "), notes(pattern(tones, [1]), 2))
                 treble = 2 * (rests(8) + notes(pattern(tones, [3, 4, 5, 3, 4, 5]), 16)) + ["\n"]
@@ -38,9 +39,9 @@ class PreludeInC(Piece):
         bar[4] = bar[1]
 
         bar[5] = (remove(arpeggio('c`', 'a``', key='A Minor'), [4]), 'vi')
-        bar[6] = (tones('c`') + arpeggio('d`', 'd``', key='D Major'), 'II D7')
+        bar[6] = (['c`'] + arpeggio('d`', 'd``', key='D Major'), 'II D7')
         bar[7] = (transpose(bar[5][0], -1, 'scale'), 'V')
-        bar[8] = (tones('b') + arpeggio('c`', 'c``'), 'I7')
+        bar[8] = (['b'] + arpeggio('c`', 'c``'), 'I7')
 
         bar[9] = (remove(arpeggio7('a', 'c``', key='A Minor'), [5]), 'vi7')
         bar[10] = (select(dominant7('d', 8, key='D Major'), [1, 3, 5, 6, 8]), 'II D7')
@@ -59,13 +60,13 @@ class PreludeInC(Piece):
 
         bar[21] = (remove(arpeggio7('f,', 'e`', key='F Major'), [2, 3, 4]), 'IV7')
         bar[22] = (remove(diminished7('fs,', 'ds`'), [2, 4, 5]), 'I d7')
-        bar[23] = (tones('af, f b c` d`'), 'IV ?')
+        bar[23] = ('af, f b c` d`', 'IV ?')
         bar[24] = (remove(arpeggio7('g,', 'd`', key='G Major'), [2, 3]), 'V7')
 
         bar[25] = (remove(arpeggio('g,', 'e`'), [2]), 'I')
-        bar[26] = (tones('g, d g c` f`'), 'V 4/7')
+        bar[26] = ('g, d g c` f`', 'V 4/7')
         bar[27] = (remove(dominant7('g,', 'f`', key='G Major'), [2, 4, 7]), 'V D7')
-        bar[28] = (tones('g,') + remove(diminished7('ds', 'fs`'), [2, 5]), 'V/i d7')
+        bar[28] = (['g,'] + remove(diminished7('ds', 'fs`'), [2, 5]), 'V/i d7')
 
         bar[29] = (remove(arpeggio('g,', 'g`'), [2, 6]), 'I')
         bar[30] = bar[26]

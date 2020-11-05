@@ -1,5 +1,7 @@
 from piece import Piece
-from util import merge, subset, select, duplicate
+from util import merge, subset, select, flatten
+from copy import deepcopy
+from tonespace import tonify
 
 
 class MarcheFunebre(Piece):
@@ -22,7 +24,7 @@ class MarcheFunebre(Piece):
 
     def write_score(self):
 
-        grace, notes, transpose, harmonize, rests, tones, scale, chord, arpeggio, diminished7, voices, add, name, remove = self.grace, self.notes, self.transpose, self.harmonize, self.rests, self.tones, self.scale, self.chord, self.arpeggio, self.diminished7, self.voices, self.add, self.name, self.remove
+        grace, notes, transpose, harmonize, rests, scale, chord, arpeggio, diminished7, voices, add, name, remove = self.grace, self.notes, self.transpose, self.harmonize, self.rests, self.scale, self.chord, self.arpeggio, self.diminished7, self.voices, self.add, self.name, self.remove
 
         """ Intro """
 
@@ -45,10 +47,10 @@ class MarcheFunebre(Piece):
             return rise(tone) + 3 * fall2(tone) + rests(8)
 
         def plod(tone):
-            tone = tones(tone) * 2
+            tone = tonify(tone)
             return 2 * plink(tone[0]) + plonk(tone[1])
 
-        plodding = [plod(x) for x in 4 * ['ef'] + ['ef f', 'f gf', 'ef f']] + [plonk('f') + plonk2('bf')]
+        plodding = [plod(x) for x in 4 * ['ef ef'] + ['ef f', 'f gf', 'ef f']] + [plonk('f') + plonk2('bf')]
         plodding[0].insert(5, '\\stemDown')
 
         def drone1(tone, interval=-2):
@@ -83,7 +85,7 @@ class MarcheFunebre(Piece):
         rh_melody[4] = scale('f`', 'ef``', [8, 8, '8.', 16], step=2) + notes('df``', 2)
         rh_melody[5] = scale('bf`', 'ef``', [4, '8.', 16, '4.']) + notes('cf``', 8)
         rh_melody[6] = notes('bf` af` bf`', [4, 4, 2])
-        rh_melody[7] = duplicate(rh_melody[5])
+        rh_melody[7] = deepcopy(rh_melody[5])
         rh_melody[8] = scale('bf`', 'gf`', [4, 4, 2])
 
         lh_melody = transpose(rh_melody, -1)
@@ -110,13 +112,13 @@ class MarcheFunebre(Piece):
         lh_harmony[2] = transpose(rh_harmony[2], -1)
         add(lh_harmony[2], 'bf,')
         remove(lh_harmony[2], 'a,')
-        lh_harmony[3] = [chord('ef gf', dur=c.dur) for c in rh_harmony[3]]
+        lh_harmony[3] = [chord('ef gf', dur=c.dur) for c in flatten(rh_harmony[3])]
         lh_harmony[4] = transpose(rh_harmony[4], -1)
         lh_harmony[5] = transpose(rh_harmony[5], -1)
         add(subset(lh_harmony[5], 1, 3), 'df`')
         add(subset(lh_harmony[5], 4, 5), 'cf')
         lh_harmony[6] = transpose(rh_harmony[6], -1)
-        lh_harmony[7] = duplicate(subset(lh_harmony[5], 1, 4)) + [chord('cf ef af', 8)]
+        lh_harmony[7] = deepcopy(subset(lh_harmony[5], 1, 4)) + [chord('cf ef af', 8)]
         remove(lh_harmony[7], 'df`')
         lh_harmony[8] = [chord('df gf', 4), chord('df f', 4), chord('gf, df', 2)]
 
@@ -140,12 +142,12 @@ class MarcheFunebre(Piece):
         shifted_bass = self.key_signature + transpose(subset(plodding, 1, 7), 3, 'semitone') + self.tempo_change('2/4') + plonk('gs') + self.tempo_change('4/4')
 
         drone_c = drone1('fs`', 5) + drone1('d`', 5)
-        add(drone_c, 'fs`')
+        #add(drone_c, 'fs`')
         drone_c = self.key_signature + drone_c
 
         self.set_key('cs minor')
         drone_d = drone2('a`', 5) + subset(drone1('fs`', 5), 1, 3)
-        add(subset(drone_d, 1, 2), 'cs``')
+        #add(subset(drone_d, 1, 2), 'cs``')
 
         intro2 = {
             'treble': drone_c + drone_d,
