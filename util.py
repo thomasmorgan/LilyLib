@@ -68,6 +68,26 @@ def separate(tone):
             return tone, ''
 
 
+def pitch(tone):
+    return separate(tone)[1]
+
+
+def letter(tone):
+    return separate(tone)[0]
+
+
+def accent(tone):
+    let = letter(tone)
+    if len(let) == 1:
+        return ''
+    else:
+        return let[-1]
+
+
+def base_letter(tone):
+    return letter(tone)[0]
+
+
 def tonify(item):
     if isinstance(item, list):
         return [tonify(subitem) for subitem in item]
