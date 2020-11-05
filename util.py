@@ -1,21 +1,6 @@
 from copy import deepcopy
 
 
-def duplicate(item):
-    if isinstance(item, list):
-        return [duplicate(i) for i in item]
-
-    elif isinstance(item, str):
-        return copy.deepcopy(item)
-
-    else:
-        return item.duplicate()
-
-
-def print_error(message):
-    print("*** ERROR ***: {}".format(message))
-
-
 def flatten(List):
     while any([isinstance(i, list) or isinstance(i, tuple) for i in List]):
         new_list = []
@@ -100,21 +85,6 @@ def tonify(item):
             raise ValueError("Cannot tonify {}".format(item))
 
 
-def duplicate(item):
-    if isinstance(item, list):
-        return [duplicate(i) for i in item]
-
-    elif isinstance(item, str):
-        return copy.deepcopy(item)
-
-    else:
-        return item.duplicate()
-
-
-def print_error(message):
-    print("*** ERROR ***: {}".format(message))
-
-
 def select(List, *indexes):
     indexes = flatten(list(indexes))
     return [j for i, j in enumerate(List) if (i + 1) in indexes]
@@ -141,10 +111,6 @@ def subset(List, start, stop):
             return List[start - 1::-1]
         else:
             return List[start - 1:stop - 2:-1]
-
-
-def copy(List):
-    return [deepcopy(x) for x in List]
 
 
 def merge(*motifs):
