@@ -249,7 +249,8 @@ class Piece:
         tones = flatten(tonify(tones))
         chords = flatten([chords])
         for c in chords:
-            c.tones = [t for t in c.tones if t not in tones]
+            if isinstance(c, Chord):
+                c.tones = [t for t in c.tones if t not in tones]
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
