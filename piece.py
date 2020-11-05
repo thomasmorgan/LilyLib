@@ -344,23 +344,24 @@ class Piece:
         if mode not in ["octave", "scale", "semitone"]:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
-    def harmonize(self, notes, intervals, mode="octave"):
+    def harmonize(self, notes, intervals, mode="octave", key=None):
+        key = self.keyify(key)
         chords = []
-        if not isinstance(notes, list):
-            notes = [notes]
-        if not isinstance(intervals, list):
-            intervals = [intervals]
-        if not isinstance(mode, list):
-            mode = [mode]
+        notes = [notes] if not isinstance(notes, list) else notes
+        intervals = [intervals] if not isinstance(intervals, list) else intervals
+        mode = [mode] if not isinstance(mode, list) else mode
+
         max_length = max([len(notes), len(intervals), len(mode)])
         zip_list = zip(range(max_length), cycle(notes), cycle(intervals), cycle(mode))
+
         for i, note, interval, mode in zip_list:
-            tones = [note.tone]
-            if not isinstance(interval, list):
-                interval = [interval]
+            root = note.tone if isinstance(note, Note) else note
+            tones = [root]
+            interval = [interval] if not isinstance(interval, list) else interval
+
             for intrvl in interval:
                 if intrvl != 0:
-                    new_tone = self.transpose(note.tone, intrvl, mode)
+                    new_tone = self.transpose(root, intrvl, mode, key)
                     if new_tone not in tones:
                         tones.append(new_tone)
             chords += self.chord(tones, note.dur, note.ornamentation)
