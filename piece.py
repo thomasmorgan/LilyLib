@@ -292,8 +292,10 @@ class Piece:
         custom_tones = key.scale_subset(positions)
         return self.series(custom_tones, start, stop_or_length, dur, step)
 
-    def transpose(self, item, shift, mode="octave"):
+    def transpose(self, item, shift, mode="octave", key=None):
         self.validate_transpose_args(shift, mode)
+
+        key = self.keyify(key)
 
         if isinstance(item, dict):
             new_dict = {}
@@ -302,13 +304,13 @@ class Piece:
             return new_dict
 
         elif isinstance(item, list):
-            return [self.transpose(subitem, shift, mode) for subitem in item]
+            return [self.transpose(subitem, shift, mode, key) for subitem in item]
 
         elif isinstance(item, Chord):
-            return Chord(self.transpose(item.tones, shift, mode), item.dur, item.ornamentation)
+            return Chord(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
 
         elif isinstance(item, Note):
-            return Note(self.transpose(item.tone, shift, mode), item.dur, item.ornamentation)
+            return Note(self.transpose(item.tone, shift, mode, key), item.dur, item.ornamentation)
 
         elif item == 'r':
             return item
@@ -319,19 +321,19 @@ class Piece:
             except ValueError:
                 return item
             if isinstance(item, list):
-                return self.transpose(item, shift, mode)
+                return self.transpose(item, shift, mode, key)
             else:
                 try:
                     if mode == "octave":
-                        new_pitch = all_pitches[all_pitches.index(separate(item)[1]) + shift]
-                        return separate(item)[0] + new_pitch
+                        new_pitch = all_pitches[all_pitches.index(pitch(item)) + shift]
+                        return letter(item) + new_pitch
                     elif mode == "scale":
-                        current_index = self.key.tones.index(item)
-                        return self.key.tones[current_index + shift]
+                        current_index = key.tones.index(item)
+                        return key.tones[current_index + shift]
                     elif mode == "semitone":
-                        return self.key.all_tones[self.key.all_tones.index(item) + shift]
+                        return key.all_tones[key.all_tones.index(item) + shift]
                 except ValueError:
-                    return self.transpose(equivalent_letters[separate(item)[0]] + separate(item)[1], shift, mode)
+                    return self.transpose(equivalent_letters[letter(item)] + pitch(item), shift, mode, key)
 
         else:
             raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
