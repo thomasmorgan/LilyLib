@@ -1,7 +1,6 @@
 from piece import Piece
-from util import merge, subset, select, flatten
+from util import merge, subset, select, flatten, tonify
 from copy import deepcopy
-from tonespace import tonify
 
 
 class MarcheFunebre(Piece):
@@ -141,13 +140,11 @@ class MarcheFunebre(Piece):
         self.set_key('fs minor')
         shifted_bass = self.key_signature + transpose(subset(plodding, 1, 7), 3, 'semitone') + self.tempo_change('2/4') + plonk('gs') + self.tempo_change('4/4')
 
-        drone_c = drone1('fs`', 5) + drone1('d`', 5)
-        #add(drone_c, 'fs`')
-        drone_c = self.key_signature + drone_c
+        drone_c = self.key_signature + drone1('fs`', 5) + drone1('d`', 5)
+        add(drone_c, 'fs`')
 
         self.set_key('cs minor')
-        drone_d = drone2('a`', 5) + subset(drone1('fs`', 5), 1, 3)
-        #add(subset(drone_d, 1, 2), 'cs``')
+        drone_d = drone2('a`', [[2, 5], [3, 5], [3, 5], [3, 5]]) + subset(drone2('fs`', [[2, 5]]), 1, 2) + harmonize(notes('ds`', 2), [[2, 5]], 'scale', key='as minor')
 
         intro2 = {
             'treble': drone_c + drone_d,
