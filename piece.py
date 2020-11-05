@@ -1,7 +1,6 @@
 from models import Note, Chord, Key
 from staves import Treble, Bass
-from util import flatten, split_and_flatten
-from tonespace import all_tones, tonify, all_pitches, separate, equivalent_letters
+from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters
 
 import keys
 
@@ -410,7 +409,7 @@ class Piece:
             return self.key_dictionary[mode][new_root]
         except KeyError:
             try:
-                new_root2 = self.key.tonespace.equivalent_letters[new_root]
+                new_root2 = equivalent_letters[new_root]
                 return self.key_dictionary[mode][new_root2]
             except KeyError:
                 raise KeyError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))

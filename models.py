@@ -1,9 +1,8 @@
-import tonespace
-from util import flatten
+import util
 
 
 class Note:
-    """ The sounding of a single Tone for a specified duration. Can be printed as sheet music. """
+    """ The sounding of a single tone for a specified duration. Can be printed as sheet music. """
 
     def __init__(self, tone, dur, ornamentation=""):
         self.check_init_arguments(tone, dur, ornamentation)
@@ -14,8 +13,8 @@ class Note:
     def check_init_arguments(self, tone, dur, ornamentation):
         if not isinstance(tone, str):
             raise ValueError("Cannot create note with {} as tone. tone must be a string.".format(tone))
-        if tone not in tonespace.all_tones:
-            raise ValueError("Cannot create note with {} as tone. tone must be in tonespace.all_tones.".format(tone))
+        if tone not in util.all_tones:
+            raise ValueError("Cannot create note with {} as tone. tone must be in util.all_tones.".format(tone))
         if not isinstance(dur, int) and not isinstance(dur, str):
             raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
         if not isinstance(ornamentation, str):
@@ -26,15 +25,15 @@ class Note:
 
     @property
     def letter(self):
-        return tonespace.separate(self.tone)[0]
+        return util.letter(self.tone)
 
     @property
     def pitch(self):
-        return tonespace.separate(self.tone)[1]
+        return util.pitch(self.tone)
 
 
 class Chord:
-    """ The simultaneous sounding of multiple Tones for a specified duration."""
+    """ The simultaneous sounding of multiple tones for a specified duration."""
 
     def __init__(self, tones, dur, ornamentation=""):
         tones = self.parse_tones(tones)
@@ -45,7 +44,7 @@ class Chord:
 
     def parse_tones(self, tones):
         parsed_tones = []
-        for t in flatten([tones]):
+        for t in util.flatten([tones]):
             if isinstance(t, str) and ' ' in t:
                 parsed_tones.extend(t.split(" "))
             else:
@@ -70,7 +69,7 @@ class Chord:
 
 
 class Stave:
-    """ A musical stave. It has a clef, and optionally a name if multiple staves have the same clef. """
+    """ A musical stave. It has a clef, and optionally a name (for if multiple staves have the same clef). """
 
     def __init__(self, clef, name=None):
         if clef not in ['treble', 'bass', 'G', '"G2"', 'french', 'GG', 'tenorG', 'soprano', 'mezzosoprano', 'C', 'alto', 'tenor', 'baritone']:
@@ -88,7 +87,7 @@ class Stave:
 
 class Key:
     """ A set of Tones represented by a key signature. Needs to be subclassed to be meaningful.
-    Key.tonespace.tones returns every possible Tone
+    util.all_tones returns every possible Tone
     Key.all_tones returns all unique tones in the key (i.e. excluding equivalent tones)
     Key.tones returns all Tones in the scale of the key
     Key.arpeggio_tones returns all Tones in the arpeggio of the key. """
@@ -115,33 +114,33 @@ class Key:
     def init_all_tones(self):
         all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in all_letters and tonespace.equivalent_letters[l] not in all_letters:
+            if l not in all_letters and util.equivalent_letters[l] not in all_letters:
                 all_letters.append(l)
 
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in all_letters and tonespace.equivalent_letters[l] not in all_letters:
+                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in all_letters and tonespace.equivalent_letters[l] not in all_letters:
+                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
 
-        self.all_letters = [l for l in tonespace.all_letters if l in all_letters]
-        self.all_tones = [t for t in tonespace.all_tones if tonespace.separate(t)[0] in all_letters]
+        self.all_letters = [l for l in util.all_letters if l in all_letters]
+        self.all_tones = [t for t in util.all_tones if util.letter(t) in all_letters]
 
     def init_scale_tones(self):
-        self.tones = [t for t in self.all_tones if tonespace.separate(t)[0] in self.letters]
+        self.tones = [t for t in self.all_tones if util.letter(t) in self.letters]
 
     def init_arpeggio_tones(self):
         index_of_root = self.letters.index(self.root)
         self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if tonespace.separate(t)[0] in self.arpeggio_letters]
+        self.arpeggio_tones = [t for t in self.all_tones if util.letter(t) in self.arpeggio_letters]
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
         custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
-        return [t for t in self.all_tones if tonespace.separate(t)[0] in custom_letters]
+        return [t for t in self.all_tones if util.letter(t) in custom_letters]
 
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
