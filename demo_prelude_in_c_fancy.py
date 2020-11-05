@@ -1,9 +1,8 @@
 from piece import Piece
-from util import pattern, select, remove, subset
-from tonespace import tonify
+from util import pattern, select, remove, subset, tonify
 
 
-class PreludeInC(Piece):
+class PreludeInCFancy(Piece):
 
     def details(self):
         self.title = "Prelude in C"
@@ -89,4 +88,4 @@ class PreludeInC(Piece):
 
 
 if __name__ == "__main__":
-    PreludeInC()
+    PreludeInCFancy()

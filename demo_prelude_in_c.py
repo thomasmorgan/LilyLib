@@ -1,6 +1,5 @@
 from piece import Piece
-from util import pattern, select, remove
-from tonespace import tonify
+from util import pattern, select, remove, tonify
 
 
 class PreludeInC(Piece):
