@@ -92,6 +92,18 @@ def base_letter(tone):
     return letter(tone)[0]
 
 
+def equivalent_tone(tone):
+    new_letter = equivalent_letters[letter(tone)]
+    if base_letter(tone) == 'c' and base_letter(new_letter) == 'b':
+        new_pitch = all_pitches[all_pitches.index(pitch(tone)) - 1]
+    elif base_letter(tone) == 'b' and base_letter(new_letter) == 'c':
+        new_pitch = all_pitches[all_pitches.index(pitch(tone)) + 1]
+    else:
+        new_pitch = pitch(tone)
+    new_tone = new_letter + new_pitch
+    return new_tone
+
+
 def tonify(item):
     if isinstance(item, list):
         return [tonify(subitem) for subitem in item]
