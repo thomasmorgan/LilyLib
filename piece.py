@@ -1,8 +1,7 @@
 from models import Note, Chord, Key
+from keys import key_dictionary
 from staves import Treble, Bass
 from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter
-
-import keys
 
 from itertools import cycle
 from copy import deepcopy
@@ -20,7 +19,6 @@ class Piece:
         self.tempo = "4/4"
         self.key = "C Major"
         self.score = {}
-        self.create_key_dictionary()
 
         self.details()
 
@@ -44,7 +42,7 @@ class Piece:
                 mode = " ".join(key[1:]).lower()
                 if 'harmonic' in mode:
                     mode = 'harmonic'
-                return self.key_dictionary[mode][letter]
+                return key_dictionary[mode][letter]
             except Exception:
                 raise ValueError("{} is not a valid string format for a key".format(key))
         else:
@@ -59,61 +57,6 @@ class Piece:
 
     def clef(self, clef):
         return ['\\clef {}'.format(clef)]
-
-    def create_key_dictionary(self):
-        self.key_dictionary = {
-            "major": {
-                "cf": keys.CFlatMajor(),
-                "c": keys.CMajor(),
-                "cs": keys.CSharpMajor(),
-                "df": keys.DFlatMajor(),
-                "d": keys.DMajor(),
-                "ef": keys.EFlatMajor(),
-                "e": keys.EMajor(),
-                "f": keys.FMajor(),
-                "fs": keys.FSharpMajor(),
-                "gf": keys.GFlatMajor(),
-                "g": keys.GMajor(),
-                "af": keys.AFlatMajor(),
-                "a": keys.AMajor(),
-                "bf": keys.BFlatMajor(),
-                "b": keys.BMajor()
-            },
-            "minor": {
-                "c": keys.CMinor(),
-                "cs": keys.CSharpMinor(),
-                "d": keys.DMinor(),
-                "ds": keys.DSharpMinor(),
-                "ef": keys.EFlatMinor(),
-                "e": keys.EMinor(),
-                "f": keys.FMinor(),
-                "fs": keys.FSharpMinor(),
-                "g": keys.GMinor(),
-                "gs": keys.GSharpMinor(),
-                "af": keys.AFlatMinor(),
-                "a": keys.AMinor(),
-                "as": keys.ASharpMinor(),
-                "bf": keys.BFlatMinor(),
-                "b": keys.BMinor()
-            },
-            "harmonic": {
-                "c": keys.CMinorH(),
-                "cs": keys.CSharpMinorH(),
-                "d": keys.DMinorH(),
-                "ds": keys.DSharpMinorH(),
-                "ef": keys.EFlatMinorH(),
-                "e": keys.EMinorH(),
-                "f": keys.FMinorH(),
-                "fs": keys.FSharpMinorH(),
-                "g": keys.GMinorH(),
-                "gs": keys.GSharpMinorH(),
-                "af": keys.AFlatMinorH(),
-                "a": keys.AMinorH(),
-                "as": keys.ASharpMinorH(),
-                "bf": keys.BFlatMinorH(),
-                "b": keys.BMinorH()
-            }
-        }
 
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
@@ -411,11 +354,11 @@ class Piece:
         new_root = (self.key.letters * 2)[new_index]
 
         try:
-            return self.key_dictionary[mode][new_root]
+            return key_dictionary[mode][new_root]
         except KeyError:
             try:
                 new_root2 = equivalent_letters[new_root]
-                return self.key_dictionary[mode][new_root2]
+                return key_dictionary[mode][new_root2]
             except KeyError:
                 raise KeyError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
 

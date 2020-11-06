@@ -314,3 +314,58 @@ class BMinorH(Key):
         self.root = 'b'
         self.letters = ['cs', 'd', 'e', 'fs', 'g', 'as', 'b']
         self.name = "b minor harmonic"
+
+
+key_dictionary = {
+    "major": {
+        "cf": CFlatMajor(),
+        "c": CMajor(),
+        "cs": CSharpMajor(),
+        "df": DFlatMajor(),
+        "d": DMajor(),
+        "ef": EFlatMajor(),
+        "e": EMajor(),
+        "f": FMajor(),
+        "fs": FSharpMajor(),
+        "gf": GFlatMajor(),
+        "g": GMajor(),
+        "af": AFlatMajor(),
+        "a": AMajor(),
+        "bf": BFlatMajor(),
+        "b": BMajor()
+    },
+    "minor": {
+        "c": CMinor(),
+        "cs": CSharpMinor(),
+        "d": DMinor(),
+        "ds": DSharpMinor(),
+        "ef": EFlatMinor(),
+        "e": EMinor(),
+        "f": FMinor(),
+        "fs": FSharpMinor(),
+        "g": GMinor(),
+        "gs": GSharpMinor(),
+        "af": AFlatMinor(),
+        "a": AMinor(),
+        "as": ASharpMinor(),
+        "bf": BFlatMinor(),
+        "b": BMinor()
+    },
+    "harmonic": {
+        "c": CMinorH(),
+        "cs": CSharpMinorH(),
+        "d": DMinorH(),
+        "ds": DSharpMinorH(),
+        "ef": EFlatMinorH(),
+        "e": EMinorH(),
+        "f": FMinorH(),
+        "fs": FSharpMinorH(),
+        "g": GMinorH(),
+        "gs": GSharpMinorH(),
+        "af": AFlatMinorH(),
+        "a": AMinorH(),
+        "as": ASharpMinorH(),
+        "bf": BFlatMinorH(),
+        "b": BMinorH()
+    }
+}
