@@ -1,7 +1,7 @@
 from models import Note, Chord, Key
 from keys import key_dictionary
 from staves import Treble, Bass
-from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter
+from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
 
 from itertools import cycle
 from copy import deepcopy
@@ -273,7 +273,7 @@ class Piece:
                     elif mode == "semitone":
                         return key.all_tones[key.all_tones.index(item) + shift]
                 except ValueError:
-                    return self.transpose(equivalent_letters[letter(item)] + pitch(item), shift, mode, key)
+                    return self.transpose(equivalent_tone(item), shift, mode, key)
 
         else:
             raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
