@@ -68,6 +68,10 @@ def separate(tone):
 linebreak = ['\\break\n']
 
 
+def clef(clef):
+    return ['\\clef {}'.format(clef)]
+
+
 def pitch(tone):
     return separate(tone)[1]
 

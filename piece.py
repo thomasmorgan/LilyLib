@@ -55,9 +55,6 @@ class Piece:
     def key_signature(self):
         return [str(self.key)]
 
-    def clef(self, clef):
-        return ['\\clef {}'.format(clef)]
-
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
 
