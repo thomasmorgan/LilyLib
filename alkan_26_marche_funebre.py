@@ -68,7 +68,7 @@ class MarcheFunebre(Piece):
 
         intro = {
             'treble': self.repeat(['\\grace s16.'] + rests(1) * 8),
-            'bass': self.voices(drone_a + drone_b, plodding)
+            'bass': self.voices(drone_a + drone_b, plodding) + linebreak
         }
 
         self.name(intro['treble'], 'Play first repeat one octave lower')
