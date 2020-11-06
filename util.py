@@ -1,6 +1,3 @@
-from copy import deepcopy
-
-
 def flatten(List):
     while any([isinstance(i, list) or isinstance(i, tuple) for i in List]):
         new_list = []
