@@ -65,6 +65,9 @@ def separate(tone):
             return tone, ''
 
 
+linebreak = ['\\break\n']
+
+
 def pitch(tone):
     return separate(tone)[1]
 
