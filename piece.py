@@ -192,6 +192,18 @@ class Piece:
             if isinstance(c, Chord):
                 c.tones = [t for t in c.tones if t not in tones]
 
+    def replace(self, item, old, new):
+        if isinstance(item, list):
+            for subitem in item:
+                self.replace(subitem, old, new)
+        elif isinstance(item, Note):
+            if item.tone == old:
+                item.tone = tonify(new)
+        elif isinstance(item, Chord):
+            if old in item.tones:
+                self.remove(item, old)
+                self.add(item, new)
+
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
             return stop + 1
