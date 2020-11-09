@@ -207,9 +207,6 @@ class Piece:
         if isinstance(item, list):
             for subitem in item:
                 self.replace(subitem, old, new)
-        elif isinstance(item, Note):
-            if item.tone == old:
-                item.tone = tonify(new)
         elif isinstance(item, Chord):
             if old in item.tones:
                 self.remove(item, old)
@@ -272,9 +269,6 @@ class Piece:
 
         elif isinstance(item, Chord):
             return Chord(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
-
-        elif isinstance(item, Note):
-            return Note(self.transpose(item.tone, shift, mode, key), item.dur, item.ornamentation)
 
         elif item == 'r':
             return item
