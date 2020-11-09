@@ -1,12 +1,15 @@
-from demo_middle_c import MiddleC
-from demo_c_major_chord import CMajorChord
-from demo_c_major_scale import CMajorScale
-from demo_c_major_modal_scales import CMajorModalScales
-from demo_arpeggios import Arpeggios
-from demo_chromatic_scales import ChromaticScales
-from demo_keys import AllKeys
-from demo_mad_rush import MadRush
-from demo_mad_rush_keyless import MadRushKeyless
+from demos.demo_middle_c import MiddleC
+from demos.demo_c_major_chord import CMajorChord
+from demos.demo_c_major_scale import CMajorScale
+from demos.demo_c_major_modal_scales import CMajorModalScales
+from demos.demo_arpeggios import Arpeggios
+from demos.demo_chromatic_scales import ChromaticScales
+from demos.demo_keys import AllKeys
+from demos.demo_prelude_in_c import PreludeInC
+from demos.demo_prelude_in_c_simple import PreludeInCSimple
+from demos.demo_prelude_in_c_fancy import PreludeInCFancy
+from demos.demo_mad_rush import MadRush
+from demos.demo_mad_rush_keyless import MadRushKeyless
 
 MiddleC()
 CMajorChord()
@@ -15,5 +18,8 @@ CMajorModalScales()
 Arpeggios()
 ChromaticScales()
 AllKeys()
+PreludeInC()
+PreludeInCSimple()
+PreludeInCFancy()
 MadRush()
 MadRushKeyless()

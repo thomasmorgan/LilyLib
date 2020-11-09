@@ -1,8 +1,7 @@
-from models import Tone, ToneSpace, Note, Chord, Key
+from models import Note, Chord, Key
+from keys import key_dictionary
 from staves import Treble, Bass
-from util import flatten
-
-import keys
+from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
 
 from itertools import cycle
 from copy import deepcopy
@@ -20,8 +19,6 @@ class Piece:
         self.tempo = "4/4"
         self.key = "C Major"
         self.score = {}
-        self.tonespace = ToneSpace()
-        self.create_key_dictionary()
 
         self.details()
 
@@ -37,7 +34,7 @@ class Piece:
         elif isinstance(key, Key):
             return key
         elif isclass(key) and issubclass(key, Key):
-            return key(self.tonespace)
+            return key()
         elif isinstance(key, str):
             try:
                 key = key.split(" ")
@@ -45,7 +42,7 @@ class Piece:
                 mode = " ".join(key[1:]).lower()
                 if 'harmonic' in mode:
                     mode = 'harmonic'
-                return self.key_dictionary[mode][letter]
+                return key_dictionary[mode][letter]
             except Exception:
                 raise ValueError("{} is not a valid string format for a key".format(key))
         else:
@@ -57,64 +54,6 @@ class Piece:
     @property
     def key_signature(self):
         return [str(self.key)]
-
-    def clef(self, clef):
-        return ['\\clef {}'.format(clef)]
-
-    def create_key_dictionary(self):
-        self.key_dictionary = {
-            "major": {
-                "cf": keys.CFlatMajor(self.tonespace),
-                "c": keys.CMajor(self.tonespace),
-                "cs": keys.CSharpMajor(self.tonespace),
-                "df": keys.DFlatMajor(self.tonespace),
-                "d": keys.DMajor(self.tonespace),
-                "ef": keys.EFlatMajor(self.tonespace),
-                "e": keys.EMajor(self.tonespace),
-                "f": keys.FMajor(self.tonespace),
-                "fs": keys.FSharpMajor(self.tonespace),
-                "gf": keys.GFlatMajor(self.tonespace),
-                "g": keys.GMajor(self.tonespace),
-                "af": keys.AFlatMajor(self.tonespace),
-                "a": keys.AMajor(self.tonespace),
-                "bf": keys.BFlatMajor(self.tonespace),
-                "b": keys.BMajor(self.tonespace)
-            },
-            "minor": {
-                "c": keys.CMinor(self.tonespace),
-                "cs": keys.CSharpMinor(self.tonespace),
-                "d": keys.DMinor(self.tonespace),
-                "ds": keys.DSharpMinor(self.tonespace),
-                "ef": keys.EFlatMinor(self.tonespace),
-                "e": keys.EMinor(self.tonespace),
-                "f": keys.FMinor(self.tonespace),
-                "fs": keys.FSharpMinor(self.tonespace),
-                "g": keys.GMinor(self.tonespace),
-                "gs": keys.GSharpMinor(self.tonespace),
-                "af": keys.AFlatMinor(self.tonespace),
-                "a": keys.AMinor(self.tonespace),
-                "as": keys.ASharpMinor(self.tonespace),
-                "bf": keys.BFlatMinor(self.tonespace),
-                "b": keys.BMinor(self.tonespace)
-            },
-            "harmonic": {
-                "c": keys.CMinorH(self.tonespace),
-                "cs": keys.CSharpMinorH(self.tonespace),
-                "d": keys.DMinorH(self.tonespace),
-                "ds": keys.DSharpMinorH(self.tonespace),
-                "ef": keys.EFlatMinorH(self.tonespace),
-                "e": keys.EMinorH(self.tonespace),
-                "f": keys.FMinorH(self.tonespace),
-                "fs": keys.FSharpMinorH(self.tonespace),
-                "g": keys.GMinorH(self.tonespace),
-                "gs": keys.GSharpMinorH(self.tonespace),
-                "af": keys.AFlatMinorH(self.tonespace),
-                "a": keys.AMinorH(self.tonespace),
-                "as": keys.ASharpMinorH(self.tonespace),
-                "bf": keys.BFlatMinorH(self.tonespace),
-                "b": keys.BMinorH(self.tonespace)
-            }
-        }
 
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
@@ -173,18 +112,10 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
-    def tones(self, tones):
-        tones = flatten([tones])
-        tones = flatten([t.split(' ') for t in tones if isinstance(t, str)])
-        return [self.key.tonespace.tone_with_string(t) for t in tones]
-
     def notes(self, tones, dur, ornamentation=""):
-        tones = flatten([tones])
-        tones = flatten([self.tones(n) if isinstance(n, str) else n for n in tones])
-        dur = flatten([dur])
-        dur = flatten([d.split(" ") if isinstance(d, str) else d for d in dur])
-        orn = flatten([ornamentation])
-        orn = flatten([o.split(" ") if isinstance(o, str) and '"' not in o else o for o in orn])
+        tones = flatten([tonify(tones)])
+        dur = split_and_flatten(dur)
+        orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
         max_length = max([len(tones), len(dur), len(orn)])
 
@@ -192,19 +123,28 @@ class Piece:
         return [Note(n, d, o) for i, n, d, o in zip_list]
 
     def chord(self, tones, dur, ornamentation=""):
-        tones = flatten([tones])
-        tones = flatten([self.tones(t) if isinstance(t, str) else t for t in tones])
-        return Chord(tones, dur, ornamentation)
+        tones = flatten([tonify(tones)])
+        return [Chord(tones, dur, ornamentation)]
+
+    def chords(self, tones, dur, ornamentation=""):
+        dur = split_and_flatten(dur)
+        orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
+
+        max_length = max([len(tones), len(dur), len(orn)])
+
+        zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
+        return [self.chord(t, d, o) for i, t, d, o in zip_list]
 
     def rests(self, dur):
         return self.notes('r', dur)
 
     def series(self, tones, start, stop_or_length, dur=None, step=1):
+        tones = tonify(tones)
         start, stop_or_length = self.validate_series_args(tones, start, stop_or_length, dur, step)
 
         start_index = tones.index(start)
 
-        if isinstance(stop_or_length, Tone):
+        if isinstance(stop_or_length, str):
             stop_index = tones.index(stop_or_length)
         else:
             if stop_or_length > 0:
@@ -226,15 +166,17 @@ class Piece:
             raise ValueError("series arg tones cannot be {}, it must be a list".format(tones))
 
         for t in tones:
-            if not isinstance(t, Tone):
-                raise ValueError("series arg tones cannot contain {}, it must be a list of tones".format(t))
+            if not isinstance(t, str):
+                raise ValueError("series arg tones cannot contain {}, it must be a list of strings".format(t))
+            if t not in all_tones:
+                raise ValueError("series arg tones cannot contain {}, it is not a valid tone".format(t))
 
-        start = self.tonify(start)
+        start = tonify(start)
         if start not in tones:
             raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(start, [str(t) for t in tones]))
 
         if not isinstance(stop_or_length, int):
-            stop_or_length = self.tonify(stop_or_length)
+            stop_or_length = tonify(stop_or_length)
             if stop_or_length not in tones:
                 raise ValueError("Cannot stop series on {} as it it not in tones: {}.".format(stop_or_length, [str(t) for t in tones]))
 
@@ -243,32 +185,36 @@ class Piece:
 
         return start, stop_or_length
 
-    def tonify(self, item):
-        if isinstance(item, Note):
-            return item.tone
-        if isinstance(item, Tone):
-            return item
-        if isinstance(item, str):
-            return self.tonespace.tone_with_string(item)
+    def add(self, item, tones):
         if isinstance(item, list):
-            return[self.tonify(subitem) for subitem in list]
-        raise ValueError("Cannot tonify {}, can only tonify Notes, Tones and strings".format(item))
+            for subitem in item:
+                self.add(subitem, tones)
+        elif isinstance(item, Chord):
+            tones = flatten([tonify(tones)])
+            item.tones = list(set(item.tones + tones))
+        return item
 
-    def add(self, chords, tones):
-        tones = self.tonify(tones)
-        tones = flatten([tones])
-        chords = flatten([chords])
-        for c in chords:
-            for t in tones:
-                if t not in c.tones:
-                    c.tones.append(t)
+    def remove(self, item, tones):
+        if isinstance(item, list):
+            for subitem in item:
+                self.remove(subitem, tones)
+        elif isinstance(item, Chord):
+            tones = flatten([tonify(tones)])
+            item.tones = [t for t in item.tones if t not in tones]
+        return item
 
-    def remove(self, chords, tones):
-        tones = self.tonify(tones)
-        tones = flatten([tones])
-        chords = flatten([chords])
-        for c in chords:
-            c.tones = [t for t in c.tones if t not in tones]
+    def replace(self, item, old, new):
+        if isinstance(item, list):
+            for subitem in item:
+                self.replace(subitem, old, new)
+        elif isinstance(item, Note):
+            if item.tone == old:
+                item.tone = tonify(new)
+        elif isinstance(item, Chord):
+            if old in item.tones:
+                self.remove(item, old)
+                self.add(item, new)
+        return item
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
@@ -292,13 +238,13 @@ class Piece:
     def dominant7(self, start, stop_or_length, dur=None, key=None, step=1):
         key = self.keyify(key)
         dominant7_letters = key.arpeggio_letters + [key.relative_chromatic_letter(10)]
-        dominant7_tones = [t for t in key.all_tones if t.letter in dominant7_letters]
+        dominant7_tones = [t for t in key.all_tones if separate(t)[0] in dominant7_letters]
         return self.series(dominant7_tones, start, stop_or_length, dur, step)
 
     def diminished7(self, start, stop_or_length, dur=None, key=None, step=1):
         key = self.keyify(key)
         diminished7_letters = [key.relative_chromatic_letter(i) for i in [0, 3, 6, 9]]
-        diminished7_tones = [t for t in key.all_tones if t.letter in diminished7_letters]
+        diminished7_tones = [t for t in key.all_tones if separate(t)[0] in diminished7_letters]
         return self.series(diminished7_tones, start, stop_or_length, dur, step)
 
     def chromatic(self, start, stop_or_length, dur=None, key=None, step=1):
@@ -310,47 +256,48 @@ class Piece:
         custom_tones = key.scale_subset(positions)
         return self.series(custom_tones, start, stop_or_length, dur, step)
 
-    def transpose(self, item, shift, mode="octave"):
+    def transpose(self, item, shift, mode="octave", key=None):
         self.validate_transpose_args(shift, mode)
 
-        if isinstance(item, Tone):
-            if item.letter == 'r':
-                return item
+        key = self.keyify(key)
 
-            try:
-                if mode == "octave":
-                    new_pitch = self.key.tonespace.all_pitches[self.key.tonespace.all_pitches.index(item.pitch) + shift]
-                    new_tone_string = item.letter + new_pitch
-                    item = self.key.tonespace.tone_with_string(new_tone_string)
-                elif mode == "scale":
-                    current_index = self.key.tones.index(item)
-                    item = self.key.tones[current_index + shift]
-                elif mode == "semitone":
-                    item = self.key.all_tones[self.key.all_tones.index(item) + shift]
-                return item
-            except ValueError:
-                return self.transpose(self.tonespace.tone_with_string(self.tonespace.equivalent_letters[item.letter] + item.pitch), shift, mode)
-
-        elif isinstance(item, Note):
-            return Note(self.transpose(item.tone, shift, mode), item.dur, item.ornamentation)
-
-        elif isinstance(item, Chord):
-            return Chord(self.transpose(item.tones, shift, mode), item.dur, item.ornamentation)
-
-        elif isinstance(item, list):
-            return [self.transpose(subitem, shift, mode) for subitem in item]
-
-        elif isinstance(item, dict):
+        if isinstance(item, dict):
             new_dict = {}
             for key in item:
                 new_dict[key] = self.transpose(item[key], shift, mode)
             return new_dict
 
+        elif isinstance(item, list):
+            return [self.transpose(subitem, shift, mode, key) for subitem in item]
+
+        elif isinstance(item, Chord):
+            return Chord(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
+
+        elif isinstance(item, Note):
+            return Note(self.transpose(item.tone, shift, mode, key), item.dur, item.ornamentation)
+
+        elif item == 'r':
+            return item
+
         elif isinstance(item, str):
             try:
-                return " ".join([str(t) for t in self.transpose(self.tones(item), shift, mode)])
-            except Exception:
+                item = tonify(item)
+            except ValueError:
                 return item
+            if isinstance(item, list):
+                return self.transpose(item, shift, mode, key)
+            else:
+                try:
+                    if mode == "octave":
+                        new_pitch = all_pitches[all_pitches.index(pitch(item)) + shift]
+                        return letter(item) + new_pitch
+                    elif mode == "scale":
+                        current_index = key.tones.index(item)
+                        return key.tones[current_index + shift]
+                    elif mode == "semitone":
+                        return key.all_tones[key.all_tones.index(item) + shift]
+                except ValueError:
+                    return self.transpose(equivalent_tone(item), shift, mode, key)
 
         else:
             raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
@@ -361,24 +308,27 @@ class Piece:
         if mode not in ["octave", "scale", "semitone"]:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
-    def harmonize(self, notes, intervals, mode="octave"):
+    def harmonize(self, notes, intervals, mode="octave", key=None):
+        key = self.keyify(key)
         chords = []
-        if not isinstance(notes, list):
-            notes = [notes]
-        if not isinstance(intervals, list):
-            intervals = [intervals]
-        if not isinstance(mode, list):
-            mode = [mode]
+        notes = [notes] if not isinstance(notes, list) else notes
+        intervals = [intervals] if not isinstance(intervals, list) else intervals
+        mode = [mode] if not isinstance(mode, list) else mode
+
         max_length = max([len(notes), len(intervals), len(mode)])
         zip_list = zip(range(max_length), cycle(notes), cycle(intervals), cycle(mode))
+
         for i, note, interval, mode in zip_list:
-            chord = [note]
-            if not isinstance(interval, list):
-                interval = flatten([interval])
+            root = note.tone if isinstance(note, Note) else note
+            tones = [root]
+            interval = [interval] if not isinstance(interval, list) else interval
+
             for intrvl in interval:
                 if intrvl != 0:
-                    chord.append(self.transpose(note, intrvl, mode))
-            chords.append(self.chord([c.tone for c in chord], note.dur, note.ornamentation))
+                    new_tone = self.transpose(root, intrvl, mode, key)
+                    if new_tone not in tones:
+                        tones.append(new_tone)
+            chords += self.chord(tones, note.dur, note.ornamentation)
         return chords
 
     def triplets(self, notes):
@@ -386,6 +336,9 @@ class Piece:
 
     def grace(self, notes):
         return ['\\grace {'] + notes + ['}']
+
+    def after_grace(self, note, notes):
+        return ['\\afterGrace'] + note + ['{'] + notes + ['}']
 
     def acciaccatura(self, notes):
         return ['\\acciaccatura {'] + notes + ['}']
@@ -425,11 +378,11 @@ class Piece:
         new_root = (self.key.letters * 2)[new_index]
 
         try:
-            return self.key_dictionary[mode][new_root]
+            return key_dictionary[mode][new_root]
         except KeyError:
             try:
-                new_root2 = self.key.tonespace.equivalent_letters[new_root]
-                return self.key_dictionary[mode][new_root2]
+                new_root2 = equivalent_letters[new_root]
+                return key_dictionary[mode][new_root2]
             except KeyError:
                 raise KeyError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
 
