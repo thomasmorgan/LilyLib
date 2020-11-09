@@ -101,13 +101,13 @@ class Piece:
 
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
-            return " ".join([str(note) for note in flatten([self.score[stave.name]])])
+            return " ".join([str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
         if isinstance(stave, Note) or isinstance(stave, Chord):
             return(str(stave))
         elif isinstance(stave, list):
-            stave = [str(s) for s in flatten(stave)]
+            stave = [str(item) for item in flatten(stave)]
             return(" ".join(stave))
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
