@@ -104,7 +104,7 @@ class Piece:
             return " ".join([str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
-        if isinstance(stave, Note) or isinstance(stave, Chord):
+        if isinstance(stave, Chord):
             return(str(stave))
         elif isinstance(stave, list):
             stave = [str(item) for item in flatten(stave)]
@@ -120,7 +120,7 @@ class Piece:
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [Note(n, d, o) for i, n, d, o in zip_list]
+        return [Chord(n, d, o) for i, n, d, o in zip_list]
 
     def chord(self, tones, dur, ornamentation=""):
         tones = flatten([tonify(tones)])
