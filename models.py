@@ -33,6 +33,8 @@ class Chord:
             raise ValueError("Cannot create note/chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
+        if 'r' in self.tones:
+            return 'r' + str(self.dur) + self.ornamentation
         return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
 
 
