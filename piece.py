@@ -126,6 +126,15 @@ class Piece:
         tones = flatten([tonify(tones)])
         return [Chord(tones, dur, ornamentation)]
 
+    def chords(self, tones, dur, ornamentation=""):
+        dur = split_and_flatten(dur)
+        orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
+
+        max_length = max([len(tones), len(dur), len(orn)])
+
+        zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
+        return [self.chord(t, d, o) for i, t, d, o in zip_list]
+
     def rests(self, dur):
         return self.notes('r', dur)
 
