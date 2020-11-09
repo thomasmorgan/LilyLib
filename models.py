@@ -8,6 +8,12 @@ class Chord:
         self.dur = dur
         self.ornamentation = ornamentation
 
+    @property
+    def tone(self):
+        if len(self.tones) == 1:
+            return self.tones[0]
+        else:
+            raise AttributeError("Cannot get {}.tone as it has multiple tones: {}".format(self, self.tones))
 
     @property
     def letter(self):
