@@ -185,33 +185,33 @@ class Piece:
 
         return start, stop_or_length
 
-    def add(self, item, tones):
-        if isinstance(item, list):
-            for subitem in item:
+    def add(self, passage, tones):
+        if isinstance(passage, list):
+            for subitem in passage:
                 self.add(subitem, tones)
-        elif isinstance(item, Chord):
+        elif isinstance(passage, Chord):
             tones = flatten([tonify(tones)])
-            item.tones = list(set(item.tones + tones))
-        return item
+            passage.tones = list(set(passage.tones + tones))
+        return passage
 
-    def remove(self, item, tones):
-        if isinstance(item, list):
-            for subitem in item:
+    def remove(self, passage, tones):
+        if isinstance(passage, list):
+            for subitem in passage:
                 self.remove(subitem, tones)
-        elif isinstance(item, Chord):
+        elif isinstance(passage, Chord):
             tones = flatten([tonify(tones)])
-            item.tones = [t for t in item.tones if t not in tones]
-        return item
+            passage.tones = [t for t in passage.tones if t not in tones]
+        return passage
 
-    def replace(self, item, old, new):
-        if isinstance(item, list):
-            for subitem in item:
+    def replace(self, passage, old, new):
+        if isinstance(passage, list):
+            for subitem in passage:
                 self.replace(subitem, old, new)
-        elif isinstance(item, Chord):
-            if old in item.tones:
-                self.remove(item, old)
-                self.add(item, new)
-        return item
+        elif isinstance(passage, Chord):
+            if old in passage.tones:
+                self.remove(passage, old)
+                self.add(passage, new)
+        return passage
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
