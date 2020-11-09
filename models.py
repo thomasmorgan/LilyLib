@@ -4,7 +4,10 @@ import util
 class Chord:
     """ The simultaneous sounding of one or more tones for a specified duration."""
 
+    def __init__(self, tones, dur, ornamentation=""):
         tones = util.flatten([util.tonify(tones)])
+        self.check_init_arguments(tones, dur, ornamentation)
+        self.tones = tones
         self.dur = dur
         self.ornamentation = ornamentation
 
@@ -22,14 +25,6 @@ class Chord:
     @property
     def pitch(self):
         return util.pitch(self.tone)
-
-
-
-    def __init__(self, tones, dur, ornamentation=""):
-        self.check_init_arguments(tones, dur, ornamentation)
-        self.tones = tones
-        self.dur = dur
-        self.ornamentation = ornamentation
 
     def check_init_arguments(self, tones, dur, ornamentation):
         if not isinstance(tones, list):
