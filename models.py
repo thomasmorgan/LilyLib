@@ -2,6 +2,7 @@ import util
 
 
 
+        tones = util.flatten([util.tonify(tones)])
         self.dur = dur
         self.ornamentation = ornamentation
 
@@ -19,20 +20,10 @@ class Chord:
     """ The simultaneous sounding of multiple tones for a specified duration."""
 
     def __init__(self, tones, dur, ornamentation=""):
-        tones = self.parse_tones(tones)
         self.check_init_arguments(tones, dur, ornamentation)
         self.tones = tones
         self.dur = dur
         self.ornamentation = ornamentation
-
-    def parse_tones(self, tones):
-        parsed_tones = []
-        for t in util.flatten([tones]):
-            if isinstance(t, str) and ' ' in t:
-                parsed_tones.extend(t.split(" "))
-            else:
-                parsed_tones.append(t)
-        return parsed_tones
 
     def check_init_arguments(self, tones, dur, ornamentation):
         if not isinstance(tones, list):
