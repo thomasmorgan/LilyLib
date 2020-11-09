@@ -1,6 +1,8 @@
 import util
 
 
+class Chord:
+    """ The simultaneous sounding of one or more tones for a specified duration."""
 
         tones = util.flatten([util.tonify(tones)])
         self.dur = dur
@@ -16,8 +18,6 @@ import util
         return util.pitch(self.tone)
 
 
-class Chord:
-    """ The simultaneous sounding of multiple tones for a specified duration."""
 
     def __init__(self, tones, dur, ornamentation=""):
         self.check_init_arguments(tones, dur, ornamentation)
