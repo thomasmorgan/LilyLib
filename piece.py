@@ -1,4 +1,4 @@
-from models import Note, Chord, Key
+from models import Chord, Key
 from keys import key_dictionary
 from staves import Treble, Bass
 from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
