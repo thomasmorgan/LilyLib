@@ -322,20 +322,20 @@ class Piece:
                         chord.tones.append(new_tone)
         return chords
 
-    def triplets(self, notes):
-        return ['\\tuplet 3/2 {'] + notes + ['}']
+    def triplets(self, passage):
+        return ['\\tuplet 3/2 {'] + passage + ['}']
 
-    def grace(self, notes):
-        return ['\\grace {'] + notes + ['}']
+    def grace(self, passage):
+        return ['\\grace {'] + passage + ['}']
 
-    def after_grace(self, note, notes):
-        return ['\\afterGrace'] + note + ['{'] + notes + ['}']
+    def after_grace(self, passage, grace):
+        return ['\\afterGrace'] + passage + ['{'] + grace + ['}']
 
-    def acciaccatura(self, notes):
-        return ['\\acciaccatura {'] + notes + ['}']
+    def acciaccatura(self, passage):
+        return ['\\acciaccatura {'] + passage + ['}']
 
-    def ottava(self, notes, shift):
-        return ['\\ottava #{}'.format(shift)] + notes + ['\\ottava #0']
+    def ottava(self, passage, shift):
+        return ['\\ottava #{}'.format(shift)] + passage + ['\\ottava #0']
 
     def voices(self, *voices):
         score = ["<<\n"]
@@ -346,18 +346,18 @@ class Piece:
         score += [">>\n"]
         return score
 
-    def repeat(self, notes, times=2):
+    def repeat(self, passage, times=2):
         if times > 2:
-            notes[-1].ornamentation += '^"x' + str(times) + '"'
-        return ["\\repeat volta " + str(times) + '{'] + notes + ['}']
+            passage[-1].ornamentation += '^"x' + str(times) + '"'
+        return ["\\repeat volta " + str(times) + '{'] + passage + ['}']
 
     def annotation(self, text):
         return '^"' + text + '" '
 
-    def name(self, notes, name):
-        index = next(i for i, note in enumerate(notes) if isinstance(note, Note) or isinstance(note, Chord))
-        notes[index] = deepcopy(notes[index])
-        notes[index].ornamentation += ('^"' + name + '"')
+    def name(self, passage, name):
+        index = next(i for i, chord in enumerate(passage) if isinstance(chord, Chord))
+        passage[index] = deepcopy(passage[index])
+        passage[index].ornamentation += ('^"' + name + '"')
 
     def tempo_change(self, tempo):
         return ["\\time {}".format(tempo)]
