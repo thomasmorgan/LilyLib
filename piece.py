@@ -185,21 +185,23 @@ class Piece:
 
         return start, stop_or_length
 
-    def add(self, chords, tones):
-        tones = flatten([tonify(tones)])
-        chords = flatten([chords])
-        for c in chords:
-            if isinstance(c, Chord):
-                for t in tones:
-                    if t not in c.tones:
-                        c.tones.append(t)
+    def add(self, item, tones):
+        if isinstance(item, list):
+            for subitem in item:
+                self.add(subitem, tones)
+        elif isinstance(item, Chord):
+            tones = flatten([tonify(tones)])
+            item.tones = list(set(item.tones + tones))
+        return item
 
-    def remove(self, chords, tones):
-        tones = flatten(tonify(tones))
-        chords = flatten([chords])
-        for c in chords:
-            if isinstance(c, Chord):
-                c.tones = [t for t in c.tones if t not in tones]
+    def remove(self, item, tones):
+        if isinstance(item, list):
+            for subitem in item:
+                self.remove(subitem, tones)
+        elif isinstance(item, Chord):
+            tones = flatten([tonify(tones)])
+            item.tones = [t for t in item.tones if t not in tones]
+        return item
 
     def replace(self, item, old, new):
         if isinstance(item, list):
@@ -212,6 +214,7 @@ class Piece:
             if old in item.tones:
                 self.remove(item, old)
                 self.add(item, new)
+        return item
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
