@@ -27,6 +27,8 @@ all_letters = flatten([[letter + accent for accent in all_accents] for letter in
 all_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
 all_tones = flatten([[letter + pitch for letter in all_letters] for pitch in all_pitches] + ['r'])
 
+all_durs = ['\\longa' '\\breve', 1, 2, 4, 8, 16, 32, 64, 128, '1.', '2.', '4.', '8.', '16.', '32.', '64.', '128.', '1..', '2..', '4..', '8..', '16..', '32..', '64..', '128..']
+
 
 equivalent_letters = {
     'cf': 'b',

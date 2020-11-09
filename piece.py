@@ -1,4 +1,4 @@
-from models import Note, Chord, Key
+from models import Chord, Key
 from keys import key_dictionary
 from staves import Treble, Bass
 from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
@@ -101,13 +101,13 @@ class Piece:
 
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
-            return " ".join([str(note) for note in flatten([self.score[stave.name]])])
+            return " ".join([str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
-        if isinstance(stave, Note) or isinstance(stave, Chord):
+        if isinstance(stave, Chord):
             return(str(stave))
         elif isinstance(stave, list):
-            stave = [str(s) for s in flatten(stave)]
+            stave = [str(item) for item in flatten(stave)]
             return(" ".join(stave))
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
@@ -120,7 +120,7 @@ class Piece:
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [Note(n, d, o) for i, n, d, o in zip_list]
+        return [Chord(n, d, o) for i, n, d, o in zip_list]
 
     def chord(self, tones, dur, ornamentation=""):
         tones = flatten([tonify(tones)])
@@ -135,8 +135,8 @@ class Piece:
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
         return [self.chord(t, d, o) for i, t, d, o in zip_list]
 
-    def rests(self, dur):
-        return self.notes('r', dur)
+    def rests(self, *dur):
+        return self.notes('r', flatten(dur))
 
     def series(self, tones, start, stop_or_length, dur=None, step=1):
         tones = tonify(tones)
@@ -185,36 +185,33 @@ class Piece:
 
         return start, stop_or_length
 
-    def add(self, item, tones):
-        if isinstance(item, list):
-            for subitem in item:
+    def add(self, passage, tones):
+        if isinstance(passage, list):
+            for subitem in passage:
                 self.add(subitem, tones)
-        elif isinstance(item, Chord):
+        elif isinstance(passage, Chord):
             tones = flatten([tonify(tones)])
-            item.tones = list(set(item.tones + tones))
-        return item
+            passage.tones = list(set(passage.tones + tones))
+        return passage
 
-    def remove(self, item, tones):
-        if isinstance(item, list):
-            for subitem in item:
+    def remove(self, passage, tones):
+        if isinstance(passage, list):
+            for subitem in passage:
                 self.remove(subitem, tones)
-        elif isinstance(item, Chord):
+        elif isinstance(passage, Chord):
             tones = flatten([tonify(tones)])
-            item.tones = [t for t in item.tones if t not in tones]
-        return item
+            passage.tones = [t for t in passage.tones if t not in tones]
+        return passage
 
-    def replace(self, item, old, new):
-        if isinstance(item, list):
-            for subitem in item:
+    def replace(self, passage, old, new):
+        if isinstance(passage, list):
+            for subitem in passage:
                 self.replace(subitem, old, new)
-        elif isinstance(item, Note):
-            if item.tone == old:
-                item.tone = tonify(new)
-        elif isinstance(item, Chord):
-            if old in item.tones:
-                self.remove(item, old)
-                self.add(item, new)
-        return item
+        elif isinstance(passage, Chord):
+            if old in passage.tones:
+                self.remove(passage, old)
+                self.add(passage, new)
+        return passage
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
@@ -273,9 +270,6 @@ class Piece:
         elif isinstance(item, Chord):
             return Chord(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
 
-        elif isinstance(item, Note):
-            return Note(self.transpose(item.tone, shift, mode, key), item.dur, item.ornamentation)
-
         elif item == 'r':
             return item
 
@@ -308,43 +302,40 @@ class Piece:
         if mode not in ["octave", "scale", "semitone"]:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
-    def harmonize(self, notes, intervals, mode="octave", key=None):
+    def harmonize(self, chords, intervals, mode="octave", key=None):
         key = self.keyify(key)
-        chords = []
-        notes = [notes] if not isinstance(notes, list) else notes
+        chords = [chords] if not isinstance(chords, list) else chords
         intervals = [intervals] if not isinstance(intervals, list) else intervals
         mode = [mode] if not isinstance(mode, list) else mode
 
-        max_length = max([len(notes), len(intervals), len(mode)])
-        zip_list = zip(range(max_length), cycle(notes), cycle(intervals), cycle(mode))
+        max_length = max([len(chords), len(intervals), len(mode)])
+        zip_list = zip(range(max_length), cycle(chords), cycle(intervals), cycle(mode))
 
-        for i, note, interval, mode in zip_list:
-            root = note.tone if isinstance(note, Note) else note
-            tones = [root]
+        for i, chord, interval, mode in zip_list:
+            root_tone = chord.tones[0]
             interval = [interval] if not isinstance(interval, list) else interval
 
             for intrvl in interval:
                 if intrvl != 0:
-                    new_tone = self.transpose(root, intrvl, mode, key)
-                    if new_tone not in tones:
-                        tones.append(new_tone)
-            chords += self.chord(tones, note.dur, note.ornamentation)
+                    new_tone = self.transpose(root_tone, intrvl, mode, key)
+                    if new_tone not in chord.tones:
+                        chord.tones.append(new_tone)
         return chords
 
-    def triplets(self, notes):
-        return ['\\tuplet 3/2 {'] + notes + ['}']
+    def triplets(self, passage):
+        return ['\\tuplet 3/2 {'] + passage + ['}']
 
-    def grace(self, notes):
-        return ['\\grace {'] + notes + ['}']
+    def grace(self, passage):
+        return ['\\grace {'] + passage + ['}']
 
-    def after_grace(self, note, notes):
-        return ['\\afterGrace'] + note + ['{'] + notes + ['}']
+    def after_grace(self, passage, grace):
+        return ['\\afterGrace'] + passage + ['{'] + grace + ['}']
 
-    def acciaccatura(self, notes):
-        return ['\\acciaccatura {'] + notes + ['}']
+    def acciaccatura(self, passage):
+        return ['\\acciaccatura {'] + passage + ['}']
 
-    def ottava(self, notes, shift):
-        return ['\\ottava #{}'.format(shift)] + notes + ['\\ottava #0']
+    def ottava(self, passage, shift):
+        return ['\\ottava #{}'.format(shift)] + passage + ['\\ottava #0']
 
     def voices(self, *voices):
         score = ["<<\n"]
@@ -355,18 +346,18 @@ class Piece:
         score += [">>\n"]
         return score
 
-    def repeat(self, notes, times=2):
+    def repeat(self, passage, times=2):
         if times > 2:
-            notes[-1].ornamentation += '^"x' + str(times) + '"'
-        return ["\\repeat volta " + str(times) + '{'] + notes + ['}']
+            passage[-1].ornamentation += '^"x' + str(times) + '"'
+        return ["\\repeat volta " + str(times) + '{'] + passage + ['}']
 
     def annotation(self, text):
         return '^"' + text + '" '
 
-    def name(self, notes, name):
-        index = next(i for i, note in enumerate(notes) if isinstance(note, Note) or isinstance(note, Chord))
-        notes[index] = deepcopy(notes[index])
-        notes[index].ornamentation += ('^"' + name + '"')
+    def name(self, passage, name):
+        index = next(i for i, chord in enumerate(passage) if isinstance(chord, Chord))
+        passage[index] = deepcopy(passage[index])
+        passage[index].ornamentation += ('^"' + name + '"')
 
     def tempo_change(self, tempo):
         return ["\\time {}".format(tempo)]

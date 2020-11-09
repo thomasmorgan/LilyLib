@@ -1,27 +1,22 @@
 import util
 
 
-class Note:
-    """ The sounding of a single tone for a specified duration. Can be printed as sheet music. """
+class Chord:
+    """ The simultaneous sounding of one or more tones for a specified duration."""
 
-    def __init__(self, tone, dur, ornamentation=""):
-        self.check_init_arguments(tone, dur, ornamentation)
-        self.tone = tone
+    def __init__(self, tones, dur, ornamentation=""):
+        tones = util.flatten([util.tonify(tones)])
+        self.check_init_arguments(tones, dur, ornamentation)
+        self.tones = tones
         self.dur = dur
         self.ornamentation = ornamentation
 
-    def check_init_arguments(self, tone, dur, ornamentation):
-        if not isinstance(tone, str):
-            raise ValueError("Cannot create note with {} as tone. tone must be a string.".format(tone))
-        if tone not in util.all_tones:
-            raise ValueError("Cannot create note with {} as tone. tone must be in util.all_tones.".format(tone))
-        if not isinstance(dur, int) and not isinstance(dur, str):
-            raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
-        if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
-
-    def __str__(self):
-        return self.letter + self.pitch + str(self.dur) + self.ornamentation
+    @property
+    def tone(self):
+        if len(self.tones) == 1:
+            return self.tones[0]
+        else:
+            raise AttributeError("Cannot get {}.tone as it has multiple tones: {}".format(self, self.tones))
 
     @property
     def letter(self):
@@ -31,40 +26,15 @@ class Note:
     def pitch(self):
         return util.pitch(self.tone)
 
-
-class Chord:
-    """ The simultaneous sounding of multiple tones for a specified duration."""
-
-    def __init__(self, tones, dur, ornamentation=""):
-        tones = self.parse_tones(tones)
-        self.check_init_arguments(tones, dur, ornamentation)
-        self.tones = tones
-        self.dur = dur
-        self.ornamentation = ornamentation
-
-    def parse_tones(self, tones):
-        parsed_tones = []
-        for t in util.flatten([tones]):
-            if isinstance(t, str) and ' ' in t:
-                parsed_tones.extend(t.split(" "))
-            else:
-                parsed_tones.append(t)
-        return parsed_tones
-
     def check_init_arguments(self, tones, dur, ornamentation):
-        if not isinstance(tones, list):
-            raise ValueError("Cannot create note with {} as tones. tone must be a list.".format(tones))
-
-        for tone in tones:
-            if not isinstance(tone, str):
-                raise ValueError("Cannot create note with {} as tone. tone must be a string.".format(tone))
-
-        if not isinstance(dur, int) and not isinstance(dur, str):
-            raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
+        if dur not in util.all_durs:
+            raise ValueError("Cannot create note/chord with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
         if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+            raise ValueError("Cannot create note/chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
+        if 'r' in self.tones:
+            return 'r' + str(self.dur) + self.ornamentation
         return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
 
 
