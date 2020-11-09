@@ -135,8 +135,8 @@ class Piece:
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
         return [self.chord(t, d, o) for i, t, d, o in zip_list]
 
-    def rests(self, dur):
-        return self.notes('r', dur)
+    def rests(self, *dur):
+        return self.notes('r', flatten(dur))
 
     def series(self, tones, start, stop_or_length, dur=None, step=1):
         tones = tonify(tones)
