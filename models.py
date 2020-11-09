@@ -1,27 +1,10 @@
 import util
 
 
-class Note:
-    """ The sounding of a single tone for a specified duration. Can be printed as sheet music. """
 
-    def __init__(self, tone, dur, ornamentation=""):
-        self.check_init_arguments(tone, dur, ornamentation)
-        self.tone = tone
         self.dur = dur
         self.ornamentation = ornamentation
 
-    def check_init_arguments(self, tone, dur, ornamentation):
-        if not isinstance(tone, str):
-            raise ValueError("Cannot create note with {} as tone. tone must be a string.".format(tone))
-        if tone not in util.all_tones:
-            raise ValueError("Cannot create note with {} as tone. tone must be in util.all_tones.".format(tone))
-        if not isinstance(dur, int) and not isinstance(dur, str):
-            raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
-        if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
-
-    def __str__(self):
-        return self.letter + self.pitch + str(self.dur) + self.ornamentation
 
     @property
     def letter(self):
