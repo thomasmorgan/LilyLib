@@ -334,6 +334,9 @@ class Piece:
     def grace(self, notes):
         return ['\\grace {'] + notes + ['}']
 
+    def after_grace(self, note, notes):
+        return ['\\afterGrace'] + note + ['{'] + notes + ['}']
+
     def acciaccatura(self, notes):
         return ['\\acciaccatura {'] + notes + ['}']
 
