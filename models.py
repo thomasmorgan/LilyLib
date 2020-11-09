@@ -27,17 +27,10 @@ class Chord:
         return util.pitch(self.tone)
 
     def check_init_arguments(self, tones, dur, ornamentation):
-        if not isinstance(tones, list):
-            raise ValueError("Cannot create note with {} as tones. tone must be a list.".format(tones))
-
-        for tone in tones:
-            if not isinstance(tone, str):
-                raise ValueError("Cannot create note with {} as tone. tone must be a string.".format(tone))
-
-        if not isinstance(dur, int) and not isinstance(dur, str):
-            raise ValueError("Cannot create note with {} as dur. dur must be an int or string.".format(dur))
+        if dur not in util.all_durs:
+            raise ValueError("Cannot create note/chord with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
         if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create note with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+            raise ValueError("Cannot create note/chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
         return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
