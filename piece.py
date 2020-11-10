@@ -360,7 +360,7 @@ class Piece:
         return '^"' + text + '" '
 
     def name(self, passage, name):
-        index = next(i for i, chord in enumerate(passage) if isinstance(chord, Chord))
+        index = next(i for i, point in enumerate(passage) if isinstance(point, Point))
         passage[index] = deepcopy(passage[index])
         passage[index].ornamentation += ('^"' + name + '"')
 
