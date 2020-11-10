@@ -1,4 +1,5 @@
-import util
+from util import flatten, tonify, all_tones, all_durs, all_letters, letter, pitch, equivalent_letters
+from itertools import cycle
 
 
 class Point:
@@ -42,11 +43,11 @@ class Point:
 
     @property
     def letter(self):
-        return util.letter(self.tone)
+        return letter(self.tone)
 
     @property
     def pitch(self):
-        return util.pitch(self.tone)
+        return pitch(self.tone)
 
     @property
     def is_rest(self):
@@ -121,21 +122,21 @@ class Key:
                 if l not in all_letters and util.equivalent_letters[l] not in all_letters:
                     all_letters.append(l)
 
-        self.all_letters = [l for l in util.all_letters if l in all_letters]
-        self.all_tones = [t for t in util.all_tones if util.letter(t) in all_letters]
+        self.all_letters = [l for l in all_letters if l in self.all_letters]
+        self.all_tones = [t for t in all_tones if letter(t) in all_letters]
 
     def init_scale_tones(self):
-        self.tones = [t for t in self.all_tones if util.letter(t) in self.letters]
+        self.tones = [t for t in self.all_tones if letter(t) in self.letters]
 
     def init_arpeggio_tones(self):
         index_of_root = self.letters.index(self.root)
         self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if util.letter(t) in self.arpeggio_letters]
+        self.arpeggio_tones = [t for t in self.all_tones if letter(t) in self.arpeggio_letters]
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
         custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
-        return [t for t in self.all_tones if util.letter(t) in custom_letters]
+        return [t for t in self.all_tones if letter(t) in custom_letters]
 
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
