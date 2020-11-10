@@ -7,7 +7,6 @@ class Point:
         Prints as either a rest, note or chord."""
 
     def __init__(self, tones, dur, ornamentation=""):
-        tones = util.flatten([util.tonify(tones)])
         self.check_init_arguments(tones, dur, ornamentation)
         self.tones = tones
         self.dur = dur
