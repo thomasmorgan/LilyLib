@@ -113,7 +113,7 @@ def tonify(item):
         if " " in item:
             return tonify(item.split(" "))
         else:
-            if item not in all_tones:
+            if item not in all_tones and item != '':
                 raise ValueError("{} is not a valid tone.".format(item))
             return item
     else:
