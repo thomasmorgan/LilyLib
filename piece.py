@@ -1,4 +1,4 @@
-from models import Chord, Key
+from models import Point, Key
 from keys import key_dictionary
 from staves import Treble, Bass
 from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
@@ -104,7 +104,7 @@ class Piece:
             return " ".join([str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
-        if isinstance(stave, Chord):
+        if isinstance(stave, Point):
             return(str(stave))
         elif isinstance(stave, list):
             stave = [str(item) for item in flatten(stave)]
@@ -120,11 +120,11 @@ class Piece:
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [Chord(n, d, o) for i, n, d, o in zip_list]
+        return [Point(n, d, o) for i, n, d, o in zip_list]
 
     def chord(self, tones, dur, ornamentation=""):
         tones = flatten([tonify(tones)])
-        return [Chord(tones, dur, ornamentation)]
+        return [Point(tones, dur, ornamentation)]
 
     def chords(self, tones, dur, ornamentation=""):
         dur = split_and_flatten(dur)
@@ -185,11 +185,11 @@ class Piece:
 
         return start, stop_or_length
 
-    def add(self, passage, tones):
+    def add(self, passage, tones, *tweaks):
         if isinstance(passage, list):
             for subitem in passage:
                 self.add(subitem, tones)
-        elif isinstance(passage, Chord):
+        elif isinstance(passage, Point):
             tones = flatten([tonify(tones)])
             passage.tones = list(set(passage.tones + tones))
         return passage
@@ -198,7 +198,7 @@ class Piece:
         if isinstance(passage, list):
             for subitem in passage:
                 self.remove(subitem, tones)
-        elif isinstance(passage, Chord):
+        elif isinstance(passage, Point):
             tones = flatten([tonify(tones)])
             passage.tones = [t for t in passage.tones if t not in tones]
         return passage
@@ -207,7 +207,7 @@ class Piece:
         if isinstance(passage, list):
             for subitem in passage:
                 self.replace(subitem, old, new)
-        elif isinstance(passage, Chord):
+        elif isinstance(passage, Point):
             if old in passage.tones:
                 self.remove(passage, old)
                 self.add(passage, new)
