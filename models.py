@@ -143,7 +143,7 @@ class Key:
                     self.all_letters.append(l)
 
         self.all_letters = [l for l in all_letters if l in self.all_letters]
-        self.all_tones = [t for t in all_tones if letter(t) in all_letters]
+        self.all_tones = [t for t in all_tones if letter(t) in self.all_letters]
 
     def init_scale_tones(self):
         self.tones = [t for t in self.all_tones if letter(t) in self.letters]
