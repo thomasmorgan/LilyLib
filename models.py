@@ -41,9 +41,9 @@ class Point:
 
     def check_init_arguments(self, tones, dur, ornamentation):
         if dur not in util.all_durs:
-            raise ValueError("Cannot create note/chord with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
+            raise ValueError("Cannot create Point with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
         if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create note/chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+            raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
         if 'r' in self.tones:
