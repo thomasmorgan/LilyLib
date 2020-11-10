@@ -1,8 +1,9 @@
 import util
 
 
-class Chord:
-    """ The simultaneous sounding of one or more tones for a specified duration."""
+class Point:
+    """ An element in sheet music with a specified duration.
+        Prints as either a rest, note or chord."""
 
     def __init__(self, tones, dur, ornamentation=""):
         tones = util.flatten([util.tonify(tones)])
