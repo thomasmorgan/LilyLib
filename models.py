@@ -12,6 +12,27 @@ class Point:
         self.dur = dur
         self.ornamentation = ornamentation
 
+    def check_init_arguments(self, tones, dur, ornamentation):
+        if not isinstance(tones, list):
+            raise ValueError("Cannot create Point with {} as tones. tones must be a list.".format(tones))
+        for t in tones:
+            if t not in all_tones:
+                raise ValueError("Cannot create Point with tones containing {} as it is not a valid tone.".format(t))
+        if dur not in all_durs:
+            raise ValueError("Cannot create Point with {} as dur. dur must be one of {}.".format(dur, all_durs))
+        if not isinstance(ornamentation, str):
+            raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+
+    def __str__(self):
+        if self.is_rest:
+            return 'r' + str(self.dur) + self.ornamentation
+        elif self.is_note:
+            return self.tone + str(self.dur) + self.ornamentation
+        elif self.is_chord:
+            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+        else:
+            raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
+
     @property
     def tone(self):
         if len(self.tones) == 1:
@@ -39,21 +60,7 @@ class Point:
     def is_chord(self):
         return len(self.tones) > 1
 
-    def check_init_arguments(self, tones, dur, ornamentation):
-        if dur not in util.all_durs:
-            raise ValueError("Cannot create Point with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
-        if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
-    def __str__(self):
-        if self.is_rest:
-            return 'r' + str(self.dur) + self.ornamentation
-        elif self.is_note:
-            return self.tone + str(self.dur) + self.ornamentation
-        elif self.is_chord:
-            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
-        else:
-            raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
 
 
 class Stave:
