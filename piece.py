@@ -275,11 +275,8 @@ class Piece:
         elif isinstance(item, list):
             return [self.transpose(subitem, shift, mode, key) for subitem in item]
 
-        elif isinstance(item, Chord):
-            return Chord(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
-
-        elif item == 'r':
-            return item
+        elif isinstance(item, Point):
+            return Point(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
 
         elif isinstance(item, str):
             try:
