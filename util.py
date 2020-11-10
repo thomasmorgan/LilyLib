@@ -57,14 +57,11 @@ equivalent_letters = {
 
 def separate(tone):
     tone = tonify(tone)
-    if tone == 'r':
-        return 'r', ''
+    if tone[-1] in ["`", ","]:
+        split = tone.split(tone[-1], 1)
+        return split[0], split[1] + tone[-1]
     else:
-        if tone[-1] in ["`", ","]:
-            split = tone.split(tone[-1], 1)
-            return split[0], split[1] + tone[-1]
-        else:
-            return tone, ''
+        return tone, ''
 
 
 linebreak = ['\\break\n']
