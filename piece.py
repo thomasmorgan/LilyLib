@@ -135,7 +135,9 @@ class Piece:
         return flatten([self.note(t, d, o) for i, t, d, o in zip_list])
 
     def chord(self, tones, dur, ornamentation=""):
-        tones = flatten([tonify(tones)])
+        tones = [[] if tone == '' else tone for tone in flatten([tonify(tones)])]
+        if [] in tones:
+            raise ValueError("Cannot make a chord that includes a rest. Requested chord is {}.".format(tones))
         return [Point(tones, dur, ornamentation)]
 
     def chords(self, tones, dur, ornamentation=""):
@@ -145,8 +147,7 @@ class Piece:
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [self.chord(t, d, o) for i, t, d, o in zip_list]
-
+        return flatten([self.chord(t, d, o) for i, t, d, o in zip_list])
 
     def series(self, tones, start, stop_or_length, dur=None, step=1):
         tones = tonify(tones)
