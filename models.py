@@ -128,19 +128,19 @@ class Key:
             raise ValueError("Must define root, letters and name of Key {}".format(self))
 
     def init_all_tones(self):
-        all_letters = [l for l in self.letters]
+        self.all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in all_letters and util.equivalent_letters[l] not in all_letters:
-                all_letters.append(l)
+            if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                self.all_letters.append(l)
 
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
-                    all_letters.append(l)
+                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                    self.all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
-                    all_letters.append(l)
+                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                    self.all_letters.append(l)
 
         self.all_letters = [l for l in all_letters if l in self.all_letters]
         self.all_tones = [t for t in all_tones if letter(t) in all_letters]
