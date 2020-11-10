@@ -27,6 +27,18 @@ class Point:
     def pitch(self):
         return util.pitch(self.tone)
 
+    @property
+    def is_rest(self):
+        return len(self.tones) == 0
+
+    @property
+    def is_note(self):
+        return len(self.tones) == 1
+
+    @property
+    def is_chord(self):
+        return len(self.tones) > 1
+
     def check_init_arguments(self, tones, dur, ornamentation):
         if dur not in util.all_durs:
             raise ValueError("Cannot create note/chord with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
