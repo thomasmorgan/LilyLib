@@ -46,9 +46,14 @@ class Point:
             raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
 
     def __str__(self):
-        if 'r' in self.tones:
+        if self.is_rest:
             return 'r' + str(self.dur) + self.ornamentation
-        return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+        elif self.is_note:
+            return self.tone + str(self.dur) + self.ornamentation
+        elif self.is_chord:
+            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+        else:
+            raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
 
 
 class Stave:
