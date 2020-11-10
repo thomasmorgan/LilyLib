@@ -118,15 +118,21 @@ class Piece:
     def rests(self, *dur):
         return flatten([self.rest(d) for d in flatten(dur)])
 
+    def note(self, tone, dur, ornamentation=""):
+        tone = flatten([tonify(tone)])
+        if len(tone) != 1:
+            raise ValueError("Cannot create single note with tone of {}.".format(tone))
+        return [Point(tone, dur, ornamentation)]
+
     def notes(self, tones, dur, ornamentation=""):
-        tones = flatten([tonify(tones)])
+        tones = [[] if tone == '' else tone for tone in flatten([tonify(tones)])]
         dur = split_and_flatten(dur)
         orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [Point(n, d, o) for i, n, d, o in zip_list]
+        return flatten([self.note(t, d, o) for i, t, d, o in zip_list])
 
     def chord(self, tones, dur, ornamentation=""):
         tones = flatten([tonify(tones)])
