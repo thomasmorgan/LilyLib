@@ -112,6 +112,12 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
+    def rest(self, dur):
+        return [Point([], dur)]
+
+    def rests(self, *dur):
+        return flatten([self.rest(d) for d in flatten(dur)])
+
     def notes(self, tones, dur, ornamentation=""):
         tones = flatten([tonify(tones)])
         dur = split_and_flatten(dur)
@@ -135,8 +141,6 @@ class Piece:
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
         return [self.chord(t, d, o) for i, t, d, o in zip_list]
 
-    def rests(self, *dur):
-        return self.notes('r', flatten(dur))
 
     def series(self, tones, start, stop_or_length, dur=None, step=1):
         tones = tonify(tones)
