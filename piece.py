@@ -196,33 +196,30 @@ class Piece:
 
         return start, stop_or_length
 
-    def add(self, passage, tones, *tweaks):
-        if isinstance(passage, list):
-            for subitem in passage:
-                self.add(subitem, tones)
-        elif isinstance(passage, Point):
-            tones = flatten([tonify(tones)])
-            passage.tones = list(set(passage.tones + tones))
-        return passage
+    def add(self, point, tones, *tweaks):
+        if isinstance(point, list):
+            for subpoint in point:
+                self.add(subpoint, tones)
+        elif isinstance(point, Point):
+            if not point.is_rest or "include rests" in tweaks:
+                point.add(tones)
+        return point
 
-    def remove(self, passage, tones):
-        if isinstance(passage, list):
-            for subitem in passage:
-                self.remove(subitem, tones)
-        elif isinstance(passage, Point):
-            tones = flatten([tonify(tones)])
-            passage.tones = [t for t in passage.tones if t not in tones]
-        return passage
+    def remove(self, point, tones):
+        if isinstance(point, list):
+            for subpoint in point:
+                self.remove(subpoint, tones)
+        elif isinstance(point, Point):
+            point.remove(tones)
+        return point
 
-    def replace(self, passage, old, new):
-        if isinstance(passage, list):
-            for subitem in passage:
-                self.replace(subitem, old, new)
-        elif isinstance(passage, Point):
-            if old in passage.tones:
-                self.remove(passage, old)
-                self.add(passage, new)
-        return passage
+    def replace(self, point, old_tones, new_tones):
+        if isinstance(point, list):
+            for subitem in point:
+                self.replace(subitem, old_tones, new_tones)
+        elif isinstance(point, Point):
+            point.replace(old_tones, new_tones)
+        return point
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
