@@ -61,7 +61,28 @@ class Point:
     def is_chord(self):
         return len(self.tones) > 1
 
+    def add(self, tones):
+        tones = flatten([tonify(tones)])
+        for tone in tones:
+            if tone not in self.tones:
+                self.tones.append(tone)
 
+    def remove(self, tones):
+        tones = flatten([tonify(tones)])
+        self.tones = [tone for tone in self.tones if tone not in tones]
+
+    def replace(self, old_tones, new_tones):
+        old_tones = flatten([tonify(old_tones)])
+        new_tones = tonify(new_tones)
+        new_tones = new_tones if isinstance(new_tones, list) else [new_tones]
+
+        max_length = max(len(old_tones), len(new_tones))
+        zip_list = zip(range(max_length), cycle(old_tones), cycle(new_tones))
+
+        for i, old_tone, new_tone in zip_list:
+            if old_tone in self.tones:
+                self.remove(old_tone)
+                self.add(new_tone)
 
 
 class Stave:
