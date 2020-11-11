@@ -104,13 +104,21 @@ def equivalent_tone(tone):
 
 
 def tonify(item):
+    """ Returns an unflattened list of valid tones and empty lists.
+
+    Multi-tone strings are split into lists of valid tones. A seris of N spaces is
+    converted into a seris of N-1 empty lists. These produce rests when assigned to
+    Points, but will be erased by flattening the list. """
+
     if isinstance(item, list):
         return [tonify(subitem) for subitem in item]
     elif isinstance(item, str):
         if " " in item:
-            return tonify(item.split(" "))
+            split_tones = item.split(" ")
+            split_tones = [tone if tone != '' else [] for tone in split_tones]
+            return tonify(split_tones)
         else:
-            if item not in all_tones and item != '':
+            if item not in all_tones:
                 raise ValueError("{} is not a valid tone.".format(item))
             return item
     else:
