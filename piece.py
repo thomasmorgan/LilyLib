@@ -120,7 +120,7 @@ class Piece:
 
     def note(self, tone, dur, ornamentation=""):
         tone = flatten([tonify(tone)])
-        if len(tone) != 1:
+        if len(tone) > 1:
             raise ValueError("Cannot create single note with tone of {}.".format(tone))
         return [Point(tone, dur, ornamentation)]
 
