@@ -136,9 +136,7 @@ class Piece:
         return flatten([self.note(t, d, o) for i, t, d, o in zip_list])
 
     def chord(self, tones, dur, ornamentation=""):
-        tones = [[] if tone == '' else tone for tone in flatten([tonify(tones)])]
-        if [] in tones:
-            raise ValueError("Cannot make a chord that includes a rest. Requested chord is {}.".format(tones))
+        tones = flatten([tonify(tones)])
         return [Point(tones, dur, ornamentation)]
 
     def chords(self, tones, dur, ornamentation=""):
