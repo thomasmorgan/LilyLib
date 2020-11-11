@@ -125,7 +125,8 @@ class Piece:
         return [Point(tone, dur, ornamentation)]
 
     def notes(self, tones, dur, ornamentation=""):
-        tones = [[] if tone == '' else tone for tone in flatten([tonify(tones)])]
+        tones = tonify(tones)
+        tones = [tones] if isinstance(tones, str) else tones
         dur = split_and_flatten(dur)
         orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
