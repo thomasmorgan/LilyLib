@@ -1,12 +1,11 @@
-from models import Point, Key
-from keys import key_dictionary
+from models import Point
+from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
 from tones import all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
 from lilylib import notes
 
 from itertools import cycle
-from inspect import isclass
 
 
 class Piece:
@@ -29,28 +28,8 @@ class Piece:
     def details():
         raise NotImplementedError("You must overwrite details to create a piece")
 
-    def keyify(self, key):
-        if key is None:
-            return self.key
-        elif isinstance(key, Key):
-            return key
-        elif isclass(key) and issubclass(key, Key):
-            return key()
-        elif isinstance(key, str):
-            try:
-                key = key.split(" ")
-                letter = key[0].lower()
-                mode = " ".join(key[1:]).lower()
-                if 'harmonic' in mode:
-                    mode = 'harmonic'
-                return key_dictionary[mode][letter]
-            except Exception:
-                raise ValueError("{} is not a valid string format for a key".format(key))
-        else:
-            raise ValueError("{} is not a valid key".format(key))
-
     def set_key(self, key):
-        self.key = self.keyify(key)
+        self.key = keyify(key)
 
     @property
     def key_signature(self):
@@ -167,43 +146,43 @@ class Piece:
             return stop - 1
 
     def scale(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         return self.series(key.tones, start, stop_or_length, dur, step)
 
     def arpeggio(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         return self.series(key.arpeggio_tones, start, stop_or_length, dur, step)
 
     def arpeggio7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
         return self.series(arpeggio7_tones, start, stop_or_length, dur, step)
 
     def dominant7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         dominant7_letters = key.arpeggio_letters + [key.relative_chromatic_letter(10)]
         dominant7_tones = [t for t in key.all_tones if separate(t)[0] in dominant7_letters]
         return self.series(dominant7_tones, start, stop_or_length, dur, step)
 
     def diminished7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         diminished7_letters = [key.relative_chromatic_letter(i) for i in [0, 3, 6, 9]]
         diminished7_tones = [t for t in key.all_tones if separate(t)[0] in diminished7_letters]
         return self.series(diminished7_tones, start, stop_or_length, dur, step)
 
     def chromatic(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         return self.series(key.all_tones, start, stop_or_length, dur, step)
 
     def scale_subset(self, positions, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         custom_tones = key.scale_subset(positions)
         return self.series(custom_tones, start, stop_or_length, dur, step)
 
     def transpose(self, item, shift, mode="octave", key=None):
         self.validate_transpose_args(shift, mode)
 
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
 
         if isinstance(item, dict):
             new_dict = {}
@@ -247,7 +226,7 @@ class Piece:
             raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
     def harmonize(self, chords, intervals, mode="octave", key=None):
-        key = self.keyify(key)
+        key = self.key if key is None else keyify(key)
         chords = [chords] if not isinstance(chords, list) else chords
         intervals = [intervals] if not isinstance(intervals, list) else intervals
         mode = [mode] if not isinstance(mode, list) else mode

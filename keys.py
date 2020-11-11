@@ -1,5 +1,7 @@
 from models import Key
 
+from inspect import isclass
+
 
 class CFlatMajor(Key):
     def define(self):
@@ -369,3 +371,22 @@ key_dictionary = {
         "b": BMinorH()
     }
 }
+
+
+def keyify(key):
+    if isinstance(key, Key):
+        return key
+    elif isclass(key) and issubclass(key, Key):
+        return key()
+    elif isinstance(key, str):
+        try:
+            key = key.split(" ")
+            letter = key[0].lower()
+            mode = " ".join(key[1:]).lower()
+            if 'harmonic' in mode:
+                mode = 'harmonic'
+            return key_dictionary[mode][letter]
+        except Exception:
+            raise ValueError("{} is not a valid string format for a key".format(key))
+    else:
+        raise ValueError("{} is not a valid key".format(key))
