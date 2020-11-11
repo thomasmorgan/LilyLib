@@ -1,5 +1,6 @@
 from piece import Piece
-from util import letter
+from tones import letter
+from lilylib import note, notes
 
 
 class CMajorModalScales(Piece):
@@ -10,14 +11,14 @@ class CMajorModalScales(Piece):
     def write_score(self):
         # The basic section manually builds a scale note by note
         basic = {
-            "treble": [self.notes("c`", 8), self.notes("d`", 8), self.notes("e`", 8), self.notes("f`", 8), self.notes("g`", 8), self.notes("a`", 8), self.notes("b`", 8), self.notes("c``", 8)],
-            "bass": [self.notes("c", 8), self.notes("d", 8), self.notes("e", 8), self.notes("f", 8), self.notes("g", 8), self.notes("a", 8), self.notes("b", 8), self.notes("c`", 8)]
+            "treble": [note("c`", 8), note("d`", 8), note("e`", 8), note("f`", 8), note("g`", 8), note("a`", 8), note("b`", 8), note("c``", 8)],
+            "bass": [note("c", 8), note("d", 8), note("e", 8), note("f", 8), note("g", 8), note("a", 8), note("b", 8), note("c`", 8)]
         }
 
         # The notes section uses the notes function to build a list of notes from a single string
-        notes = {
-            "treble": self.notes('d` e` f` g` a` b` c`` d``', 8),
-            "bass": self.notes('d e f g a b c` d`', 8)
+        inetermediate = {
+            "treble": notes('d` e` f` g` a` b` c`` d``', 8),
+            "bass": notes('d e f g a b c` d`', 8)
         }
 
         # The scale section uses the scale function to build a scale from A to B, or from A with length B
@@ -42,7 +43,7 @@ class CMajorModalScales(Piece):
         }
 
         for staff in ["treble", "bass"]:
-            self.score[staff] = [basic[staff], notes[staff], scale[staff], looped[staff], smart[staff]]
+            self.score[staff] = [basic[staff], inetermediate[staff], scale[staff], looped[staff], smart[staff]]
 
 
 if __name__ == "__main__":

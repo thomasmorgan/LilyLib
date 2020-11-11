@@ -1,4 +1,5 @@
 from piece import Piece
+from lilylib import chord
 
 
 class CMajorChord(Piece):
@@ -7,8 +8,8 @@ class CMajorChord(Piece):
         self.title = "C Major Chord"
 
     def write_score(self):
-        self.score["treble"] = self.chord("c` e` g` c``", 1)
-        self.score["bass"] = self.chord("c, c", 1)
+        self.score["treble"] = chord("c` e` g` c``", 1)
+        self.score["bass"] = chord("c, c", 1)
 
 
 if __name__ == "__main__":

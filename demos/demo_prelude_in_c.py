@@ -1,5 +1,8 @@
 from piece import Piece
-from util import pattern, select, remove, tonify
+from util import pattern, select, omit
+from tones import tonify
+from lilylib import note, notes, chord, rest, rests
+from markup import voices
 
 
 class PreludeInC(Piece):
@@ -10,7 +13,6 @@ class PreludeInC(Piece):
         self.opus = "BVW 846"
 
     def write_score(self):
-        note, notes, chord, rest, rests, voices = self.note, self.notes, self.chord, self.rest, self.rests, self.voices
         scale, arpeggio, arpeggio7, dominant7, diminished7 = self.scale, self.arpeggio, self.arpeggio7, self.dominant7, self.diminished7
         transpose = self.transpose
         self.score["treble"], self.score["bass"] = [], []
@@ -23,44 +25,44 @@ class PreludeInC(Piece):
         bar = [''] * 40
 
         bar[1] = arpeggio('c`', 'e``')
-        bar[2] = remove(dominant7('c`', 'f``', key='D Minor'), 3, 5)
-        bar[3] = remove(dominant7('b', 'f``', key='G Major'), 3, 5)
+        bar[2] = omit(dominant7('c`', 'f``', key='D Minor'), 3, 5)
+        bar[3] = omit(dominant7('b', 'f``', key='G Major'), 3, 5)
         bar[4] = bar[1]
 
-        bar[5] = remove(arpeggio('c`', 'a``', key='A Minor'), 4)
+        bar[5] = omit(arpeggio('c`', 'a``', key='A Minor'), 4)
         bar[6] = ['c`'] + arpeggio('d`', 'd``', key='D Major')
         bar[7] = transpose(bar[5], -1, 'scale')
         bar[8] = ['b'] + arpeggio('c`', 'c``')
 
-        bar[9] = remove(arpeggio7('a', 'c``', key='A Minor'), 5)
+        bar[9] = omit(arpeggio7('a', 'c``', key='A Minor'), 5)
         bar[10] = select(dominant7('d', 8, key='D Major'), 1, 3, 5, 6, 8)
         bar[11] = arpeggio('g', 5, key='G Major')
         bar[12] = select(diminished7('g', 7, key='G Minor'), 1, 2, 4, 5, 7)
 
-        bar[13] = remove(arpeggio('f', 'd``', key='D Minor'), 4)
-        bar[14] = remove(diminished7('f', 'b`', key='F Minor'), 3, 6)
+        bar[13] = omit(arpeggio('f', 'd``', key='D Minor'), 4)
+        bar[14] = omit(diminished7('f', 'b`', key='F Minor'), 3, 6)
         bar[15] = transpose(bar[13], -1, 'scale')
-        bar[16] = remove(arpeggio7('e', 'f`', key='F Major'), 5)
+        bar[16] = omit(arpeggio7('e', 'f`', key='F Major'), 5)
 
-        bar[17] = remove(arpeggio7('d', 'f`', key='D Minor'), 5)
-        bar[18] = remove(dominant7('g,', 'f`', key='G Major'), 2, 4, 7)
+        bar[17] = omit(arpeggio7('d', 'f`', key='D Minor'), 5)
+        bar[18] = omit(dominant7('g,', 'f`', key='G Major'), 2, 4, 7)
         bar[19] = arpeggio('c', 'e`')
-        bar[20] = remove(dominant7('c', 'e`'), 2)
+        bar[20] = omit(dominant7('c', 'e`'), 2)
 
-        bar[21] = remove(arpeggio7('f,', 'e`', key='F Major'), 2, 3, 4)
-        bar[22] = remove(diminished7('fs,', 'ds`'), 2, 4, 5)
+        bar[21] = omit(arpeggio7('f,', 'e`', key='F Major'), 2, 3, 4)
+        bar[22] = omit(diminished7('fs,', 'ds`'), 2, 4, 5)
         bar[23] = 'af, f b c` d`'
-        bar[24] = remove(arpeggio7('g,', 'd`', key='G Major'), 2, 3)
+        bar[24] = omit(arpeggio7('g,', 'd`', key='G Major'), 2, 3)
 
-        bar[25] = remove(arpeggio('g,', 'e`'), 2)
+        bar[25] = omit(arpeggio('g,', 'e`'), 2)
         bar[26] = 'g, d g c` f`'
-        bar[27] = remove(dominant7('g,', 'f`', key='G Major'), 2, 4, 7)
-        bar[28] = ['g,'] + remove(diminished7('ds', 'fs`'), 2, 5)
+        bar[27] = omit(dominant7('g,', 'f`', key='G Major'), 2, 4, 7)
+        bar[28] = ['g,'] + omit(diminished7('ds', 'fs`'), 2, 5)
 
-        bar[29] = remove(arpeggio('g,', 'g`'), 2, 6)
+        bar[29] = omit(arpeggio('g,', 'g`'), 2, 6)
         bar[30] = bar[26]
         bar[31] = bar[27]
-        bar[32] = remove(dominant7('c,', 'e`'), 2, 3, 4, 6, 9)
+        bar[32] = omit(dominant7('c,', 'e`'), 2, 3, 4, 6, 9)
 
         for c in bar:
             if c:

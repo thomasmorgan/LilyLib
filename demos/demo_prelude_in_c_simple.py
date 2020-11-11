@@ -1,5 +1,8 @@
 from piece import Piece
-from util import pattern, select, tonify
+from util import pattern, select
+from tones import tonify
+from lilylib import note, notes, chord, rest, rests
+from markup import voices
 
 
 class PreludeInCSimple(Piece):
@@ -10,7 +13,6 @@ class PreludeInCSimple(Piece):
         self.opus = "BVW 846"
 
     def write_score(self):
-        note, notes, chord, rest, rests, voices = self.note, self.notes, self.chord, self.rest, self.rests, self.voices
         self.score["treble"], self.score["bass"] = [], []
 
         def motif(c):

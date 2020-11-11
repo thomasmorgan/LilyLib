@@ -1,4 +1,5 @@
 from piece import Piece
+from lilylib import note, notes
 
 
 class Arpeggios(Piece):
@@ -9,14 +10,14 @@ class Arpeggios(Piece):
     def write_score(self):
         # The basic section manually builds a scale note by note
         basic = {
-            "treble": [self.note("c`", 8), self.note("e`", 8), self.note("g`", 8), self.note("c``", 8)],
-            "bass": [self.note("c", 8), self.note("e", 8), self.note("g", 8), self.note("c`", 8)]
+            "treble": [note("c`", 8), note("e`", 8), note("g`", 8), note("c``", 8)],
+            "bass": [note("c", 8), note("e", 8), note("g", 8), note("c`", 8)]
         }
 
         # The notes section uses the notes function to build a list of notes from a single string
-        notes = {
-            "treble": self.notes('d` fs` a` d``', 8),
-            "bass": self.notes('d fs a d`', 8)
+        intermediate = {
+            "treble": notes('d` fs` a` d``', 8),
+            "bass": notes('d fs a d`', 8)
         }
 
         # The arpeggio section uses the arpeggio function to build a scale from one note to the next
@@ -38,7 +39,7 @@ class Arpeggios(Piece):
         }
 
         for staff in ["treble", "bass"]:
-            self.score[staff] = [basic[staff], notes[staff], arpeggio[staff], length[staff], stepped[staff]]
+            self.score[staff] = [basic[staff], intermediate[staff], arpeggio[staff], length[staff], stepped[staff]]
 
 
 if __name__ == "__main__":

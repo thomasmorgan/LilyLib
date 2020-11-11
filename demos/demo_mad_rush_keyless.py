@@ -1,5 +1,8 @@
 from piece import Piece
-from util import flatten, pattern, subset, select, merge, letter
+from util import flatten, pattern, subset, select, merge
+from tones import letter
+from lilylib import notes, rest
+from markup import triplets, tempo_change, name, voices
 
 
 class MadRushKeyless(Piece):
@@ -37,10 +40,10 @@ class MadRushKeyless(Piece):
         aii7 = self.transpose(select(aii, 1), -1, "scale") + subset(aii, 2, 6)
 
         def triplet_bar(note_pair, bars=1):
-            return self.triplets(self.notes(note_pair, 8) * int(6 * bars))
+            return triplets(notes(note_pair, 8) * int(6 * bars))
 
         def doublet_bar(note_pair, bars=1):
-            return self.notes(note_pair, 8) * int(4 * bars)
+            return notes(note_pair, 8) * int(4 * bars)
 
         def A_motif(chord, bars, *tweaks):
             motif = {}
@@ -55,9 +58,9 @@ class MadRushKeyless(Piece):
             motif['bass1'] = doublet_bar(pattern(chord, [2, 3]), bars=bars)
 
             if 'crotchet bass' in tweaks:
-                motif['bass2'] = self.notes(select(chord, 1), 4) * int(bars * 4)
+                motif['bass2'] = notes(select(chord, 1), 4) * int(bars * 4)
             else:
-                motif['bass2'] = self.notes(select(chord, 1) * bars, 1, "~")
+                motif['bass2'] = notes(select(chord, 1) * bars, 1, "~")
                 if 'extend tie' not in tweaks:
                     motif['bass2'][-1].ornamentation = ""
 
@@ -66,12 +69,12 @@ class MadRushKeyless(Piece):
                 motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
 
             if 'no treble' in tweaks:
-                motif['treble'] = self.rests(1) * bars
+                motif['treble'] = rest(1) * bars
 
             return motif
 
         sections['A1'] = merge(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
-        sections['A1']['treble'] = self.tempo_change('4/4') + sections['A1']['treble']
+        sections['A1']['treble'] = tempo_change('4/4') + sections['A1']['treble']
         sections['A2'] = merge(A_motif(aI, 2), A_motif(aiii, 2))
         sections['A3'] = merge(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
         sections['A4'] = merge(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
@@ -87,10 +90,10 @@ class MadRushKeyless(Piece):
         bii7d5 = [self.transpose(t, i, 'semitone') for t, i in zip(bii7, [0, 0, -1, 0, 0, 0, -1, 0])]
 
         def arpeggio_bar(arp, bars):
-            return self.notes(pattern(arp, [1, 2, 3, 4, 3, 2]), 16) * int(4 * bars)
+            return notes(pattern(arp, [1, 2, 3, 4, 3, 2]), 16) * int(4 * bars)
 
         def altpeggio_bar(arp, bars):
-            return self.tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
+            return tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
 
         def B_motif(chord, bars, *tweaks):
             motif = {}
@@ -103,7 +106,7 @@ class MadRushKeyless(Piece):
                 motif['bass'] = altpeggio_bar(subset(chord, 4, 1), bars=bars)
 
             if 'tempo' in tweaks:
-                motif['treble'] = self.tempo_change("12/8") + motif['treble']
+                motif['treble'] = tempo_change("12/8") + motif['treble']
 
             return motif
 
@@ -116,13 +119,13 @@ class MadRushKeyless(Piece):
 
         def combine(lh, rh):
             return {
-                'treble': self.triplets(subset(sections[rh]['treble'], 2, 7) * 8 + subset(sections[rh]['treble'], 56, 61) * 8),
+                'treble': triplets(subset(sections[rh]['treble'], 2, 7) * 8 + subset(sections[rh]['treble'], 56, 61) * 8),
                 'bass1': sections[lh]['bass1'],
                 'bass2': sections[lh]['bass2'],
             }
 
         sections['C1'] = combine('A2', 'B1')
-        sections['C1']['treble'] = self.tempo_change('4/4') + sections['C1']['treble']
+        sections['C1']['treble'] = tempo_change('4/4') + sections['C1']['treble']
         sections['C2'] = combine('A3', 'B2')
         sections['C3'] = combine('A4', 'B3')
         sections['C4'] = combine('A5', 'B4')
@@ -134,9 +137,9 @@ class MadRushKeyless(Piece):
             motif['bass1'] = sections[section]['bass1']
             motif['bass2'] = sections[section]['bass2']
             if len(chord) == 3:
-                motif['treble'] = self.harmonize(self.notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1)
+                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1)
             else:
-                motif['treble'] = self.harmonize(self.notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1)
+                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1)
             return motif
 
         diii = self.transpose(self.transpose(self.arpeggio(self.key.root, 3), 2, "scale"), 1)
@@ -151,7 +154,7 @@ class MadRushKeyless(Piece):
         D = ['D1', 'D1', 'D2', 'D2', 'D3', 'D3', 'D4']
 
         for section in sections:
-            self.name(sections[section]['treble'], section)
+            name(sections[section]['treble'], section)
 
         structure = [A, A, 'A1', B, 'A1', C, 'A1', C, 'A1', B, A, A, 'A1', B, 'A1', D, D, 'A1']
 
@@ -166,7 +169,7 @@ class MadRushKeyless(Piece):
         for section in sections_to_print:
             self.score["treble"] += sections[section]['treble'] + ["\\break\n"]
             if 'B' not in section:
-                self.score['bass'] += self.voices(sections[section]['bass1'], sections[section]['bass2'])
+                self.score['bass'] += voices(sections[section]['bass1'], sections[section]['bass2'])
             else:
                 self.score['bass'] += sections[section]['bass']
 
