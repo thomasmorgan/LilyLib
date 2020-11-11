@@ -336,46 +336,6 @@ class Piece:
                         chord.tones.append(new_tone)
         return chords
 
-    def triplets(self, passage):
-        return ['\\tuplet 3/2 {'] + passage + ['}']
-
-    def grace(self, passage):
-        return ['\\grace {'] + passage + ['}']
-
-    def after_grace(self, passage, grace):
-        return ['\\afterGrace'] + passage + ['{'] + grace + ['}']
-
-    def acciaccatura(self, passage):
-        return ['\\acciaccatura {'] + passage + ['}']
-
-    def ottava(self, passage, shift):
-        return ['\\ottava #{}'.format(shift)] + passage + ['\\ottava #0']
-
-    def voices(self, *voices):
-        score = ["<<\n"]
-        for i, voice in enumerate(voices):
-            score.extend(["{"] + voice + ["}\n"])
-            if i < (len(voices) - 1):
-                score += ["\\\\\n"]
-        score += [">>\n"]
-        return score
-
-    def repeat(self, passage, times=2):
-        if times > 2:
-            passage[-1].ornamentation += '^"x' + str(times) + '"'
-        return ["\\repeat volta " + str(times) + '{'] + passage + ['}']
-
-    def annotation(self, text):
-        return '^"' + text + '" '
-
-    def name(self, passage, name):
-        index = next(i for i, point in enumerate(passage) if isinstance(point, Point))
-        passage[index] = deepcopy(passage[index])
-        passage[index].ornamentation += ('^"' + name + '"')
-
-    def tempo_change(self, tempo):
-        return ["\\time {}".format(tempo)]
-
     def relative_key(self, mode, relationship):
         my_root = self.key.root
         index_of_my_root = self.key.letters.index(my_root)
