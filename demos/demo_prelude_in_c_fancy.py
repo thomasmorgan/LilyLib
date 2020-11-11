@@ -12,7 +12,7 @@ class PreludeInCFancy(Piece):
         self.annotate = True
 
     def write_score(self):
-        notes, chord, rests, voices = self.notes, self.chord, self.rests, self.voices
+        note, notes, chord, rest, rests, voices = self.note, self.notes, self.chord, self.rest, self.rests, self.voices
         scale, arpeggio, arpeggio7, dominant7, diminished7 = self.scale, self.arpeggio, self.arpeggio7, self.dominant7, self.diminished7
         transpose = self.transpose
         self.score["treble"], self.score["bass"] = [], []
@@ -23,8 +23,8 @@ class PreludeInCFancy(Piece):
                 bass = chord(subset(tones, 1, 2), 4)
                 treble = chord(subset(tones, 3, 5), 4)
             else:
-                bass = 2 * voices(rests(16) + notes(pattern(tones, [2, 2]), ['8.', 4], "~ "), notes(pattern(tones, [1]), 2))
-                treble = 2 * (rests(8) + notes(pattern(tones, [3, 4, 5, 3, 4, 5]), 16)) + ["\n"]
+                bass = 2 * voices(rest(16) + notes(select(tones, 2), ['8.', 4], "~ "), note(select(tones, 1), 2))
+                treble = 2 * (rest(8) + notes(pattern(tones, [3, 4, 5, 3, 4, 5]), 16)) + ["\n"]
             if self.annotate:
                 self.name(treble, c[1])
             self.score["bass"] += bass

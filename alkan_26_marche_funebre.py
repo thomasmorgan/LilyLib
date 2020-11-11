@@ -23,7 +23,7 @@ class MarcheFunebre(Piece):
 
     def write_score(self):
 
-        grace, after_grace, notes, transpose, harmonize, rests, scale, chord, chords, arpeggio, dominant7, diminished7, voices, add, name, remove, replace = self.grace, self.after_grace, self.notes, self.transpose, self.harmonize, self.rests, self.scale, self.chord, self.chords, self.arpeggio, self.dominant7, self.diminished7, self.voices, self.add, self.name, self.remove, self.replace
+        grace, after_grace, note, notes, transpose, harmonize, rests, scale, chord, chords, arpeggio, dominant7, diminished7, voices, add, name, remove, replace = self.grace, self.after_grace, self.note, self.notes, self.transpose, self.harmonize, self.rests, self.scale, self.chord, self.chords, self.arpeggio, self.dominant7, self.diminished7, self.voices, self.add, self.name, self.remove, self.replace
 
         """ Intro """
 
@@ -31,10 +31,10 @@ class MarcheFunebre(Piece):
             return grace(notes([transpose(transpose(tone, -1), -1, 'semitone'), transpose(tone, -1), tone], 32))
 
         def fall(tone):
-            return harmonize(notes(tone, 8, ornamentation='\\staccato'), -1)
+            return harmonize(note(tone, 8, ornamentation='\\staccato'), -1)
 
         def fall2(tone):
-            return notes(transpose(tone, -1), 8, ornamentation='\\staccato')
+            return note(transpose(tone, -1), 8, ornamentation='\\staccato')
 
         def plink(tone):
             return rise(tone) + fall(tone) + rests(8)
@@ -45,9 +45,9 @@ class MarcheFunebre(Piece):
         def plonk2(tone):
             return rise(tone) + 3 * fall2(tone) + rests(8)
 
-        def plod(tone):
-            tone = tonify(tone)
-            return 2 * plink(tone[0]) + plonk(tone[1])
+        def plod(tones):
+            tones = tonify(tones)
+            return 2 * plink(tones[0]) + plonk(tones[1])
 
         plodding = [plod(x) for x in 4 * ['ef ef'] + ['ef f', 'f gf', 'ef f']] + [plonk('f') + plonk2('bf')]
         plodding[0].insert(5, '\\stemDown')

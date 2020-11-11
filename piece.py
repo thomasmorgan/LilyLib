@@ -1,4 +1,4 @@
-from models import Chord, Key
+from models import Point, Key
 from keys import key_dictionary
 from staves import Treble, Bass
 from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
@@ -104,7 +104,7 @@ class Piece:
             return " ".join([str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
-        if isinstance(stave, Chord):
+        if isinstance(stave, Point):
             return(str(stave))
         elif isinstance(stave, list):
             stave = [str(item) for item in flatten(stave)]
@@ -112,19 +112,42 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
+    def rest(self, dur):
+        """ Returns a list with a single Point that prints as a rest with the specified duration. """
+        return [Point([], dur)]
+
+    def rests(self, *dur):
+        """ Returns a list of Points that print as rests with the specified durations. """
+        return flatten([self.rest(d) for d in flatten(dur)])
+
+    def note(self, tone, dur, ornamentation=""):
+        """ Returns a list with a single Point that prints as a note with the specified tone and duration.
+        Passing an empty string or list as tone will return a rest.
+        Passing a list of tones (or a string that can be split into multiple tones raises an error. """
+        tone = flatten([tonify(tone)])
+        if len(tone) > 1:
+            raise ValueError("Cannot create single note with tone of {}.".format(tone))
+        return [Point(tone, dur, ornamentation)]
+
     def notes(self, tones, dur, ornamentation=""):
-        tones = flatten([tonify(tones)])
+        """ Returns a list of Points that print as notes with the specified tone(s) and duration(s).
+        If tones is a string including adjacent white space, rests are produced.
+        If tones is a list including empty lists or empty strings, rests are produced.
+        Nested lists of tones are not permitted as tones will not be flattened to avoid removing empty lists."""
+        tones = tonify(tones)
+        tones = [tones] if isinstance(tones, str) else tones
         dur = split_and_flatten(dur)
         orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [Chord(n, d, o) for i, n, d, o in zip_list]
+        return flatten([self.note(t, d, o) for i, t, d, o in zip_list])
 
     def chord(self, tones, dur, ornamentation=""):
+        """ Returns a list containing a single Point that prints as a chord with the specified tones and duration. """
         tones = flatten([tonify(tones)])
-        return [Chord(tones, dur, ornamentation)]
+        return [Point(tones, dur, ornamentation)]
 
     def chords(self, tones, dur, ornamentation=""):
         dur = split_and_flatten(dur)
@@ -133,10 +156,7 @@ class Piece:
         max_length = max([len(tones), len(dur), len(orn)])
 
         zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-        return [self.chord(t, d, o) for i, t, d, o in zip_list]
-
-    def rests(self, *dur):
-        return self.notes('r', flatten(dur))
+        return flatten([self.chord(t, d, o) for i, t, d, o in zip_list])
 
     def series(self, tones, start, stop_or_length, dur=None, step=1):
         tones = tonify(tones)
@@ -185,33 +205,30 @@ class Piece:
 
         return start, stop_or_length
 
-    def add(self, passage, tones):
-        if isinstance(passage, list):
-            for subitem in passage:
-                self.add(subitem, tones)
-        elif isinstance(passage, Chord):
-            tones = flatten([tonify(tones)])
-            passage.tones = list(set(passage.tones + tones))
-        return passage
+    def add(self, point, tones, *tweaks):
+        if isinstance(point, list):
+            for subpoint in point:
+                self.add(subpoint, tones)
+        elif isinstance(point, Point):
+            if not point.is_rest or "include rests" in tweaks:
+                point.add(tones)
+        return point
 
-    def remove(self, passage, tones):
-        if isinstance(passage, list):
-            for subitem in passage:
-                self.remove(subitem, tones)
-        elif isinstance(passage, Chord):
-            tones = flatten([tonify(tones)])
-            passage.tones = [t for t in passage.tones if t not in tones]
-        return passage
+    def remove(self, point, tones):
+        if isinstance(point, list):
+            for subpoint in point:
+                self.remove(subpoint, tones)
+        elif isinstance(point, Point):
+            point.remove(tones)
+        return point
 
-    def replace(self, passage, old, new):
-        if isinstance(passage, list):
-            for subitem in passage:
-                self.replace(subitem, old, new)
-        elif isinstance(passage, Chord):
-            if old in passage.tones:
-                self.remove(passage, old)
-                self.add(passage, new)
-        return passage
+    def replace(self, point, old_tones, new_tones):
+        if isinstance(point, list):
+            for subitem in point:
+                self.replace(subitem, old_tones, new_tones)
+        elif isinstance(point, Point):
+            point.replace(old_tones, new_tones)
+        return point
 
     def make_stop_inclusive(self, start, stop):
         if stop >= start:
@@ -267,11 +284,8 @@ class Piece:
         elif isinstance(item, list):
             return [self.transpose(subitem, shift, mode, key) for subitem in item]
 
-        elif isinstance(item, Chord):
-            return Chord(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
-
-        elif item == 'r':
-            return item
+        elif isinstance(item, Point):
+            return Point(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
 
         elif isinstance(item, str):
             try:
@@ -355,7 +369,7 @@ class Piece:
         return '^"' + text + '" '
 
     def name(self, passage, name):
-        index = next(i for i, chord in enumerate(passage) if isinstance(chord, Chord))
+        index = next(i for i, point in enumerate(passage) if isinstance(point, Point))
         passage[index] = deepcopy(passage[index])
         passage[index].ornamentation += ('^"' + name + '"')
 

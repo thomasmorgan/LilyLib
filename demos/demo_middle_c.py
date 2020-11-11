@@ -7,8 +7,8 @@ class MiddleC(Piece):
         self.title = "Middle C"
 
     def write_score(self):
-        self.score["treble"] = self.notes("c`", 1)
-        self.score["bass"] = self.notes("c`", 1)
+        self.score["treble"] = self.note("c`", 1)
+        self.score["bass"] = self.note("c`", 1)
 
 
 if __name__ == "__main__":

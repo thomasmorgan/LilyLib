@@ -25,7 +25,7 @@ all_accents = ['ff', 'f', '', 's', 'ss']
 all_letters = flatten([[letter + accent for accent in all_accents] for letter in all_base_letters])
 
 all_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
-all_tones = flatten([[letter + pitch for letter in all_letters] for pitch in all_pitches] + ['r'])
+all_tones = flatten([[letter + pitch for letter in all_letters] for pitch in all_pitches])
 
 all_durs = ['\\longa' '\\breve', 1, 2, 4, 8, 16, 32, 64, 128, '1.', '2.', '4.', '8.', '16.', '32.', '64.', '128.', '1..', '2..', '4..', '8..', '16..', '32..', '64..', '128..']
 
@@ -57,14 +57,11 @@ equivalent_letters = {
 
 def separate(tone):
     tone = tonify(tone)
-    if tone == 'r':
-        return 'r', ''
+    if tone[-1] in ["`", ","]:
+        split = tone.split(tone[-1], 1)
+        return split[0], split[1] + tone[-1]
     else:
-        if tone[-1] in ["`", ","]:
-            split = tone.split(tone[-1], 1)
-            return split[0], split[1] + tone[-1]
-        else:
-            return tone, ''
+        return tone, ''
 
 
 linebreak = ['\\break\n']
@@ -107,11 +104,19 @@ def equivalent_tone(tone):
 
 
 def tonify(item):
+    """ Returns an unflattened list of valid tones and empty lists.
+
+    Multi-tone strings are split into lists of valid tones. A seris of N spaces is
+    converted into a seris of N-1 empty lists. These produce rests when assigned to
+    Points, but will be erased by flattening the list. """
+
     if isinstance(item, list):
         return [tonify(subitem) for subitem in item]
     elif isinstance(item, str):
         if " " in item:
-            return tonify(item.split(" "))
+            split_tones = item.split(" ")
+            split_tones = [tone if tone != '' else [] for tone in split_tones]
+            return tonify(split_tones)
         else:
             if item not in all_tones:
                 raise ValueError("{} is not a valid tone.".format(item))

@@ -1,15 +1,37 @@
-import util
+from util import flatten, tonify, all_tones, all_durs, all_letters, letter, pitch, equivalent_letters
+from itertools import cycle
 
 
-class Chord:
-    """ The simultaneous sounding of one or more tones for a specified duration."""
+class Point:
+    """ An element in sheet music with a specified duration.
+        Prints as either a rest, note or chord."""
 
     def __init__(self, tones, dur, ornamentation=""):
-        tones = util.flatten([util.tonify(tones)])
         self.check_init_arguments(tones, dur, ornamentation)
         self.tones = tones
         self.dur = dur
         self.ornamentation = ornamentation
+
+    def check_init_arguments(self, tones, dur, ornamentation):
+        if not isinstance(tones, list):
+            raise ValueError("Cannot create Point with {} as tones. tones must be a list.".format(tones))
+        for t in tones:
+            if t not in all_tones:
+                raise ValueError("Cannot create Point with tones containing {} as it is not a valid tone.".format(t))
+        if dur not in all_durs:
+            raise ValueError("Cannot create Point with {} as dur. dur must be one of {}.".format(dur, all_durs))
+        if not isinstance(ornamentation, str):
+            raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+
+    def __str__(self):
+        if self.is_rest:
+            return 'r' + str(self.dur) + self.ornamentation
+        elif self.is_note:
+            return self.tone + str(self.dur) + self.ornamentation
+        elif self.is_chord:
+            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+        else:
+            raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
 
     @property
     def tone(self):
@@ -20,22 +42,46 @@ class Chord:
 
     @property
     def letter(self):
-        return util.letter(self.tone)
+        return letter(self.tone)
 
     @property
     def pitch(self):
-        return util.pitch(self.tone)
+        return pitch(self.tone)
 
-    def check_init_arguments(self, tones, dur, ornamentation):
-        if dur not in util.all_durs:
-            raise ValueError("Cannot create note/chord with {} as dur. dur must be one of {}.".format(dur, util.all_durs))
-        if not isinstance(ornamentation, str):
-            raise ValueError("Cannot create note/chord with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+    @property
+    def is_rest(self):
+        return len(self.tones) == 0
 
-    def __str__(self):
-        if 'r' in self.tones:
-            return 'r' + str(self.dur) + self.ornamentation
-        return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+    @property
+    def is_note(self):
+        return len(self.tones) == 1
+
+    @property
+    def is_chord(self):
+        return len(self.tones) > 1
+
+    def add(self, tones):
+        tones = flatten([tonify(tones)])
+        for tone in tones:
+            if tone not in self.tones:
+                self.tones.append(tone)
+
+    def remove(self, tones):
+        tones = flatten([tonify(tones)])
+        self.tones = [tone for tone in self.tones if tone not in tones]
+
+    def replace(self, old_tones, new_tones):
+        old_tones = flatten([tonify(old_tones)])
+        new_tones = tonify(new_tones)
+        new_tones = new_tones if isinstance(new_tones, list) else [new_tones]
+
+        max_length = max(len(old_tones), len(new_tones))
+        zip_list = zip(range(max_length), cycle(old_tones), cycle(new_tones))
+
+        for i, old_tone, new_tone in zip_list:
+            if old_tone in self.tones:
+                self.remove(old_tone)
+                self.add(new_tone)
 
 
 class Stave:
@@ -82,35 +128,35 @@ class Key:
             raise ValueError("Must define root, letters and name of Key {}".format(self))
 
     def init_all_tones(self):
-        all_letters = [l for l in self.letters]
+        self.all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in all_letters and util.equivalent_letters[l] not in all_letters:
-                all_letters.append(l)
+            if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                self.all_letters.append(l)
 
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
-                    all_letters.append(l)
+                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                    self.all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in all_letters and util.equivalent_letters[l] not in all_letters:
-                    all_letters.append(l)
+                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                    self.all_letters.append(l)
 
-        self.all_letters = [l for l in util.all_letters if l in all_letters]
-        self.all_tones = [t for t in util.all_tones if util.letter(t) in all_letters]
+        self.all_letters = [l for l in all_letters if l in self.all_letters]
+        self.all_tones = [t for t in all_tones if letter(t) in self.all_letters]
 
     def init_scale_tones(self):
-        self.tones = [t for t in self.all_tones if util.letter(t) in self.letters]
+        self.tones = [t for t in self.all_tones if letter(t) in self.letters]
 
     def init_arpeggio_tones(self):
         index_of_root = self.letters.index(self.root)
         self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
-        self.arpeggio_tones = [t for t in self.all_tones if util.letter(t) in self.arpeggio_letters]
+        self.arpeggio_tones = [t for t in self.all_tones if letter(t) in self.arpeggio_letters]
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
         custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
-        return [t for t in self.all_tones if util.letter(t) in custom_letters]
+        return [t for t in self.all_tones if letter(t) in custom_letters]
 
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
