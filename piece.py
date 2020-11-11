@@ -2,8 +2,8 @@ from models import Point
 from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
-from tones import all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
-from lilylib import notes
+from tones import tonify, all_pitches, equivalent_letters, pitch, letter, equivalent_tone
+from lilylib import scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset
 
 from itertools import cycle
 
@@ -92,92 +92,33 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
-    def series(self, tones, start, stop_or_length, dur=None, step=1):
-        tones = tonify(tones)
-        start, stop_or_length = self.validate_series_args(tones, start, stop_or_length, dur, step)
-
-        start_index = tones.index(start)
-
-        if isinstance(stop_or_length, str):
-            stop_index = tones.index(stop_or_length)
-        else:
-            if stop_or_length > 0:
-                stop_index = start_index + (stop_or_length - 1) * step
-            else:
-                stop_index = start_index + (stop_or_length + 1) * step
-
-        stop_index = self.make_stop_inclusive(start_index, stop_index)
-        if stop_index < start_index:
-            step = -step
-
-        series = tones[start_index:stop_index:step]
-        if not dur:
-            return series
-        return notes(series, dur)
-
-    def validate_series_args(self, tones, start, stop_or_length, dur, step):
-        if not isinstance(tones, list):
-            raise ValueError("series arg tones cannot be {}, it must be a list".format(tones))
-
-        for t in tones:
-            if not isinstance(t, str):
-                raise ValueError("series arg tones cannot contain {}, it must be a list of strings".format(t))
-            if t not in all_tones:
-                raise ValueError("series arg tones cannot contain {}, it is not a valid tone".format(t))
-
-        start = tonify(start)
-        if start not in tones:
-            raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(start, [str(t) for t in tones]))
-
-        if not isinstance(stop_or_length, int):
-            stop_or_length = tonify(stop_or_length)
-            if stop_or_length not in tones:
-                raise ValueError("Cannot stop series on {} as it it not in tones: {}.".format(stop_or_length, [str(t) for t in tones]))
-
-        if not isinstance(step, int):
-            raise ValueError("series step must be an int, not {}".format(step))
-
-        return start, stop_or_length
-
-    def make_stop_inclusive(self, start, stop):
-        if stop >= start:
-            return stop + 1
-        else:
-            return stop - 1
-
     def scale(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        return self.series(key.tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return scale(start, stop_or_length, key, dur, step)
 
     def arpeggio(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        return self.series(key.arpeggio_tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return arpeggio(start, stop_or_length, key, dur, step)
 
     def arpeggio7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
-        return self.series(arpeggio7_tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return arpeggio7(start, stop_or_length, key, dur, step)
 
     def dominant7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        dominant7_letters = key.arpeggio_letters + [key.relative_chromatic_letter(10)]
-        dominant7_tones = [t for t in key.all_tones if separate(t)[0] in dominant7_letters]
-        return self.series(dominant7_tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return dominant7(start, stop_or_length, key, dur, step)
 
     def diminished7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        diminished7_letters = [key.relative_chromatic_letter(i) for i in [0, 3, 6, 9]]
-        diminished7_tones = [t for t in key.all_tones if separate(t)[0] in diminished7_letters]
-        return self.series(diminished7_tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return diminished7(start, stop_or_length, key, dur, step)
 
     def chromatic(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        return self.series(key.all_tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return chromatic(start, stop_or_length, key, dur, step)
 
     def scale_subset(self, positions, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else keyify(key)
-        custom_tones = key.scale_subset(positions)
-        return self.series(custom_tones, start, stop_or_length, dur, step)
+        key = self.key if key is None else key
+        return scale_subset(positions, start, stop_or_length, key, dur, step)
 
     def transpose(self, item, shift, mode="octave", key=None):
         self.validate_transpose_args(shift, mode)

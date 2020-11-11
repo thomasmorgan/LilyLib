@@ -1,6 +1,7 @@
 from util import flatten, split_and_flatten
-from tones import tonify
+from tones import tonify, separate
 from models import Point
+from keys import keyify
 
 from itertools import cycle
 
@@ -83,3 +84,80 @@ def replace(point, old_tones, new_tones):
     elif isinstance(point, Point):
         point.replace(old_tones, new_tones)
     return point
+
+
+def series(tones, start, stop_or_length, dur=None, step=1):
+    tones, start = tonify(tones), tonify(start)
+    stop_or_length = tonify(stop_or_length) if isinstance(stop_or_length, str) else stop_or_length
+
+    validate_series_args(tones, start, stop_or_length, dur, step)
+
+    start_index = tones.index(start)
+
+    if isinstance(stop_or_length, str):
+        stop_index = tones.index(stop_or_length)
+    else:
+        if stop_or_length > 0:
+            stop_index = start_index + (stop_or_length - 1) * step
+        else:
+            stop_index = start_index + (stop_or_length + 1) * step
+
+    stop_index = stop_index + 1 if stop_index >= start_index else stop_index - 1
+
+    step = -step if stop_index < start_index else step
+
+    series = tones[start_index:stop_index:step]
+
+    return series if not dur else notes(series, dur)
+
+
+def validate_series_args(tones, start, stop_or_length, dur, step):
+    if start not in tones:
+        raise ValueError("Cannot start series on {} as it it not in tones: {}.".format(start, [str(t) for t in tones]))
+
+    if not isinstance(stop_or_length, int) and stop_or_length not in tones:
+        raise ValueError("Cannot stop series on {} as it it not in tones: {}.".format(stop_or_length, [str(t) for t in tones]))
+
+    if not isinstance(step, int):
+        raise ValueError("series step must be an int, not {}".format(step))
+
+
+def scale(start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    return series(key.tones, start, stop_or_length, dur, step)
+
+
+def arpeggio(start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    return series(key.arpeggio_tones, start, stop_or_length, dur, step)
+
+
+def arpeggio7(start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
+    return series(arpeggio7_tones, start, stop_or_length, dur, step)
+
+
+def dominant7(start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    dominant7_letters = key.arpeggio_letters + [key.relative_chromatic_letter(10)]
+    dominant7_tones = [t for t in key.all_tones if separate(t)[0] in dominant7_letters]
+    return series(dominant7_tones, start, stop_or_length, dur, step)
+
+
+def diminished7(start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    diminished7_letters = [key.relative_chromatic_letter(i) for i in [0, 3, 6, 9]]
+    diminished7_tones = [t for t in key.all_tones if separate(t)[0] in diminished7_letters]
+    return series(diminished7_tones, start, stop_or_length, dur, step)
+
+
+def chromatic(start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    return series(key.all_tones, start, stop_or_length, dur, step)
+
+
+def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
+    key = keyify(key)
+    custom_tones = key.scale_subset(positions)
+    return series(custom_tones, start, stop_or_length, dur, step)
