@@ -3,6 +3,7 @@ from keys import key_dictionary
 from staves import Treble, Bass
 from util import flatten
 from tones import all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
+from lilylib import notes
 
 from itertools import cycle
 from inspect import isclass
@@ -133,7 +134,7 @@ class Piece:
         series = tones[start_index:stop_index:step]
         if not dur:
             return series
-        return self.notes(series, dur)
+        return notes(series, dur)
 
     def validate_series_args(self, tones, start, stop_or_length, dur, step):
         if not isinstance(tones, list):
