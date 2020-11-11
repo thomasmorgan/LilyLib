@@ -19,13 +19,6 @@ def split_and_flatten(item):
     return flatten([subitem.split(" ") if isinstance(subitem, str) else subitem for subitem in item])
 
 
-linebreak = ['\\break\n']
-
-
-def clef(clef):
-    return ['\\clef {}'.format(clef)]
-
-
 def select(List, *indexes):
     indexes = flatten(list(indexes))
     return [j for i, j in enumerate(List) if (i + 1) in indexes]
