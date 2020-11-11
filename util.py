@@ -39,7 +39,7 @@ def pattern(List, *indexes):
     return new_list
 
 
-def remove(List, *indexes):
+def omit(List, *indexes):
     indexes = flatten(list(indexes))
     return [j for i, j in enumerate(List) if (i + 1) not in indexes]
 
