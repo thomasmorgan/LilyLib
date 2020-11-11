@@ -1,10 +1,10 @@
 from models import Point, Key
 from keys import key_dictionary
 from staves import Treble, Bass
-from util import flatten, split_and_flatten, all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
+from util import flatten
+from tones import all_tones, tonify, all_pitches, separate, equivalent_letters, pitch, letter, equivalent_tone
 
 from itertools import cycle
-from copy import deepcopy
 from inspect import isclass
 
 

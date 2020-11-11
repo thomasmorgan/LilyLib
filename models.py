@@ -1,4 +1,5 @@
-from util import flatten, tonify, all_tones, all_durs, all_letters, letter, pitch, equivalent_letters
+from util import flatten
+from tones import tonify, all_tones, all_durs, all_letters, letter, pitch, equivalent_letters
 from itertools import cycle
 
 
