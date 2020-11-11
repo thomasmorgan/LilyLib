@@ -113,18 +113,27 @@ class Piece:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
     def rest(self, dur):
+        """ Returns a list with a single Point that prints as a rest with the specified duration. """
         return [Point([], dur)]
 
     def rests(self, *dur):
+        """ Returns a list of Points that print as rests with the specified durations. """
         return flatten([self.rest(d) for d in flatten(dur)])
 
     def note(self, tone, dur, ornamentation=""):
+        """ Returns a list with a single Point that prints as a note with the specified tone and duration.
+        Passing an empty string or list as tone will return a rest.
+        Passing a list of tones (or a string that can be split into multiple tones raises an error. """
         tone = flatten([tonify(tone)])
         if len(tone) > 1:
             raise ValueError("Cannot create single note with tone of {}.".format(tone))
         return [Point(tone, dur, ornamentation)]
 
     def notes(self, tones, dur, ornamentation=""):
+        """ Returns a list of Points that print as notes with the specified tone(s) and duration(s).
+        If tones is a string including adjacent white space, rests are produced.
+        If tones is a list including empty lists or empty strings, rests are produced.
+        Nested lists of tones are not permitted as tones will not be flattened to avoid removing empty lists."""
         tones = tonify(tones)
         tones = [tones] if isinstance(tones, str) else tones
         dur = split_and_flatten(dur)
@@ -136,6 +145,7 @@ class Piece:
         return flatten([self.note(t, d, o) for i, t, d, o in zip_list])
 
     def chord(self, tones, dur, ornamentation=""):
+        """ Returns a list containing a single Point that prints as a chord with the specified tones and duration. """
         tones = flatten([tonify(tones)])
         return [Point(tones, dur, ornamentation)]
 
