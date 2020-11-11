@@ -15,8 +15,8 @@ class AllKeys(Piece):
         for mode in key_dictionary:
             for letter in key_dictionary[mode]:
                 self.set_key(key_dictionary[mode][letter])
-                self.score["treble"] += self.key_signature + self.notes(self.key.root + "`", 1, ornamentation=self.annotation(self.key.name))
-                self.score["bass"] += self.key_signature + self.notes(self.key.root, 1)
+                self.score["treble"] += self.key_signature + self.note(self.key.root + "`", 1, ornamentation=self.annotation(self.key.name))
+                self.score["bass"] += self.key_signature + self.note(self.key.root, 1)
 
 
 if __name__ == "__main__":

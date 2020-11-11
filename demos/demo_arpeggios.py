@@ -9,8 +9,8 @@ class Arpeggios(Piece):
     def write_score(self):
         # The basic section manually builds a scale note by note
         basic = {
-            "treble": [self.notes("c`", 8), self.notes("e`", 8), self.notes("g`", 8), self.notes("c``", 8)],
-            "bass": [self.notes("c", 8), self.notes("e", 8), self.notes("g", 8), self.notes("c`", 8)]
+            "treble": [self.note("c`", 8), self.note("e`", 8), self.note("g`", 8), self.note("c``", 8)],
+            "bass": [self.note("c", 8), self.note("e", 8), self.note("g", 8), self.note("c`", 8)]
         }
 
         # The notes section uses the notes function to build a list of notes from a single string
