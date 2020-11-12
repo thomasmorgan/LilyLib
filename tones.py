@@ -97,6 +97,6 @@ def tonify(item):
             return item
     else:
         try:
-            return item.tone
+            return item.tones
         except AttributeError:
             raise ValueError("Cannot tonify {}".format(item))
