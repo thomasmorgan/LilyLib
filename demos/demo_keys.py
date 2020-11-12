@@ -1,6 +1,6 @@
 from piece import Piece
 from keys import key_dictionary
-from lilylib import note
+from points import note
 from markup import annotation
 
 

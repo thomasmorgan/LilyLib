@@ -1,6 +1,6 @@
 from piece import Piece
 from tones import letter
-from lilylib import note, notes
+from points import note, notes
 
 
 class CMajorModalScales(Piece):

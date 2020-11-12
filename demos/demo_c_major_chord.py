@@ -1,5 +1,5 @@
 from piece import Piece
-from lilylib import chord
+from points import chord
 
 
 class CMajorChord(Piece):

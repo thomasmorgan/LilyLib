@@ -2,7 +2,7 @@ from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
 from tones import equivalent_letters
-from lilylib import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose
+from points import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose
 
 from itertools import cycle
 

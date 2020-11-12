@@ -1,5 +1,5 @@
 from piece import Piece
-from lilylib import note, notes
+from points import note, notes
 
 
 class Arpeggios(Piece):

@@ -1,5 +1,5 @@
 from piece import Piece
-from lilylib import note
+from points import note
 
 
 class MiddleC(Piece):

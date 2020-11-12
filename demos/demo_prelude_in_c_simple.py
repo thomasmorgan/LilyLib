@@ -1,7 +1,7 @@
 from piece import Piece
 from util import pattern, select
 from tones import tonify
-from lilylib import note, notes, chord, rest, rests
+from points import note, notes, chord, rest, rests
 from markup import voices
 
 

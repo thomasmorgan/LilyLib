@@ -1,4 +1,4 @@
-from lilylib import Point
+from points import Point
 from copy import deepcopy
 
 linebreak = ['\\break\n']

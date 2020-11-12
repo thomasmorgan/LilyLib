@@ -1,7 +1,7 @@
 from piece import Piece
 from util import flatten, pattern, subset, select, join
 from tones import letter
-from lilylib import notes, rest
+from points import notes, rest
 from markup import triplets, tempo_change, name, voices
 
 
