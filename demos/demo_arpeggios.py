@@ -1,5 +1,5 @@
 from piece import Piece
-from points import note, notes
+from points import note, notes, arpeggio
 
 
 class Arpeggios(Piece):
@@ -21,15 +21,15 @@ class Arpeggios(Piece):
         }
 
         # The arpeggio section uses the arpeggio function to build a scale from one note to the next
-        arpeggio = {
-            "treble": self.arpeggio('e`', 'e``', 8, key="E Major"),
-            "bass": self.arpeggio('e', 4, 8, key="E Major")
+        arpeggios = {
+            "treble": arpeggio('e`', 'e``', 'E Major', 8),
+            "bass": arpeggio('e', 4, 'E major', 8)
         }
 
         # The length section uses the arpeggio function to build an arpeggio, but specifies a length, rather than a stop note
         length = {
-            "treble": self.arpeggio('f`', 4, 8, key="F Major"),
-            "bass": self.arpeggio('f', 4, 8, key="F Major")
+            "treble": arpeggio('f`', 4, 'F Major', 8),
+            "bass": arpeggio('f', 4, 'F Major', 8)
         }
 
         starts = self.arpeggio('c`', 'c``')
@@ -39,7 +39,7 @@ class Arpeggios(Piece):
         }
 
         for staff in ["treble", "bass"]:
-            self.score[staff] = [basic[staff], intermediate[staff], arpeggio[staff], length[staff], stepped[staff]]
+            self.score[staff] = [basic[staff], intermediate[staff], arpeggios[staff], length[staff], stepped[staff]]
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from piece import Piece
 from util import flatten, pattern, subset, select, join
-from points import notes, rest
+from points import note, notes, rest, arpeggio, arpeggio7
 from markup import triplets, tempo_change, name, voices
 
 
@@ -33,9 +33,9 @@ class MadRush(Piece):
         sections = {}
 
         aI = self.arpeggio('f', 6)
-        aiii = self.arpeggio('e', 6, key='A Minor')
-        aiii7 = pattern(self.arpeggio7('g', 7, key='A Minor'), [1, 2, 3, 5, 6, 7])
-        aii = self.arpeggio('g', 6, key='G Minor')
+        aiii = arpeggio('e', 6, 'A Minor')
+        aiii7 = pattern(arpeggio7('g', 7, 'A Minor'), 1, 2, 3, 5, 6, 7)
+        aii = arpeggio('g', 6, 'G Minor')
         aii7 = ['f'] + subset(aii, 2, 6)
 
         def triplet_bar(note_pair, bars=1):
@@ -54,10 +54,10 @@ class MadRush(Piece):
             else:
                 motif['treble'] = triplet_bar(pattern(chord, [6, 4]), bars=bars)
 
-            motif['bass1'] = doublet_bar(pattern(chord, [2, 3]), bars=bars)
+            motif['bass1'] = doublet_bar(pattern(chord, 2, 3), bars=bars)
 
             if 'crotchet bass' in tweaks:
-                motif['bass2'] = notes(select(chord, 1), 4) * int(bars * 4)
+                motif['bass2'] = note(select(chord, 1), 4) * int(bars * 4)
             else:
                 motif['bass2'] = notes(select(chord, 1) * bars, 1, "~")
                 if 'extend tie' not in tweaks:
@@ -82,16 +82,16 @@ class MadRush(Piece):
         A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
         bI7 = self.arpeggio('f,', 4) + self.arpeggio7('a`', 4)
-        biii = self.arpeggio('e,', 4, key='A Minor') + self.arpeggio('a`', 4, key='A minor')
-        biii7 = [self.transpose(t, i, 'scale') for t, i in zip(bI7, [1, 0, 0, 1, -1, 0, 0, 0])]
-        bii7 = self.arpeggio('g,', 4, key='G Minor') + self.arpeggio('g`', 4, key='G Minor')
+        biii = arpeggio('e,', 4, 'A Minor') + arpeggio('a`', 4, 'A minor')
+        biii7 = [self.transpose(t, i) for t, i in zip(bI7, [1, 0, 0, 1, -1, 0, 0, 0])]
+        bii7 = arpeggio('g,', 4, 'G Minor') + arpeggio('g`', 4, 'G Minor')
         bii7d5 = [self.transpose(t, i, 'semitone') for t, i in zip(bii7, [0, 0, -1, 0, 0, 0, -1, 0])]
 
         def arpeggio_bar(arp, bars):
-            return notes(pattern(arp, [1, 2, 3, 4, 3, 2]), 16) * int(4 * bars)
+            return notes(pattern(arp, 1, 2, 3, 4, 3, 2), 16) * int(4 * bars)
 
         def altpeggio_bar(arp, bars):
-            return tempo_change("14/8") + pattern(arp, [1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2]) * 2
+            return tempo_change("14/8") + pattern(arp, 1, 2, 3, 4, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2) * 2
 
         def B_motif(chord, bars, *tweaks):
             motif = {}
@@ -135,12 +135,12 @@ class MadRush(Piece):
             motif['bass1'] = sections[section]['bass1']
             motif['bass2'] = sections[section]['bass2']
             if len(chord) == 3:
-                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1, 'octave')
+                motif['treble'] = self.harmonize(notes(pattern(chord, 1, 1, 2, 3, 3), [1, 2, 2, 1, 1], '~   ~ '), 1, 'octave')
             else:
-                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1, 'octave')
+                motif['treble'] = self.harmonize(notes(pattern(chord, 1, 1, 2, 2), 1, '~ '), 1, 'octave')
             return motif
 
-        diii = self.arpeggio('a`', 3, key='A Minor')
+        diii = arpeggio('a`', 3, 'A Minor')
         dI = ['f``', 'f``']
         dii = ['f``', 'df``', 'c``']
 

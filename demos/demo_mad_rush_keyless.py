@@ -1,7 +1,7 @@
 from piece import Piece
 from util import flatten, pattern, subset, select, join
 from tones import letter
-from points import notes, rest
+from points import notes, rest, arpeggio
 from markup import triplets, tempo_change, name, voices
 
 
@@ -83,8 +83,8 @@ class MadRushKeyless(Piece):
         A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
         bI7 = self.arpeggio(self.transpose(self.key.root, -1, 'octave'), 4) + self.arpeggio7(self.transpose(self.key.root, 9), 4)
-        biii = self.arpeggio(self.transpose(self.key.root, -8), 4, key=self.IIIt)
-        biii += self.arpeggio(self.transpose(self.key.root, 9), 4, key=self.IIIt)
+        biii = arpeggio(self.transpose(self.key.root, -8), 4, key=self.IIIt)
+        biii += arpeggio(self.transpose(self.key.root, 9), 4, key=self.IIIt)
         biii7 = [self.transpose(t, i) for t, i in zip(bI7, [1, 0, 0, 1, -1, 0, 0, 0])]
         bii7 = self.transpose(subset(bI7, 1, 4), 1) + self.transpose(subset(bI7, 5, 7), -1) + select(bI7, 8)
         bii7d5 = [self.transpose(t, i, 'semitone') for t, i in zip(bii7, [0, 0, -1, 0, 0, 0, -1, 0])]
@@ -137,9 +137,9 @@ class MadRushKeyless(Piece):
             motif['bass1'] = sections[section]['bass1']
             motif['bass2'] = sections[section]['bass2']
             if len(chord) == 3:
-                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1)
+                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1, 'octave')
             else:
-                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1)
+                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1, 'octave')
             return motif
 
         diii = self.transpose(self.transpose(self.arpeggio(self.key.root, 3), 2), 1, 'octave')
