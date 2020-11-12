@@ -2,9 +2,7 @@ from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
 from tones import equivalent_letters
-from points import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose
-
-from itertools import cycle
+from points import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose, harmonize
 
 
 class Piece:
@@ -123,25 +121,9 @@ class Piece:
         key = self.key if key is None else key
         return transpose(item, shift, key, mode)
 
-    def harmonize(self, chords, intervals, mode="octave", key=None):
-        key = self.key if key is None else keyify(key)
-        chords = [chords] if not isinstance(chords, list) else chords
-        intervals = [intervals] if not isinstance(intervals, list) else intervals
-        mode = [mode] if not isinstance(mode, list) else mode
-
-        max_length = max([len(chords), len(intervals), len(mode)])
-        zip_list = zip(range(max_length), cycle(chords), cycle(intervals), cycle(mode))
-
-        for i, chord, interval, mode in zip_list:
-            root_tone = chord.tones[0]
-            interval = [interval] if not isinstance(interval, list) else interval
-
-            for intrvl in interval:
-                if intrvl != 0:
-                    new_tone = self.transpose(root_tone, intrvl, mode, key)
-                    if new_tone not in chord.tones:
-                        chord.tones.append(new_tone)
-        return chords
+    def harmonize(self, points, intervals, mode="scale", key=None):
+        key = self.key if key is None else key
+        return harmonize(points, intervals, key, mode)
 
     def relative_key(self, mode, relationship):
         my_root = self.key.root

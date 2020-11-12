@@ -135,9 +135,9 @@ class MadRush(Piece):
             motif['bass1'] = sections[section]['bass1']
             motif['bass2'] = sections[section]['bass2']
             if len(chord) == 3:
-                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1)
+                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 3, 3]), [1, 2, 2, 1, 1], '~   ~ '), 1, 'octave')
             else:
-                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1)
+                motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1, 'octave')
             return motif
 
         diii = self.arpeggio('a`', 3, key='A Minor')
