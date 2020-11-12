@@ -89,41 +89,32 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
-    def scale(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return scale(start, stop_or_length, key, dur, step)
+    def scale(self, start, stop_or_length, dur=None, step=1):
+        return scale(start, stop_or_length, self.key, dur, step)
 
-    def arpeggio(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return arpeggio(start, stop_or_length, key, dur, step)
+    def arpeggio(self, start, stop_or_length, dur=None, step=1):
+        return arpeggio(start, stop_or_length, self.key, dur, step)
 
-    def arpeggio7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return arpeggio7(start, stop_or_length, key, dur, step)
+    def arpeggio7(self, start, stop_or_length, dur=None, step=1):
+        return arpeggio7(start, stop_or_length, self.key, dur, step)
 
-    def dominant7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return dominant7(start, stop_or_length, key, dur, step)
+    def dominant7(self, start, stop_or_length, dur=None, step=1):
+        return dominant7(start, stop_or_length, self.key, dur, step)
 
-    def diminished7(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return diminished7(start, stop_or_length, key, dur, step)
+    def diminished7(self, start, stop_or_length, dur=None, step=1):
+        return diminished7(start, stop_or_length, self.key, dur, step)
 
-    def chromatic(self, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return chromatic(start, stop_or_length, key, dur, step)
+    def chromatic(self, start, stop_or_length, dur=None, step=1):
+        return chromatic(start, stop_or_length, self.key, dur, step)
 
-    def scale_subset(self, positions, start, stop_or_length, dur=None, key=None, step=1):
-        key = self.key if key is None else key
-        return scale_subset(positions, start, stop_or_length, key, dur, step)
+    def scale_subset(self, positions, start, stop_or_length, dur=None, step=1):
+        return scale_subset(positions, start, stop_or_length, self.key, dur, step)
 
-    def transpose(self, item, shift, mode="scale", key=None):
-        key = self.key if key is None else key
-        return transpose(item, shift, key, mode)
+    def transpose(self, item, shift, mode="scale"):
+        return transpose(item, shift, self.key, mode)
 
-    def harmonize(self, points, intervals, mode="scale", key=None):
-        key = self.key if key is None else key
-        return harmonize(points, intervals, key, mode)
+    def harmonize(self, points, intervals, mode="scale"):
+        return harmonize(points, intervals, self.key, mode)
 
     def relative_key(self, mode, relationship):
         my_root = self.key.root
