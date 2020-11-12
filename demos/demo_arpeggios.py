@@ -34,8 +34,8 @@ class Arpeggios(Piece):
 
         starts = self.arpeggio('c`', 'c``')
         stepped = {
-            'treble': [[self.arpeggio(start, self.transpose(start, 1), 16, step=step) for step in [3, 3, 1]] for start in starts],
-            'bass': [[self.arpeggio(self.transpose(start, -1), start, 16, step=step) for step in [1, 3, 3]] for start in starts]
+            'treble': [[self.arpeggio(start, self.transpose(start, 7), 16, step=step) for step in [3, 3, 1]] for start in starts],
+            'bass': [[self.arpeggio(self.transpose(start, -7), start, 16, step=step) for step in [1, 3, 3]] for start in starts]
         }
 
         for staff in ["treble", "bass"]:

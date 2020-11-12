@@ -34,10 +34,10 @@ class MadRushKeyless(Piece):
         sections = {}
 
         aI = self.arpeggio(self.key.root, 6)
-        aiii = [self.transpose(t, -1, "scale") if letter(t) == self.key.root else t for t in aI]
-        aiii7 = [self.transpose(t, 1, "scale") if letter(t) == self.key.root else t for t in aI]
-        aii = self.transpose(aI, 1, "scale")
-        aii7 = self.transpose(select(aii, 1), -1, "scale") + subset(aii, 2, 6)
+        aiii = [self.transpose(t, -1) if letter(t) == self.key.root else t for t in aI]
+        aiii7 = [self.transpose(t, 1) if letter(t) == self.key.root else t for t in aI]
+        aii = self.transpose(aI, 1)
+        aii7 = self.transpose(select(aii, 1), -1) + subset(aii, 2, 6)
 
         def triplet_bar(note_pair, bars=1):
             return triplets(notes(note_pair, 8) * int(6 * bars))
@@ -66,7 +66,7 @@ class MadRushKeyless(Piece):
 
             if 'low first' in tweaks:
                 motif['bass1'][0] = chord[0]
-                motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
+                motif['bass2'] = self.transpose(motif['bass2'], -9)
 
             if 'no treble' in tweaks:
                 motif['treble'] = rest(1) * bars
@@ -82,11 +82,11 @@ class MadRushKeyless(Piece):
 
         A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
-        bI7 = self.arpeggio(self.transpose(self.key.root, -1), 4) + self.arpeggio7(self.transpose(self.key.root, 9, 'scale'), 4)
-        biii = self.arpeggio(self.transpose(self.key.root, -8, 'scale'), 4, key=self.IIIt)
-        biii += self.arpeggio(self.transpose(self.key.root, 9, 'scale'), 4, key=self.IIIt)
-        biii7 = [self.transpose(t, i, 'scale') for t, i in zip(bI7, [1, 0, 0, 1, -1, 0, 0, 0])]
-        bii7 = self.transpose(subset(bI7, 1, 4), 1, 'scale') + self.transpose(subset(bI7, 5, 7), -1, 'scale') + select(bI7, 8)
+        bI7 = self.arpeggio(self.transpose(self.key.root, -1, 'octave'), 4) + self.arpeggio7(self.transpose(self.key.root, 9), 4)
+        biii = self.arpeggio(self.transpose(self.key.root, -8), 4, key=self.IIIt)
+        biii += self.arpeggio(self.transpose(self.key.root, 9), 4, key=self.IIIt)
+        biii7 = [self.transpose(t, i) for t, i in zip(bI7, [1, 0, 0, 1, -1, 0, 0, 0])]
+        bii7 = self.transpose(subset(bI7, 1, 4), 1) + self.transpose(subset(bI7, 5, 7), -1) + select(bI7, 8)
         bii7d5 = [self.transpose(t, i, 'semitone') for t, i in zip(bii7, [0, 0, -1, 0, 0, 0, -1, 0])]
 
         def arpeggio_bar(arp, bars):
@@ -142,9 +142,9 @@ class MadRushKeyless(Piece):
                 motif['treble'] = self.harmonize(notes(pattern(chord, [1, 1, 2, 2]), 1, '~ '), 1)
             return motif
 
-        diii = self.transpose(self.transpose(self.arpeggio(self.key.root, 3), 2, "scale"), 1)
-        dI = [self.transpose(self.key.root, 2)]
-        dii = self.transpose([self.key.root, self.transpose(self.IIt.v, -1, "semitone")], 2) + [self.transpose(self.key.v, 2)]
+        diii = self.transpose(self.transpose(self.arpeggio(self.key.root, 3), 2), 1, 'octave')
+        dI = [self.transpose(self.key.root, 2, 'octave')]
+        dii = self.transpose([self.key.root, self.transpose(self.IIt.v, -1, "semitone")], 2, 'octave') + [self.transpose(self.key.v, 2, 'octave')]
 
         sections['D1'] = D_motif(diii, 'A2')
         sections['D2'] = D_motif(diii, 'A3')

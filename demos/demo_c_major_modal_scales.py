@@ -32,14 +32,14 @@ class CMajorModalScales(Piece):
         looped = {"treble": []}
         for start in self.scale('f`', 'c``', 8):
             looped["treble"] += self.scale(start, 8, 8)
-        looped["bass"] = self.transpose(looped["treble"], -1)
+        looped["bass"] = self.transpose(looped["treble"], -1, 'octave')
 
         # The smart section programmatically builds a series of scales in different keys
         # Note how we use list comprehension to avoid a for loop, and use step = 2 to play every other note in the treble clef
         start_notes = self.scale('c```', 'c``')
         smart = {
             "treble": [self.scale(start, -8, 8, step=2, key=letter(start) + " major") for start in start_notes],
-            "bass": [self.scale(self.transpose(start, -1), -8, 8, key=letter(start) + " major") for start in start_notes]
+            "bass": [self.scale(self.transpose(start, -1, 'octave'), -8, 8, key=letter(start) + " major") for start in start_notes]
         }
 
         for staff in ["treble", "bass"]:
