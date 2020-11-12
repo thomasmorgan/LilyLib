@@ -1,5 +1,5 @@
 from piece import Piece
-from util import merge, subset, select, flatten, tonify, linebreak, letter, clef
+from util import join, subset, select, flatten, tonify, linebreak, letter, clef
 from copy import deepcopy
 
 
@@ -210,13 +210,13 @@ class MarcheFunebre(Piece):
             }
 
         def bridge_motif(tone):
-            return merge(bridge_chords(tone), tremble(transpose(tone, -3, 'scale', key=letter(tone) + ' major')))
+            return join(bridge_chords(tone), tremble(transpose(tone, -3, 'scale', key=letter(tone) + ' major')))
 
         def bridge_motifs(tones):
             tones = tonify(tones)
             result = {'treble': [], 'bass': []}
             for tone in tones:
-                result = merge(result, bridge_motif(tone))
+                result = join(result, bridge_motif(tone))
             return result
 
         bridge_part_1 = bridge_motifs('af`` gf`` e``')
@@ -240,7 +240,7 @@ class MarcheFunebre(Piece):
             'bass': voices(bridge_part_2_harmony['bass'], bridge_part_2_melody['bass'])
         }
 
-        bridge = merge(bridge_part_1, key_change, bridge_part_2)
+        bridge = join(bridge_part_1, key_change, bridge_part_2)
 
         """ decorations """
 
@@ -253,7 +253,7 @@ class MarcheFunebre(Piece):
         name(rh_melody[7], "Ef, Ef6, Af")
         name(rh_melody[8], "Gf, DfD7, Gf")
 
-        self.score = merge(intro, bold_chords, intro2, bold_chords2, bridge)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/15)\n }\n }\n }')

@@ -47,9 +47,9 @@ def subset(List, start, stop):
             return List[start - 1:stop - 2:-1]
 
 
-def merge(*motifs):
-    merged = motifs[0]
+def join(*motifs):
+    joined = motifs[0]
     for motif in motifs[1:]:
-        for key in merged:
-            merged[key] += motif[key]
-    return merged
+        for key in joined:
+            joined[key] += motif[key]
+    return joined

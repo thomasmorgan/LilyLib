@@ -1,5 +1,5 @@
 from piece import Piece
-from util import flatten, pattern, subset, select, merge
+from util import flatten, pattern, subset, select, join
 from tones import letter
 from lilylib import notes, rest
 from markup import triplets, tempo_change, name, voices
@@ -73,12 +73,12 @@ class MadRushKeyless(Piece):
 
             return motif
 
-        sections['A1'] = merge(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
+        sections['A1'] = join(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
         sections['A1']['treble'] = tempo_change('4/4') + sections['A1']['treble']
-        sections['A2'] = merge(A_motif(aI, 2), A_motif(aiii, 2))
-        sections['A3'] = merge(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
-        sections['A4'] = merge(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
-        sections['A5'] = merge(A_motif(aii, 1, 'low triplets'), A_motif(aii7, 0.5, 'crotchet bass'), A_motif(aii, 0.5, 'crotchet bass'), A_motif(aI, 2))
+        sections['A2'] = join(A_motif(aI, 2), A_motif(aiii, 2))
+        sections['A3'] = join(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
+        sections['A4'] = join(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
+        sections['A5'] = join(A_motif(aii, 1, 'low triplets'), A_motif(aii7, 0.5, 'crotchet bass'), A_motif(aii, 0.5, 'crotchet bass'), A_motif(aI, 2))
 
         A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
 
@@ -110,10 +110,10 @@ class MadRushKeyless(Piece):
 
             return motif
 
-        sections['B1'] = merge(B_motif(bI7, 2, 'tempo'), B_motif(biii, 1), B_motif(biii, 1, 'alt'))
-        sections['B2'] = merge(B_motif(bI7, 1, 'tempo'), B_motif(biii7, 0.5), B_motif(bI7, 0.5), B_motif(biii, 1), B_motif(biii, 1, 'alt'))
-        sections['B3'] = merge(B_motif(bii7, 2, 'tempo'), B_motif(bI7, 1), B_motif(bI7, 1, 'alt'))
-        sections['B4'] = merge(B_motif(bii7, 1, 'tempo'), B_motif(bii7d5, 1), B_motif(bI7, 1), B_motif(bI7, 1, 'alt'))
+        sections['B1'] = join(B_motif(bI7, 2, 'tempo'), B_motif(biii, 1), B_motif(biii, 1, 'alt'))
+        sections['B2'] = join(B_motif(bI7, 1, 'tempo'), B_motif(biii7, 0.5), B_motif(bI7, 0.5), B_motif(biii, 1), B_motif(biii, 1, 'alt'))
+        sections['B3'] = join(B_motif(bii7, 2, 'tempo'), B_motif(bI7, 1), B_motif(bI7, 1, 'alt'))
+        sections['B4'] = join(B_motif(bii7, 1, 'tempo'), B_motif(bii7d5, 1), B_motif(bI7, 1), B_motif(bI7, 1, 'alt'))
 
         B = ['B1', 'B1', 'B2', 'B2', 'B2', 'B3', 'B3', 'B4']
 
