@@ -207,3 +207,12 @@ def validate_transpose_args(shift, mode):
         raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
     if mode not in ["octave", "scale", "semitone"]:
         raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
+
+
+def merge(*passages):
+    base = [p for p in flatten(passages[0]) if isinstance(p, Point)]
+    for passage in passages[1:]:
+        target = [p for p in flatten(passage) if isinstance(p, Point)]
+        for p, q in zip(base, target):
+            p.add(q.tones)
+    return passages[0]
