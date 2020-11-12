@@ -292,26 +292,7 @@ def validate_transpose_args(shift, mode):
 
 
 def harmonize(points, intervals, key, mode="scale"):
-    key = keyify(key)
-
-    points_to_return = deepcopy(points)
-    points = [point for point in [points_to_return] if isinstance(point, Point)]
-    intervals = [intervals] if not isinstance(intervals, list) else intervals
-    mode = [mode] if not isinstance(mode, list) else mode
-
-    max_length = max([len(points), len(intervals), len(mode)])
-    zip_list = zip(range(max_length), cycle(points), cycle(intervals), cycle(mode))
-
-    for i, point, interval, mode in zip_list:
-        if not point.is_rest:
-            root_tone = point.tones[0]
-            interval = [interval] if not isinstance(interval, list) else interval
-
-            for intrvl in interval:
-                if intrvl != 0:
-                    point.add(transpose(root_tone, intrvl, mode, key))
-
-    return points_to_return
+    return merge(points, transpose(points, intervals, key, mode))
 
 
 def merge(*passages):
