@@ -13,7 +13,7 @@ class ChromaticScales(Piece):
         self.set_key("f major")
         self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4])
 
-        self.score["bass"] = self.transpose(self.score["treble"], -1)
+        self.score["bass"] = self.transpose(self.score["treble"], -1, 'octave')
 
 
 if __name__ == "__main__":

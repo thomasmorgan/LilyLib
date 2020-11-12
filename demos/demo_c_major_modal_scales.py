@@ -1,5 +1,6 @@
 from piece import Piece
-from util import letter
+from tones import letter
+from points import note, notes, scale
 
 
 class CMajorModalScales(Piece):
@@ -10,18 +11,18 @@ class CMajorModalScales(Piece):
     def write_score(self):
         # The basic section manually builds a scale note by note
         basic = {
-            "treble": [self.notes("c`", 8), self.notes("d`", 8), self.notes("e`", 8), self.notes("f`", 8), self.notes("g`", 8), self.notes("a`", 8), self.notes("b`", 8), self.notes("c``", 8)],
-            "bass": [self.notes("c", 8), self.notes("d", 8), self.notes("e", 8), self.notes("f", 8), self.notes("g", 8), self.notes("a", 8), self.notes("b", 8), self.notes("c`", 8)]
+            "treble": [note("c`", 8), note("d`", 8), note("e`", 8), note("f`", 8), note("g`", 8), note("a`", 8), note("b`", 8), note("c``", 8)],
+            "bass": [note("c", 8), note("d", 8), note("e", 8), note("f", 8), note("g", 8), note("a", 8), note("b", 8), note("c`", 8)]
         }
 
         # The notes section uses the notes function to build a list of notes from a single string
-        notes = {
-            "treble": self.notes('d` e` f` g` a` b` c`` d``', 8),
-            "bass": self.notes('d e f g a b c` d`', 8)
+        intermediate = {
+            "treble": notes('d` e` f` g` a` b` c`` d``', 8),
+            "bass": notes('d e f g a b c` d`', 8)
         }
 
-        # The scale section uses the scale function to build a scale from A to B, or from A with length B
-        scale = {
+        # The better section uses the scale function to build a scale from A to B, or from A with length B
+        better = {
             "treble": self.scale('e`', 'e``', 8),
             "bass": self.scale('e', 8, 8)
         }
@@ -29,20 +30,20 @@ class CMajorModalScales(Piece):
         # The looped section programmatically builds a series of scales
         # Note that the bass clef is just a tansposition of the treble clef
         looped = {"treble": []}
-        for start in self.scale('f`', 'c``', 8):
+        for start in self.scale('f`', 'c``'):
             looped["treble"] += self.scale(start, 8, 8)
-        looped["bass"] = self.transpose(looped["treble"], -1)
+        looped["bass"] = self.transpose(looped["treble"], -1, 'octave')
 
         # The smart section programmatically builds a series of scales in different keys
         # Note how we use list comprehension to avoid a for loop, and use step = 2 to play every other note in the treble clef
         start_notes = self.scale('c```', 'c``')
         smart = {
-            "treble": [self.scale(start, -8, 8, step=2, key=letter(start) + " major") for start in start_notes],
-            "bass": [self.scale(self.transpose(start, -1), -8, 8, key=letter(start) + " major") for start in start_notes]
+            "treble": [scale(start, -8, key=letter(start) + " major", dur=8, step=2) for start in start_notes],
+            "bass": [scale(self.transpose(start, -1, 'octave'), -8, key=letter(start) + " major", dur=8) for start in start_notes]
         }
 
         for staff in ["treble", "bass"]:
-            self.score[staff] = [basic[staff], notes[staff], scale[staff], looped[staff], smart[staff]]
+            self.score[staff] = [basic[staff], intermediate[staff], better[staff], looped[staff], smart[staff]]
 
 
 if __name__ == "__main__":

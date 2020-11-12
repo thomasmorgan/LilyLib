@@ -1,4 +1,5 @@
 from piece import Piece
+from points import note
 
 
 class MiddleC(Piece):
@@ -7,8 +8,8 @@ class MiddleC(Piece):
         self.title = "Middle C"
 
     def write_score(self):
-        self.score["treble"] = self.note("c`", 1)
-        self.score["bass"] = self.note("c`", 1)
+        self.score["treble"] = note("c`", 1)
+        self.score["bass"] = note("c`", 1)
 
 
 if __name__ == "__main__":
