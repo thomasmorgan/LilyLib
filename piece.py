@@ -2,8 +2,8 @@ from models import Point
 from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
-from tones import tonify, all_pitches, equivalent_letters, pitch, letter, equivalent_tone
-from lilylib import scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset
+from tones import equivalent_letters
+from lilylib import scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose
 
 from itertools import cycle
 
@@ -120,51 +120,9 @@ class Piece:
         key = self.key if key is None else key
         return scale_subset(positions, start, stop_or_length, key, dur, step)
 
-    def transpose(self, item, shift, mode="octave", key=None):
-        self.validate_transpose_args(shift, mode)
-
-        key = self.key if key is None else keyify(key)
-
-        if isinstance(item, dict):
-            new_dict = {}
-            for key in item:
-                new_dict[key] = self.transpose(item[key], shift, mode)
-            return new_dict
-
-        elif isinstance(item, list):
-            return [self.transpose(subitem, shift, mode, key) for subitem in item]
-
-        elif isinstance(item, Point):
-            return Point(self.transpose(item.tones, shift, mode, key), item.dur, item.ornamentation)
-
-        elif isinstance(item, str):
-            try:
-                item = tonify(item)
-            except ValueError:
-                return item
-            if isinstance(item, list):
-                return self.transpose(item, shift, mode, key)
-            else:
-                try:
-                    if mode == "octave":
-                        new_pitch = all_pitches[all_pitches.index(pitch(item)) + shift]
-                        return letter(item) + new_pitch
-                    elif mode == "scale":
-                        current_index = key.tones.index(item)
-                        return key.tones[current_index + shift]
-                    elif mode == "semitone":
-                        return key.all_tones[key.all_tones.index(item) + shift]
-                except ValueError:
-                    return self.transpose(equivalent_tone(item), shift, mode, key)
-
-        else:
-            raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
-
-    def validate_transpose_args(self, shift, mode):
-        if not isinstance(shift, int):
-            raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
-        if mode not in ["octave", "scale", "semitone"]:
-            raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
+    def transpose(self, item, shift, mode="scale", key=None):
+        key = self.key if key is None else key
+        return transpose(item, shift, key, mode)
 
     def harmonize(self, chords, intervals, mode="octave", key=None):
         key = self.key if key is None else keyify(key)

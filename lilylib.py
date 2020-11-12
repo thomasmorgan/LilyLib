@@ -1,5 +1,5 @@
 from util import flatten, split_and_flatten
-from tones import tonify, separate
+from tones import tonify, separate, all_pitches, pitch, letter, equivalent_tone
 from models import Point
 from keys import keyify
 
@@ -161,3 +161,49 @@ def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
     custom_tones = key.scale_subset(positions)
     return series(custom_tones, start, stop_or_length, dur, step)
+
+
+def transpose(item, shift, key, mode="scale"):
+    validate_transpose_args(shift, mode)
+    key = keyify(key)
+
+    if isinstance(item, dict):
+        new_dict = {}
+        for dict_key in item:
+            new_dict[dict_key] = transpose(item[dict_key], shift, key, mode)
+        return new_dict
+
+    elif isinstance(item, list):
+        return [transpose(subitem, shift, key, mode) for subitem in item]
+
+    elif isinstance(item, Point):
+        return Point(transpose(item.tones, shift, key, mode), item.dur, item.ornamentation)
+
+    elif isinstance(item, str):
+        try:
+            item = tonify(item)
+        except ValueError:
+            return item
+        if isinstance(item, list):
+            return transpose(item, shift, key, mode)
+        else:
+            try:
+                if mode == "octave":
+                    new_pitch = all_pitches[all_pitches.index(pitch(item)) + shift]
+                    return letter(item) + new_pitch
+                elif mode == "scale":
+                    current_index = key.tones.index(item)
+                    return key.tones[current_index + shift]
+                elif mode == "semitone":
+                    return key.all_tones[key.all_tones.index(item) + shift]
+            except ValueError:
+                return transpose(equivalent_tone(item), shift, key, mode)
+    else:
+        raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
+
+
+def validate_transpose_args(shift, mode):
+    if not isinstance(shift, int):
+        raise ValueError("{} is not a valid shift for piece.transpose(), it must be an int".format(shift))
+    if mode not in ["octave", "scale", "semitone"]:
+        raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
