@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Core concepts &#8212; LilyLib 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="core-concepts">
+<h1>Core concepts<a class="headerlink" href="#core-concepts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="piece">
+<h2>Piece<a class="headerlink" href="#piece" title="Permalink to this headline">¶</a></h2>
+<p>When a piece of music is written in LilyLib, it is written as a subclass of the LilyLib class <cite>Piece</cite>. <cite>Piece</cite> is a somewhat powerful class, and you can see the source code in <cite>piece.py</cite>, but for now, we’ll look at the two functions all custom pieces must overwrite; <cite>details</cite> and <cite>write_score</cite>. To illustrate, here’s the code for a piece that is just middle C played in both hands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">note</span>
+
+
+<span class="k">class</span> <span class="nc">MiddleC</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Middle C&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">MiddleC</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is what this looks like when it’s compiled (via Lilypond) to a pdf:</p>
+<img alt="_images/middle_c.png" src="_images/middle_c.png" />
+<p>Let’s go through this line by line. First we import the base class Piece from LilyLib.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+</pre></div>
+</div>
+<p>This is critical because otherwise python doesn’t know what a Piece is. The next line is more python syntax that declares out intention to make a new Piece:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MiddleC</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>We’ve imaginatively called our <cite>Piece</cite> <cite>MiddleC</cite> and we tag <cite>(Piece)</cite> on the end to let python know that <cite>MiddleC</cite> is a kind of <cite>Piece</cite>. If this is confusing to you, you should take an intro to python course and then everything will become clear.</p>
+<p>Our new piece contains two functions: <cite>details</cite> and <cite>write_score</cite>. These contain the meta-data and the musical content of the piece respectively and all pieces must have them. In the details function here we are titling our piece “Middle C”, this is the text that will appear at the top of the pdf after compilation, but we can set other things too. To see what, open <cite>piece.py</cite> and look at the <cite>__init__</cite> function right at the top:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Piece</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subtitle</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">composer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opus</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">staves</span> <span class="o">=</span> <span class="p">[</span><span class="n">Treble</span><span class="p">(),</span> <span class="n">Bass</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tempo</span> <span class="o">=</span> <span class="s2">&quot;4/4&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;C Major&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From top to bottom this function sets default values for things like the title, subtitle, composer and so on, before later calling <cite>self.details()</cite>. By writing our own details function and having it change these values we can overwrite things like the title, tempo or key signature, and so on.</p>
+<p>The <cite>write_score</cite> function does most of the work though, and for complex pieces it will get quite complex too. But, whatever the piece is, the requirement is that it modifies the score of the <cite>Piece</cite> (referred to as <cite>self.score</cite>) adding the contents of the staves. Here our piece has the default staves: one treble, one bass. We refer to these staves by name; <cite>self.score[“treble”]</cite> and <cite>self.score[“bass”]</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this demo, we write the score using the function <cite>note</cite>. This function can be found in points.py (it is imported at the top of the demo) and, as the name suggests, it makes notes, one at a time. Here, both staves get the note c`, which is lilypond notation for middle c. They’re also given duration <cite>1</cite> which corresponds to a semibreve.</p>
+<p>The last bit of code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">MiddleC</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>is just python for “when this file runs, run the MiddleC class”. This ensures that when the file is executed, it prints out the lilypond for the piece. You’ll want the same bit of code (swapping out the class name for whatever you called your piece) at the end of any pieces you write.</p>
+</div>
+<div class="section" id="single-notes-chords-and-rests">
+<h2>Single notes, chords and rests<a class="headerlink" href="#single-notes-chords-and-rests" title="Permalink to this headline">¶</a></h2>
+<p>The above demo uses the <cite>note</cite> function to create a single note. In general, LilyLib discourages the use of atomistic functions like this, in favor of higher-level functions we’ll come to later. However, we’ll look at a few low-level functions first to get comfortable with what’s going on under-the-hood. <cite>note</cite> take three arguments: the tone of the note (effectively the “name” of the sound produced; a combination of letter, accent and pitch), the duration of the note, and, optionally, any ornamentation. It builds notes one at a time, but these are returned in lists and so can be concatenated by adding. Here’s a simple example with 4 notes of various tones, durations and ornamentation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;e`&quot;</span><span class="p">,</span> <span class="s1">&#39;4.&#39;</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;e`&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">staccato&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_fig1.png" src="_images/core_concepts_fig1.png" />
+<p>We’ll discuss tones in more detail shortly. But for now, note that durations are integers, unless they are dotted in which case they are strings. Note also that ornamentation is a string and it follows lilypond conventions, however any slashes must be double to make it through the python interpreter, so <cite>~</cite> starts a tie, whereas <cite>\staccato</cite> adds the staccato point.</p>
+<p>The function <cite>rest</cite> lets you make rests. It behaves just like <cite>note</cite> however you only need to specify a duration (because rests don’t have a tone or ornamentation). Here’s the same code from above, but switching out the third note for a rest:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;e`&quot;</span><span class="p">,</span> <span class="s1">&#39;4.&#39;</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">staccato&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_fig2.png" src="_images/core_concepts_fig2.png" />
+<p>Just remember that these functions reside in <cite>points.py</cite> and to use them in a piece you need to import them like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">note</span><span class="p">,</span> <span class="n">rest</span>
+</pre></div>
+</div>
+<p>To create chords, <cite>piece.py</cite> includes the function <cite>chord</cite>. Like <cite>note</cite> it accepts a duration and, optionally, ornamentation. However, it lets you specify multiple tones. These tones can either be specified as a python list of multiple tone strings or a single string consisting of multiple tones separated by a single space. The file <cite>demo_c_major_chord.py</cite> shows both:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">chord</span>
+
+
+<span class="k">class</span> <span class="nc">CMajorChord</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;C Major Chord&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chord</span><span class="p">(</span><span class="s2">&quot;c` e` g` c``&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chord</span><span class="p">([</span><span class="s2">&quot;c,&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">CMajorChord</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_demo_chord.png" src="_images/core_concepts_demo_chord.png" />
+</div>
+<div class="section" id="multiple-notes-chords-and-rests">
+<h2>Multiple notes, chords and rests<a class="headerlink" href="#multiple-notes-chords-and-rests" title="Permalink to this headline">¶</a></h2>
+<p>The functions <cite>note</cite>, <cite>chord</cite> and <cite>rest</cite> each return a single item, but each function has a corresponding function that returns multiple items. These are called <cite>notes</cite>, <cite>chords</cite> and <cite>rests</cite>, respectively. All of them behave just like their singular counterparts, but take lists of arguments. Let’s start with <cite>rests</cite>. In this case, the only argument is the duration of the rests and so the user must supply a list of these durations (or a string of multiple durations separated by spaces). For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rests</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_rests.png" src="_images/core_concepts_rests.png" />
+<p><cite>notes</cite> behaves similarly. You can provide a list of tones, a list of durations or a list of ornamentation (all of which can either be a list or a single string with spaces separating the multiple values). Which ever list is longest determines the total number of notes created, and shorter lists are cycled to reach the length of the longest list. This helps efficiency, so if you want multiple notes with different tones, but the same duration and ornamentation, you only need list out the tones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">(</span><span class="s2">&quot;c` d` e` f`&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">(</span><span class="s2">&quot;c` g e c&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_notes1.png" src="_images/core_concepts_notes1.png" />
+<p>Here’s a more complicated example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">(</span><span class="s1">&#39;c` c` f` e`&#39;</span><span class="p">,</span> <span class="s1">&#39;4 8 4. 4&#39;</span><span class="p">,</span> <span class="s2">&quot;~   &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">(</span><span class="s1">&#39;c g g c&#39;</span><span class="p">,</span> <span class="s1">&#39;4. 8 8 4.&#39;</span><span class="p">,</span> <span class="s2">&quot; ~&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_notes2.png" src="_images/core_concepts_notes2.png" />
+<p>There’s a couple of things to note here: First, the durations are specified as a single string separated by spaces. Second, ornamentation is a single string too, but excess whitespace is used to give some notes no ornamentation at all. So in the treble clef <cite>“~   “</cite> means start a tie on every 4th note, starting with the first. While in the bass clef, <cite>” ~”</cite> means start a tie on every other note, starting with the 2nd. Lastly, because all these functions return lists of notes/rests/etc. you can multiple the result to continue the pattern. Here it is multipled by 2, doubling the passage.</p>
+<p>The <cite>notes</cite> function can also return a mix of rests and notes, and rests are indicated by either whitespace (in a single string) or an empty list (<cite>[]</cite>) in a list. To illustrate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">(</span><span class="s2">&quot;c`  e` &quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">([</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[],</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_notes_and_rests.png" src="_images/core_concepts_notes_and_rests.png" />
+</div>
+<div class="section" id="points">
+<h2>Points<a class="headerlink" href="#points" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="tones">
+<h2>Tones<a class="headerlink" href="#tones" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LilyLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#piece">Piece</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#single-notes-chords-and-rests">Single notes, chords and rests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-notes-chords-and-rests">Multiple notes, chords and rests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#points">Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tones">Tones</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Thomas J. H. Morgan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/core_concepts.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

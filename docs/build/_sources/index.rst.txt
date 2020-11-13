@@ -6,7 +6,5 @@ LilyLib
    :caption: LilyLib documentation
 
    introduction
-      what_is_lilylib
-      why_use_lilylib?
    core_concepts
 
