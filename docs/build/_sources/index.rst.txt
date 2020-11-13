@@ -10,10 +10,3 @@ LilyLib
       why_use_lilylib?
    core_concepts
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
