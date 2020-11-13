@@ -9,7 +9,7 @@ class CMajorChord(Piece):
 
     def write_score(self):
         self.score["treble"] = chord("c` e` g` c``", 1)
-        self.score["bass"] = chord("c, c", 1)
+        self.score["bass"] = chord(["c,", "c"], 1)
 
 
 if __name__ == "__main__":
