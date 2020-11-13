@@ -94,7 +94,7 @@ def rest(dur):
 
 def rests(*dur):
     """ Returns a list of Points that print as rests with the specified durations. """
-    return flatten([rest(d) for d in flatten(dur)])
+    return flatten([rest(d) for d in split_and_flatten(dur)])
 
 
 def note(tone, dur, ornamentation=""):
