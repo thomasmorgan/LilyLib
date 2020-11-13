@@ -30,15 +30,30 @@ Executing this in the terminal prints out the following lilypond:
 
 ```
 
+\version "2.18.2"
+\language "english"
 \header {
     title = "tl;dr demo"
+    subtitle = ""
+    composer = ""
+    mutopiacomposer = ""
+    mutopiainstrument = "piano"
+    source = ""
+    style = "Romatic"
+    license = "Creative Commons Attribution-ShareAlike 4.0"
+    maintainer = "Anonymous"
+    opus = ""
 }
 \score { <<
 << \new Staff {
-\clef treble \key e \major \time 4/4
+\clef treble
+\key e \major
+\time 4/4
 e'8 fs'8 gs'8 a'8 b'8 cs''8 ds''8 e''8 d''4 b'4 gs'4 e'4 <e' gs' b' e''>1} >>
 << \new Staff {
-\clef bass \key e \major \time 4/4
+\clef bass
+\key e \major
+\time 4/4
 e'4 b4 gs4 e4 <e gs b d' e'>1 <e, gs, b, e>1} >>
 >> }
 
