@@ -46,8 +46,7 @@ e'4 b4 gs4 e4 <e gs b d' e'>1 <e, gs, b, e>1} >>
 
 Which compiles into this sheet music:
 
-![tldr demo image]
-(https://raw.githubusercontent.com/thomasmorgan/LilyLib/master/docs/source/_static/tldr.png)
+![tldr demo image](https://raw.githubusercontent.com/thomasmorgan/LilyLib/master/docs/source/_static/tldr.png)
 
 
 ## Authors
