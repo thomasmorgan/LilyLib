@@ -2,6 +2,8 @@
 
 A python library that provides a mid-level language for writing sheet music. Lilylib let's you write music in terms of scales, arpeggios, key changes, motifs, transpositions, and so on. It can be compiled into Lilypond which can then be compiled into a pdf.
 
+For full documentation, download the repo and open docs/build/index.html.
+
 # tl;dr
 
 Starting with this bit of spoken language:
