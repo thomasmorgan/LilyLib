@@ -3,7 +3,6 @@ from tones import tonify, separate, all_pitches, pitch, letter, equivalent_tone,
 from keys import keyify
 
 from itertools import cycle
-from copy import deepcopy
 
 
 class Point:
