@@ -258,6 +258,129 @@
 </div>
 <div class="section" id="tones">
 <h2>Tones<a class="headerlink" href="#tones" title="Permalink to this headline">¶</a></h2>
+<p>We’ve encountered the word “tone” a lot so far: <cite>Points</cite> have tones (one if they’re a note, multiple if they’re a chord, none if they’re a rest) and the <cite>note</cite>, <cite>notes</cite>, <cite>chord</cite> and <cite>chords</cite> functions all take one or more tones as an argument. But what exactly is a tone? The good news is that it’s quite basic: a tone is just a string and there is no special <cite>Tone</cite> class. Not all strings are tones though, and for a string to be a valid tone it must correspond to a sound an instrument can make. We can see how all possible tones are contructed inside <cite>tones.py</cite>. First, note that a tone is made of a letter and a pitch, and that the letter itself can be decomposed into a base letter and an accent. Here’s the code for these:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_base_letters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="n">all_accents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ff&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;ss&#39;</span><span class="p">]</span>
+<span class="n">all_pitches</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;,,,&quot;</span><span class="p">,</span> <span class="s2">&quot;,,&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="s2">&quot;``&quot;</span><span class="p">,</span> <span class="s2">&quot;```&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The list of all possible letters, and, in turn, all possible tones, is then constructed as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_letters</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([[</span><span class="n">letter</span> <span class="o">+</span> <span class="n">accent</span> <span class="k">for</span> <span class="n">accent</span> <span class="ow">in</span> <span class="n">all_accents</span><span class="p">]</span> <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">all_base_letters</span><span class="p">])</span>
+<span class="n">all_tones</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([[</span><span class="n">letter</span> <span class="o">+</span> <span class="n">pitch</span> <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">all_letters</span><span class="p">]</span> <span class="k">for</span> <span class="n">pitch</span> <span class="ow">in</span> <span class="n">all_pitches</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>So <cite>all_tones</cite> includes everything all the way from <cite>cff,,,</cite> to <cite>bss```</cite>. Note that this list includes what one might call duplicates, for instance, <cite>es</cite> and <cite>f</cite> are both valid tones. LilyLib is vaguely aware of this and <cite>tones.py</cite> includes a dictionary of equivalent letters and a function to translate between equivalent tones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">equivalent_letters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;cf&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;bs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;cs&#39;</span><span class="p">:</span> <span class="s1">&#39;df&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;df&#39;</span><span class="p">:</span> <span class="s1">&#39;cs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ds&#39;</span><span class="p">:</span> <span class="s1">&#39;ef&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ef&#39;</span><span class="p">:</span> <span class="s1">&#39;ds&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="s1">&#39;ff&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;es&#39;</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ff&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="s1">&#39;es&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="s1">&#39;gf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gf&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gs&#39;</span><span class="p">:</span> <span class="s1">&#39;af&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;af&#39;</span><span class="p">:</span> <span class="s1">&#39;gs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;as&#39;</span><span class="p">:</span> <span class="s1">&#39;bf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bf&#39;</span><span class="p">:</span> <span class="s1">&#39;as&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;cf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bs&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span>
+<span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">equivalent_tone</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="n">new_letter</span> <span class="o">=</span> <span class="n">equivalent_letters</span><span class="p">[</span><span class="n">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">base_letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span> <span class="ow">and</span> <span class="n">base_letter</span><span class="p">(</span><span class="n">new_letter</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+        <span class="n">new_pitch</span> <span class="o">=</span> <span class="n">all_pitches</span><span class="p">[</span><span class="n">all_pitches</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">base_letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span> <span class="ow">and</span> <span class="n">base_letter</span><span class="p">(</span><span class="n">new_letter</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+        <span class="n">new_pitch</span> <span class="o">=</span> <span class="n">all_pitches</span><span class="p">[</span><span class="n">all_pitches</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_pitch</span> <span class="o">=</span> <span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="n">new_tone</span> <span class="o">=</span> <span class="n">new_letter</span> <span class="o">+</span> <span class="n">new_pitch</span>
+    <span class="k">return</span> <span class="n">new_tone</span>
+</pre></div>
+</div>
+<p>However these don’t handle double sharps or double flats currently. It’s also worth noting that the equivalence of these tones is an artefact of modern equal tuning. Prior to the 20th century it was widely accepted that there were subtle differences between, say, f-sharp and g-flat, and different tuning systems placed them at difference frequencies. Some pianos were even made with split black keys allowing the performer to select which of the tones they wanted.</p>
+<p>Just as <cite>tones.py</cite> inlcudes instructions for building tones, it also provides functions to decompose a tone into it’s letter, pitch, accent, and base letter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">separate</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="n">tone</span> <span class="o">=</span> <span class="n">tonify</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tone</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">]:</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="n">tone</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">tone</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tone</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tone</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">separate</span><span class="p">(</span><span class="n">tone</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">separate</span><span class="p">(</span><span class="n">tone</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">accent</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="n">let</span> <span class="o">=</span> <span class="n">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">let</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">let</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">base_letter</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The last function in <cite>tones.py</cite> is the one users will encounter most often: <cite>tonify</cite>. This takes a string, or a (nested) list of strings, and parses the contents to make sure all strings are valid tones. Where strings include white space, they are split into a list of multiple strings, and each substring is checked for validity. Where a string contains multiple adjacent spaces, the empty gasps are replaced with empty lists in order to produce rests (assuming the returned list is used to create Points). Note, however, that <cite>tonify</cite> respects whatever nesting is present in the value it is passed and it does not flatten the list. If <cite>tonify</cite> is passed something that is neither a string nor a list, it gambles that it’s been passed a <cite>Point</cite> and attempts to extract the tones from it, this way you can use <cite>tonify</cite> to get back to tones from Points. However, if this fails an error is raised.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tonify</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns an unflattened list of valid tones and empty lists.</span>
+
+<span class="sd">    Multi-tone strings are split into lists of valid tones. A seris of N spaces is</span>
+<span class="sd">    converted into a seris of N-1 empty lists. These produce rests when assigned to</span>
+<span class="sd">    Points, but will be erased by flattening the list. &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">tonify</span><span class="p">(</span><span class="n">subitem</span><span class="p">)</span> <span class="k">for</span> <span class="n">subitem</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">split_tones</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">split_tones</span> <span class="o">=</span> <span class="p">[</span><span class="n">tone</span> <span class="k">if</span> <span class="n">tone</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">tone</span> <span class="ow">in</span> <span class="n">split_tones</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">tonify</span><span class="p">(</span><span class="n">split_tones</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_tones</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid tone.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">item</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">tones</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot tonify </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here’s a few examples of what it does:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tonify</span><span class="p">(</span><span class="s1">&#39;cs,,&#39;</span><span class="p">)</span>
+<span class="go">&#39;cs,,&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tonify</span><span class="p">(</span><span class="s1">&#39;cs,, es,, gs,, cs,&#39;</span><span class="p">)</span>
+<span class="go">[&#39;cs,,&#39;, &#39;es,,&#39;, &#39;gs,,&#39;, &#39;cs,&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tonify</span><span class="p">(</span><span class="s1">&#39;cs,,   cs,&#39;</span><span class="p">)</span>  <span class="c1"># note the two extra spaces here to create rests</span>
+<span class="go">[&#39;cs,,&#39;, [], [], &#39;cs,&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tonify</span><span class="p">([</span><span class="s1">&#39;cs,,&#39;</span><span class="p">,</span> <span class="s1">&#39;es,,&#39;</span><span class="p">,</span> <span class="s1">&#39;gs,,&#39;</span><span class="p">,</span> <span class="s1">&#39;cs,&#39;</span><span class="p">])</span>
+<span class="go">[&#39;cs,,&#39;, &#39;es,,&#39;, &#39;gs,,&#39;, &#39;cs,&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tonify</span><span class="p">([</span><span class="s1">&#39;cs,, es,,&#39;</span><span class="p">,</span> <span class="s1">&#39;gs,, cs,&#39;</span><span class="p">])</span>  <span class="c1"># note the argument here is a list of two strings</span>
+<span class="go">[[&#39;cs,,&#39;, &#39;es,,&#39;], [&#39;gs,,&#39;, &#39;cs,&#39;]]</span>
+</pre></div>
+</div>
+<p>In many instances users won’t be calling tonify themselves, but many functions (like <cite>notes</cite> and <cite>chords</cite>) do, to ensure the passed values are valid and to convert them into a usable form.</p>
 </div>
 </div>
 

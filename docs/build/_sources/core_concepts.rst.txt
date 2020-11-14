@@ -288,3 +288,139 @@ As a slight digression, the word `Point` was chosen as it is suitably generic to
 Tones
 ----------
 
+We've encountered the word "tone" a lot so far: `Points` have tones (one if they're a note, multiple if they're a chord, none if they're a rest) and the `note`, `notes`, `chord` and `chords` functions all take one or more tones as an argument. But what exactly is a tone? The good news is that it's quite basic: a tone is just a string and there is no special `Tone` class. Not all strings are tones though, and for a string to be a valid tone it must correspond to a sound an instrument can make. We can see how all possible tones are contructed inside `tones.py`. First, note that a tone is made of a letter and a pitch, and that the letter itself can be decomposed into a base letter and an accent. Here's the code for these:
+
+::
+
+	all_base_letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+	all_accents = ['ff', 'f', '', 's', 'ss']
+	all_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
+
+The list of all possible letters, and, in turn, all possible tones, is then constructed as follows:
+
+::
+
+	all_letters = flatten([[letter + accent for accent in all_accents] for letter in all_base_letters])
+	all_tones = flatten([[letter + pitch for letter in all_letters] for pitch in all_pitches])
+
+So `all_tones` includes everything all the way from `cff,,,` to `bss\`\`\``. Note that this list includes what one might call duplicates, for instance, `es` and `f` are both valid tones. LilyLib is vaguely aware of this and `tones.py` includes a dictionary of equivalent letters and a function to translate between equivalent tones:
+
+::
+
+	equivalent_letters = {
+	    'cf': 'b',
+	    'c': 'bs',
+	    'cs': 'df',
+	    'df': 'cs',
+	    'd': 'd',
+	    'ds': 'ef',
+	    'ef': 'ds',
+	    'e': 'ff',
+	    'es': 'f',
+	    'ff': 'e',
+	    'f': 'es',
+	    'fs': 'gf',
+	    'gf': 'fs',
+	    'g': 'g',
+	    'gs': 'af',
+	    'af': 'gs',
+	    'a': 'a',
+	    'as': 'bf',
+	    'bf': 'as',
+	    'b': 'cf',
+	    'bs': 'c'
+	}
+
+	def equivalent_tone(tone):
+	    new_letter = equivalent_letters[letter(tone)]
+	    if base_letter(tone) == 'c' and base_letter(new_letter) == 'b':
+	        new_pitch = all_pitches[all_pitches.index(pitch(tone)) - 1]
+	    elif base_letter(tone) == 'b' and base_letter(new_letter) == 'c':
+	        new_pitch = all_pitches[all_pitches.index(pitch(tone)) + 1]
+	    else:
+	        new_pitch = pitch(tone)
+	    new_tone = new_letter + new_pitch
+	    return new_tone
+
+However these don't handle double sharps or double flats currently. It's also worth noting that the equivalence of these tones is an artefact of modern equal tuning. Prior to the 20th century it was widely accepted that there were subtle differences between, say, f-sharp and g-flat, and different tuning systems placed them at difference frequencies. Some pianos were even made with split black keys allowing the performer to select which of the tones they wanted.
+
+Just as `tones.py` inlcudes instructions for building tones, it also provides functions to decompose a tone into it's letter, pitch, accent, and base letter:
+
+::
+
+	def separate(tone):
+	    tone = tonify(tone)
+	    if tone[-1] in ["`", ","]:
+	        split = tone.split(tone[-1], 1)
+	        return split[0], split[1] + tone[-1]
+	    else:
+	        return tone, ''
+
+
+	def pitch(tone):
+	    return separate(tone)[1]
+
+
+	def letter(tone):
+	    return separate(tone)[0]
+
+
+	def accent(tone):
+	    let = letter(tone)
+	    if len(let) == 1:
+	        return ''
+	    else:
+	        return let[-1]
+
+
+	def base_letter(tone):
+	    return letter(tone)[0]
+
+The last function in `tones.py` is the one users will encounter most often: `tonify`. This takes a string, or a (nested) list of strings, and parses the contents to make sure all strings are valid tones. Where strings include white space, they are split into a list of multiple strings, and each substring is checked for validity. Where a string contains multiple adjacent spaces, the empty gasps are replaced with empty lists in order to produce rests (assuming the returned list is used to create Points). Note, however, that `tonify` respects whatever nesting is present in the value it is passed and it does not flatten the list. If `tonify` is passed something that is neither a string nor a list, it gambles that it's been passed a `Point` and attempts to extract the tones from it, this way you can use `tonify` to get back to tones from Points. However, if this fails an error is raised.
+
+::
+
+	def tonify(item):
+	    """ Returns an unflattened list of valid tones and empty lists.
+
+	    Multi-tone strings are split into lists of valid tones. A seris of N spaces is
+	    converted into a seris of N-1 empty lists. These produce rests when assigned to
+	    Points, but will be erased by flattening the list. """
+
+	    if isinstance(item, list):
+	        return [tonify(subitem) for subitem in item]
+	    elif isinstance(item, str):
+	        if " " in item:
+	            split_tones = item.split(" ")
+	            split_tones = [tone if tone != '' else [] for tone in split_tones]
+	            return tonify(split_tones)
+	        else:
+	            if item not in all_tones:
+	                raise ValueError("{} is not a valid tone.".format(item))
+	            return item
+	    else:
+	        try:
+	            return item.tones
+	        except AttributeError:
+	            raise ValueError("Cannot tonify {}".format(item))
+
+Here's a few examples of what it does:
+
+::
+
+	>>> tonify('cs,,')
+	'cs,,'
+
+	>>> tonify('cs,, es,, gs,, cs,')
+	['cs,,', 'es,,', 'gs,,', 'cs,']
+
+	>>> tonify('cs,,   cs,')  # note the two extra spaces here to create rests
+	['cs,,', [], [], 'cs,']
+
+	>>> tonify(['cs,,', 'es,,', 'gs,,', 'cs,'])
+	['cs,,', 'es,,', 'gs,,', 'cs,']
+
+	>>> tonify(['cs,, es,,', 'gs,, cs,'])  # note the argument here is a list of two strings
+	[['cs,,', 'es,,'], ['gs,,', 'cs,']]
+
+In many instances users won't be calling tonify themselves, but many functions (like `notes` and `chords`) do, to ensure the passed values are valid and to convert them into a usable form.
