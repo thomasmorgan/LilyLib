@@ -1,8 +1,11 @@
 from util import flatten, split_and_flatten
-from tones import tonify, separate, all_pitches, pitch, letter, equivalent_tone, all_tones, all_durs
+from tones import tonify, separate, all_pitches, pitch, letter, equivalent_tone, all_tones
 from keys import keyify
 
 from itertools import cycle
+
+
+all_durs = ['\\longa' '\\breve', 1, 2, 4, 8, 16, 32, 64, 128, '1.', '2.', '4.', '8.', '16.', '32.', '64.', '128.', '1..', '2..', '4..', '8..', '16..', '32..', '64..', '128..']
 
 
 class Point:
