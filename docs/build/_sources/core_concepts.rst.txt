@@ -189,10 +189,101 @@ The `notes` function can also return a mix of rests and notes, and rests are ind
 
 .. image:: _static/core_concepts_notes_and_rests.png
 
+Lastly, the `chords` function can create multiple chords. As with `notes`, duration and ornamentation can be single values or lists (or strings containing multiple elements separated by spaces). The first argument, however, must be either a list-of-lists of tones, or a list of strings, each of which can contain multiple tones. Here's an example:
+
+::
+
+    def write_score(self):
+        self.score["treble"] = chords(["c` e` g` c``", "b d` g` b`", "c` f` a` c``", "c` e` g` c``"], 4)
+        self.score["bass"] = chords([["c,", "c"], ["g,", "g"], ["f,", "f"], ["c,", "c"]], 4)
+
+.. image:: _static/core_concepts_chords.png
+
 
 Points
 ----------
 
+So far we've been talking about notes, chords and rests as if they were different things. However, under the hood they are actually all instances of the same class, `Point`. In LilyLib a `Point` is any element that appears in sheet music and corresponds to some sound (or absence of sound). These can be differentiated from what Lilylib calls `markup` which are other things that appear on sheet music, but are not sounds (things like annotations, or flagging a series of printed notes as grace notes, but more on this later).
+
+You can see the code for the `Point` class in `points.py`, but it's quite simple. A `Point` consists of a duration and oramentation, which are stored as single values, and a list of tones. It is the contents of the tones list that determines it's behavior when printed. If tones is empty, it prints as a rest, if tones contains a single tone it prints as a note, and if tones contains multiple tones it prints as a chord:
+
+::
+
+    def __str__(self):
+        if self.is_rest:
+            return 'r' + str(self.dur) + self.ornamentation
+        elif self.is_note:
+            return self.tone + str(self.dur) + self.ornamentation
+        elif self.is_chord:
+            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+        else:
+            raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
+
+Points have a handful of other function too. For instance you can use `is_rest`, `is_note` and `is_chord` to check what kind of thing a Point is:
+
+::
+
+    @property
+    def is_rest(self):
+        return len(self.tones) == 0
+
+    @property
+    def is_note(self):
+        return len(self.tones) == 1
+
+    @property
+    def is_chord(self):
+        return len(self.tones) > 1
+
+If you are confident a Point is currently behaving like a note, you can also ask for its tone, or even split the tone into a letter or pitch:
+
+::
+
+    @property
+    def tone(self):
+        if len(self.tones) == 1:
+            return self.tones[0]
+        else:
+            raise AttributeError("Cannot get {}.tone as it has multiple tones: {}".format(self, self.tones))
+
+    @property
+    def letter(self):
+        return letter(self.tone)
+
+    @property
+    def pitch(self):
+        return pitch(self.tone)
+
+Lastly, you can add new tones to a Point, remove existing tones, or even replace specific tones with new ones:
+
+::
+
+    def add(self, tones):
+        tones = flatten([tonify(tones)])
+        for tone in tones:
+            if tone not in self.tones:
+                self.tones.append(tone)
+
+    def remove(self, tones):
+        tones = flatten([tonify(tones)])
+        self.tones = [tone for tone in self.tones if tone not in tones]
+
+    def replace(self, old_tones, new_tones):
+        old_tones = flatten([tonify(old_tones)])
+        new_tones = tonify(new_tones)
+        new_tones = new_tones if isinstance(new_tones, list) else [new_tones]
+
+        max_length = max(len(old_tones), len(new_tones))
+        zip_list = zip(range(max_length), cycle(old_tones), cycle(new_tones))
+
+        for i, old_tone, new_tone in zip_list:
+            if old_tone in self.tones:
+                self.remove(old_tone)
+                self.add(new_tone)
+
+These functions are only possible because rests, notes and chords are all just Points. For instance, adding a tone to a rest makes it immediately behave like a note. Similarly, if you keep removing tones from a chord it will turn first into a note and then into a rest.
+
+As a slight digression, the word `Point` was chosen as it is suitably generic to subsume rests, notes and chords, but also because it has a historical tie-in: In the middle ages, written notes, which often lacked stems, were referred to with the Latin word 'punctum' which translates to the modern English word point. One vestige of this is the word 'counterpoint' which refers to music comprising multiple voices that overlap each other. Early composers described this style of music as '`punctum contra punctum`', which means `note against note`, and this phrase was later condensed to counterpoint.
 
 Tones
 ----------

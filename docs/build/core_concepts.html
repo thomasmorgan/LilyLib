@@ -174,9 +174,87 @@
 </pre></div>
 </div>
 <img alt="_images/core_concepts_notes_and_rests.png" src="_images/core_concepts_notes_and_rests.png" />
+<p>Lastly, the <cite>chords</cite> function can create multiple chords. As with <cite>notes</cite>, duration and ornamentation can be single values or lists (or strings containing multiple elements separated by spaces). The first argument, however, must be either a list-of-lists of tones, or a list of strings, each of which can contain multiple tones. Here’s an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chords</span><span class="p">([</span><span class="s2">&quot;c` e` g` c``&quot;</span><span class="p">,</span> <span class="s2">&quot;b d` g` b`&quot;</span><span class="p">,</span> <span class="s2">&quot;c` f` a` c``&quot;</span><span class="p">,</span> <span class="s2">&quot;c` e` g` c``&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chords</span><span class="p">([[</span><span class="s2">&quot;c,&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;g,&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;f,&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;c,&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]],</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/core_concepts_chords.png" src="_images/core_concepts_chords.png" />
 </div>
 <div class="section" id="points">
 <h2>Points<a class="headerlink" href="#points" title="Permalink to this headline">¶</a></h2>
+<p>So far we’ve been talking about notes, chords and rests as if they were different things. However, under the hood they are actually all instances of the same class, <cite>Point</cite>. In LilyLib a <cite>Point</cite> is any element that appears in sheet music and corresponds to some sound (or absence of sound). These can be differentiated from what Lilylib calls <cite>markup</cite> which are other things that appear on sheet music, but are not sounds (things like annotations, or flagging a series of printed notes as grace notes, but more on this later).</p>
+<p>You can see the code for the <cite>Point</cite> class in <cite>points.py</cite>, but it’s quite simple. A <cite>Point</cite> consists of a duration and oramentation, which are stored as single values, and a list of tones. It is the contents of the tones list that determines it’s behavior when printed. If tones is empty, it prints as a rest, if tones contains a single tone it prints as a note, and if tones contains multiple tones it prints as a chord:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_rest</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;r&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dur</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ornamentation</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_note</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tone</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dur</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ornamentation</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_chord</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dur</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ornamentation</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot print </span><span class="si">{}</span><span class="s2"> as it is neither a rest, nor note, nor chord. Its tones are </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Points have a handful of other function too. For instance you can use <cite>is_rest</cite>, <cite>is_note</cite> and <cite>is_chord</cite> to check what kind of thing a Point is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">is_rest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">is_note</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">is_chord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>If you are confident a Point is currently behaving like a note, you can also ask for its tone, or even split the tone into a letter or pitch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">tone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Cannot get </span><span class="si">{}</span><span class="s2">.tone as it has multiple tones: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">))</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tone</span><span class="p">)</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">pitch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pitch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tone</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lastly, you can add new tones to a Point, remove existing tones, or even replace specific tones with new ones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tones</span><span class="p">):</span>
+    <span class="n">tones</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([</span><span class="n">tonify</span><span class="p">(</span><span class="n">tones</span><span class="p">)])</span>
+    <span class="k">for</span> <span class="n">tone</span> <span class="ow">in</span> <span class="n">tones</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tone</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tones</span><span class="p">):</span>
+    <span class="n">tones</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([</span><span class="n">tonify</span><span class="p">(</span><span class="n">tones</span><span class="p">)])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tones</span> <span class="o">=</span> <span class="p">[</span><span class="n">tone</span> <span class="k">for</span> <span class="n">tone</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tones</span> <span class="k">if</span> <span class="n">tone</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tones</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_tones</span><span class="p">,</span> <span class="n">new_tones</span><span class="p">):</span>
+    <span class="n">old_tones</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([</span><span class="n">tonify</span><span class="p">(</span><span class="n">old_tones</span><span class="p">)])</span>
+    <span class="n">new_tones</span> <span class="o">=</span> <span class="n">tonify</span><span class="p">(</span><span class="n">new_tones</span><span class="p">)</span>
+    <span class="n">new_tones</span> <span class="o">=</span> <span class="n">new_tones</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_tones</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">new_tones</span><span class="p">]</span>
+
+    <span class="n">max_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">old_tones</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_tones</span><span class="p">))</span>
+    <span class="n">zip_list</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">max_length</span><span class="p">),</span> <span class="n">cycle</span><span class="p">(</span><span class="n">old_tones</span><span class="p">),</span> <span class="n">cycle</span><span class="p">(</span><span class="n">new_tones</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">old_tone</span><span class="p">,</span> <span class="n">new_tone</span> <span class="ow">in</span> <span class="n">zip_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">old_tone</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tones</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old_tone</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_tone</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These functions are only possible because rests, notes and chords are all just Points. For instance, adding a tone to a rest makes it immediately behave like a note. Similarly, if you keep removing tones from a chord it will turn first into a note and then into a rest.</p>
+<p>As a slight digression, the word <cite>Point</cite> was chosen as it is suitably generic to subsume rests, notes and chords, but also because it has a historical tie-in: In the middle ages, written notes, which often lacked stems, were referred to with the Latin word ‘punctum’ which translates to the modern English word point. One vestige of this is the word ‘counterpoint’ which refers to music comprising multiple voices that overlap each other. Early composers described this style of music as ‘<cite>punctum contra punctum</cite>’, which means <cite>note against note</cite>, and this phrase was later condensed to counterpoint.</p>
 </div>
 <div class="section" id="tones">
 <h2>Tones<a class="headerlink" href="#tones" title="Permalink to this headline">¶</a></h2>
