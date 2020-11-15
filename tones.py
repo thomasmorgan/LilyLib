@@ -1,12 +1,12 @@
-from util import flatten
+import util
 
 all_base_letters = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
 all_accents = ['ff', 'f', '', 's', 'ss']
 
-all_letters = flatten([[letter + accent for accent in all_accents] for letter in all_base_letters])
+all_letters = util.flatten([[letter + accent for accent in all_accents] for letter in all_base_letters])
 
 all_pitches = [",,,", ",,", ",", "", "`", "``", "```"]
-all_tones = flatten([[letter + pitch for letter in all_letters] for pitch in all_pitches])
+all_tones = util.flatten([[letter + pitch for letter in all_letters] for pitch in all_pitches])
 
 
 equivalent_letters = {
@@ -73,6 +73,22 @@ def equivalent_tone(tone):
         new_pitch = pitch(tone)
     new_tone = new_letter + new_pitch
     return new_tone
+
+
+def flatten(tone):
+    let = letter(tone)
+    if len(let) == 1 or let[-1] == 'f':
+        return let + 'f' + pitch(tone)
+    else:
+        return let[:-1] + pitch(tone)
+
+
+def sharpen(tone):
+    let = letter(tone)
+    if len(let) == 1 or let[-1] == 's':
+        return let + 's' + pitch(tone)
+    else:
+        return let[:-1] + pitch(tone)
 
 
 def tonify(item):
