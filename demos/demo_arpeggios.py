@@ -1,5 +1,6 @@
 from piece import Piece
 from points import note, notes, arpeggio
+from util import join
 
 
 class Arpeggios(Piece):
@@ -38,8 +39,7 @@ class Arpeggios(Piece):
             'bass': [[self.arpeggio(self.transpose(start, -7), start, 16, step=step) for step in [1, 3, 3]] for start in starts]
         }
 
-        for staff in ["treble", "bass"]:
-            self.score[staff] = [basic[staff], intermediate[staff], arpeggios[staff], length[staff], stepped[staff]]
+        self.score = join(basic, intermediate, arpeggios, length, stepped)
 
 
 if __name__ == "__main__":
