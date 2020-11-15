@@ -7,7 +7,6 @@ class ChromaticScales(Piece):
         self.title = "Chromatic Scales in C and F Major"
 
     def write_score(self):
-        # The scale section uses the scale function to build a scale from one note to the next
         self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4]) + self.chromatic('c``', 'c`', [16] * 12 + [4])
 
         self.set_key("f major")

@@ -182,7 +182,30 @@
 <li><p>diminished7; diminished 7ths</p></li>
 <li><p>chromatic; chromatic scales</p></li>
 </ul>
-<p>Though the dominant, diminished and chromatic functions sometimes use weird accents (e.g. the flattened 7th in a dominant 7th sometimes appears as a sharpened 6th). You can also create custom scales with <cite>scale_subset</cite>:</p>
+<p>Though note that the dominant 7th function uses the 6th instead of the double-flattened 7th, as this typically produces cleaner notation. It’s also worth remembering the dominant and diminished 7ths are the same for major, minor and harmonic versions of the same key. The chromatic function also follows convention by using sharps when the scale is ascending, and flats when descending, as this minimizes the number of accidentals. Here’s the chromatic demo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+
+
+<span class="k">class</span> <span class="nc">ChromaticScales</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Chromatic Scales in C and F Major&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;c``&#39;</span><span class="p">,</span> <span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s2">&quot;f major&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">ChromaticScales</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/chromatic.png" src="_images/chromatic.png" />
+<p>You can also create custom scales with <cite>scale_subset</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scale_subset</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="n">custom_tones</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">scale_subset</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>

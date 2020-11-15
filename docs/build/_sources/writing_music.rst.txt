@@ -173,7 +173,33 @@ Lilylib also includes functions that generate other common series of tones:
 - diminished7; diminished 7ths
 - chromatic; chromatic scales
 
-Though the dominant, diminished and chromatic functions sometimes use weird accents (e.g. the flattened 7th in a dominant 7th sometimes appears as a sharpened 6th). You can also create custom scales with `scale_subset`:
+Though note that the dominant 7th function uses the 6th instead of the double-flattened 7th, as this typically produces cleaner notation. It's also worth remembering the dominant and diminished 7ths are the same for major, minor and harmonic versions of the same key. The chromatic function also follows convention by using sharps when the scale is ascending, and flats when descending, as this minimizes the number of accidentals. Here's the chromatic demo:
+
+::
+
+	from piece import Piece
+
+
+	class ChromaticScales(Piece):
+
+	    def details(self):
+	        self.title = "Chromatic Scales in C and F Major"
+
+	    def write_score(self):
+	        self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4]) + self.chromatic('c``', 'c`', [16] * 12 + [4])
+
+	        self.set_key("f major")
+	        self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4]) + self.chromatic('f``', 'f`', [16] * 12 + [4])
+
+	        self.score["bass"] = self.transpose(self.score["treble"], -1, 'octave')
+
+
+	if __name__ == "__main__":
+	    ChromaticScales()
+
+.. image:: _static/chromatic.png
+
+You can also create custom scales with `scale_subset`:
 
 ::
 
