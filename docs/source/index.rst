@@ -7,4 +7,5 @@ LilyLib
 
    introduction
    core_concepts
+   writing_music
 

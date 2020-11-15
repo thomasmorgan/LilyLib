@@ -1,0 +1,185 @@
+Writing music
+=========================
+
+So far we have seen how music in LilyLib is composed of Points, and how we can use the `notes`, `rests` and `chords` functions to make multiple `Points`. In this section we'll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within `points.py`.
+
+Scales
+-----------
+
+The scale functions is as follows:
+
+::
+
+	def scale(start, stop_or_length, key, dur=None, step=1):
+	    key = keyify(key)
+	    return series(key.tones, start, stop_or_length, dur, step)
+
+The arguments are:
+
+- start; the tone at which to start the scale (can be a note too, the tone will be automatically extracted).
+- stop_or_length; either the tone at which to stop, or a integer length (negative lengths create descending scales).
+- key; the key in which to write the scale (see below for details)
+- dur; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.
+- step; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.
+
+The demo_c_major_scale provides an example:
+
+::
+
+	from piece import Piece
+	from points import scale
+
+
+	class CMajorScale(Piece):
+
+	    def details(self):
+	        self.title = "C Major Scale"
+
+	    def write_score(self):
+	        self.score["treble"] = scale("c`", "c``", 'C Major', 8) + scale("c``", -8, 'C Major', 8)
+	        self.score["bass"] = self.scale("c`", "c", 8) + self.scale("c", 8, 8)
+
+
+	if __name__ == "__main__":
+	    CMajorScale()
+
+.. image:: _static/scales.png
+
+First look at the treble clef. Note how the first scale specifies a stop tone, but the second specifies a numeric length. Both specify the key as C Major, and the duration as 8 (i.e. quavers). The bass is different though, it doesn't specify a key and it calls `self.scale` instead of `scale`. This is because the `Piece` class offers wrappers to all these functions, with the only difference being that it automatically passes the key of the piece. In this way you can use `self.scale` to compose in the dominant key of the piece, but `scale` when you want to create scales in another key. The demo `c_major_modal_scales` shows this in action, we'll deal with it in two parts. The first is:
+
+::
+
+	from piece import Piece
+	from tones import letter
+	from points import scale
+	from util import join
+
+
+	class CMajorModalScales(Piece):
+
+	    def details(self):
+	        self.title = "C Major Modal Scales"
+
+	    def write_score(self):
+	        # The looped section programmatically builds a series of scales
+	        # Note that the bass clef is just a tansposition of the treble clef
+	        looped = {"treble": []}
+	        for start in self.scale('c`', 'c``'):
+	            looped["treble"] += self.scale(start, 8, 8)
+	        looped["bass"] = self.transpose(looped["treble"], -1, 'octave')
+
+.. image:: _static/modal_scales1.png
+
+Note how first a scale of tones is generated, and then these tones are used as the start notes of a series of scales, all in the dominant key of C Major. The bass clef is just a transposition of the treble clef, but more on transposition below.
+
+::
+
+	        # The smart section programmatically builds a series of scales in different keys
+	        # Note how we use list comprehension to avoid a for loop, and use step = 2 to play every other note in the treble clef
+	        start_notes = self.scale('c```', 'c``')
+	        smart = {
+	            "treble": [scale(start, -8, key=letter(start) + " major", dur=8, step=2) for start in start_notes],
+	            "bass": [scale(self.transpose(start, -1, 'octave'), -8, key=letter(start) + " major", dur=8) for start in start_notes]
+	        }
+
+	        self.score = join(looped, smart)
+
+
+	if __name__ == "__main__":
+	    CMajorModalScales()
+
+
+.. image:: _static/modal_scales2.png
+
+The second part does the same thing, but note it takes the letter of the start tone and combines it with the word major to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format "<base letter> <mode>", for instance: "c major", "fs minor", "bf harmonic". The lookup function is case insensitive, so capitalization does not matter.
+
+In addition, note in the above demo that the treble clef sets the 'step' argument to 2, so the treble clef covers two octaves and catches up with the bass clef. Lastly, note that the score is the combination of the two dictionaries called `looped` and `smart` and they are combined with the function `join` which is imported from `util.py`.
+
+Arpeggios
+-----------
+
+In addition to `scale`, `points.py` includes the function `arpeggio`, and `Piece` has a corresponding function which can be called with `self.arpeggio` too. Here's the function:
+
+::
+
+	def arpeggio(start, stop_or_length, key, dur=None, step=1):
+	    key = keyify(key)
+	    return series(key.arpeggio_tones, start, stop_or_length, dur, step)
+
+
+Note it takes all the same arguments as the scale function. Just remember that the start tone must be part of the arpeggio in the key you are working with, so trying to start a C Major arpeggio on F won't get you very far. This function can be seen in action in the demo_arpeggios code:
+
+::
+
+	from piece import Piece
+	from points import note, notes, arpeggio
+	from util import join
+
+
+	class Arpeggios(Piece):
+
+	    def details(self):
+	        self.title = "Arpeggios"
+
+	    def write_score(self):
+	        # The basic section manually builds a scale note by note
+	        basic = {
+	            "treble": [note("c`", 8), note("e`", 8), note("g`", 8), note("c``", 8)],
+	            "bass": [note("c", 8), note("e", 8), note("g", 8), note("c`", 8)]
+	        }
+
+	        # The notes section uses the notes function to build a list of notes from a single string
+	        intermediate = {
+	            "treble": notes('d` fs` a` d``', 8),
+	            "bass": notes('d fs a d`', 8)
+	        }
+
+	        # The arpeggio section uses the arpeggio function to build a scale from one note to the next
+	        arpeggios = {
+	            "treble": arpeggio('e`', 'e``', 'E Major', 8),
+	            "bass": arpeggio('e', 4, 'E major', 8)
+	        }
+
+	        # The length section uses the arpeggio function to build an arpeggio, but specifies a length, rather than a stop note
+	        length = {
+	            "treble": arpeggio('f`', 4, 'F Major', 8),
+	            "bass": arpeggio('f', 4, 'F Major', 8)
+	        }
+
+	        starts = self.arpeggio('c`', 'c``')
+	        stepped = {
+	            'treble': [[self.arpeggio(start, self.transpose(start, 7), 16, step=step) for step in [3, 3, 1]] for start in starts],
+	            'bass': [[self.arpeggio(self.transpose(start, -7), start, 16, step=step) for step in [1, 3, 3]] for start in starts]
+	        }
+
+	        self.score = join(basic, intermediate, arpeggios, length, stepped)
+
+
+	if __name__ == "__main__":
+	    Arpeggios()
+
+
+.. image:: _static/arpeggios.png
+
+This shows a variety of ways you can make arpeggios. First using the `note` and `notes` functions, but then with `arpeggio` function itself. The `stepped` section uses a list of values for the step argument (along with pythonic list comprehension) to create something reminiscent of Beethoven's 3rd piano sonata.
+
+Other series
+---------------
+
+Lilylib also includes functions that generate other common series of tones:
+
+- arpeggio7; arpeggios including the 7th
+- dominant7; dominant 7ths
+- diminished7; diminished 7ths
+- chromatic; chromatic scales
+
+Though the dominant, diminished and chromatic functions sometimes use weird accents (e.g. the flattened 7th in a dominant 7th sometimes appears as a sharpened 6th). You can also create custom scales with `scale_subset`:
+
+::
+
+	def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
+	    key = keyify(key)
+	    custom_tones = key.scale_subset(positions)
+	    return series(custom_tones, start, stop_or_length, dur, step)
+
+Here, `positions` is a list of numbers describing the points of the regular scale you want to include. So setting `positions` to [1, 3, 5] would produce regular arpeggios. Similarly, if you were Johannes Brahms and you regularly want a rolling left hand that includes root tones and 3rds you would use a scale subset with positions [1, 3].

@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writing music &#8212; LilyLib 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Core concepts" href="core_concepts.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="writing-music">
+<h1>Writing music<a class="headerlink" href="#writing-music" title="Permalink to this headline">¶</a></h1>
+<p>So far we have seen how music in LilyLib is composed of Points, and how we can use the <cite>notes</cite>, <cite>rests</cite> and <cite>chords</cite> functions to make multiple <cite>Points</cite>. In this section we’ll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within <cite>points.py</cite>.</p>
+<div class="section" id="scales">
+<h2>Scales<a class="headerlink" href="#scales" title="Permalink to this headline">¶</a></h2>
+<p>The scale functions is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">series</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">tones</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The arguments are:</p>
+<ul class="simple">
+<li><p>start; the tone at which to start the scale (can be a note too, the tone will be automatically extracted).</p></li>
+<li><p>stop_or_length; either the tone at which to stop, or a integer length (negative lengths create descending scales).</p></li>
+<li><p>key; the key in which to write the scale (see below for details)</p></li>
+<li><p>dur; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.</p></li>
+<li><p>step; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.</p></li>
+</ul>
+<p>The demo_c_major_scale provides an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">scale</span>
+
+
+<span class="k">class</span> <span class="nc">CMajorScale</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;C Major Scale&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="s2">&quot;c``&quot;</span><span class="p">,</span> <span class="s1">&#39;C Major&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">scale</span><span class="p">(</span><span class="s2">&quot;c``&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;C Major&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">CMajorScale</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/scales.png" src="_images/scales.png" />
+<p>First look at the treble clef. Note how the first scale specifies a stop tone, but the second specifies a numeric length. Both specify the key as C Major, and the duration as 8 (i.e. quavers). The bass is different though, it doesn’t specify a key and it calls <cite>self.scale</cite> instead of <cite>scale</cite>. This is because the <cite>Piece</cite> class offers wrappers to all these functions, with the only difference being that it automatically passes the key of the piece. In this way you can use <cite>self.scale</cite> to compose in the dominant key of the piece, but <cite>scale</cite> when you want to create scales in another key. The demo <cite>c_major_modal_scales</cite> shows this in action, we’ll deal with it in two parts. The first is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">tones</span> <span class="kn">import</span> <span class="n">letter</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">scale</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">join</span>
+
+
+<span class="k">class</span> <span class="nc">CMajorModalScales</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;C Major Modal Scales&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The looped section programmatically builds a series of scales</span>
+        <span class="c1"># Note that the bass clef is just a tansposition of the treble clef</span>
+        <span class="n">looped</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;treble&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">):</span>
+            <span class="n">looped</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">looped</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">looped</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/modal_scales1.png" src="_images/modal_scales1.png" />
+<p>Note how first a scale of tones is generated, and then these tones are used as the start notes of a series of scales, all in the dominant key of C Major. The bass clef is just a transposition of the treble clef, but more on transposition below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="c1"># The smart section programmatically builds a series of scales in different keys</span>
+        <span class="c1"># Note how we use list comprehension to avoid a for loop, and use step = 2 to play every other note in the treble clef</span>
+        <span class="n">start_notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s1">&#39;c```&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">)</span>
+        <span class="n">smart</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;treble&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">scale</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">letter</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; major&quot;</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">start_notes</span><span class="p">],</span>
+            <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">),</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">letter</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; major&quot;</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">start_notes</span><span class="p">]</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">looped</span><span class="p">,</span> <span class="n">smart</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">CMajorModalScales</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/modal_scales2.png" src="_images/modal_scales2.png" />
+<p>The second part does the same thing, but note it takes the letter of the start tone and combines it with the word major to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format “&lt;base letter&gt; &lt;mode&gt;”, for instance: “c major”, “fs minor”, “bf harmonic”. The lookup function is case insensitive, so capitalization does not matter.</p>
+<p>In addition, note in the above demo that the treble clef sets the ‘step’ argument to 2, so the treble clef covers two octaves and catches up with the bass clef. Lastly, note that the score is the combination of the two dictionaries called <cite>looped</cite> and <cite>smart</cite> and they are combined with the function <cite>join</cite> which is imported from <cite>util.py</cite>.</p>
+</div>
+<div class="section" id="arpeggios">
+<h2>Arpeggios<a class="headerlink" href="#arpeggios" title="Permalink to this headline">¶</a></h2>
+<p>In addition to <cite>scale</cite>, <cite>points.py</cite> includes the function <cite>arpeggio</cite>, and <cite>Piece</cite> has a corresponding function which can be called with <cite>self.arpeggio</cite> too. Here’s the function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">arpeggio</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">series</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">arpeggio_tones</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note it takes all the same arguments as the scale function. Just remember that the start tone must be part of the arpeggio in the key you are working with, so trying to start a C Major arpeggio on F won’t get you very far. This function can be seen in action in the demo_arpeggios code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">note</span><span class="p">,</span> <span class="n">notes</span><span class="p">,</span> <span class="n">arpeggio</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">join</span>
+
+
+<span class="k">class</span> <span class="nc">Arpeggios</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Arpeggios&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The basic section manually builds a scale note by note</span>
+        <span class="n">basic</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;treble&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;e`&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;g`&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c``&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)],</span>
+            <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">note</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">note</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)]</span>
+        <span class="p">}</span>
+
+        <span class="c1"># The notes section uses the notes function to build a list of notes from a single string</span>
+        <span class="n">intermediate</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;treble&quot;</span><span class="p">:</span> <span class="n">notes</span><span class="p">(</span><span class="s1">&#39;d` fs` a` d``&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+            <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="n">notes</span><span class="p">(</span><span class="s1">&#39;d fs a d`&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1"># The arpeggio section uses the arpeggio function to build a scale from one note to the next</span>
+        <span class="n">arpeggios</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;treble&quot;</span><span class="p">:</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;e`&#39;</span><span class="p">,</span> <span class="s1">&#39;e``&#39;</span><span class="p">,</span> <span class="s1">&#39;E Major&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+            <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;E major&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1"># The length section uses the arpeggio function to build an arpeggio, but specifies a length, rather than a stop note</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;treble&quot;</span><span class="p">:</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;F Major&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+            <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;F Major&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">starts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">)</span>
+        <span class="n">stepped</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">],</span>
+            <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">]</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">basic</span><span class="p">,</span> <span class="n">intermediate</span><span class="p">,</span> <span class="n">arpeggios</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">stepped</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Arpeggios</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/arpeggios.png" src="_images/arpeggios.png" />
+<p>This shows a variety of ways you can make arpeggios. First using the <cite>note</cite> and <cite>notes</cite> functions, but then with <cite>arpeggio</cite> function itself. The <cite>stepped</cite> section uses a list of values for the step argument (along with pythonic list comprehension) to create something reminiscent of Beethoven’s 3rd piano sonata.</p>
+</div>
+<div class="section" id="other-series">
+<h2>Other series<a class="headerlink" href="#other-series" title="Permalink to this headline">¶</a></h2>
+<p>Lilylib also includes functions that generate other common series of tones:</p>
+<ul class="simple">
+<li><p>arpeggio7; arpeggios including the 7th</p></li>
+<li><p>dominant7; dominant 7ths</p></li>
+<li><p>diminished7; diminished 7ths</p></li>
+<li><p>chromatic; chromatic scales</p></li>
+</ul>
+<p>Though the dominant, diminished and chromatic functions sometimes use weird accents (e.g. the flattened 7th in a dominant 7th sometimes appears as a sharpened 6th). You can also create custom scales with <cite>scale_subset</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scale_subset</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">custom_tones</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">scale_subset</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">series</span><span class="p">(</span><span class="n">custom_tones</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, <cite>positions</cite> is a list of numbers describing the points of the regular scale you want to include. So setting <cite>positions</cite> to [1, 3, 5] would produce regular arpeggios. Similarly, if you were Johannes Brahms and you regularly want a rolling left hand that includes root tones and 3rds you would use a scale subset with positions [1, 3].</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LilyLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Writing music</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scales">Scales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arpeggios">Arpeggios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-series">Other series</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="core_concepts.html" title="previous chapter">Core concepts</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Thomas J. H. Morgan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/writing_music.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
