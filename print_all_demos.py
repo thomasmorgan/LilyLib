@@ -4,6 +4,8 @@ from demos.demo_c_major_scale import CMajorScale
 from demos.demo_c_major_modal_scales import CMajorModalScales
 from demos.demo_arpeggios import Arpeggios
 from demos.demo_chromatic_scales import ChromaticScales
+from demos.demo_merge import Merge
+from demos.demo_harmonize import Harmonize
 from demos.demo_keys import AllKeys
 from demos.demo_prelude_in_c import PreludeInC
 from demos.demo_prelude_in_c_simple import PreludeInCSimple
@@ -17,6 +19,8 @@ CMajorScale()
 CMajorModalScales()
 Arpeggios()
 ChromaticScales()
+Merge()
+Harmonize()
 AllKeys()
 PreludeInC()
 PreludeInCSimple()
