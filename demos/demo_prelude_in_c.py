@@ -23,7 +23,7 @@ class PreludeInC(Piece):
         bar = [''] * 40
 
         bar[1] = self.arpeggio('c`', 'e``')
-        bar[2] = omit(dominant7('c`', 'f``', 'D Minor'), 3, 5)
+        bar[2] = omit(arpeggio7('c`', 'f``', 'D Minor'), 3, 5)
         bar[3] = omit(dominant7('b', 'f``', 'G Major'), 3, 5)
         bar[4] = bar[1]
 
@@ -38,7 +38,7 @@ class PreludeInC(Piece):
         bar[12] = select(diminished7('g', 7, 'G Minor'), 1, 2, 4, 5, 7)
 
         bar[13] = omit(arpeggio('f', 'd``', 'D Minor'), 4)
-        bar[14] = omit(diminished7('f', 'b`', 'F Minor'), 3, 6)
+        bar[14] = omit(diminished7('f', 'b`', 'D Minor'), 3, 6)
         bar[15] = self.transpose(bar[13], -1)
         bar[16] = omit(arpeggio7('e', 'f`', 'F Major'), 5)
 
@@ -48,14 +48,14 @@ class PreludeInC(Piece):
         bar[20] = omit(self.dominant7('c', 'e`'), 2)
 
         bar[21] = omit(arpeggio7('f,', 'e`', 'F Major'), 2, 3, 4)
-        bar[22] = omit(self.diminished7('fs,', 'ds`'), 2, 4, 5)
+        bar[22] = omit(diminished7('fs,', 'ef`', 'A Major'), 2, 4, 5)
         bar[23] = 'af, f b c` d`'
         bar[24] = omit(arpeggio7('g,', 'd`', 'G Major'), 2, 3)
 
         bar[25] = omit(self.arpeggio('g,', 'e`'), 2)
         bar[26] = 'g, d g c` f`'
         bar[27] = omit(dominant7('g,', 'f`', 'G Major'), 2, 4, 7)
-        bar[28] = ['g,'] + omit(self.diminished7('ds', 'fs`'), 2, 5)
+        bar[28] = ['g,'] + omit(diminished7('ef', 'fs`', 'A Major'), 2, 5)
 
         bar[29] = omit(self.arpeggio('g,', 'g`'), 2, 6)
         bar[30] = bar[26]
