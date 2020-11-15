@@ -1,5 +1,5 @@
 from util import flatten, split_and_flatten
-from tones import tonify, separate, all_pitches, pitch, letter, equivalent_tone, all_tones
+from tones import tonify, all_pitches, pitch, letter, equivalent_tone, all_tones
 from keys import keyify
 
 from itertools import cycle
@@ -233,7 +233,18 @@ def diminished7(start, stop_or_length, key, dur=None, step=1):
 
 def chromatic(start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
-    return series(key.all_tones, start, stop_or_length, dur, step)
+    if isinstance(stop_or_length, int):
+        if stop_or_length > 1:
+            return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+        else:
+            return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+    else:
+        start_index = all_tones.index(tonify(start))
+        stop_index = all_tones.index(tonify(stop_or_length))
+        if stop_index > start_index:
+            return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+        else:
+            return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
 
 
 def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
