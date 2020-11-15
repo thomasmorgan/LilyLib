@@ -3,6 +3,7 @@ from tones import tonify, all_pitches, pitch, letter, equivalent_tone, all_tones
 from keys import keyify
 
 from itertools import cycle
+from copy import deepcopy
 
 
 all_durs = ['\\longa' '\\breve', 1, 2, 4, 8, 16, 32, 64, 128, '1.', '2.', '4.', '8.', '16.', '32.', '64.', '128.', '1..', '2..', '4..', '8..', '16..', '32..', '64..', '128..']
@@ -304,9 +305,10 @@ def harmonize(points, intervals, key, mode="scale"):
 
 
 def merge(*passages):
-    base = [p for p in flatten(passages[0]) if isinstance(p, Point)]
+    passage_to_return = deepcopy(passages[0])
+    base = [p for p in flatten(passage_to_return) if isinstance(p, Point)]
     for passage in passages[1:]:
         target = [p for p in flatten(passage) if isinstance(p, Point)]
         for p, q in zip(base, target):
             p.add(q.tones)
-    return passages[0]
+    return passage_to_return
