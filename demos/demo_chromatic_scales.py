@@ -8,10 +8,10 @@ class ChromaticScales(Piece):
 
     def write_score(self):
         # The scale section uses the scale function to build a scale from one note to the next
-        self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4])
+        self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4]) + self.chromatic('c``', 'c`', [16] * 12 + [4])
 
         self.set_key("f major")
-        self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4])
+        self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4]) + self.chromatic('f``', 'f`', [16] * 12 + [4])
 
         self.score["bass"] = self.transpose(self.score["treble"], -1, 'octave')
 
