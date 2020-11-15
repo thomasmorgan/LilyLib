@@ -338,6 +338,23 @@
     <span class="k">return</span> <span class="n">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>You can also sharpen or flatten tones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="n">let</span> <span class="o">=</span> <span class="n">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">let</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">let</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">let</span> <span class="o">+</span> <span class="s1">&#39;f&#39;</span> <span class="o">+</span> <span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">let</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">sharpen</span><span class="p">(</span><span class="n">tone</span><span class="p">):</span>
+    <span class="n">let</span> <span class="o">=</span> <span class="n">letter</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">let</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">let</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">let</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span> <span class="o">+</span> <span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">let</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pitch</span><span class="p">(</span><span class="n">tone</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The last function in <cite>tones.py</cite> is the one users will encounter most often: <cite>tonify</cite>. This takes a string, or a (nested) list of strings, and parses the contents to make sure all strings are valid tones. Where strings include white space, they are split into a list of multiple strings, and each substring is checked for validity. Where a string contains multiple adjacent spaces, the empty gasps are replaced with empty lists in order to produce rests (assuming the returned list is used to create Points). Note, however, that <cite>tonify</cite> respects whatever nesting is present in the value it is passed and it does not flatten the list. If <cite>tonify</cite> is passed something that is neither a string nor a list, it gambles that it’s been passed a <cite>Point</cite> and attempts to extract the tones from it, this way you can use <cite>tonify</cite> to get back to tones from Points. However, if this fails an error is raised.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tonify</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Returns an unflattened list of valid tones and empty lists.</span>

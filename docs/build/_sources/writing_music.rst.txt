@@ -209,3 +209,102 @@ You can also create custom scales with `scale_subset`:
 	    return series(custom_tones, start, stop_or_length, dur, step)
 
 Here, `positions` is a list of numbers describing the points of the regular scale you want to include. So setting `positions` to [1, 3, 5] would produce regular arpeggios. Similarly, if you were Johannes Brahms and you regularly want a rolling left hand that includes root tones and 3rds you would use a scale subset with positions [1, 3].
+
+Tranposition
+----------------
+
+We've seen `transpose` used a few times above. As the name suggests, it takes an (arbitrarily nested) list of Points, tones or strings, transposes it some a specified interval, and then returns the result. It's a long function so we won't show it all here, but here are the arguments:
+
+::
+
+	def transpose(item, shift, key, mode="scale"):
+
+- item; the thing you want to transpose
+- shift; the interval you want it transposed by
+- key; the key in which the transposition occurs (see mode)
+- mode; the "`kind`" of transposition. Either 'scale', 'octave' or 'semitone'.
+
+You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we've seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.
+
+Here's the bit of the function that does the transposing (by this point it is working only with tones):
+
+::
+
+    try:
+        if mode == "octave":
+            new_pitch = all_pitches[all_pitches.index(pitch(item)) + shift]
+            return letter(item) + new_pitch
+        elif mode == "scale":
+            current_index = key.tones.index(item)
+            return key.tones[current_index + shift]
+        elif mode == "semitone":
+            return key.all_tones[key.all_tones.index(item) + shift]
+    except ValueError:
+        return transpose(equivalent_tone(item), shift, key, mode)
+
+Note how if transposition fails, it tries again with the equivalent tone. This means if you try to transpose g-flat two steps up the scale of D Major, it will initially fail (g-flat is not in D Major) but will then transform g-flat to f-sharp, which can then be transposed to a.
+
+Harmonization
+-----------------
+
+Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function `harmonize`. This function builds off `transpose`, but also another function `merge`. The `merge` function takes two or more series of points, and smushes them together to make a single series. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here's an example:
+
+::
+
+	from piece import Piece
+	from points import rests, merge
+
+
+	class Merge(Piece):
+
+	    def details(self):
+	        self.title = "Merged Scales"
+
+	    def write_score(self):
+	        scale_1 = self.scale("c`", 8, 8)
+	        scale_2 = self.scale("c``", -8, 8)
+
+	        self.score["treble"] = scale_1 + scale_2 + merge(scale_1, scale_2)
+	        self.score["bass"] = rests(1, 1, 1)
+
+
+	if __name__ == "__main__":
+	    Merge()
+
+.. image:: _static/merge.png
+
+With this out of the way, harmonize works by first transposing points to the desired intervals and then merging the result with the original points:
+
+::
+
+	def harmonize(points, intervals, key, mode="scale"):
+	    return merge(points, transpose(points, intervals, key, mode))
+
+Here's a demo:
+
+::
+
+	from piece import Piece
+
+
+	class Harmonize(Piece):
+
+	    def details(self):
+	        self.title = "Harmonized notes"
+
+	    def write_score(self):
+
+	        rh_melody = self.arpeggio('c`', 4, 4)
+	        lh_melody = self.transpose(rh_melody, -1, 'octave')
+
+	        self.score = {
+	            'treble': self.harmonize(rh_melody, 3),
+	            'bass': self.harmonize(lh_melody, -1, 'octave')
+	        }
+
+
+	if __name__ == "__main__":
+	    Harmonize()
+
+.. image:: _static/harmonize.png
+

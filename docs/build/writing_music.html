@@ -214,6 +214,91 @@
 </div>
 <p>Here, <cite>positions</cite> is a list of numbers describing the points of the regular scale you want to include. So setting <cite>positions</cite> to [1, 3, 5] would produce regular arpeggios. Similarly, if you were Johannes Brahms and you regularly want a rolling left hand that includes root tones and 3rds you would use a scale subset with positions [1, 3].</p>
 </div>
+<div class="section" id="tranposition">
+<h2>Tranposition<a class="headerlink" href="#tranposition" title="Permalink to this headline">¶</a></h2>
+<p>We’ve seen <cite>transpose</cite> used a few times above. As the name suggests, it takes an (arbitrarily nested) list of Points, tones or strings, transposes it some a specified interval, and then returns the result. It’s a long function so we won’t show it all here, but here are the arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>item; the thing you want to transpose</p></li>
+<li><p>shift; the interval you want it transposed by</p></li>
+<li><p>key; the key in which the transposition occurs (see mode)</p></li>
+<li><p>mode; the “<cite>kind</cite>” of transposition. Either ‘scale’, ‘octave’ or ‘semitone’.</p></li>
+</ul>
+<p>You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we’ve seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.</p>
+<p>Here’s the bit of the function that does the transposing (by this point it is working only with tones):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;octave&quot;</span><span class="p">:</span>
+        <span class="n">new_pitch</span> <span class="o">=</span> <span class="n">all_pitches</span><span class="p">[</span><span class="n">all_pitches</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pitch</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> <span class="o">+</span> <span class="n">shift</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">letter</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span> <span class="n">new_pitch</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span>
+        <span class="n">current_index</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">tones</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">key</span><span class="o">.</span><span class="n">tones</span><span class="p">[</span><span class="n">current_index</span> <span class="o">+</span> <span class="n">shift</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;semitone&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">key</span><span class="o">.</span><span class="n">all_tones</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">all_tones</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span> <span class="n">shift</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">transpose</span><span class="p">(</span><span class="n">equivalent_tone</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note how if transposition fails, it tries again with the equivalent tone. This means if you try to transpose g-flat two steps up the scale of D Major, it will initially fail (g-flat is not in D Major) but will then transform g-flat to f-sharp, which can then be transposed to a.</p>
+</div>
+<div class="section" id="harmonization">
+<h2>Harmonization<a class="headerlink" href="#harmonization" title="Permalink to this headline">¶</a></h2>
+<p>Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function <cite>harmonize</cite>. This function builds off <cite>transpose</cite>, but also another function <cite>merge</cite>. The <cite>merge</cite> function takes two or more series of points, and smushes them together to make a single series. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here’s an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">rests</span><span class="p">,</span> <span class="n">merge</span>
+
+
+<span class="k">class</span> <span class="nc">Merge</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Merged Scales&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">scale_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s2">&quot;c`&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">scale_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s2">&quot;c``&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_1</span> <span class="o">+</span> <span class="n">scale_2</span> <span class="o">+</span> <span class="n">merge</span><span class="p">(</span><span class="n">scale_1</span><span class="p">,</span> <span class="n">scale_2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rests</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Merge</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/merge.png" src="_images/merge.png" />
+<p>With this out of the way, harmonize works by first transposing points to the desired intervals and then merging the result with the original points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harmonize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here’s a demo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+
+
+<span class="k">class</span> <span class="nc">Harmonize</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Harmonized notes&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">rh_melody</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">lh_melody</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rh_melody</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harmonize</span><span class="p">(</span><span class="n">rh_melody</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harmonize</span><span class="p">(</span><span class="n">lh_melody</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Harmonize</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/harmonize.png" src="_images/harmonize.png" />
+</div>
 </div>
 
 
@@ -241,6 +326,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#scales">Scales</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#arpeggios">Arpeggios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-series">Other series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tranposition">Tranposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#harmonization">Harmonization</a></li>
 </ul>
 </li>
 </ul>

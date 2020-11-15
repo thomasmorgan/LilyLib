@@ -376,6 +376,25 @@ Just as `tones.py` inlcudes instructions for building tones, it also provides fu
 	def base_letter(tone):
 	    return letter(tone)[0]
 
+You can also sharpen or flatten tones:
+
+::
+
+	def flatten(tone):
+	    let = letter(tone)
+	    if len(let) == 1 or let[-1] == 'f':
+	        return let + 'f' + pitch(tone)
+	    else:
+	        return let[:-1] + pitch(tone)
+
+
+	def sharpen(tone):
+	    let = letter(tone)
+	    if len(let) == 1 or let[-1] == 's':
+	        return let + 's' + pitch(tone)
+	    else:
+	        return let[:-1] + pitch(tone)
+
 The last function in `tones.py` is the one users will encounter most often: `tonify`. This takes a string, or a (nested) list of strings, and parses the contents to make sure all strings are valid tones. Where strings include white space, they are split into a list of multiple strings, and each substring is checked for validity. Where a string contains multiple adjacent spaces, the empty gasps are replaced with empty lists in order to produce rests (assuming the returned list is used to create Points). Note, however, that `tonify` respects whatever nesting is present in the value it is passed and it does not flatten the list. If `tonify` is passed something that is neither a string nor a list, it gambles that it's been passed a `Point` and attempts to extract the tones from it, this way you can use `tonify` to get back to tones from Points. However, if this fails an error is raised.
 
 ::
