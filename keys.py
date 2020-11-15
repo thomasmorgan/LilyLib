@@ -95,6 +95,22 @@ class Key:
 
         return [t for t in tones.all_tones if letter(t) in diminished7_letters]
 
+    @property
+    def descending_chromatic_letters(self):
+        return ['c', 'df', 'd', 'ef', 'e', 'f', 'gf', 'g', 'af', 'a', 'bf', 'b']
+
+    @property
+    def descending_chromatic_tones(self):
+        return [t for t in tones.all_tones if letter(t) in self.descending_chromatic_letters]
+
+    @property
+    def ascending_chromatic_letters(self):
+        return ['c', 'cs', 'd', 'ds', 'e', 'f', 'fs', 'g', 'gs', 'a', 'as', 'b']
+
+    @property
+    def ascending_chromatic_tones(self):
+        return [t for t in tones.all_tones if letter(t) in self.ascending_chromatic_letters]
+
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
         num_flats = len([l for l in self.letters if "f" in l and l not in ['f', 'fs', 'fss']])
