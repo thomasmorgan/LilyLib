@@ -1,4 +1,5 @@
 from piece import Piece
+from points import scale
 
 
 class CMajorScale(Piece):
@@ -7,7 +8,7 @@ class CMajorScale(Piece):
         self.title = "C Major Scale"
 
     def write_score(self):
-        self.score["treble"] = self.scale("c`", "c``", 8) + self.scale("c``", -8, 8)
+        self.score["treble"] = scale("c`", "c``", 'C Major', 8) + scale("c``", -8, 'C Major', 8)
         self.score["bass"] = self.scale("c`", "c", 8) + self.scale("c", 8, 8)
 
 
