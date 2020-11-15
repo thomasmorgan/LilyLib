@@ -218,22 +218,17 @@ def arpeggio(start, stop_or_length, key, dur=None, step=1):
 
 def arpeggio7(start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
-    arpeggio7_tones = key.scale_subset([1, 3, 5, 7])
-    return series(arpeggio7_tones, start, stop_or_length, dur, step)
+    return series(key.arpeggio7_tones, start, stop_or_length, dur, step)
 
 
 def dominant7(start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
-    dominant7_letters = key.arpeggio_letters + [key.relative_chromatic_letter(10)]
-    dominant7_tones = [t for t in key.all_tones if separate(t)[0] in dominant7_letters]
-    return series(dominant7_tones, start, stop_or_length, dur, step)
+    return series(key.dominant7_tones, start, stop_or_length, dur, step)
 
 
 def diminished7(start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
-    diminished7_letters = [key.relative_chromatic_letter(i) for i in [0, 3, 6, 9]]
-    diminished7_tones = [t for t in key.all_tones if separate(t)[0] in diminished7_letters]
-    return series(diminished7_tones, start, stop_or_length, dur, step)
+    return series(key.diminished7_tones, start, stop_or_length, dur, step)
 
 
 def chromatic(start, stop_or_length, key, dur=None, step=1):
