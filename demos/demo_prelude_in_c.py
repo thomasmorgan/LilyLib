@@ -50,7 +50,7 @@ class PreludeInC(Piece):
         bar[21] = omit(arpeggio7('f,', 'e`', 'F Major'), 2, 3, 4)
         bar[22] = omit(diminished7('fs,', 'ef`', 'A Major'), 2, 4, 5)
         bar[23] = 'af, f b c` d`'
-        bar[24] = omit(arpeggio7('g,', 'd`', 'G Major'), 2, 3)
+        bar[24] = omit(dominant7('g,', 'd`', 'G Major'), 2, 3)
 
         bar[25] = omit(self.arpeggio('g,', 'e`'), 2)
         bar[26] = 'g, d g c` f`'
@@ -68,7 +68,7 @@ class PreludeInC(Piece):
 
         self.score['treble'] += rests(8) + pattern(notes('d', 16) + arpeggio('f', 'f`', 'F Major', 16), [2, 3, 4, 5, 4, 3, 4, 3, 2, 3, 2, 1, 2, 1])
         self.score['treble'] += rests(8) + pattern(dominant7('g`', 'f``', 'G Major', 16), [1, 2, 3, 4, 3, 2, 3, 2, 1, 2]) + pattern(self.scale('d`', 'f`', 16), [1, 3, 2, 1])
-        self.score["bass"] += 2 * voices(rest(16) + notes('b,', ['8.', 4, 2], "~ ~ "), note('c,', 1))
+        self.score["bass"] += voices(rest(16) + notes('c', ['8.', 4, 2], "~ ~ "), note('c,', 1)) + voices(rest(16) + notes('b,', ['8.', 4, 2], "~ ~ "), note('c,', 1))
 
         self.score['treble'] += [chord(self.arpeggio('e`', 'c``'), 1)]
         self.score['bass'] += [chord('c, c', 1)]

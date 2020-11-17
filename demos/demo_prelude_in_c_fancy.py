@@ -1,7 +1,7 @@
 from piece import Piece
 from util import pattern, select, omit, subset
 from tones import tonify
-from points import note, notes, chord, rest, rests, dominant7, arpeggio, arpeggio7, diminished7
+from points import note, notes, chord, rest, dominant7, arpeggio, arpeggio7, diminished7
 from markup import voices, name
 
 
@@ -60,7 +60,7 @@ class PreludeInCFancy(Piece):
         bar[21] = (omit(arpeggio7('f,', 'e`', 'F Major'), 2, 3, 4), 'IV7')
         bar[22] = (omit(diminished7('fs,', 'ef`', 'A Major'), 2, 4, 5), 'VI d7')
         bar[23] = ('af, f b c` d`', 'IV ?')
-        bar[24] = (omit(arpeggio7('g,', 'd`', 'G Major'), 2, 3), 'V7')
+        bar[24] = (omit(dominant7('g,', 'd`', 'G Major'), 2, 3), 'V D7')
 
         bar[25] = (omit(self.arpeggio('g,', 'e`'), 2), 'I')
         bar[26] = ('g, d g c` f`', 'V 4/7')
@@ -78,7 +78,7 @@ class PreludeInCFancy(Piece):
 
         self.score['treble'] += rest(8) + pattern(note('d', 16) + arpeggio('f', 'f`', 'F Major', 16), 2, 3, 4, 5, 4, 3, 4, 3, 2, 3, 2, 1, 2, 1)
         self.score['treble'] += rest(8) + pattern(dominant7('g`', 'f``', 'G Major', 16), 1, 2, 3, 4, 3, 2, 3, 2, 1, 2) + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1)
-        self.score["bass"] += 2 * voices(rest(16) + notes('b,', ['8.', 4, 2], "~ ~ "), note('c,', 1))
+        self.score["bass"] += voices(rest(16) + notes('c', ['8.', 4, 2], "~ ~ "), note('c,', 1)) + voices(rest(16) + notes('b,', ['8.', 4, 2], "~ ~ "), note('c,', 1))
 
         self.score['treble'] += [chord(self.arpeggio('e`', 'c``'), 1)]
         self.score['bass'] += [chord('c, c', 1)]

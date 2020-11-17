@@ -68,7 +68,7 @@ class PreludeInCSimple(Piece):
 
         self.score['treble'] += rests(8) + notes('f a c` f` c` a c` a f a f d f d', 16)
         self.score['treble'] += rests(8) + notes('g` b` d` f` d` b` d` b` g` b` d` f` e` d`', 16)
-        self.score["bass"] += 2 * voices(rests(16) + notes('b,', ['8.', 4, 2], "~ ~ "), notes('c,', 1))
+        self.score["bass"] += voices(rest(16) + notes('c', ['8.', 4, 2], "~ ~ "), note('c,', 1)) + voices(rest(16) + notes('b,', ['8.', 4, 2], "~ ~ "), note('c,', 1))
 
         self.score['treble'] += [chord('e` g` c`', 1)]
         self.score['bass'] += [chord('c, c', 1)]
