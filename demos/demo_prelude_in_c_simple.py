@@ -66,9 +66,17 @@ class PreludeInCSimple(Piece):
             if c:
                 motif(c)
 
-        self.score['treble'] += rests(8) + notes('f a c` f` c` a c` a f a f d f d', 16)
-        self.score['treble'] += rests(8) + notes('g` b` d` f` d` b` d` b` g` b` d` f` e` d`', 16)
-        self.score["bass"] += voices(rest(16) + notes('c', ['8.', 4, 2], "~ ~ "), note('c,', 1)) + voices(rest(16) + notes('b,', ['8.', 4, 2], "~ ~ "), note('c,', 1))
+        def held_bass(tones):
+            tones = tonify(tones)
+            return voices(rest(16) + notes(tones[1], ['8.', 4, 2], "~ ~ "), note(tones[0], 1))
+
+        def long_melody(tones):
+            tones = tonify(tones)
+            return rest(8) + notes(pattern(tones, 1, 2, 3, 4, 3, 2, 3, 2, 1, 2), 16)
+
+        self.score['treble'] += long_melody('f a c` f`') + notes('f d', 16) * 2
+        self.score['treble'] += long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1)
+        self.score["bass"] += held_bass('c, c') + held_bass('c, b,')
 
         self.score['treble'] += [chord('e` g` c`', 1)]
         self.score['bass'] += [chord('c, c', 1)]
