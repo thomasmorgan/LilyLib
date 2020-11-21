@@ -273,6 +273,8 @@ Lots of music involves relatively simple structures, like scales, but with harmo
 
 .. image:: _static/merge.png
 
+You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach see the section on markup.
+
 With this out of the way, harmonize works by first transposing points to the desired intervals and then merging the result with the original points:
 
 ::
@@ -307,4 +309,3 @@ Here's a demo:
 	    Harmonize()
 
 .. image:: _static/harmonize.png
-

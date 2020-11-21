@@ -15,6 +15,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Keys and how to change them" href="changing_keys.html" />
     <link rel="prev" title="Core concepts" href="core_concepts.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -268,6 +269,7 @@
 </pre></div>
 </div>
 <img alt="_images/merge.png" src="_images/merge.png" />
+<p>You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach see the section on markup.</p>
 <p>With this out of the way, harmonize works by first transposing points to the desired intervals and then merging the result with the original points:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harmonize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
@@ -330,6 +332,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#harmonization">Harmonization</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="changing_keys.html">Keys and how to change them</a></li>
 </ul>
 
 <div class="relations">
@@ -337,6 +340,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="core_concepts.html" title="previous chapter">Core concepts</a></li>
+      <li>Next: <a href="changing_keys.html" title="next chapter">Keys and how to change them</a></li>
   </ul></li>
 </ul>
 </div>

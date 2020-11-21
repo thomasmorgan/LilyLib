@@ -8,4 +8,6 @@ LilyLib
    introduction
    core_concepts
    writing_music
+   changing_keys
+   markup
 

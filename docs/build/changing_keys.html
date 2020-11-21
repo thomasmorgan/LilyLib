@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keys and changing key &#8212; LilyLib 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Writing music" href="writing_music.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="keys-and-changing-key">
+<h1>Keys and changing key<a class="headerlink" href="#keys-and-changing-key" title="Permalink to this headline">¶</a></h1>
+<p>So far almost all the music we’ve seen set a key at the very start in the <cite>details</cite> function (or stuck with the default of C Major) and then wrote in that key. However, music often changes keys, in fact we’ve already seen one example of this with the chromatic scales demo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+
+
+<span class="k">class</span> <span class="nc">ChromaticScales</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Chromatic Scales in C and F Major&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;c``&#39;</span><span class="p">,</span> <span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s2">&quot;f major&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">ChromaticScales</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/chromatic.png" src="_images/chromatic.png" />
+<p>Note how <cite>self.set_key</cite> is used to switch from C Major to F Major. This chapter will go into Keys in a little more detail.</p>
+<div class="section" id="the-key-class-and-subclasses">
+<h2>The Key class and subclasses<a class="headerlink" href="#the-key-class-and-subclasses" title="Permalink to this headline">¶</a></h2>
+<p>LilyLib includes a <cite>Key</cite> class and it’s located inside keys.py. Specific keys, like C Major, are subclasses of the rather abstract parent class, and all the key subclasses are in <cite>keys.py</cite> too. Each key is defined by a root letter, the letters included in the key’s scale, and a name. These values are set when the key is created, by the <cite>__init__</cite> function of the <cite>Key</cite> class. Here’s the code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># define must be overwritten in subclasses to:</span>
+    <span class="c1"># 1. set the root letter</span>
+    <span class="c1"># 2. set the included letters</span>
+    <span class="c1"># 3. set the key&#39;s name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">letters</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">define</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">confirm_definition</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>As you can see all the values are set to <cite>None</cite> by default, so for the key to “work” they must be overwritten, and this is done by the <cite>define</cite> function of each subclass. In the parent class <cite>define</cite> just raises an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Key.define must be overwritten.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>But in each subclass it has meaningful content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CFlatMajor</span><span class="p">(</span><span class="n">Key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;cf&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cf&#39;</span><span class="p">,</span> <span class="s1">&#39;fd&#39;</span><span class="p">,</span> <span class="s1">&#39;ef&#39;</span><span class="p">,</span> <span class="s1">&#39;ff&#39;</span><span class="p">,</span> <span class="s1">&#39;gf&#39;</span><span class="p">,</span> <span class="s1">&#39;af&#39;</span><span class="p">,</span> <span class="s1">&#39;bf&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;c flat major&quot;</span>
+</pre></div>
+</div>
+<p>In fact, overwriting <cite>define</cite> like this is all that needs to be done to create a specific key. After <cite>define</cite> is called the parent class runs <cite>confirm_definition</cite> to check that the values have all been set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">confirm_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">letters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must define root, letters and name of Key </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>With these values set, the key behaves like a collection of sets of tones that can then be used to build things like scales or arpeggios. For instance, scales can be built by getting the <cite>tones</cite> property of the key:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">tones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_tones</span> <span class="k">if</span> <span class="n">letter</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">letters</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>This returns an ordered list of all tones whose letter is part of the scale of the key. There’s similar properties for arpeggios, arpeggios including the 7th, dominant 7ths, diminished 7ths, and chromatic scales.</p>
+<p>You can also get “relative letters” of a key. These can be referred to with roman numerals, or by name. For instance, F-sharp is the 2nd letter of E Major and the following properties will all return <cite>fs</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">supertonic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_letter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">ii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">supertonic</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">II</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">supertonic</span>
+</pre></div>
+</div>
+<p>Or, in the terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">keys</span> <span class="kn">import</span> <span class="n">EMajor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">EMajor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">ii</span>
+<span class="go">&#39;fs&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">II</span>
+<span class="go">&#39;fs&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">supertonic</span>
+<span class="go">&#39;fs&#39;</span>
+</pre></div>
+</div>
+<p>LilyLib includes all “real” keys in keys.py (i.e. it does not include impossible/theoretical keys which include double sharps or double flats in their key signature) including both natural and harmonic versions of minor keys. For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GMinor</span><span class="p">(</span><span class="n">Key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;ef&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;bf&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;g minor&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">GMinorH</span><span class="p">(</span><span class="n">Key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;ef&#39;</span><span class="p">,</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;bf&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;g minor harmonic&quot;</span>
+</pre></div>
+</div>
+<p>This is useful because, even though harmonic key signatures are not printed in sheet music, pieces are often written in the harmonic as opposed to natural minor.</p>
+</div>
+<div class="section" id="the-key-dictionary">
+<h2>The key dictionary<a class="headerlink" href="#the-key-dictionary" title="Permalink to this headline">¶</a></h2>
+<p>The last thing <cite>keys.py</cite> does is create a dictionary of all the keys and provide a function, ‘keyify’, to get keys from this dictionary:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">key_dictionary</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;major&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;cf&quot;</span><span class="p">:</span> <span class="n">CFlatMajor</span><span class="p">(),</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">CMajor</span><span class="p">(),</span>
+        <span class="s2">&quot;cs&quot;</span><span class="p">:</span> <span class="n">CSharpMajor</span><span class="p">(),</span>
+        <span class="o">...</span>
+        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">AMajor</span><span class="p">(),</span>
+        <span class="s2">&quot;bf&quot;</span><span class="p">:</span> <span class="n">BFlatMajor</span><span class="p">(),</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">BMajor</span><span class="p">()</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;minor&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">CMinor</span><span class="p">(),</span>
+        <span class="s2">&quot;cs&quot;</span><span class="p">:</span> <span class="n">CSharpMinor</span><span class="p">(),</span>
+        <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">DMinor</span><span class="p">(),</span>
+        <span class="o">...</span>
+        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="n">ASharpMinor</span><span class="p">(),</span>
+        <span class="s2">&quot;bf&quot;</span><span class="p">:</span> <span class="n">BFlatMinor</span><span class="p">(),</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">BMinor</span><span class="p">()</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;harmonic&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">CMinorH</span><span class="p">(),</span>
+        <span class="s2">&quot;cs&quot;</span><span class="p">:</span> <span class="n">CSharpMinorH</span><span class="p">(),</span>
+        <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">DMinorH</span><span class="p">(),</span>
+        <span class="o">...</span>
+        <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="n">ASharpMinorH</span><span class="p">(),</span>
+        <span class="s2">&quot;bf&quot;</span><span class="p">:</span> <span class="n">BFlatMinorH</span><span class="p">(),</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">BMinorH</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this way, you can get Key objects by their name, e.g. <cite>key_dictionary[‘major’][‘af’]</cite> will return an instance of the <cite>AFlatMajor</cite> class. The <cite>keyify</cite> function simply provides a nicer way to do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">key</span>
+    <span class="k">elif</span> <span class="n">isclass</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">key</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">letter</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;harmonic&#39;</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;harmonic&#39;</span>
+            <span class="k">return</span> <span class="n">key_dictionary</span><span class="p">[</span><span class="n">mode</span><span class="p">][</span><span class="n">letter</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid string format for a key&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid key&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>So if you keyify a Key, you just keep the key. If you keyify a subclass of Key, you get a instance of that subclass. More commonly, if you keyify a string, the string is used to look up the relevant key object. The function is not case sensitive, but it requires strings be of the format “<cite>letter mode</cite>”. Letter must be a valid letter (e.g. <cite>a</cite>, <cite>cs</cite> or <cite>ef</cite>) while mode should be either <cite>major</cite>, <cite>minor</cite> or <cite>harmonic</cite> (strictly speaking ‘harmonic minor’ and ‘minor harmonic’ will work too).</p>
+</div>
+<div class="section" id="changing-keys-printing-key-signatures">
+<h2>Changing keys, printing key signatures<a class="headerlink" href="#changing-keys-printing-key-signatures" title="Permalink to this headline">¶</a></h2>
+<p>To change a piece’s key you need to change it’s <cite>key</cite> property, and it should contain an instance of the relevant key. Once this is done, functions like <cite>self.scale</cite> will produce scales in the newly adopted key. Given the above, one way to change a key is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">keyify</span><span class="p">(</span><span class="s1">&#39;A Minor&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will work (assuming you hav imported <cite>keys</cite>), however, the <cite>Piece</cite> class offers a slightly tidier function to do this for you:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>So, with this, the following will work too:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s1">&#39;A Minor&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Often this is enough to handle brief forays into alternative keys. However, where the key change lasts long enough users may want to indicate this in the sheet music by printing the key key signature too. This is done with the following property of the <cite>Piece</cite> class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">key_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>This returns a text description of the key which can be added to the score and will be interpreted by a lilypond compiler as an instruction to print the key signature. It’s inside a list so you can just add it to lists of Points, but note that it itself is just a string, and not a Point. The key signature is thus an example of what LilyLib considers markup; text instructions that modify the sheet music without actually corresponding to a note/chord/rest. More on markup in the next chapter.</p>
+<p>Pieces can also change to relative keys. For instance, when a piece shifts from C Major to G Major, you may prefer to describe this as a shift to the Major 5th. Pieces can do this, with keys specified by roman numerals (upper case indicates a major key, lower case a minor key):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">V</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_major_key</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_minor_key</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>LilyLib also introduces the notion of <cite>cis</cite> and <cite>trans</cite> keys. These are ways to switch to a major or minor key conditional on the mode of your current key; cis maintains the current mode, trans alters is. For instance, the cis fifth of C Major is G Major, while the trans fifth is G Minor. The utility of this distinction is quite uncommon, but it allows the user to compose music that is utterly agnostic of the starting key, meaning that th estarting key can be change, say, from E Major to B Minor, and the piece, including all key changes, will automatically adjust. A demo of this is provided with the piece “Mad Rush” later in the documentation. Cis and trans relative keys are denoted by the prefixes <cite>c</cite> and <cite>t</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">Vc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_cis_key</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">Vt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_trans_key</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-demo">
+<h2>A demo<a class="headerlink" href="#a-demo" title="Permalink to this headline">¶</a></h2>
+<p>We’ve already seen an example of a key being changed, but the demo <cite>demo_keys.py</cite> provides a fancier, automated one that cycles through all keys in the dictionary, prints their root notes, and adds an annotation with the name of the key:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
+<span class="kn">from</span> <span class="nn">keys</span> <span class="kn">import</span> <span class="n">key_dictionary</span>
+<span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">note</span>
+<span class="kn">from</span> <span class="nn">markup</span> <span class="kn">import</span> <span class="n">annotation</span>
+
+
+<span class="k">class</span> <span class="nc">AllKeys</span><span class="p">(</span><span class="n">Piece</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Root notes in every key&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;cf major&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">set Staff.printKeyCancellation = ##f &quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">set Staff.printKeyCancellation = ##f &quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">key_dictionary</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">key_dictionary</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="n">key_dictionary</span><span class="p">[</span><span class="n">mode</span><span class="p">][</span><span class="n">letter</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ornamentation</span><span class="o">=</span><span class="n">annotation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">AllKeys</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/keys.png" src="_images/keys.png" />
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LilyLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_music.html">Writing music</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Keys and changing key</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-key-class-and-subclasses">The Key class and subclasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-key-dictionary">The key dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changing-keys-printing-key-signatures">Changing keys, printing key signatures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-demo">A demo</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="writing_music.html" title="previous chapter">Writing music</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Thomas J. H. Morgan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/changing_keys.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
