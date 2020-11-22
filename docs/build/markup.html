@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markup &#8212; LilyLib 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Keys and changing key" href="changing_keys.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="markup">
+<h1>Markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h1>
+<p>We’ve already seen how LilyLib writes music as a list of two kinds of things: <cite>Points</cite> and markup. Points are a class of object introduced by LilyLib that correspond to notes, chords and rests. Markup are strings that modify the presentation of points. We’ve seen one example of markup already: <cite>key_signature</cite>. This is a property of the <cite>Piece</cite> class and it can be used to insert the current key signature into a piece of music. First the property:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">key_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>And here’s it being used in <cite>demo_keys.py</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ornamentation</span><span class="o">=</span><span class="n">annotation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Key signatures are unusual though in that they are one of the only kinds of markup that depends on the current state of the piece (the result of calling <cite>key_signature</cite> depends on the key the piece is in at the time the call is made). This is why <cite>key_signature</cite> is a property of the <cite>Piece</cite> class. Most other markup, however, it totally independent of any specific piece and so it resides in the file <cite>markup.py</cite>. This distinction is mirrored between the <cite>Piece</cite> class and <cite>points.py</cite>: functions that depend on the piece are part of the <cite>Piece</cite> class, but functions that don’t are in <cite>points.py</cite>. One example is the <cite>scale</cite> function, the <cite>Piece</cite> class contains a version that builds scales in the current key of the piece, while <cite>points.py</cite> contains a version that builds scales in any key, but the key must be passed as an argument.</p>
+<p>Here are the functions included in <cite>markup.py</cite>:</p>
+<dl class="simple">
+<dt><strong>clef</strong> (<em>clef</em>)</dt><dd><p>Change the clef. e.g. <cite>clef(‘bass’)</cite> inserts the bass clef.</p>
+</dd>
+<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns the passed passage, flagged as triplets.</p>
+</dd>
+<dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns the passed passage, flagged as grace notes.</p>
+</dd>
+<dt><strong>after_grace</strong> (<em>passage, grace</em>)</dt><dd><p>Returns the passed passage, with the passed grace notes appended as grace notes.</p>
+</dd>
+<dt><strong>acciaccatura</strong> (<em>passage</em>)</dt><dd><p>Returns the passed passage, flagged as acciaccatura (a visual tweak on grace notes).</p>
+</dd>
+<dt><strong>ottava</strong> (<em>passage, shift</em>)</dt><dd><p>Returns the passed passage, with ottava markings. The argument shift specifies the direction and number of octaves by which the printed notes and shifted.</p>
+</dd>
+<dt><strong>voices</strong> (<em>*voices</em>)</dt><dd><p>Returns a single passage in which all the passed passages are joined as multiple voices. Voices should be ordered from high to low.</p>
+</dd>
+<dt><strong>repeat</strong> (<em>passage, times=2</em>)</dt><dd><p>Returns the passed passage wrapped in repeat bar lines. The times argument is the number of repeats. If this this more than 2 (the default), the number of repeats is printed above the final bar line.</p>
+</dd>
+<dt><strong>annotation</strong> (<em>text</em>)</dt><dd><p>Adds text to the score at this point with the specified content.</p>
+</dd>
+<dt><strong>name</strong> (<em>passage, name</em>)</dt><dd><p>Adds a text label with content <em>name</em> to the first point in the passed passage.</p>
+</dd>
+<dt><strong>tempo_change</strong> (<em>tempo</em>)</dt><dd><p>Change the tempo of this stave. For example, <em>tempo_change(‘4/4’)</em> changes the tempo to 4/4.</p>
+</dd>
+</dl>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LilyLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_music.html">Writing music</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changing_keys.html">Keys and changing key</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Markup</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="changing_keys.html" title="previous chapter">Keys and changing key</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Thomas J. H. Morgan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/markup.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
