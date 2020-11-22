@@ -10,4 +10,5 @@ LilyLib
    writing_music
    changing_keys
    markup
+   API
 
