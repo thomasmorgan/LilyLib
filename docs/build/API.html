@@ -63,6 +63,116 @@
 </dd>
 </dl>
 </div>
+<div class="section" id="keys">
+<h2>keys<a class="headerlink" href="#keys" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt><strong>Key</strong> ()</dt><dd><p>The base Key class.</p>
+</dd>
+<dt><strong>Key.__init__</strong> ()</dt><dd><p>Makes the Key class.</p>
+</dd>
+<dt><strong>Key.define</strong> ()</dt><dd><p>Raises an error by default, subclasses of Key must overwrite this function to set Key.root, Key.name and Key.letters.</p>
+</dd>
+<dt><strong>Key.confirm_definition</strong> ()</dt><dd><p>Checks Key has been correctly defined. See Key.define().</p>
+</dd>
+<dt><strong>Key.root</strong></dt><dd><p>The root letter of the key, e.g. “c” for C Major.</p>
+</dd>
+<dt><strong>Key.name</strong></dt><dd><p>The name of the key, e.g. “c major”.</p>
+</dd>
+<dt><strong>Key.letters</strong></dt><dd><p>The letters of the tones of the scale of the key in ascending order (which letter is first does not matter).</p>
+</dd>
+<dt><strong>Key.tones</strong></dt><dd><p>Returns a list of all tones in the scale of the key. It is the subset of tones.all_tones where the tones letter is in Key.letters.</p>
+</dd>
+<dt><strong>Key.all_letters</strong></dt><dd><p>Returns a list of all letters in the key. Includes accidentals (e.g. cs is included with C Major) but no duplicates (e.g. df is not included with C Major). Keys with sharps in their signature include sharps in all_letters, keys with flats in their signature include flats.</p>
+</dd>
+<dt><strong>Key.all_tones</strong></dt><dd><p>Returns a list of all tones in the key, including accidentals but not duplicates. It is produced by taking the subset of tones.all_tones where the letter of the tone is in Key.all_letters.</p>
+</dd>
+<dt><strong>Key.arpeggio_letters</strong></dt><dd><p>Returns a list of the letters of the tones of the arpeggio of the key in ascending order.</p>
+</dd>
+<dt><strong>Key.arpeggio_tones</strong></dt><dd><p>Returns a list of the tones of the argpeggio of the key. It is created by taking the subset of tones.all_tones where the tones letter is in Key.arpeggio_letters.</p>
+</dd>
+<dt><strong>Key.arpeggio7_tones</strong></dt><dd><p>Returns a list of the tones of the argpeggio of the key, with the 7th included too.</p>
+</dd>
+<dt><strong>Key.dominant7_tones</strong></dt><dd><p>Returns a list of the tones of the dominant 7th of the key.</p>
+</dd>
+<dt><strong>Key.diminished7_tones</strong></dt><dd><p>Returns a list of the tones of the diminished 7th of the key.</p>
+</dd>
+<dt><strong>Key.scale_subset</strong> (<em>positions</em>)</dt><dd><p>Returns a list of all tones from the specified positions of the key of the scale. e.g. Key.scale_subset(1, 3, 5) returns the argpeggio_tones.</p>
+</dd>
+<dt><strong>Key.descending_chromatic_letters</strong></dt><dd><p>Returns a list of the letters with all accidentals being flats, not sharps.</p>
+</dd>
+<dt><strong>Key.ascending_chromatic_letters</strong></dt><dd><p>Returns a list of the letters with all accidentals being sharps, not flats.</p>
+</dd>
+<dt><strong>Key.descending_chromatic_tones</strong></dt><dd><p>Returns a list of tones with all accidentals being flats, not sharps.</p>
+</dd>
+<dt><strong>Key.ascending_chromatic_tones</strong></dt><dd><p>Returns a list of tones with all accidentals being sharps, not flats.</p>
+</dd>
+<dt><strong>Key.bias</strong> ()</dt><dd><p>Returns “sharp” if the key signature includes sharps (or an equal number of sharps and flats), otherwise returns “flat”. For harmonic minors, the number of sharps does not include the sharpened 7th.</p>
+</dd>
+<dt><strong>Key.__str__</strong> ()</dt><dd><p>Returns a lilypond description of the key suitable for typesetting.</p>
+</dd>
+<dt><strong>Key.relative_letter</strong> (<em>i</em>)</dt><dd><p>Returns the ith letter of the scale of the key. Counts from 0, not 1.</p>
+</dd>
+<dt><strong>Key.relative_chromatic_letter</strong> (<em>i</em>)</dt><dd><p>Returns the ith letter of the chromatic scale of the key (using Key.all_letters). Counts from 0, not 1.</p>
+</dd>
+<dt><strong>Key.tonic</strong></dt><dd><p>Return the 1st letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.supertonic</strong></dt><dd><p>Return the 2nd letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.mediant</strong></dt><dd><p>Return the 3rd letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.subdominant</strong></dt><dd><p>Return the 4th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.dominant</strong></dt><dd><p>Return the 5th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.submediant</strong></dt><dd><p>Return the 6th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.leading</strong></dt><dd><p>Return the 7th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.subtonic</strong></dt><dd><p>Return the 7th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.i</strong></dt><dd><p>Return the 1st letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.ii</strong></dt><dd><p>Return the 2nd letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.iii</strong></dt><dd><p>Return the 3rd letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.iv</strong></dt><dd><p>Return the 4th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.v</strong></dt><dd><p>Return the 5th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.vi</strong></dt><dd><p>Return the 6th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.vii</strong></dt><dd><p>Return the 7th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.I</strong></dt><dd><p>Return the 1st letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.II</strong></dt><dd><p>Return the 2nd letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.III</strong></dt><dd><p>Return the 3rd letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.IV</strong></dt><dd><p>Return the 4th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.V</strong></dt><dd><p>Return the 5th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.VI</strong></dt><dd><p>Return the 6th letter of the scale of the key.</p>
+</dd>
+<dt><strong>Key.VII</strong></dt><dd><p>Return the 7th letter of the scale of the key.</p>
+</dd>
+<dt><strong>CFlatMajor</strong></dt><dd><p>The Key subclass for C-flat Major.</p>
+</dd>
+<dt><strong>CFlatMinor</strong></dt><dd><p>The Key subclass for C-flat Minor.</p>
+</dd>
+<dt><strong>CFlatMinorH</strong></dt><dd><p>The Key subclass for C-flat Minor harmonic.</p>
+</dd>
+</dl>
+<p>... <em>see keys.py for all key subclasses</em> ...</p>
+<dl class="simple">
+<dt><strong>key_dictionary</strong> [<em>mode</em>][<em>root</em>]</dt><dd><p>A dicitonary containing all key subclasses, keyed by mode and root, e.g. key_dictionary[“minor”][“bf”] returns an instance of the BFMinor key subclass.</p>
+</dd>
+<dt><strong>keyify</strong> (<em>key</em>)</dt><dd><p>Converts the passed key to an instance of a Key subclass. The argument should either be a subclass of Key or a string. Where a string, it should be of the form “&lt;root&gt; &lt;mode&gt;”, although capitalization does not matter. e.g. “c major”, “af minor”, or “g harmonic”.</p>
+</dd>
+</dl>
+</div>
 </div>
 
 
@@ -91,6 +201,7 @@
 <li class="toctree-l1"><a class="reference internal" href="markup.html">Markup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#util">util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keys">keys</a></li>
 </ul>
 </li>
 </ul>
