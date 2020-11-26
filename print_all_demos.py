@@ -10,6 +10,7 @@ from demos.demo_keys import AllKeys
 from demos.demo_prelude_in_c import PreludeInC
 from demos.demo_prelude_in_c_simple import PreludeInCSimple
 from demos.demo_prelude_in_c_fancy import PreludeInCFancy
+from demos.demo_prelude_in_c_super import PreludeInCSuper
 from demos.demo_mad_rush import MadRush
 from demos.demo_mad_rush_keyless import MadRushKeyless
 
@@ -25,5 +26,6 @@ AllKeys()
 PreludeInC()
 PreludeInCSimple()
 PreludeInCFancy()
+PreludeInCSuper()
 MadRush()
 MadRushKeyless()
