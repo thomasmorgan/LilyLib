@@ -204,6 +204,41 @@
 </dd>
 </dl>
 </div>
+<div class="section" id="tones">
+<h2>tones<a class="headerlink" href="#tones" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt><strong>all_base_letters</strong></dt><dd><p>A list containing all permitted base letters (i.e. a through g).</p>
+</dd>
+<dt><strong>all_accents</strong></dt><dd><p>A list containing all permitted accents (i.e. ff, f, , s, ss)</p>
+</dd>
+<dt><strong>all_letters</strong></dt><dd><p>An ordered list containing all possible combinations of <em>all_base_letters</em> and <em>all_accents</em>.</p>
+</dd>
+<dt><strong>all_pitches</strong></dt><dd><p>A list contianing all permitted pitches (i.e. ,,, ,, ,  ` `` ```)</p>
+</dd>
+<dt><strong>all_tones</strong></dt><dd><p>An ordered list containing all possible combination of <em>all_letters</em> and <em>all_pitches</em>.</p>
+</dd>
+<dt><strong>equivalent_letters</strong></dt><dd><p>A dictionary with a value for each letter corresponding to the alternative letter. Does not support double flats or accidentals. e.g. <em>equivalent_letters[‘cs’]</em> returns df.</p>
+</dd>
+<dt><strong>equivalent_tone</strong> (<em>tone</em>)</dt><dd><p>Returns a tone with the same pitch as, and an equivalent letter to, the passed tone. e.g. <em>equivalent_tone(fs,,)</em> returns gf,,.</p>
+</dd>
+<dt><strong>separate</strong> (<em>tone</em>)</dt><dd><p>Splits a tone into a letter and pitch, returns them as a tuple.</p>
+</dd>
+<dt><strong>letter</strong> (<em>tone</em>)</dt><dd><p>Returns the letter of a tone, e.g. fs.</p>
+</dd>
+<dt><strong>pitch</strong> (<em>tone</em>)</dt><dd><p>Retuns the pitch of a tone, e.g. ``.</p>
+</dd>
+<dt><strong>base_letter</strong> (<em>tone</em>)</dt><dd><p>Returns the base letter of a tone (i.e. with any accents removed).</p>
+</dd>
+<dt><strong>accent</strong> (<em>tone</em>)</dt><dd><p>Returns the accent of a tone.</p>
+</dd>
+<dt><strong>flatten</strong> (<em>tone</em>)</dt><dd><p>Returns a new tone, one semitone below the passed tone. e.g. <em>flatten(c)</em> returns cf. With return an illegal triple-flat if you flatten a double-flat.</p>
+</dd>
+<dt><strong>sharpen</strong> (<em>tone</em>)</dt><dd><p>Returns a new tone, one semitone above the passed tone. e.g. <em>sharpen(c)</em> returns cs. With return an illegal triple-sharp if you flatten a double-sharp.</p>
+</dd>
+<dt><strong>tonify</strong> (<em>tones</em>)</dt><dd><p>Converts passed tones to an unflattened list of valid tones and empty lists and returns it. Multi-tone strings (separated by whitespce) are split into lists of tones. If any (sub)strings do not correspond to valid tone an error is raised. A seris of N spaces is converted into a seris of N-1 empty lists. If empty lists are used to create a Point, a toneless Point (i.e. a rest) will be produced, but the empty lsits will be erased if the list is flattened (util.flatten). For instance, <em>tonify(‘a  c’)</em> returns [‘a’, [], ‘c’].</p>
+</dd>
+</dl>
+</div>
 </div>
 
 
@@ -234,6 +269,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#util">util</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keys">keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#staves">staves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tones">tones</a></li>
 </ul>
 </li>
 </ul>

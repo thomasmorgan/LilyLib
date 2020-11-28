@@ -223,3 +223,51 @@ staves
 
 	**Super.__init__** (*name*)
 		Creates a super staff. Name can be anything.
+
+tones
+----------
+
+**all_base_letters**
+	A list containing all permitted base letters (i.e. a through g).
+
+**all_accents**
+	A list containing all permitted accents (i.e. ff, f, , s, ss)
+
+**all_letters**
+	An ordered list containing all possible combinations of *all_base_letters* and *all_accents*.
+
+**all_pitches**
+	A list contianing all permitted pitches (i.e. ,,, ,, ,  ` `` \`\`\`)
+
+**all_tones**
+	An ordered list containing all possible combination of *all_letters* and *all_pitches*.
+
+**equivalent_letters**
+	A dictionary with a value for each letter corresponding to the alternative letter. Does not support double flats or accidentals. e.g. *equivalent_letters['cs']* returns df.
+
+**equivalent_tone** (*tone*)
+	Returns a tone with the same pitch as, and an equivalent letter to, the passed tone. e.g. *equivalent_tone(fs,,)* returns gf,,.
+
+**separate** (*tone*)
+	Splits a tone into a letter and pitch, returns them as a tuple.
+
+**letter** (*tone*)
+	Returns the letter of a tone, e.g. fs.
+
+**pitch** (*tone*)
+	Retuns the pitch of a tone, e.g. \`\`.
+
+**base_letter** (*tone*)
+	Returns the base letter of a tone (i.e. with any accents removed).
+
+**accent** (*tone*)
+	Returns the accent of a tone.
+
+**flatten** (*tone*)
+	Returns a new tone, one semitone below the passed tone. e.g. *flatten(c)* returns cf. With return an illegal triple-flat if you flatten a double-flat.
+
+**sharpen** (*tone*)
+	Returns a new tone, one semitone above the passed tone. e.g. *sharpen(c)* returns cs. With return an illegal triple-sharp if you flatten a double-sharp.
+
+**tonify** (*tones*)
+	Converts passed tones to an unflattened list of valid tones and empty lists and returns it. Multi-tone strings (separated by whitespce) are split into lists of tones. If any (sub)strings do not correspond to valid tone an error is raised. A seris of N spaces is converted into a seris of N-1 empty lists. If empty lists are used to create a Point, a toneless Point (i.e. a rest) will be produced, but the empty lsits will be erased if the list is flattened (util.flatten). For instance, *tonify('a  c')* returns ['a', [], 'c'].
