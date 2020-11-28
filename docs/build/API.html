@@ -65,9 +65,9 @@
 </div>
 <div class="section" id="keys">
 <h2>keys<a class="headerlink" href="#keys" title="Permalink to this headline">¶</a></h2>
-<dl class="simple">
+<dl>
 <dt><strong>Key</strong> ()</dt><dd><p>The base Key class.</p>
-</dd>
+<dl class="simple">
 <dt><strong>Key.__init__</strong> ()</dt><dd><p>Makes the Key class.</p>
 </dd>
 <dt><strong>Key.define</strong> ()</dt><dd><p>Raises an error by default, subclasses of Key must overwrite this function to set Key.root, Key.name and Key.letters.</p>
@@ -158,6 +158,8 @@
 </dd>
 <dt><strong>Key.VII</strong></dt><dd><p>Return the 7th letter of the scale of the key.</p>
 </dd>
+</dl>
+</dd>
 <dt><strong>CFlatMajor</strong></dt><dd><p>The Key subclass for C-flat Major.</p>
 </dd>
 <dt><strong>CFlatMinor</strong></dt><dd><p>The Key subclass for C-flat Minor.</p>
@@ -170,6 +172,35 @@
 <dt><strong>key_dictionary</strong> [<em>mode</em>][<em>root</em>]</dt><dd><p>A dicitonary containing all key subclasses, keyed by mode and root, e.g. key_dictionary[“minor”][“bf”] returns an instance of the BFMinor key subclass.</p>
 </dd>
 <dt><strong>keyify</strong> (<em>key</em>)</dt><dd><p>Converts the passed key to an instance of a Key subclass. The argument should either be a subclass of Key or a string. Where a string, it should be of the form “&lt;root&gt; &lt;mode&gt;”, although capitalization does not matter. e.g. “c major”, “af minor”, or “g harmonic”.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="staves">
+<h2>staves<a class="headerlink" href="#staves" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><strong>Stave</strong> ()</dt><dd><p>The parent staff class.</p>
+<dl class="simple">
+<dt><strong>Stave.__init__</strong> (<em>clef, name</em>)</dt><dd><p>Creates a Stave instance. String clef must be a valid lilypond clef, name can be anything.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>Treble</strong> ()</dt><dd><p>A subclass of Stave, appears as a staff starting with the treble clef.</p>
+<dl class="simple">
+<dt><strong>Treble.__init__</strong> (<em>name</em>)</dt><dd><p>Creates a treble staff. Name can be anything.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>Bass</strong> ()</dt><dd><p>A subclass of Stave, appears as a staff starting with the bass clef.</p>
+<dl class="simple">
+<dt><strong>Bass.__init__</strong> (<em>name</em>)</dt><dd><p>Creates a bass staff. Name can be anything.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>Super</strong> ()</dt><dd><p>A subclass of Stave, appears as a staff starting with the treble clef, but has rows for both the treble and bass staves. See demo_prelude_in_c_super.py for an example.</p>
+<dl class="simple">
+<dt><strong>Super.__init__</strong> (<em>name</em>)</dt><dd><p>Creates a super staff. Name can be anything.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </div>
@@ -202,6 +233,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#util">util</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keys">keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#staves">staves</a></li>
 </ul>
 </li>
 </ul>

@@ -45,140 +45,140 @@ keys
 **Key** ()
 	The base Key class.
 
-**Key.__init__** ()
-	Makes the Key class.
+	**Key.__init__** ()
+		Makes the Key class.
 
-**Key.define** ()
-	Raises an error by default, subclasses of Key must overwrite this function to set Key.root, Key.name and Key.letters.
+	**Key.define** ()
+		Raises an error by default, subclasses of Key must overwrite this function to set Key.root, Key.name and Key.letters.
 
-**Key.confirm_definition** ()
-	Checks Key has been correctly defined. See Key.define().
+	**Key.confirm_definition** ()
+		Checks Key has been correctly defined. See Key.define().
 
-**Key.root**
-	The root letter of the key, e.g. "c" for C Major.
+	**Key.root**
+		The root letter of the key, e.g. "c" for C Major.
 
-**Key.name**
-	The name of the key, e.g. "c major".
+	**Key.name**
+		The name of the key, e.g. "c major".
 
-**Key.letters**
-	The letters of the tones of the scale of the key in ascending order (which letter is first does not matter).
+	**Key.letters**
+		The letters of the tones of the scale of the key in ascending order (which letter is first does not matter).
 
-**Key.tones**
-	Returns a list of all tones in the scale of the key. It is the subset of tones.all_tones where the tones letter is in Key.letters.
+	**Key.tones**
+		Returns a list of all tones in the scale of the key. It is the subset of tones.all_tones where the tones letter is in Key.letters.
 
-**Key.all_letters**
-	Returns a list of all letters in the key. Includes accidentals (e.g. cs is included with C Major) but no duplicates (e.g. df is not included with C Major). Keys with sharps in their signature include sharps in all_letters, keys with flats in their signature include flats.
+	**Key.all_letters**
+		Returns a list of all letters in the key. Includes accidentals (e.g. cs is included with C Major) but no duplicates (e.g. df is not included with C Major). Keys with sharps in their signature include sharps in all_letters, keys with flats in their signature include flats.
 
-**Key.all_tones**
-	Returns a list of all tones in the key, including accidentals but not duplicates. It is produced by taking the subset of tones.all_tones where the letter of the tone is in Key.all_letters.
+	**Key.all_tones**
+		Returns a list of all tones in the key, including accidentals but not duplicates. It is produced by taking the subset of tones.all_tones where the letter of the tone is in Key.all_letters.
 
-**Key.arpeggio_letters**
-	Returns a list of the letters of the tones of the arpeggio of the key in ascending order.
+	**Key.arpeggio_letters**
+		Returns a list of the letters of the tones of the arpeggio of the key in ascending order.
 
-**Key.arpeggio_tones**
-	Returns a list of the tones of the argpeggio of the key. It is created by taking the subset of tones.all_tones where the tones letter is in Key.arpeggio_letters.
+	**Key.arpeggio_tones**
+		Returns a list of the tones of the argpeggio of the key. It is created by taking the subset of tones.all_tones where the tones letter is in Key.arpeggio_letters.
 
-**Key.arpeggio7_tones**
-	Returns a list of the tones of the argpeggio of the key, with the 7th included too.
+	**Key.arpeggio7_tones**
+		Returns a list of the tones of the argpeggio of the key, with the 7th included too.
 
-**Key.dominant7_tones**
-	Returns a list of the tones of the dominant 7th of the key.
+	**Key.dominant7_tones**
+		Returns a list of the tones of the dominant 7th of the key.
 
-**Key.diminished7_tones**
-	Returns a list of the tones of the diminished 7th of the key.
+	**Key.diminished7_tones**
+		Returns a list of the tones of the diminished 7th of the key.
 
-**Key.scale_subset** (*positions*)
-	Returns a list of all tones from the specified positions of the key of the scale. e.g. Key.scale_subset(1, 3, 5) returns the argpeggio_tones.
+	**Key.scale_subset** (*positions*)
+		Returns a list of all tones from the specified positions of the key of the scale. e.g. Key.scale_subset(1, 3, 5) returns the argpeggio_tones.
 
-**Key.descending_chromatic_letters**
-	Returns a list of the letters with all accidentals being flats, not sharps.
+	**Key.descending_chromatic_letters**
+		Returns a list of the letters with all accidentals being flats, not sharps.
 
-**Key.ascending_chromatic_letters**
-	Returns a list of the letters with all accidentals being sharps, not flats.
+	**Key.ascending_chromatic_letters**
+		Returns a list of the letters with all accidentals being sharps, not flats.
 
-**Key.descending_chromatic_tones**
-	Returns a list of tones with all accidentals being flats, not sharps.
+	**Key.descending_chromatic_tones**
+		Returns a list of tones with all accidentals being flats, not sharps.
 
-**Key.ascending_chromatic_tones**
-	Returns a list of tones with all accidentals being sharps, not flats.
+	**Key.ascending_chromatic_tones**
+		Returns a list of tones with all accidentals being sharps, not flats.
 
-**Key.bias** ()
-	Returns "sharp" if the key signature includes sharps (or an equal number of sharps and flats), otherwise returns "flat". For harmonic minors, the number of sharps does not include the sharpened 7th.
+	**Key.bias** ()
+		Returns "sharp" if the key signature includes sharps (or an equal number of sharps and flats), otherwise returns "flat". For harmonic minors, the number of sharps does not include the sharpened 7th.
 
-**Key.__str__** ()
-	Returns a lilypond description of the key suitable for typesetting.
+	**Key.__str__** ()
+		Returns a lilypond description of the key suitable for typesetting.
 
-**Key.relative_letter** (*i*)
-	Returns the ith letter of the scale of the key. Counts from 0, not 1.
+	**Key.relative_letter** (*i*)
+		Returns the ith letter of the scale of the key. Counts from 0, not 1.
 
-**Key.relative_chromatic_letter** (*i*)
-	Returns the ith letter of the chromatic scale of the key (using Key.all_letters). Counts from 0, not 1.
+	**Key.relative_chromatic_letter** (*i*)
+		Returns the ith letter of the chromatic scale of the key (using Key.all_letters). Counts from 0, not 1.
 
-**Key.tonic**
-    Return the 1st letter of the scale of the key.
+	**Key.tonic**
+	    Return the 1st letter of the scale of the key.
 
-**Key.supertonic**
-    Return the 2nd letter of the scale of the key.
+	**Key.supertonic**
+	    Return the 2nd letter of the scale of the key.
 
-**Key.mediant**
-    Return the 3rd letter of the scale of the key.
+	**Key.mediant**
+	    Return the 3rd letter of the scale of the key.
 
-**Key.subdominant**
-    Return the 4th letter of the scale of the key.
+	**Key.subdominant**
+	    Return the 4th letter of the scale of the key.
 
-**Key.dominant**
-    Return the 5th letter of the scale of the key.
+	**Key.dominant**
+	    Return the 5th letter of the scale of the key.
 
-**Key.submediant**
-    Return the 6th letter of the scale of the key.
+	**Key.submediant**
+	    Return the 6th letter of the scale of the key.
 
-**Key.leading**
-    Return the 7th letter of the scale of the key.
+	**Key.leading**
+	    Return the 7th letter of the scale of the key.
 
-**Key.subtonic**
-    Return the 7th letter of the scale of the key.
+	**Key.subtonic**
+	    Return the 7th letter of the scale of the key.
 
-**Key.i**
-    Return the 1st letter of the scale of the key.
+	**Key.i**
+	    Return the 1st letter of the scale of the key.
 
-**Key.ii**
-    Return the 2nd letter of the scale of the key.
+	**Key.ii**
+	    Return the 2nd letter of the scale of the key.
 
-**Key.iii**
-    Return the 3rd letter of the scale of the key.
+	**Key.iii**
+	    Return the 3rd letter of the scale of the key.
 
-**Key.iv**
-    Return the 4th letter of the scale of the key.
+	**Key.iv**
+	    Return the 4th letter of the scale of the key.
 
-**Key.v**
-    Return the 5th letter of the scale of the key.
+	**Key.v**
+	    Return the 5th letter of the scale of the key.
 
-**Key.vi**
-    Return the 6th letter of the scale of the key.
+	**Key.vi**
+	    Return the 6th letter of the scale of the key.
 
-**Key.vii**
-    Return the 7th letter of the scale of the key.
+	**Key.vii**
+	    Return the 7th letter of the scale of the key.
 
-**Key.I**
-    Return the 1st letter of the scale of the key.
+	**Key.I**
+	    Return the 1st letter of the scale of the key.
 
-**Key.II**
-    Return the 2nd letter of the scale of the key.
+	**Key.II**
+	    Return the 2nd letter of the scale of the key.
 
-**Key.III**
-    Return the 3rd letter of the scale of the key.
+	**Key.III**
+	    Return the 3rd letter of the scale of the key.
 
-**Key.IV**
-    Return the 4th letter of the scale of the key.
+	**Key.IV**
+	    Return the 4th letter of the scale of the key.
 
-**Key.V**
-    Return the 5th letter of the scale of the key.
+	**Key.V**
+	    Return the 5th letter of the scale of the key.
 
-**Key.VI**
-    Return the 6th letter of the scale of the key.
+	**Key.VI**
+	    Return the 6th letter of the scale of the key.
 
-**Key.VII**
-    Return the 7th letter of the scale of the key.
+	**Key.VII**
+	    Return the 7th letter of the scale of the key.
 
 **CFlatMajor**
 	The Key subclass for C-flat Major.
@@ -196,3 +196,30 @@ keys
 
 **keyify** (*key*)
 	Converts the passed key to an instance of a Key subclass. The argument should either be a subclass of Key or a string. Where a string, it should be of the form "<root> <mode>", although capitalization does not matter. e.g. "c major", "af minor", or "g harmonic".
+
+staves
+------------
+
+**Stave** ()
+	The parent staff class.
+
+	**Stave.__init__** (*clef, name*)
+		Creates a Stave instance. String clef must be a valid lilypond clef, name can be anything.
+
+**Treble** ()
+	A subclass of Stave, appears as a staff starting with the treble clef.
+
+	**Treble.__init__** (*name*)
+		Creates a treble staff. Name can be anything.
+
+**Bass** ()
+	A subclass of Stave, appears as a staff starting with the bass clef.
+
+	**Bass.__init__** (*name*)
+		Creates a bass staff. Name can be anything.
+
+**Super** ()
+	A subclass of Stave, appears as a staff starting with the treble clef, but has rows for both the treble and bass staves. See demo_prelude_in_c_super.py for an example.
+
+	**Super.__init__** (*name*)
+		Creates a super staff. Name can be anything.
