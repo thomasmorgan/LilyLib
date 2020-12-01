@@ -388,3 +388,53 @@ points
 
 **harmonize** (*points, interval, key, mode="scale"*)
 	Harmonizes a passage my transposing it the indicated interval and then merging the result with the passed passage.
+
+markup
+-----------
+
+**linebreak**
+	Causes a linebreak both in the sheetmusic and in the terminal output.
+
+
+**clef** (*clef*)
+    Adds the indicated clef to the stave.
+
+
+**triplets** (*passage*)
+    Returns the passage, wrapped in markup such that it appears as triplets.
+
+
+**grace** (*passage*)
+    Returns the passage, wrapped in markup such that it appears as grace notes.
+
+
+**after_grace** (*passage, grace*)
+	Returns the passage and grace with markup such that the grace appears as grace notes following the passage.
+
+
+**acciaccatura** (*passage*)
+    Returns the passage, wrapped in markup such that it appears as acciaccatura.
+
+
+**ottava** (*passage, shift*)
+    Returns the passage, wrapped in markup such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.
+
+
+**voices** (*\*voices*)
+	Returns a single passage with markup such that the voices are played on top of each other. Voices should be ordered as highest, lowest, 2nd highest, 2nd lowest, and so on.
+
+
+**repeat** (*passage, times=2*)
+	Wraps the passage in markup to place repeat bars around it. If the number of repeats is greater than two, the number is indicated above the closing bracket.
+
+
+**annotation** (*text*)
+    Adds the passed text above the staff at the indicated point.
+
+
+**name** (*passage, name*)
+	Adds the passed name to the first Point in the passage, it will appear above the Point on the sheet music. This is an in place modification.
+
+
+**tempo_change** (*tempo*)
+    Adds a change in time signature to the sheet music.

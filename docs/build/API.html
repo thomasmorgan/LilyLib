@@ -318,6 +318,35 @@
 </dd>
 </dl>
 </div>
+<div class="section" id="markup">
+<h2>markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt><strong>linebreak</strong></dt><dd><p>Causes a linebreak both in the sheetmusic and in the terminal output.</p>
+</dd>
+<dt><strong>clef</strong> (<em>clef</em>)</dt><dd><p>Adds the indicated clef to the stave.</p>
+</dd>
+<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it appears as triplets.</p>
+</dd>
+<dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it appears as grace notes.</p>
+</dd>
+<dt><strong>after_grace</strong> (<em>passage, grace</em>)</dt><dd><p>Returns the passage and grace with markup such that the grace appears as grace notes following the passage.</p>
+</dd>
+<dt><strong>acciaccatura</strong> (<em>passage</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it appears as acciaccatura.</p>
+</dd>
+<dt><strong>ottava</strong> (<em>passage, shift</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.</p>
+</dd>
+<dt><strong>voices</strong> (<em>*voices</em>)</dt><dd><p>Returns a single passage with markup such that the voices are played on top of each other. Voices should be ordered as highest, lowest, 2nd highest, 2nd lowest, and so on.</p>
+</dd>
+<dt><strong>repeat</strong> (<em>passage, times=2</em>)</dt><dd><p>Wraps the passage in markup to place repeat bars around it. If the number of repeats is greater than two, the number is indicated above the closing bracket.</p>
+</dd>
+<dt><strong>annotation</strong> (<em>text</em>)</dt><dd><p>Adds the passed text above the staff at the indicated point.</p>
+</dd>
+<dt><strong>name</strong> (<em>passage, name</em>)</dt><dd><p>Adds the passed name to the first Point in the passage, it will appear above the Point on the sheet music. This is an in place modification.</p>
+</dd>
+<dt><strong>tempo_change</strong> (<em>tempo</em>)</dt><dd><p>Adds a change in time signature to the sheet music.</p>
+</dd>
+</dl>
+</div>
 </div>
 
 
@@ -350,6 +379,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#staves">staves</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tones">tones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#points">points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#markup">markup</a></li>
 </ul>
 </li>
 </ul>
