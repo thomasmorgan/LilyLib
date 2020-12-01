@@ -300,8 +300,8 @@ def validate_transpose_args(shift, mode):
         raise ValueError("{} is not a valid mode for piece.transpose()".format(mode))
 
 
-def harmonize(points, intervals, key, mode="scale"):
-    return merge(points, transpose(points, intervals, key, mode))
+def harmonize(points, interval, key, mode="scale"):
+    return merge(points, transpose(points, interval, key, mode))
 
 
 def merge(*passages):
