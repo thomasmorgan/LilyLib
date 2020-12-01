@@ -239,6 +239,85 @@
 </dd>
 </dl>
 </div>
+<div class="section" id="points">
+<h2>points<a class="headerlink" href="#points" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><strong>all_durs</strong></dt><dd><p>A list of all permitted Point durations.</p>
+</dd>
+<dt><strong>Point</strong></dt><dd><p>The Point class. Notes, chords and rests are all instances of Point.</p>
+<dl class="simple">
+<dt><strong>Point.__init__</strong> (<em>tones, dur, ornamentation=””</em>)</dt><dd><p>The init function for Point. <em>tones</em> is a list of tones, if empty you get a rest. <em>dur</em> is the duration of the Point. Ornamentation is optional and should conform to lilypond.</p>
+</dd>
+<dt><strong>Point.check_init_arguments</strong> (<em>tones, dur, ornamentation</em>)</dt><dd><p>Internal function that validates the arguments passed to Point.__init__.</p>
+</dd>
+<dt><strong>Point.__str__</strong> ()</dt><dd><p>Returns a liylpond string representation of the Point.</p>
+</dd>
+<dt><strong>Point.tone</strong></dt><dd><p>If the Point has a single tone, returns the tone, otherwise raises an error.</p>
+</dd>
+<dt><strong>Point.letter</strong></dt><dd><p>If the Point has a single tone, returns its letter, otherwise raises an error.</p>
+</dd>
+<dt><strong>Point.pitch</strong></dt><dd><p>If the Point has a single tone, returns its pitch, otherwise raises an error.</p>
+</dd>
+<dt><strong>Point.is_rest</strong></dt><dd><p>Returns true if the Point’s tone list is empty, otherwise false.</p>
+</dd>
+<dt><strong>Point.is_note</strong></dt><dd><p>Returns true if the Point’s tone has length 1, otherwise false.</p>
+</dd>
+<dt><strong>Point.is_chord</strong></dt><dd><p>Returns true if the Point’s tone list has multiple tones, otherwise false.</p>
+</dd>
+<dt><strong>Point.add</strong> (<em>tones</em>)</dt><dd><p>Adds the passed tones to the Point, if any tones are already present nothing happens.</p>
+</dd>
+<dt><strong>Point.remove</strong> (<em>tones</em>)</dt><dd><p>Removes the passed tones from the Point if present.</p>
+</dd>
+<dt><strong>Point.replace</strong> (<em>old_tones, new_tones</em>)</dt><dd><p>Removes the old_tones from the point and adds the new_tones in their place. The two arguments are flattened and zipped and iterated through together. If one is longer than the other, the shorter argument is cycled to reach the length of the longer.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>rest</strong> (<em>dur</em>)</dt><dd><p>Returns a list containing a single rest (i.e. a toneless Point) of the specified duration.</p>
+</dd>
+<dt><strong>rests</strong> (<em>*dur</em>)</dt><dd><p>Returns a list of rests (i.e. toneless Points) with the specified durations.</p>
+</dd>
+<dt><strong>note</strong> (<em>tone, dur, ornamentation=””</em>)</dt><dd><p>Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and ornamentation.</p>
+</dd>
+<dt><strong>notes</strong> (<em>tones, dur, ornamentation</em>):</dt><dd><p>Returns a list of notes (i.e. Points with a single tone). The arguments are flattened, zipped and iterated to produce the notes. The longest argument determines the number of notes created, the other arguments are cycled to reach the same length.</p>
+</dd>
+<dt><strong>chord</strong> (<em>tones, dur, ornamentation</em>)</dt><dd><p>Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and ornamentation.</p>
+</dd>
+<dt><strong>chords</strong> (<em>tones, dur, ornamentation</em>)</dt><dd><p>Returns a list of multiple chords (i.e. Points with multiple tones). The dur and ornamentation arguments are flattened, but <em>tones</em> is not and it must be a list of lists of tones. The arguments are then zipped and iterated to produce the chords. The longest argument determines the number of chords created, the other arguments are cycled to reach the same length.</p>
+</dd>
+<dt><strong>add</strong> (<em>points, tones, *tweaks</em>)</dt><dd><p>Adds the passed tones to the passed points, if any tones are already present in a given point nothing happens. By default, rests (i.e. empty points) are skipped, pass “include rests” as an extra argument to edit rests too.</p>
+</dd>
+<dt><strong>remove</strong> (<em>points, tones</em>)</dt><dd><p>Removes the passed tones from the passed points if present. Removing enough tones will convert chords to notes and notes to rests.</p>
+</dd>
+<dt><strong>replace</strong> (<em>points, old_tones, new_tones</em>)</dt><dd><p>Removes the old_tones from the points and adds the new_tones in their place. The arguments old_tones and new_tones are flattened and zipped and iterated through together. If one is longer than the other, the shorter argument is cycled to reach the length of the longer.</p>
+</dd>
+<dt><strong>series</strong> (<em>tones, start, stop_or_length, dur=None, step=1</em>)</dt><dd><p>Internal function used by scale, argpeggio etc. Returns a list of tones (or Points if dur is specified), selected from the passed tones, with start and stop points, and step size, corresponding to the passed arguments. The dur argument can be a list which cycles through the passed values.</p>
+</dd>
+<dt><strong>validate_series_args</strong> (<em>tones, start, stop_or_length, dur, step</em>)</dt><dd><p>Internal function that validates args passed to the series function.</p>
+</dd>
+<dt><strong>scale</strong> (<em>start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns a scale from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>.</p>
+</dd>
+<dt><strong>arpeggio</strong> (<em>start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns an arpeggio from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>.</p>
+</dd>
+<dt><strong>arpeggio7</strong> (<em>start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns an arpeggio (including the 7th) from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>.</p>
+</dd>
+<dt><strong>dominant7</strong> (<em>start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns a dominant 7th from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>.</p>
+</dd>
+<dt><strong>diminished7</strong> (<em>start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns a diminished 7th from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>.</p>
+</dd>
+<dt><strong>chromatic</strong> (<em>start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns a chromatic scale from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>. Ascending chromatic scales use sharps, descending scales use flats.</p>
+</dd>
+<dt><strong>scale_subset</strong> (<em>positions, start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns a subset of a scale from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>. The <em>positions</em> argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.</p>
+</dd>
+<dt><strong>transpose</strong> (<em>item, shift, key, mode=”scale”</em>)</dt><dd><p>Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; “scale”, “octave” or “semitone”.</p>
+</dd>
+<dt><strong>validate_transpose_args</strong> (<em>shift, mode</em>)</dt><dd><p>Internal function that validates arguments for <em>transpose</em>.</p>
+</dd>
+<dt><strong>merge</strong> (<em>*passages</em>)</dt><dd><p>Takes multiple passages of music and blends them into a single passage which is returned. Passages are zipped together and the interated through, the tones of each point in each passage are added to a single point in the new passage.</p>
+</dd>
+<dt><strong>harmonize</strong> (<em>points, interval, key, mode=”scale”</em>)</dt><dd><p>Harmonizes a passage my transposing it the indicated interval and then merging the result with the passed passage.</p>
+</dd>
+</dl>
+</div>
 </div>
 
 
@@ -270,6 +349,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#keys">keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#staves">staves</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tones">tones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#points">points</a></li>
 </ul>
 </li>
 </ul>

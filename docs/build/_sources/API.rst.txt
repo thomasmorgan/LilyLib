@@ -271,3 +271,120 @@ tones
 
 **tonify** (*tones*)
 	Converts passed tones to an unflattened list of valid tones and empty lists and returns it. Multi-tone strings (separated by whitespce) are split into lists of tones. If any (sub)strings do not correspond to valid tone an error is raised. A seris of N spaces is converted into a seris of N-1 empty lists. If empty lists are used to create a Point, a toneless Point (i.e. a rest) will be produced, but the empty lsits will be erased if the list is flattened (util.flatten). For instance, *tonify('a  c')* returns ['a', [], 'c'].
+
+points
+------------
+
+**all_durs**
+	A list of all permitted Point durations.
+
+**Point**
+	The Point class. Notes, chords and rests are all instances of Point.
+
+	**Point.__init__** (*tones, dur, ornamentation=""*)
+		The init function for Point. *tones* is a list of tones, if empty you get a rest. *dur* is the duration of the Point. Ornamentation is optional and should conform to lilypond.
+
+	**Point.check_init_arguments** (*tones, dur, ornamentation*)
+		Internal function that validates the arguments passed to Point.\_\_init\_\_.
+
+	**Point.__str__** ()
+		Returns a liylpond string representation of the Point.
+
+	**Point.tone**
+		If the Point has a single tone, returns the tone, otherwise raises an error.
+
+	**Point.letter**
+		If the Point has a single tone, returns its letter, otherwise raises an error.
+
+	**Point.pitch**
+		If the Point has a single tone, returns its pitch, otherwise raises an error.
+
+	**Point.is_rest**
+		Returns true if the Point's tone list is empty, otherwise false.
+
+	**Point.is_note**
+		Returns true if the Point's tone has length 1, otherwise false.
+
+	**Point.is_chord**
+		Returns true if the Point's tone list has multiple tones, otherwise false.
+
+	**Point.add** (*tones*)
+		Adds the passed tones to the Point, if any tones are already present nothing happens.
+
+	**Point.remove** (*tones*)
+		Removes the passed tones from the Point if present.
+
+	**Point.replace** (*old_tones, new_tones*)
+		Removes the old_tones from the point and adds the new_tones in their place. The two arguments are flattened and zipped and iterated through together. If one is longer than the other, the shorter argument is cycled to reach the length of the longer.
+
+**rest** (*dur*)
+	Returns a list containing a single rest (i.e. a toneless Point) of the specified duration.
+
+**rests** (*\*dur*)
+	Returns a list of rests (i.e. toneless Points) with the specified durations.
+
+**note** (*tone, dur, ornamentation=""*)
+	Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and ornamentation.
+
+**notes** (*tones, dur, ornamentation*):
+	Returns a list of notes (i.e. Points with a single tone). The arguments are flattened, zipped and iterated to produce the notes. The longest argument determines the number of notes created, the other arguments are cycled to reach the same length.
+
+**chord** (*tones, dur, ornamentation*)
+	Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and ornamentation.
+
+**chords** (*tones, dur, ornamentation*)
+	Returns a list of multiple chords (i.e. Points with multiple tones). The dur and ornamentation arguments are flattened, but *tones* is not and it must be a list of lists of tones. The arguments are then zipped and iterated to produce the chords. The longest argument determines the number of chords created, the other arguments are cycled to reach the same length.
+
+**add** (*points, tones, \*tweaks*)
+	Adds the passed tones to the passed points, if any tones are already present in a given point nothing happens. By default, rests (i.e. empty points) are skipped, pass "include rests" as an extra argument to edit rests too.
+
+**remove** (*points, tones*)
+	Removes the passed tones from the passed points if present. Removing enough tones will convert chords to notes and notes to rests.
+
+**replace** (*points, old_tones, new_tones*)
+	Removes the old_tones from the points and adds the new_tones in their place. The arguments old_tones and new_tones are flattened and zipped and iterated through together. If one is longer than the other, the shorter argument is cycled to reach the length of the longer.
+
+**series** (*tones, start, stop_or_length, dur=None, step=1*)
+	Internal function used by scale, argpeggio etc. Returns a list of tones (or Points if dur is specified), selected from the passed tones, with start and stop points, and step size, corresponding to the passed arguments. The dur argument can be a list which cycles through the passed values.
+
+**validate_series_args** (*tones, start, stop_or_length, dur, step*)
+	Internal function that validates args passed to the series function.
+
+**scale** (*start, stop_or_length, key, dur=None, step=1*)
+	Returns a scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+
+
+**arpeggio** (*start, stop_or_length, key, dur=None, step=1*)
+    Returns an arpeggio from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+
+
+**arpeggio7** (*start, stop_or_length, key, dur=None, step=1*)
+    Returns an arpeggio (including the 7th) from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+
+
+**dominant7** (*start, stop_or_length, key, dur=None, step=1*)
+	Returns a dominant 7th from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+
+
+**diminished7** (*start, stop_or_length, key, dur=None, step=1*)
+    Returns a diminished 7th from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+
+
+**chromatic** (*start, stop_or_length, key, dur=None, step=1*)
+    Returns a chromatic scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. Ascending chromatic scales use sharps, descending scales use flats.
+
+
+**scale_subset** (*positions, start, stop_or_length, key, dur=None, step=1*)
+    Returns a subset of a scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
+
+**transpose** (*item, shift, key, mode="scale"*)
+	Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; "scale", "octave" or "semitone".
+
+**validate_transpose_args** (*shift, mode*)
+	Internal function that validates arguments for *transpose*.
+
+**merge** (*\*passages*)
+	Takes multiple passages of music and blends them into a single passage which is returned. Passages are zipped together and the interated through, the tones of each point in each passage are added to a single point in the new passage.
+
+**harmonize** (*points, interval, key, mode="scale"*)
+	Harmonizes a passage my transposing it the indicated interval and then merging the result with the passed passage.
