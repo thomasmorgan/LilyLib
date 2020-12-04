@@ -438,3 +438,58 @@ markup
 
 **tempo_change** (*tempo*)
     Adds a change in time signature to the sheet music.
+
+piece
+---------
+
+**Piece** ()
+	The base Piece class.
+
+    **Piece.__init__** ()
+    	Piece init function. Sets default values, calls *details* to overwrite them, then prints itself to the terminal.
+        
+    **Piece.details** ()
+        Must be overwritten by subclasses, allows configuration of piece deatils like title, composer, etc.
+
+    **Piece.set_key** (*key*)
+        Sets the pieces key to the passed value. *key* can be a string, a subclass of *Key* or an instance of a *Key*.
+
+	**Piece.key_signature**
+		Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music.
+        return [str(self.key)]
+
+    **Piece.write_score** ()
+        Called by *Piece.str()*, creates a description of the score of the piece and adds it to the *self.score* dictionary.
+
+    **Piece.__str__** ()
+    	Prints a lilypond description of the piece. It concatenates the results of the Pieces *header*, *subtext*, *start_score*, *write_score* and *end_score* functions.
+
+    **Piece.header** ()
+    	Returns a string containing the metadata of the piece in lilypond format.
+
+    **Piece.subtext** ()
+        By default returns an empty string. Can be overwritten to add text between the header and score of a piece. Useful for starting sheetmusic with extended bodies of text.
+
+    **Piece.start_score** ()
+        Returns Lilypond string to open the score.
+
+    **Piece.end_score** ()
+        Returns Liylpond string to close the score
+
+    **Piece.print_stave** (*stave*)
+    	Returns a lilypond formatted string description of the contents of the passed stave.
+
+    **Piece.scale** (*start, stop_or_length, dur=None, step=1*)
+    	Creates a scale by passing all arguments and the piece's current key to points.scale.
+
+    **Piece.arpeggio** (*start, stop_or_length, dur=None, step=1*)
+        Creates an argpeggio by passing all arguments and the piece's current key to points.arpeggio.
+
+    **Piece.arpeggio7** (*start, stop_or_length, dur=None, step=1*)
+        Creates an argpeggio7 by passing all arguments and the piece's current key to points.arpeggio7.
+
+    **Piece.dominant7** (*start, stop_or_length, dur=None, step=1*)
+        Creates a dominant 7th by passing all arguments and the piece's current key to points.dominant7.
+
+    **Piece.diminished7** (*start, stop_or_length, dur=None, step=1*)
+        Creates a diminished 7th by passing all arguments and the piece's current key to points.diminished7.
