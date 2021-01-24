@@ -456,7 +456,6 @@ piece
 
 	**Piece.key_signature**
 		Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music.
-        return [str(self.key)]
 
     **Piece.write_score** ()
         Called by *Piece.str()*, creates a description of the score of the piece and adds it to the *self.score* dictionary.
@@ -493,3 +492,139 @@ piece
 
     **Piece.diminished7** (*start, stop_or_length, dur=None, step=1*)
         Creates a diminished 7th by passing all arguments and the piece's current key to points.diminished7.
+
+    **Piece.chromatic** (*start, stop_or_length, dur=None, step=1*)
+    	Creates a chromatic scale by passing all arguments and the piece's current key to points.chromatic.
+
+    **Piece.scale_subset** (*positions, start, stop_or_length, dur=None, step=1*)
+    	Returns a subset of a scale by passing all arguments and the piece's current key to points.scale_subset. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
+
+    **Piece.transpose** (*item, shift, mode="scale"*)
+    	Returns a transposed version of the passed item or passage, by passing all arguments and the piece's current key to points.transpose.
+
+    **Piece.harmonize** (*points, intervals, mode="scale"*)
+        Returns a harmonized version of the passed points, by passing all arguments and the piece's current key to points.harmonize.
+
+    **Piece.relative_key** (*mode, relationship*)
+    	Returns a key relative to the piece's current key. Mode is "major", "minor" or "harmonic". Relationship is the numeric distance between the current key and relative key. So if the current key is C Major (or minor), relative_key("minor", 2) returns E Minor.
+
+    **Piece.relative_major_key** (*relationship*)
+        Returns the relative major key of the piece's current key by passing relationship and "major" to Piece.relative_key.
+
+    **Piece.relative_minor_key** (*relationship*)
+        Returns the relative minor key of the piece's current key by passing relationship and "minor" to Piece.relative_key.
+
+    **Piece.relative_harmonic_key** (*relationship*)
+        Returns the relative harmonic key of the piece's current key by passing relationship and "harmonic" to Piece.relative_key.
+
+    **Piece.relative_cis_key** (*relationship*)
+        Passes relationship to Piece.relative_key to generate a relative key. Mode is specified according to the current key; if the current key is major, then "major" is passed, otherwise "minor" is passed (note "harmonic" is never passed).
+
+    **Piece.relative_trans_key** (*relationship*)
+        Passes relationship to Piece.relative_key to generate a relative key. Mode is specified according to the current key; if the current key is major, then "minor" is passed, otherwise "major" is passed (note "harmonic" is never passed).
+
+    **Piece.I**
+        Returns the relative_major_key with position 0.
+
+    **Piece.II**
+        Returns the relative_major_key with position 1.
+
+    **Piece.III**
+        Returns the relative_major_key with position 2.
+
+    **Piece.IV**
+        Returns the relative_major_key with position 3.
+
+    **Piece.V**
+        Returns the relative_major_key with position 4.
+
+    **Piece.VI**
+        Returns the relative_major_key with position 5.
+
+    **Piece.VII**
+        Returns the relative_major_key with position 6.
+
+    **Piece.i**
+        Returns the relative_minor_key with position 0.
+
+    **Piece.i**
+        Returns the relative_minor_key with position 1.
+
+    **Piece.i**
+        Returns the relative_minor_key with position 2.
+
+    **Piece.i**
+        Returns the relative_minor_key with position 3.
+
+    **Piece.v**
+        Returns the relative_minor_key with position 4.
+
+    **Piece.v**
+        Returns the relative_minor_key with position 5.
+
+    **Piece.v**
+        Returns the relative_minor_key with position 6.
+
+    **Piece.ih**
+        Returns the relative_harmonic_key with position 0.
+
+    **Piece.ii**
+        Returns the relative_harmonic_key with position 1.
+
+    **Piece.ii**
+        Returns the relative_harmonic_key with position 2.
+
+    **Piece.iv**
+        Returns the relative_harmonic_key with position 3.
+
+    **Piece.vh**
+        Returns the relative_harmonic_key with position 4.
+
+    **Piece.vi**
+        Returns the relative_harmonic_key with position 5.
+
+    **Piece.vi**
+        Returns the relative_harmonic_key with position 6.
+
+    **Piece.Ic**
+        Returns the relative_cis_key with position 0.
+
+    **Piece.IIc**
+        Returns the relative_cis_key with position 1.
+
+    **Piece.IIIc**
+        Returns the relative_cis_key with position 2.
+
+    **Piece.IVc**
+        Returns the relative_cis_key with position 3.
+
+    **Piece.Vc**
+        Returns the relative_cis_key with position 4.
+
+    **Piece.VIc**
+        Returns the relative_cis_key with position 5.
+
+    **Piece.VIIc**
+        Returns the relative_cis_key with position 6.
+
+    **Piece.It**
+        Returns the relative_trans_key with position 0.
+
+    **Piece.IIt**
+        Returns the relative_trans_key with position 1.
+
+    **Piece.IIIt**
+        Returns the relative_trans_key with position 2.
+
+    **Piece.IVt**
+        Returns the relative_trans_key with position 3.
+
+    **Piece.Vt**
+        Returns the relative_trans_key with position 4.
+
+    **Piece.VIt**
+        Returns the relative_trans_key with position 5.
+
+    **Piece.VIIt**
+        Returns the relative_trans_key with position 6.
+
