@@ -37,6 +37,8 @@ class MadRush(Piece):
             return ""
 
     def write_score(self):
+        self.score["treble"] = []
+        self.score["bass"] = []
         sections = {}
 
         aI = self.arpeggio('f', 6)
@@ -161,10 +163,10 @@ class MadRush(Piece):
         for section in sections:
             name(sections[section]['treble'], section)
 
-        structure = ['A0', A, 'A0', A, 'A0', B, 'A0', C, 'A0', C, 'A0', B, 'A0', A, 'A0', A, 'A0', B, 'A0', D, 'A0', D, 'A0']
-
-        self.score["treble"] = []
-        self.score["bass"] = []
+        order = [A, A, B, C, C, B, A, A, B, D, D]
+        structure = ['A0']
+        for item in order:
+            structure += [item, 'A0']
 
         if self.summary:
             sections_to_print = sections
