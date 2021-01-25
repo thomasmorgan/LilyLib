@@ -17,12 +17,19 @@ class MadRush(Piece):
             return"""
                 \\markup {
                     \\column {
-                        \\line {\\bold {Overall:} \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{C}, A1, \\bold{C}, A1, \\bold{B}, \\bold{A}, \\bold{A}, A1, \\bold{B}, A1, \\bold{D}, \\bold{D}, A1}
                         \\line { - }
-                        \\line {\\bold {Section A:} A1, A2, A2, A3, A3, A4, A4, A5}
+                        \\line {\\bold {Overall:} \\bold{AA B CC B AA B DD}}
+                        \\line { - }
+                        \\line {Insert A0 between all elements, and at start and end of piece.}
+                        \\line { - }
+                        \\line { - }
+                        \\line { - }
+                        \\line {\\bold {Section A:} A1, A1, A2, A2, A2, A3, A3, A4}
                         \\line {\\bold {Section B:} B1, B1, B2, B2, B2, B3, B3, B4}
-                        \\line {\\bold {Section C:} C1, C1, C2, C2, C3, C3, C4}
-                        \\line {\\bold {Section D:} D1, D1, D2, D2, D3, D3, D4}
+                        \\line {\\bold {Section C:} C1, C1, C2, C2, C2, C3, C3, C4}
+                        \\line {\\bold {Section D:} D1, D1, D2, D2, D2, D3, D3, D4}
+                        \\line { - }
+                        \\line { - }
                         \\line { - }
                     }
                 }"""
@@ -72,14 +79,14 @@ class MadRush(Piece):
 
             return motif
 
-        sections['A1'] = join(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
-        sections['A1']['treble'] = tempo_change('4/4') + sections['A1']['treble']
-        sections['A2'] = join(A_motif(aI, 2), A_motif(aiii, 2))
-        sections['A3'] = join(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
-        sections['A4'] = join(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
-        sections['A5'] = join(A_motif(aii, 1, 'low triplets'), A_motif(aii7, 0.5, 'crotchet bass'), A_motif(aii, 0.5, 'crotchet bass'), A_motif(aI, 2))
+        sections['A0'] = join(A_motif(aI, 2, 'no treble'), A_motif(aiii, 2, 'no treble', 'low first'))
+        sections['A0']['treble'] = tempo_change('4/4') + sections['A0']['treble']
+        sections['A1'] = join(A_motif(aI, 2), A_motif(aiii, 2))
+        sections['A2'] = join(A_motif(aI, 1), A_motif(aiii7, 0.5, 'crotchet bass'), A_motif(aI, 0.5, 'crotchet bass'), A_motif(aiii, 2))
+        sections['A3'] = join(A_motif(aii, 1, 'low triplets', 'extend tie'), A_motif(aii, 1), A_motif(aI, 2))
+        sections['A4'] = join(A_motif(aii, 1, 'low triplets'), A_motif(aii7, 0.5, 'crotchet bass'), A_motif(aii, 0.5, 'crotchet bass'), A_motif(aI, 2))
 
-        A = ['A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4', 'A5']
+        A = ['A1', 'A1', 'A2', 'A2', 'A2', 'A3', 'A3', 'A4']
 
         bI7 = self.arpeggio('f,', 4) + self.arpeggio7('a`', 4)
         biii = arpeggio('e,', 4, 'A Minor') + arpeggio('a`', 4, 'A minor')
@@ -122,13 +129,13 @@ class MadRush(Piece):
                 'bass2': sections[lh]['bass2'],
             }
 
-        sections['C1'] = combine('A2', 'B1')
+        sections['C1'] = combine('A1', 'B1')
         sections['C1']['treble'] = tempo_change('4/4') + sections['C1']['treble']
-        sections['C2'] = combine('A3', 'B2')
-        sections['C3'] = combine('A4', 'B3')
-        sections['C4'] = combine('A5', 'B4')
+        sections['C2'] = combine('A2', 'B2')
+        sections['C3'] = combine('A3', 'B3')
+        sections['C4'] = combine('A4', 'B4')
 
-        C = ['C1', 'C1', 'C2', 'C2', 'C3', 'C3', 'C4']
+        C = ['C1', 'C1', 'C2', 'C2', 'C2', 'C3', 'C3', 'C4']
 
         def D_motif(chord, section):
             motif = {}
@@ -144,17 +151,17 @@ class MadRush(Piece):
         dI = ['f``', 'f``']
         dii = ['f``', 'df``', 'c``']
 
-        sections['D1'] = D_motif(diii, 'A2')
-        sections['D2'] = D_motif(diii, 'A3')
-        sections['D3'] = D_motif(dI * 2, 'A4')
-        sections['D4'] = D_motif(dii, 'A5')
+        sections['D1'] = D_motif(diii, 'A1')
+        sections['D2'] = D_motif(diii, 'A2')
+        sections['D3'] = D_motif(dI * 2, 'A3')
+        sections['D4'] = D_motif(dii, 'A4')
 
-        D = ['D1', 'D1', 'D2', 'D2', 'D3', 'D3', 'D4']
+        D = ['D1', 'D1', 'D2', 'D2', 'D2', 'D3', 'D3', 'D4']
 
         for section in sections:
             name(sections[section]['treble'], section)
 
-        structure = [A, A, 'A1', B, 'A1', C, 'A1', C, 'A1', B, A, A, 'A1', B, 'A1', D, D, 'A1']
+        structure = ['A0', A, 'A0', A, 'A0', B, 'A0', C, 'A0', C, 'A0', B, 'A0', A, 'A0', A, 'A0', B, 'A0', D, 'A0', D, 'A0']
 
         self.score["treble"] = []
         self.score["bass"] = []
