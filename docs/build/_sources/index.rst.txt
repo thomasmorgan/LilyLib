@@ -11,4 +11,5 @@ LilyLib
    changing_keys
    markup
    API
+   prelude_in_c
 
