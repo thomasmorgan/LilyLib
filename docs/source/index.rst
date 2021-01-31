@@ -12,4 +12,5 @@ LilyLib
    markup
    API
    prelude_in_c
+   mad_rush
 

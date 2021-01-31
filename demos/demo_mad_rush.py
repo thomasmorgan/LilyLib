@@ -56,7 +56,9 @@ class MadRush(Piece):
         def A_motif(chord, bars, *tweaks):
             motif = {}
 
-            if chord == aI:
+            if 'no treble' in tweaks:
+                motif['treble'] = rest(1) * bars
+            elif chord == aI:
                 motif['treble'] = triplet_bar(pattern(chord, [6, 5]), bars=bars)
             elif chord == aii and 'low triplets' in tweaks:
                 motif['treble'] = triplet_bar(pattern(chord, [5, 4]), bars=bars)
@@ -75,9 +77,6 @@ class MadRush(Piece):
             if 'low first' in tweaks:
                 motif['bass1'][0] = chord[0]
                 motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
-
-            if 'no treble' in tweaks:
-                motif['treble'] = rest(1) * bars
 
             return motif
 

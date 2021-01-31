@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mad Rush &#8212; LilyLib 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Prelude in C" href="prelude_in_c.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="mad-rush">
+<h1>Mad Rush<a class="headerlink" href="#mad-rush" title="Permalink to this headline">¶</a></h1>
+<p>Mad Rush, by Philip Glass, is a great piece to show how LilyLib can compress music. Below I describe how the demo constructs the piece, and then how we can transpose it to any starting key.</p>
+<div class="section" id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p>While the piece is long, it actually as a very simple structure. There are 4 main elements: (A) a quiet passage with quavers set against triplets, (B) a loud, fast section, (C) a hybrid of A and B, and (D) a modification of A. These are structured as AA B CC B AA B DD, with a small subsection linking all of them (which we’ll call A0). We can express this structure as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
+<span class="n">structure</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+    <span class="n">structure</span> <span class="o">+=</span> <span class="p">[</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;A0&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="section-a">
+<h2>Section A<a class="headerlink" href="#section-a" title="Permalink to this headline">¶</a></h2>
+<p>But, we need to actually describe the contents of the sections A through D too. Each section has a similar harmonic progression, being composed of 4 subunits (let’s label them 1 through 4) and they are played in the following order: 1, 1, 2, 2, 2, 3, 3, 4. Using section A as an example, we can describe this as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A3&#39;</span><span class="p">,</span> <span class="s1">&#39;A3&#39;</span><span class="p">,</span> <span class="s1">&#39;A4&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>No we need to actually describe the music itself. As noted above, section A combines quavers in the left hand with triplets in the right. The actual notes being played don’t change much other than shifting between a small number of chords. Let’s start by listing those chords:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">aiii</span> <span class="o">=</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;A Minor&#39;</span><span class="p">)</span>
+<span class="n">aiii7</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">(</span><span class="n">arpeggio7</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;A Minor&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">aii</span> <span class="o">=</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;G Minor&#39;</span><span class="p">)</span>
+<span class="n">aii7</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">subset</span><span class="p">(</span><span class="n">aii</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here those chords are named according to their relationship to the overall key signature (F Major). Next we define two functions that take in pairs of notes and return them as alternating quavers or triplets, filling the number of bars specified:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">triplet_bar</span><span class="p">(</span><span class="n">note_pair</span><span class="p">,</span> <span class="n">bars</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">triplets</span><span class="p">(</span><span class="n">notes</span><span class="p">(</span><span class="n">note_pair</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">bars</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">doublet_bar</span><span class="p">(</span><span class="n">note_pair</span><span class="p">,</span> <span class="n">bars</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">notes</span><span class="p">(</span><span class="n">note_pair</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">bars</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, we create a motif function that takes the chords and passes their notes to these two functions. Exception it’s not quite as easy, as the motif is not always exactly the same, and treats the chords somewhat differently, with a few tweaks involved too. The resulting function is a little complex, so let’s break it up. First, we define the function, and it takes a chord, the number of bars and any tweaks as it’s arguments. It also makes an empty dictionary called motif that will store the created motif:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">A_motif</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="o">*</span><span class="n">tweaks</span><span class="p">):</span>
+    <span class="n">motif</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
+<p>Next we create the right hand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;no treble&#39;</span> <span class="ow">in</span> <span class="n">tweaks</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bars</span>
+<span class="k">elif</span> <span class="n">chord</span> <span class="o">==</span> <span class="n">aI</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">triplet_bar</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="n">bars</span><span class="o">=</span><span class="n">bars</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">chord</span> <span class="o">==</span> <span class="n">aii</span> <span class="ow">and</span> <span class="s1">&#39;low triplets&#39;</span> <span class="ow">in</span> <span class="n">tweaks</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">triplet_bar</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="n">bars</span><span class="o">=</span><span class="n">bars</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">triplet_bar</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="n">bars</span><span class="o">=</span><span class="n">bars</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Conditional on the chord and tweaks this takes two of the 4th, 5th and 6th notes of the chord and passes them to the triplet_bar function. Note there’s a tweak to silence the right hand entirely. Next we make the left hand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doublet_bar</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">bars</span><span class="o">=</span><span class="n">bars</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s1">&#39;crotchet bass&#39;</span> <span class="ow">in</span> <span class="n">tweaks</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">bars</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bars</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;extend tie&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tweaks</span><span class="p">:</span>
+        <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="k">if</span> <span class="s1">&#39;low first&#39;</span> <span class="ow">in</span> <span class="n">tweaks</span><span class="p">:</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass1&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">chord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">],</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This has two voices, one that contains alternating quavers (bass1) and another that contains held notes or crotchets (bass2), this doesn’t vary conditional on the chord, but there are plenty of tweaks. Lastly, we use this function to build the differnent elements of section A, as well as A0, the briding subsection that links all sections:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="n">aI</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;no treble&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aiii</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;no treble&#39;</span><span class="p">,</span> <span class="s1">&#39;low first&#39;</span><span class="p">))</span>
+<span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">][</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempo_change</span><span class="p">(</span><span class="s1">&#39;4/4&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">][</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span>
+<span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="n">aI</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aiii</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="n">aI</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aiii7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;crotchet bass&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aI</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;crotchet bass&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aiii</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="n">aii</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;low triplets&#39;</span><span class="p">,</span> <span class="s1">&#39;extend tie&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aii</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aI</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="n">aii</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;low triplets&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aii7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;crotchet bass&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aii</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;crotchet bass&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="n">aI</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This is all quite readable (ish). Note that A0 has a tempo change stuck at the start, this is because sometimes this section follows other sections that are in a different time signature.</p>
+<p>I’ll leave sections B, C and D up to you, but it’s basically the same principle. The resulting music looks like this:</p>
+<img alt="_images/mad_rush.png" src="_images/mad_rush.png" />
+</div>
+<div class="section" id="summarizing">
+<h2>Summarizing<a class="headerlink" href="#summarizing" title="Permalink to this headline">¶</a></h2>
+<p>The sheet music looks good, but its long (19 pages!) and very repetitive. What can we do to improve this? The solution is to use various markings and indicate whether the player should move between them. However, traditional sheet music is not really great at this and the result is still long and clunky. We can do better: we can print each sub-unit once only (with a label) and then provide a text description at the top of the piece describing the structure. Printing each element once only is easy, we just print the dictionary of subunits directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">:</span>
+    <span class="n">sections_to_print</span> <span class="o">=</span> <span class="n">sections</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">sections_to_print</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Text can be added at the top with the <em>subtext</em> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">subtext</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">:</span>
+        <span class="k">return</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            </span><span class="se">\\</span><span class="s2">markup {</span>
+<span class="s2">                </span><span class="se">\\</span><span class="s2">column {</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line {</span><span class="se">\\</span><span class="s2">bold </span><span class="si">{Overall:}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">bold{AA B CC B AA B DD}}</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line {Insert A0 between all elements, and at start and end of piece.}</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line {</span><span class="se">\\</span><span class="s2">bold {Section A:} A1, A1, A2, A2, A2, A3, A3, A4}</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line {</span><span class="se">\\</span><span class="s2">bold {Section B:} B1, B1, B2, B2, B2, B3, B3, B4}</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line {</span><span class="se">\\</span><span class="s2">bold {Section C:} C1, C1, C2, C2, C2, C3, C3, C4}</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line {</span><span class="se">\\</span><span class="s2">bold {Section D:} D1, D1, D2, D2, D2, D3, D3, D4}</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                    </span><span class="se">\\</span><span class="s2">line { - }</span>
+<span class="s2">                }</span>
+<span class="s2">            }&quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>This uses lilypond markup language. There’s a bunch of empty line breaks, because this causes sections A, B, C and D to (almost) fall on a single page each which is really pleasing (and yes, we get down from 19 to just 4 pages). Here’s what the new sheet music looks like:</p>
+<img alt="_images/mad_rush_summary.png" src="_images/mad_rush_summary.png" />
+</div>
+<div class="section" id="keyless-music">
+<h2>Keyless music<a class="headerlink" href="#keyless-music" title="Permalink to this headline">¶</a></h2>
+<p>This is another (pointlessly) advanced feature. So we’ve written the piece, and it’s in a specific key (F Major in this case). But, LilyLib supposedly “understands” music, so can’t we ask it to write the same music in a different key? The answer is yes, and it’s actually quite simple, but it’s perhaps not how you imagine.</p>
+<p>A first attempt, might just be to change <em>self.key</em> in the details function to something else, say E Major. But this won’t work. What it does is tell the piece to behave in accordance with E Major (so F sharp instead of F), but some of the piece will then no longer make sense. For instance the ver first chord is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This makes sense in F Major, but in E Major it doesn’t: we ask for the arpeggio to start on f, but an arpeggio in E Major doesn’t include an F, and neither does the key signature. Recognizing this, LilyLib will raise an error and tell you off.</p>
+<p>Given this, a second attempt might be to write the piece in F Major and then use the <em>transpose</em> function to shift it. This will work (assuming you shift via semitones). However, there are two problems: (1) the key signature is not changed, so you’ll end up with music full of accidentals and the actual harmonic centre of the transposed music will be totally obscured, and (2) because this technique preserves the relationships between all notes it can’t change music from major into minor (or vice-versa), for instance changing this piece into F Minor.</p>
+<p>OK, so here’s how to actually do it. First, set the key to whatever you want in the <em>details</em> function (as above), but then, and this is the mildly tricky bit, rewrite the chords such that the notes therein are not named. Instead the notes need to be defined relative to a start note that is dependent on the key. This is a little tricky, so let’s revisit the <em>aI</em> chord, but this time with no explicit key:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that <em>‘f’</em> has been replaced with <em>self.key.root</em>. We saw in an earlier section that the root of a key is the letter of it’s start note (so ‘f’ for F Major/Minor and so on). The root can be used to create notes, and because it has no pitch markings it starts in the octave below middle C, which is exactly what we want in this case (we could add pitch indications for other starting points).</p>
+<p>The other chords are defined relative to the same root, or by reference to this chord itself. To illustrate, here’s the next chord <em>aiii</em>, first limited to F Major, then keyless:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aiii</span> <span class="o">=</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;A Minor&#39;</span><span class="p">)</span>
+<span class="n">aiii</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">letter</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span> <span class="k">else</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">aI</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>In the first case the start note is set as ‘e’ and the key as A Major, in the second case the chord is defined totally differently: we take the initial chord and copy it note for note, except, if the note falls on the root note of the piece it is transposed down one note in the scale.</p>
+<p>We contiue this process, and in total there are 14 chords that need to be defined this way. But with this done, the entire process is complete. All the chords are defined, ultimately, relative to the key the piece is in, and so by changing the key, the chords (and thus all the music) is changed accordingly. As an example, here’s what the piece looks like in C-Sharp Minor:</p>
+<img alt="_images/mad_rush_keyless.png" src="_images/mad_rush_keyless.png" />
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LilyLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_music.html">Writing music</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changing_keys.html">Keys and changing key</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markup.html">Markup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prelude_in_c.html">Prelude in C</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mad Rush</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-a">Section A</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summarizing">Summarizing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keyless-music">Keyless music</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="prelude_in_c.html" title="previous chapter">Prelude in C</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Thomas J. H. Morgan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/mad_rush.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
