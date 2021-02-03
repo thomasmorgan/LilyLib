@@ -173,7 +173,7 @@ Lilylib also includes functions that generate other common series of tones:
 - diminished7; diminished 7ths
 - chromatic; chromatic scales
 
-Though note that the dominant 7th function uses the 6th instead of the double-flattened 7th, as this typically produces cleaner notation. It's also worth remembering the dominant and diminished 7ths are the same for major, minor and harmonic versions of the same key. The chromatic function also follows convention by using sharps when the scale is ascending, and flats when descending, as this minimizes the number of accidentals. Here's the chromatic demo:
+Note that the dominant and diminished 7ths are the same for major, minor and harmonic versions of the same key. The chromatic function also follows convention by using sharps when the scale is ascending, and flats when descending, as this minimizes the number of accidentals. Here's the chromatic demo:
 
 ::
 

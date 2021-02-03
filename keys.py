@@ -85,11 +85,11 @@ class Key:
     @property
     def diminished7_tones(self):
         if "major" in self.name:
-            diminished7_letters = [self.root, tones.flatten(self.III), tones.flatten(self.V), self.VI]
+            diminished7_letters = [self.root, tones.flatten(self.III), tones.flatten(self.V), tones.flatten(tones.flatten(self.VII))]
         elif "harmonic" in self.name:
-            diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.sharpen(self.VI)]
+            diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
         elif "minor" in self.name:
-            diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.sharpen(self.VI)]
+            diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
         else:
             raise ValueError("Cannot provide diminished 7 tones for key {}".format(self.name))
 
