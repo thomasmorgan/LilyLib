@@ -1,6 +1,9 @@
 from piece import Piece
-from util import join, subset, select, flatten, tonify, linebreak, letter, clef
+from util import join, subset, select, flatten
+from markup import linebreak, clef, grace, repeat, voices, name
+from tones import tonify, letter
 from copy import deepcopy
+from points import note, notes, rests, chord, diminished7, arpeggio, remove, add
 
 
 class MarcheFunebre(Piece):
@@ -23,18 +26,16 @@ class MarcheFunebre(Piece):
 
     def write_score(self):
 
-        grace, after_grace, note, notes, transpose, harmonize, rests, scale, chord, chords, arpeggio, dominant7, diminished7, voices, add, name, remove, replace = self.grace, self.after_grace, self.note, self.notes, self.transpose, self.harmonize, self.rests, self.scale, self.chord, self.chords, self.arpeggio, self.dominant7, self.diminished7, self.voices, self.add, self.name, self.remove, self.replace
-
         """ Intro """
 
         def rise(tone):
-            return grace(notes([transpose(transpose(tone, -1), -1, 'semitone'), transpose(tone, -1), tone], 32))
+            return grace(notes([self.transpose(self.transpose(tone, -1, 'octave'), -1, 'semitone'), self.transpose(tone, -1), tone], 32))
 
         def fall(tone):
-            return harmonize(note(tone, 8, ornamentation='\\staccato'), -1)
+            return self.harmonize(note(tone, 8, ornamentation='\\staccato'), -1, 'octave')
 
         def fall2(tone):
-            return note(transpose(tone, -1), 8, ornamentation='\\staccato')
+            return note(self.transpose(tone, -1, 'octave'), 8, ornamentation='\\staccato')
 
         def plink(tone):
             return rise(tone) + fall(tone) + rests(8)
@@ -54,69 +55,71 @@ class MarcheFunebre(Piece):
 
         def drone1(tone, interval=-2):
             note = notes(tone, 2)
-            chord1 = harmonize(note, interval, 'scale')
-            chord2 = transpose(chord1, -1, 'scale')
-            chord3 = transpose(chord2, -1, 'semitone')
+            chord1 = self.harmonize(note, interval, 'scale')
+            chord2 = self.transpose(chord1, -1, 'scale')
+            chord3 = self.transpose(chord2, -1, 'semitone')
             return chord1 + chord2 + chord3 + chord2
 
         def drone2(tone, interval=-2):
-            return harmonize(scale(tone, -4, 2), interval, 'scale')
+            return self.harmonize(self.scale(tone, -4, 2), interval, 'scale')
 
         drone_a = drone1('ef`') + drone1('cf`')
         self.set_key('bf minor')
         drone_b = drone2('gf`') + subset(drone1('ef`'), 1, 3) + notes('bf', 2)
 
         intro = {
-            'treble': self.repeat(['\\grace s16.'] + rests(1) * 8),
-            'bass': self.voices(drone_a + drone_b, plodding) + linebreak
+            'treble': repeat(['\\grace s16.'] + rests(1) * 8),
+            'bass': voices(drone_a + drone_b, plodding) + linebreak
         }
 
-        self.name(intro['treble'], 'Play first repeat one octave lower')
+        name(intro['treble'], 'Play first repeat one octave lower')
 
         """ Bold Chords """
 
         self.set_key('ef minor')
 
         rh_melody = [''] * 9
-        rh_melody[1] = scale('cf``', 'f`', ['4.', 8, 4], step=2) + notes('f` f`', ['8.', 16])
-        rh_melody[2] = scale('af`', 'ef`', [8, 8, '8.', 16]) + notes('f`', 2)
-        rh_melody[3] = scale('gf`', 'cf``', [4, '8.', 16, '4.']) + notes('af`', 8)
-        rh_melody[4] = scale('f`', 'ef``', [8, 8, '8.', 16], step=2) + notes('df``', 2)
-        rh_melody[5] = scale('bf`', 'ef``', [4, '8.', 16, '4.']) + notes('cf``', 8)
+        rh_melody[1] = self.scale('cf``', 'f`', ['4.', 8, 4], step=2) + notes('f` f`', ['8.', 16])
+        rh_melody[2] = self.scale('af`', 'ef`', [8, 8, '8.', 16]) + notes('f`', 2)
+        rh_melody[3] = self.scale('gf`', 'cf``', [4, '8.', 16, '4.']) + notes('af`', 8)
+        rh_melody[4] = self.scale('f`', 'ef``', [8, 8, '8.', 16], step=2) + notes('df``', 2)
+        rh_melody[5] = self.scale('bf`', 'ef``', [4, '8.', 16, '4.']) + notes('cf``', 8)
         rh_melody[6] = notes('bf` af` bf`', [4, 4, 2])
         rh_melody[7] = deepcopy(rh_melody[5])
-        rh_melody[8] = scale('bf`', 'gf`', [4, 4, 2])
+        rh_melody[8] = self.scale('bf`', 'gf`', [4, 4, 2])
 
-        lh_melody = transpose(rh_melody, -1)
-        lh_melody[3] = rests(2) + scale('af,', 'ef', [4, '8.', 16], step=2)
-        lh_melody[4] = rests(2) + scale('bf,', 'f', [4, '8.', 16], step=2)
+        lh_melody = self.transpose(rh_melody, -1, 'octave')
+        lh_melody[3] = rests(2) + self.scale('af,', 'ef', [4, '8.', 16], step=2)
+        lh_melody[4] = rests(2) + self.scale('bf,', 'f', [4, '8.', 16], step=2)
         lh_melody[5] = rests(['2..']) + notes('cf`', 8)
         lh_melody[7] = subset(lh_melody[7], 1, 3) + rests(2)
-        lh_melody[8] = transpose(lh_melody[8], 2, 'scale')
+        lh_melody[8] = self.transpose(lh_melody[8], 2)
 
         rh_harmony = [''] * 9
-        rh_harmony[1] = [chord(diminished7('d`', note, key='cf major'), note.dur) for note in rh_melody[1]]
+        rh_harmony[1] = [chord(diminished7('d`', note.tone, key='d minor'), note.dur) for note in rh_melody[1]]
         rh_harmony[2] = [chord('c` ef`', 4), chord('a c`', '8.'), chord('a c`', 16), chord('bf d`', 2)]
-        rh_harmony[3] = [chord(arpeggio('bf', 'gf`'), note.dur) for note in subset(rh_melody[3], 1, 3)] + [chord(arpeggio('cf`', 'gf`', key='cf major'), 2)]
+        rh_harmony[3] = [chord(self.arpeggio('bf', 'gf`'), note.dur) for note in subset(rh_melody[3], 1, 3)] + [chord(arpeggio('cf`', 'gf`', key='cf major'), 2)]
         rh_harmony[4] = [chord('df` f`', 4)] + [chord('df` f` af`', d) for d in ['8.', 16, 2]]
-        rh_harmony[5] = [chord(arpeggio('ef`', 'bf`'), note.dur) for note in rh_melody[5]]
+        rh_harmony[5] = [chord(self.arpeggio('ef`', 'bf`'), note.dur) for note in rh_melody[5]]
         remove(select(rh_harmony[5], 5), 'bf`')
         rh_harmony[6] = [chord('df` gf`', 4), chord('df` f`', 4), chord('d` f` af`', 2)]
         rh_harmony[7] = subset(rh_harmony[5], 1, 4) + [chord('ef` af`', 8)]
         rh_harmony[8] = notes('gf`', 4) + [chord('df` f`', 4)] + notes('df`', 2)
 
         lh_harmony = [''] * 9
-        lh_harmony[1] = transpose(rh_harmony[1], -1)
+        lh_harmony[1] = self.transpose(rh_harmony[1], -1, 'octave')
         add(subset(lh_harmony[1], 1, 4), 'bf,')
-        lh_harmony[2] = transpose(rh_harmony[2], -1)
+        lh_harmony[2] = self.transpose(rh_harmony[2], -1, 'octave')
         add(lh_harmony[2], 'bf,')
         remove(lh_harmony[2], 'a,')
         lh_harmony[3] = [chord('ef gf', dur=c.dur) for c in flatten(rh_harmony[3])]
-        lh_harmony[4] = transpose(rh_harmony[4], -1)
-        lh_harmony[5] = transpose(rh_harmony[5], -1)
+        lh_harmony[4] = self.transpose(rh_harmony[4], -1, 'octave')
+        add(subset(lh_harmony[4], 1, 3), 'af cf`')
+        remove(select(lh_harmony[4], 4), 'df')
+        lh_harmony[5] = self.transpose(rh_harmony[5], -1, 'octave')
         add(subset(lh_harmony[5], 1, 3), 'df`')
         add(subset(lh_harmony[5], 4, 5), 'cf')
-        lh_harmony[6] = transpose(rh_harmony[6], -1)
+        lh_harmony[6] = self.transpose(rh_harmony[6], -1, 'octave')
         lh_harmony[7] = deepcopy(subset(lh_harmony[5], 1, 4)) + [chord('cf ef af', 8)]
         remove(lh_harmony[7], 'df`')
         lh_harmony[8] = [chord('df gf', 4), chord('df f', 4), chord('gf, df', 2)]
