@@ -106,20 +106,15 @@ class MarcheFunebre(Piece):
         rh_harmony[7] = subset(rh_harmony[5], 1, 4) + [chord('ef` af`', 8)]
         rh_harmony[8] = notes('gf`', 4) + [chord('df` f`', 4)] + notes('df`', 2)
 
-        lh_harmony = [''] * 9
-        lh_harmony[1] = self.transpose(rh_harmony[1], -1, 'octave')
+        lh_harmony = self.transpose(rh_harmony, -1, 'octave')
         add(subset(lh_harmony[1], 1, 4), 'bf,')
-        lh_harmony[2] = self.transpose(rh_harmony[2], -1, 'octave')
         add(lh_harmony[2], 'bf,')
         remove(lh_harmony[2], 'a,')
         lh_harmony[3] = [chord('ef gf', dur=c.dur) for c in flatten(rh_harmony[3])]
-        lh_harmony[4] = self.transpose(rh_harmony[4], -1, 'octave')
         add(subset(lh_harmony[4], 1, 3), 'af cf`')
         remove(select(lh_harmony[4], 4), 'df')
-        lh_harmony[5] = self.transpose(rh_harmony[5], -1, 'octave')
         add(subset(lh_harmony[5], 1, 3), 'df`')
         add(subset(lh_harmony[5], 4, 5), 'cf')
-        lh_harmony[6] = self.transpose(rh_harmony[6], -1, 'octave')
         lh_harmony[7] = deepcopy(subset(lh_harmony[5], 1, 4)) + [chord('cf ef af', 8)]
         remove(lh_harmony[7], 'df`')
         lh_harmony[8] = [chord('df gf', 4), chord('df f', 4), chord('gf, df', 2)]
