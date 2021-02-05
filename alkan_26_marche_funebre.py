@@ -3,7 +3,7 @@ from util import join, subset, select, flatten
 from markup import linebreak, clef, grace, after_grace, repeat, voices, name, tempo_change
 from tones import tonify, letter
 from copy import deepcopy
-from points import note, notes, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, transpose
+from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, transpose
 
 
 class MarcheFunebre(Piece):
@@ -45,6 +45,9 @@ class MarcheFunebre(Piece):
 
         def plonk2(tone):
             return rise(tone) + 3 * fall2(tone) + rests(8)
+
+        def plonk3(tone):
+            return rise(tone) + 2 * fall(tone) + rest(4)
 
         def plod(tones):
             tones = tonify(tones)
@@ -236,23 +239,31 @@ class MarcheFunebre(Piece):
 
         bridge_part_2 = {
             'treble': clef('bass') + voices(bridge_part_2_melody['treble'], bridge_part_2_harmony['treble']),
-            'bass': voices(bridge_part_2_harmony['bass'], bridge_part_2_melody['bass'])
+            'bass': voices(bridge_part_2_harmony['bass'], bridge_part_2_melody['bass']) + linebreak
         }
 
         bridge = join(bridge_part_1, key_change, bridge_part_2)
 
-        """ decorations """
+        """ Intro again again """
 
-        name(rh_melody[1], "Bf/d7, Bf")
-        name(rh_melody[2], "Af, FD7, Bf")
-        name(rh_melody[3], "Efm, Cf")
-        name(rh_melody[4], "d7, Df")
-        name(rh_melody[5], "EfD7, Cf7")
-        name(rh_melody[6], "Gf, Df, d7")
-        name(rh_melody[7], "Ef, Ef6, Af")
-        name(rh_melody[8], "Gf, DfD7, Gf")
+        self.set_key('Ef Minor')
+        intro3_treble = drone1('ef') + drone1('cf')
+        intro3_bass = self.key_signature + 4 * plod('ef, ef,')
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge)
+        self.set_key('ef harmonic')
+        mini_motif = self.harmonize(notes('bf', ['4.', 8]) + self.scale('bf', -4, 4), -2)
+        intro3_treble += (self.harmonize(notes(['gf', 'ef', 'af'], 2) + grace(note('gf', 16)) + note('f', 2), -2)
+                          + mini_motif + chord('d cf', 2) + mini_motif + 3 * (note('ef', 2) + chord('d af cf`', 2)))
+        intro3_bass += (plod('ef, af,') + plod('f, bf,') + plod('gf, cf') + plod('bf, af,')
+                        + 2 * plink('gf,') + plonk3('cf') + plonk3('bf,') + plonk('ef,')
+                        + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(1))
+
+        intro3 = {
+            'treble': rest(1) * 13,
+            'bass': voices(intro3_treble, intro3_bass)
+        }
+
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/15)\n }\n }\n }')
