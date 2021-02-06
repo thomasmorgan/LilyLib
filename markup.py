@@ -25,7 +25,7 @@ def acciaccatura(passage):
 
 
 def ottava(passage, shift):
-    return ['\\ottava #{}'.format(shift)] + passage + ['\\ottava #0']
+    return ['\\ottava #{}'.format(shift)] + passage + ['\\ottava #0 ']
 
 
 def voices(*voices):
