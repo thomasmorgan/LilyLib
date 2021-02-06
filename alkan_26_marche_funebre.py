@@ -259,11 +259,47 @@ class MarcheFunebre(Piece):
                         + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(1))
 
         intro3 = {
-            'treble': rest(1) * 13,
-            'bass': voices(intro3_treble, intro3_bass)
+            'treble': clef('treble') + rest(1) * 13,
+            'bass': voices(intro3_treble, intro3_bass) + linebreak
         }
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3)
+        """ Cascade """
+
+        self.set_key('ef major')
+        key_change = {
+            'treble': self.key_signature,
+            'bass': self.key_signature
+        }
+
+        def set_cascade_melody(melody, bars=8, is_repeated=False):
+            section = {
+                'treble': voices(melody, bars * self.scale('ef`', -4, 8)) + linebreak,
+                'bass': voices(bars * self.scale('g', -4, 8), bars * note('ef,', 2))
+            }
+            if is_repeated:
+                section['bass'] = repeat(section['bass'])
+            return section
+
+        cascade_melody_1a = notes('g` af` g` af` bf` g` af`', [4, 4, 4, 8, 8, 4, 4])
+        cascade_melody_1 = cascade_melody_1a + notes('g` f`', 4) + cascade_melody_1a + note('g`', 2)
+        cascade_meldody_2a = self.arpeggio('g`', 3, 4)
+        cascade_meldody_2b = cascade_meldody_2a + notes('bf` af`', 8)
+        cascade_melody_2 = cascade_meldody_2b + cascade_meldody_2a + note('bf`', 4) + cascade_meldody_2b + notes('g` af` bf` g`', [4, 8, 8, '4.']) + rest(8)
+        cascade_melody_3a = notes('ef`` c`` d`` c`` g` g`', [4, 8, 8, 4, 4, 2])
+        cascade_melody_3 = notes('c`` g`', 4) + cascade_melody_3a + notes('g` c`` d``', [4, 8, 8]) + cascade_melody_3a
+        cascade_melody_4 = subset(cascade_melody_1, 1, 14) + notes('g` f` ef` g`', [4, 8, 8, 2])
+        cascade_melody_5 = self.arpeggio('g`', 3, 4) + note('c``', 8) + self.scale('d``', -5, [8, 4, 8, 8, 2]) + note('g`', 4) + 2 * self.scale('c``', 3, [8, 8, 4]) + notes('g` f` g`', [8, 8, 2])
+
+        cascade = join(key_change,
+                       set_cascade_melody(cascade_melody_1, is_repeated=True),
+                       set_cascade_melody(cascade_melody_2, is_repeated=True),
+                       set_cascade_melody(cascade_melody_3),
+                       set_cascade_melody(cascade_melody_4),
+                       set_cascade_melody(cascade_melody_5),
+                       set_cascade_melody(cascade_melody_4)
+                       )
+
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/15)\n }\n }\n }')
