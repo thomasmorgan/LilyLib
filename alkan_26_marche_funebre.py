@@ -1,9 +1,9 @@
 from piece import Piece
 from util import join, subset, select, flatten
-from markup import linebreak, clef, grace, after_grace, repeat, voices, name, tempo_change
+from markup import linebreak, clef, grace, after_grace, repeat, voices, name, tempo_change, ottava
 from tones import tonify, letter
 from copy import deepcopy
-from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, transpose
+from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace
 
 
 class MarcheFunebre(Piece):
@@ -273,8 +273,8 @@ class MarcheFunebre(Piece):
 
         def set_cascade_melody(melody, bars=8, is_repeated=False):
             section = {
-                'treble': voices(melody, bars * self.scale('ef`', -4, 8)) + linebreak,
-                'bass': voices(bars * self.scale('g', -4, 8), bars * note('ef,', 2))
+                'treble': voices(melody, bars * self.scale('ef`', -4, 8)),
+                'bass': voices(bars * self.scale('g', -4, 8), bars * note('ef,', 2)) + linebreak
             }
             if is_repeated:
                 section['bass'] = repeat(section['bass'])
@@ -299,7 +299,14 @@ class MarcheFunebre(Piece):
                        set_cascade_melody(cascade_melody_4)
                        )
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade)
+        """ Intro 4 """
+
+        intro4 = {
+            'treble': drone_a + drone_b + linebreak,
+            'bass': ottava(self.transpose(plodding, -1, 'octave'), -1)
+        }
+
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/15)\n }\n }\n }')
