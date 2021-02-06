@@ -248,19 +248,19 @@ class MarcheFunebre(Piece):
 
         self.set_key('Ef Minor')
         intro3_treble = drone1('ef') + drone1('cf')
-        intro3_bass = self.key_signature + 4 * plod('ef, ef,')
+        intro3_bass = 4 * plod('ef, ef,')
 
         self.set_key('ef harmonic')
         mini_motif = self.harmonize(notes('bf', ['4.', 8]) + self.scale('bf', -4, 4), -2)
         intro3_treble += (self.harmonize(notes(['gf', 'ef', 'af'], 2) + grace(note('gf', 16)) + note('f', 2), -2)
-                          + mini_motif + chord('d cf', 2) + mini_motif + 3 * (note('ef', 2) + chord('d af cf`', 2)))
+                          + mini_motif + chord('d cf', 2) + mini_motif + note('ef', 2) + 2 * (chord('d af cf`', 2) + note('ef', 2)) + chord('d af cf`', 1))
         intro3_bass += (plod('ef, af,') + plod('f, bf,') + plod('gf, cf') + plod('bf, af,')
                         + 2 * plink('gf,') + plonk3('cf') + plonk3('bf,') + plonk('ef,')
                         + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(1))
 
         intro3 = {
-            'treble': clef('treble') + rest(1) * 13,
-            'bass': voices(intro3_treble, intro3_bass) + linebreak
+            'treble': self.key_signature + ['\\grace s16.'] + clef('treble') + rest(1) * 13,
+            'bass': self.key_signature + voices(intro3_treble, intro3_bass) + linebreak
         }
 
         """ Cascade """
@@ -301,12 +301,44 @@ class MarcheFunebre(Piece):
 
         """ Intro 4 """
 
+        self.set_key('ef minor')
         intro4 = {
-            'treble': drone_a + drone_b + linebreak,
-            'bass': ottava(self.transpose(plodding, -1, 'octave'), -1)
+            'treble': self.key_signature + ['\\grace s16.'] + drone_a + drone_b + linebreak,
+            'bass': self.key_signature + ottava(self.transpose(plodding, -1, 'octave'), -1)
         }
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4)
+        """ bold chords 3 """
+
+        rh_melody3 = subset(rh_melody, 1, 5) + self.transpose(subset(rh_melody, 4, 5), 2)
+
+        rh_harmony3 = deepcopy(rh_harmony[0:7])
+        add(rh_harmony3[1], 'bf')
+        rh_harmony3[2] = chords(['bf cf` ef`', 'af cf`', 'af cf`', 'af bf d`'], [4, '8.', 16, 2])
+        rh_harmony3[5] = subset(rh_harmony[5], 1, 3) + chord('ef` gf` bf`', 2)
+        rh_harmony3[6] = self.transpose(rh_harmony3[4], 2)
+        add(select(rh_harmony3[6], 3), 'ef``')
+        add(select(rh_harmony3[6], 4), 'df``')
+
+        lh_melody3 = subset(lh_melody, 1, 4) + [rests(2) + self.scale('bf,', 'af', [8, 8, '8.', 16], step=2)]
+        lh_melody3 += [[self.transpose(lh_melody3[3], 2)], [self.transpose(lh_melody3[4], 2)]]
+
+        lh_harmony3 = deepcopy(lh_harmony[0:7])
+        add(lh_harmony3[1], 'bf,')
+        add(subset(lh_harmony3[3], 1, 3), 'bf,')
+        add(select(lh_harmony3[3], 1), 'ef,')
+        add(select(lh_harmony3[4], 1), 'f,')
+        add(select(lh_harmony3[4], 4), 'df')
+        lh_harmony3[5] = subset(lh_harmony[5], 1, 3) + chord('ef gf bf', 2)
+        add(select(lh_harmony3[5], 1), 'gf,')
+        lh_harmony3[6] = self.transpose(lh_harmony3[4], 2)
+        add(select(lh_harmony3[6], 4), 'df`')
+
+        bold_chords3 = {
+            'treble': voices(rh_melody3, rh_harmony3),
+            'bass': voices(lh_melody3, lh_harmony3)
+        }
+
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/15)\n }\n }\n }')
