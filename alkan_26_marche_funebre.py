@@ -132,7 +132,7 @@ class MarcheFunebre(Piece):
         self.set_key('fs minor')
         shifted_bass = self.key_signature + self.transpose(subset(plodding, 1, 7), 3, 'semitone') + tempo_change('2/4') + plonk('gs') + tempo_change('4/4')
 
-        drone_c = self.key_signature + drone1('fs`', 5) + drone1('d`', 5)
+        drone_c = self.key_signature + ['\\grace s16.'] + drone1('fs`', 5) + drone1('d`', 5)
         add(drone_c, 'fs`')
 
         self.set_key('cs minor')
