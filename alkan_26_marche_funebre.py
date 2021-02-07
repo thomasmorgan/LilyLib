@@ -13,6 +13,7 @@ class MarcheFunebre(Piece):
         self.composer = "Charles Valentin Alkan"
         self.opus = "Op. 26"
         self.key = "Ef Minor"
+        self.staves[0].extra_text = '\\set Score.connectArpeggios = ##t'
 
     def subtext(self):
         return '''
@@ -20,6 +21,12 @@ class MarcheFunebre(Piece):
               \\context {
                 \\Staff
                 \\RemoveEmptyStaves
+              }
+            }
+            \\layout {
+              \\context {
+                \\Score
+                \\consists "Span_arpeggio_engraver"
               }
             }
         '''
@@ -217,9 +224,14 @@ class MarcheFunebre(Piece):
 
         key_change = {'treble': self.key_signature, 'bass': self.key_signature}
 
+        def bridge_grace(passage):
+            return subset(passage, 1, 2) + grace(note(passage[1].tone, 16)) + subset(passage, 3, len(passage))
+
+        bridge_rhythm4 = [8, 8, '8.', 16]
+
         bridge_part_2_melody = {
             'treble': 2 * (notes('e`', bridge_rhythm) + self.scale('e`', -4, 8) + self.scale('e`', 4, bridge_rhythm + [2])) + 2 * rests(1),
-            'bass': rests(1, 2) + self.scale('e,', -2, 8) + grace(note('ds,', 8)) + self.scale('cs,', -2, 8) + notes(['b,,'] + self.scale('e,', 3), 8) + notes('a,', 2) + self.scale('a,', -4, 8) + self.scale('e,', -4, [8, 8, '8.', 16]) + self.scale('b,,', -4, 8) + notes('e,, ds,, d,,', [4, 4, 1])
+            'bass': rests(1, 2) + bridge_grace(self.scale('e,', -4, 8)) + notes(['b,,'] + self.scale('e,', 3), 8) + notes('a,', 2) + self.scale('a,', -4, 8) + self.scale('e,', -4, bridge_rhythm4) + self.scale('b,,', -4, 8) + notes('e,, ds,, d,,', [4, 4, 1])
         }
 
         bridge_part_2_harmony = {'treble': [''] * 6, 'bass': [''] * 9}
@@ -338,7 +350,48 @@ class MarcheFunebre(Piece):
             'bass': voices(lh_melody3, lh_harmony3)
         }
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3)
+        """ bridge 2 """
+
+        bridge2_part_1 = join(bridge_motif('gf``'), bridge_motif('f``'), bridge_motif('e``'))
+
+        bridge2_part_2_melody = {
+            'treble': self.key_signature + subset(bridge_part_2_melody['treble'], 1, 14) + bridge_grace(self.scale('e`', -4, bridge_rhythm4)) + note('b', 8) + self.scale('e`', 3, 8) + note('a`', 2) + rests(1, 1),
+            'bass': self.key_signature + rests(1, 2) + bridge_grace(self.scale('e,', -4, bridge_rhythm4)) + notes(['b,,'] + self.scale('e,', 3), 8) + bridge_grace(self.scale('e', -8, bridge_rhythm4 + [8, 8, 8, 8])) + bridge_grace(self.scale('e,', -8, bridge_rhythm4 + [8, 8, 8, 8])) + notes('e,, ds,, d,,', [4, 4, 1])
+        }
+
+        bridge2_part_2_harmony = deepcopy(bridge_part_2_harmony)
+        bridge2_part_2_harmony['treble'][3] = bridge_chords('e`')['treble'] + chord('fs b', 2)
+        bridge2_part_2_harmony['treble'][4] = chords(['e b', 'fs b e`', 'gs b e`', 'a b fs`'], [4, 8, 8, 2])
+        bridge2_part_2_harmony['bass'][6] = note('af,', 2)
+
+        bridge2_part_2 = {
+            'treble': clef('bass') + voices(bridge2_part_2_melody['treble'], bridge2_part_2_harmony['treble']),
+            'bass': voices(bridge2_part_2_harmony['bass'], bridge2_part_2_melody['bass']) + linebreak
+        }
+
+        bridge2 = join(bridge2_part_1, bridge2_part_2)
+
+        """ outro """
+
+        self.set_key('ef minor')
+
+        outro = {
+            'treble': self.key_signature + ['\\grace s16.'] + 15 * rest(1),
+            'bass': self.key_signature + voices(intro3_treble[0:21] + chord('c ef', 2) + intro3_treble[15:19] + rest(2) + intro3_treble[19:21] + rest(2) + intro3_treble[28:33] + chords(['d af cf`'], [2, 2, 1]),
+                                                intro3_bass[0:175] + plonk('a,') + 2 * plink('gf,') + plonk3('cf') + rest(2) + plonk3('bf,') + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(2) + 2 * plink('ef,') + rests(1, 1))
+        }
+
+        """ outro 2 """
+
+        self.set_key('ef major')
+
+        outro2 = {
+            'treble': self.key_signature + clef('bass') + voices(chords(['ef g bf'], [2, 4]) + chord('ef af bf', 4) + chords(['ef g bf'], [2, 2]),
+                                                                 4 * self.scale('g', -4, 8)) + chord('ef g bf', 1, ornamentation='\\arpeggio'),
+            'bass': self.key_signature + 4 * voices(self.scale('ef', -4, 8), chord('ef, bf,', 2)) + chord('ef,, bf,, ef, bf,', 1, ornamentation='\\arpeggio')
+        }
+
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/15)\n }\n }\n }')
