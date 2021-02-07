@@ -11,8 +11,15 @@ class Stave:
         else:
             self.name = clef
 
-        self.start = '<< \\new Staff {{\n\\clef {}\n'.format(self.clef)
-        self.end = '} >>\n'
+        self.extra_text = ''
+
+    @property
+    def start(self):
+        return '<< \\new Staff {{\n{}\n\\clef {}\n'.format(self.extra_text, self.clef)
+
+    @property
+    def end(self):
+        return '} >>\n'
 
 
 class Treble(Stave):
