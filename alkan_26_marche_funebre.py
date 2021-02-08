@@ -1,6 +1,6 @@
 from piece import Piece
 from util import join, subset, select, flatten
-from markup import linebreak, clef, grace, after_grace, repeat, voices, name, tempo_change, ottava
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, tempo_change
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace
@@ -299,7 +299,7 @@ class MarcheFunebre(Piece):
 
         intro3 = {
             'treble': self.key_signature + ['\\grace s16.'] + clef('treble') + rest(1) * 13,
-            'bass': self.key_signature + voices(intro3_treble, intro3_bass) + linebreak
+            'bass': self.key_signature + voices(intro3_treble, intro3_bass) + linebreak + pagebreak
         }
 
         """ Cascade """
@@ -310,13 +310,15 @@ class MarcheFunebre(Piece):
             'bass': self.key_signature
         }
 
-        def set_cascade_melody(melody, bars=8, is_repeated=False):
+        def set_cascade_melody(melody, bars=8, is_repeated=False, end=False):
             section = {
                 'treble': voices(melody, bars * self.scale('ef`', -4, 8)),
                 'bass': voices(bars * self.scale('g', -4, 8), bars * note('ef,', 2, '->')) + linebreak
             }
             if is_repeated:
                 section['bass'] = repeat(section['bass'])
+            if end:
+                section['bass'] += pagebreak
             return section
 
         cascade_melody_1a = notes('g` af` g` af` bf` g` af`', [4, 4, 4, 8, 8, 4, 4])
@@ -346,7 +348,7 @@ class MarcheFunebre(Piece):
                        set_cascade_melody(cascade_melody_3),
                        set_cascade_melody(cascade_melody_4),
                        set_cascade_melody(cascade_melody_5),
-                       set_cascade_melody(cascade_melody_6)
+                       set_cascade_melody(cascade_melody_6, end=True)
                        )
 
         """ Intro 4 """
