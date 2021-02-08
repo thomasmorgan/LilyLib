@@ -429,7 +429,7 @@ class MarcheFunebre(Piece):
         self.set_key('ef minor')
 
         outro = {
-            'treble': self.key_signature + ['\\grace s16.'] + 15 * rest(1),
+            'treble': self.key_signature + ['\\grace s16.'] + 15 * rest(1) + linebreak,
             'bass': self.key_signature + deepcopy(voices(intro3_treble[0:21] + chord('c ef', 2) + intro3_treble[15:19] + rest(2) + intro3_treble[19:21] + rest(2) + intro3_treble[28:33] + chords(['d af cf`'], [2, 2, 1], ['->']),
                                                          intro3_bass[0:175] + plonk('a,') + 2 * plink('gf,') + plonk3('cf') + rest(2) + plonk3('bf,') + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(2) + 2 * plink('ef,') + rests(1, 1)))
         }
