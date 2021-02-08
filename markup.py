@@ -3,6 +3,8 @@ from copy import deepcopy
 
 linebreak = ['\\break\n']
 
+pagebreak = ['\\pageBreak\n']
+
 
 def clef(clef):
     return ['\\clef {}'.format(clef)]
