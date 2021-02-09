@@ -1,60 +1,77 @@
-from points import Point
-from copy import deepcopy
+from util import flatten
 
-linebreak = ['\\break\n']
+linebreak = '\\break\n'
 
-pagebreak = ['\\pageBreak\n']
+pagebreak = '\\pageBreak\n\n'
 
 
-def clef(clef):
-    return ['\\clef {}'.format(clef)]
+def clef(clef, passage):
+    passage = flatten([passage])
+    passage[0].prefix = '\\clef {} '.format(clef) + passage[0].prefix
+    return passage
+
+
+def time_signature(tempo, passage):
+    passage = flatten([passage])
+    passage[0].prefix = '\\time {} '.format(tempo) + passage[0].prefix
+    return passage
 
 
 def triplets(passage):
-    return ['\\tuplet 3/2 {'] + passage + ['}']
+    passage = flatten([passage])
+    passage[0].prefix = '\\tuplet 3/2 {' + passage[0].prefix
+    passage[-1].suffix += '}'
+    return passage
 
 
 def grace(passage):
-    return ['\\grace {'] + passage + ['}']
+    passage = flatten([passage])
+    passage[0].prefix = '\\grace {' + passage[0].prefix
+    passage[-1].suffix += '}'
+    return passage
 
 
 def after_grace(passage, grace):
-    return ['\\afterGrace'] + passage + ['{'] + grace + ['}']
+    passage = flatten([passage])
+    grace = flatten([grace])
+    passage[0].prefix = '\\afterGrace {' + passage[0].prefix
+    grace[0].prefix = '{' + passage[0].grace
+    grace[-1].suffix += '}'
+    return passage + grace
 
 
 def acciaccatura(passage):
-    return ['\\acciaccatura {'] + passage + ['}']
+    passage = flatten([passage])
+    passage[0].prefix = '\\acciaccatura {' + passage[0].prefix
+    passage[-1].suffix += '}'
+    return passage
 
 
 def ottava(passage, shift):
-    return ['\\ottava #{}'.format(shift)] + passage + ['\\ottava #0 ']
+    passage = flatten([passage])
+    passage[0].prefix + '\\ottava #{}'.format(shift) + passage[0].prefix
+    passage[-1].suffix += '\\ottava #0 '
+    return passage
 
 
 def voices(*voices):
-    score = ["<<\n"]
     for i, voice in enumerate(voices):
-        score.extend(["{"] + voice + ["}\n"])
+        voice[0].prefix = "{" + voice[0].prefix
+        voice[-1].suffix += "}"
         if i < (len(voices) - 1):
-            score += ["\\\\\n"]
-    score += [">>\n"]
-    return score
+            voice[-1].suffix += "\\\\\n"
+    voices[0][0].prefix = "<<\n" + voices[0][0].prefix
+    voices[-1][-1].suffix += ">>\n"
+    passage = []
+    for voice in voices:
+        passage += voice
+    return passage
 
 
 def repeat(passage, times=2):
+    passage = flatten([passage])
+    passage[0].prefix = "\\repeat volta " + str(times) + '{' + passage[0].prefix
     if times > 2:
-        passage[-1].ornamentation += '^"x' + str(times) + '"'
-    return ["\\repeat volta " + str(times) + '{'] + passage + ['}']
-
-
-def annotation(text):
-    return '^"' + text + '" '
-
-
-def name(passage, name):
-    index = next(i for i, point in enumerate(passage) if isinstance(point, Point))
-    passage[index] = deepcopy(passage[index])
-    passage[index].ornamentation += ('^"' + name + '"')
-
-
-def tempo_change(tempo):
-    return ["\\time {}".format(tempo)]
+        passage[-1].suffix += '^"x' + str(times) + '"'
+    passage[-1].suffix += '}'
+    return passage
