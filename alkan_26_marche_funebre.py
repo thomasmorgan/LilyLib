@@ -177,7 +177,6 @@ class MarcheFunebre(Piece):
         rh_harmony2 = self.transpose(subset(rh_harmony, 1, 7), 3, 'semitone')
         add(subset(rh_harmony2[1], 3, 5), 'cs`')
         rh_harmony2[2] = chord('d` fs`', 4) + chord('b d`', '8.') + chord('b d`', 16) + chord(self.arpeggio('cs`', 3), 2)
-        add(subset(rh_harmony2[4], 1, 3), 'd`')
         rh_harmony2[5] = deepcopy(subset(rh_harmony2[5], 1, 4))
         remove(subset(rh_harmony2[5], 1, 3), 'fs`')
         add(subset(rh_harmony2[5], 1, 3), 'e`')
@@ -455,7 +454,7 @@ class MarcheFunebre(Piece):
         outro2['treble'][5].ornamentation = '_\\markup { \\italic { dim. }}'
         outro2['treble'][7].ornamentation = '_\\markup { \\italic { rall. }}'
         outro2['treble'][8].ornamentation = '\\pp'
-        outro2['treble'][-1].ornamentation = '\\ppp'
+        outro2['treble'][-1].ornamentation += '\\ppp'
 
         self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
