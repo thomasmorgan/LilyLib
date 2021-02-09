@@ -302,7 +302,15 @@ def transpose(item, shift, key, mode="scale"):
         return [transpose(subitem, shift, key, mode) for subitem in item]
 
     elif isinstance(item, Point):
-        return Point(transpose(item.tones, shift, key, mode), item.dur, item.ornamentation)
+        return Point(transpose(item.tones, shift, key, mode),
+                     item.dur,
+                     articulation=item.articulation,
+                     ornamentation=item.ornamentation,
+                     dynamics=item.dynamics,
+                     markup=item.markup,
+                     markdown=item.markdown,
+                     prefix=item.prefix,
+                     suffix=item.suffix)
 
     elif isinstance(item, str):
         try:
