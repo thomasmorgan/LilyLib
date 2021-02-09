@@ -11,15 +11,22 @@ all_durs = ['\\longa' '\\breve', 1, 2, 4, 8, 16, 32, 64, 128, '1.', '2.', '4.', 
 
 class Point:
     """ An element in sheet music with a specified duration.
-        Prints as either a rest, note or chord."""
+        Prints as either a rest, note or chord.
+        May have a variety of articulations, ornaments, dynamics and so on."""
 
-    def __init__(self, tones, dur, ornamentation=""):
-        self.check_init_arguments(tones, dur, ornamentation)
+    def __init__(self, tones, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
+        self.check_init_arguments(tones, dur, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
         self.tones = tones
         self.dur = dur
+        self.articulation = articulation
         self.ornamentation = ornamentation
+        self.dynamics = dynamics
+        self.markup = markup
+        self.markdown = markdown
+        self.prefix = prefix
+        self.suffix = suffix
 
-    def check_init_arguments(self, tones, dur, ornamentation):
+    def check_init_arguments(self, tones, dur, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix):
         if not isinstance(tones, list):
             raise ValueError("Cannot create Point with {} as tones. tones must be a list.".format(tones))
         for t in tones:
@@ -27,18 +34,33 @@ class Point:
                 raise ValueError("Cannot create Point with tones containing {} as it is not a valid tone.".format(t))
         if dur not in all_durs:
             raise ValueError("Cannot create Point with {} as dur. dur must be one of {}.".format(dur, all_durs))
+        if not isinstance(articulation, str):
+            raise ValueError("Cannot create Point with {} as articulation. articulation must be a string.".format(articulation))
         if not isinstance(ornamentation, str):
             raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+        if not isinstance(dynamics, str):
+            raise ValueError("Cannot create Point with {} as dynamics. dynamics must be a string.".format(dynamics))
+        if not isinstance(markup, str):
+            raise ValueError("Cannot create Point with {} as markup. markup must be a string.".format(markup))
+        if not isinstance(markdown, str):
+            raise ValueError("Cannot create Point with {} as markdown. markdown must be a string.".format(markdown))
+        if not isinstance(prefix, str):
+            raise ValueError("Cannot create Point with {} as prefix. prefix must be a string.".format(prefix))
+        if not isinstance(suffix, str):
+            raise ValueError("Cannot create Point with {} as suffix. suffix must be a string.".format(suffix))
 
     def __str__(self):
         if self.is_rest:
-            return 'r' + str(self.dur) + self.ornamentation
+            tone_string = 'r'
         elif self.is_note:
-            return self.tone + str(self.dur) + self.ornamentation
+            tone_string = self.tone
         elif self.is_chord:
-            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+            tone_string = "<" + " ".join(self.tones) + ">"
         else:
             raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
+        return '{}{}{}\\{}\\{}\\{}^\\markup{{{}}}_\\markup{{{}}}{}'.format(
+            self.prefix, tone_string, str(self.dur), self.articulation, self.ornamentation, self.dynamics, self.markup, self.markdown, self.suffix
+        )
 
     @property
     def tone(self):
