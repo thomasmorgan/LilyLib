@@ -127,9 +127,9 @@ class Point:
                 self.add(new_tone)
 
 
-def rest(dur):
+def rest(dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list with a single Point that prints as a rest with the specified duration. """
-    return [Point([], dur)]
+    return [Point([], dur, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
 def rests(*dur):
@@ -137,17 +137,17 @@ def rests(*dur):
     return flatten([rest(d) for d in split_and_flatten(dur)])
 
 
-def note(tone, dur, ornamentation=""):
+def note(tone, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list with a single Point that prints as a note with the specified tone and duration.
     Passing an empty string or list as tone will return a rest.
     Passing a list of tones (or a string that can be split into multiple tones raises an error. """
     tone = flatten([tonify(tone)])
     if len(tone) > 1:
         raise ValueError("Cannot create single note with tone of {}.".format(tone))
-    return [Point(tone, dur, ornamentation)]
+    return [Point(tone, dur, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
-def notes(tones, dur, ornamentation=""):
+def notes(tones, dur):
     """ Returns a list of Points that print as notes with the specified tone(s) and duration(s).
     If tones is a string including adjacent white space, rests are produced.
     If tones is a list including empty lists or empty strings, rests are produced.
@@ -155,28 +155,26 @@ def notes(tones, dur, ornamentation=""):
     tones = tonify(tones)
     tones = [tones] if isinstance(tones, str) else tones
     dur = split_and_flatten(dur)
-    orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
-    max_length = max([len(tones), len(dur), len(orn)])
+    max_length = max([len(tones), len(dur)])
 
-    zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-    return flatten([note(t, d, o) for i, t, d, o in zip_list])
+    zip_list = zip(range(max_length), cycle(tones), cycle(dur))
+    return flatten([note(t, d) for i, t, d in zip_list])
 
 
-def chord(tones, dur, ornamentation=""):
+def chord(tones, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list containing a single Point that prints as a chord with the specified tones and duration. """
     tones = flatten([tonify(tones)])
-    return [Point(tones, dur, ornamentation)]
+    return [Point(tones, dur, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
-def chords(tones, dur, ornamentation=""):
+def chords(tones, dur):
     dur = split_and_flatten(dur)
-    orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
-    max_length = max([len(tones), len(dur), len(orn)])
+    max_length = max([len(tones), len(dur)])
 
-    zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-    return flatten([chord(t, d, o) for i, t, d, o in zip_list])
+    zip_list = zip(range(max_length), cycle(tones), cycle(dur))
+    return flatten([chord(t, d) for i, t, d in zip_list])
 
 
 def add(point, tones, *tweaks):
