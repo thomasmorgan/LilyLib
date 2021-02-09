@@ -58,9 +58,23 @@ class Point:
             tone_string = "<" + " ".join(self.tones) + ">"
         else:
             raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
-        return '{}{}{}\\{}\\{}\\{}^\\markup{{{}}}_\\markup{{{}}}{}'.format(
-            self.prefix, tone_string, str(self.dur), self.articulation, self.ornamentation, self.dynamics, self.markup, self.markdown, self.suffix
-        )
+
+        string = '{}{}'.format(tone_string, self.dur)
+        if self.prefix:
+            string = self.prefix + string
+        if self.articulation:
+            string += '-' + self.articulation
+        if self.ornamentation:
+            string += '\\' + self.ornamentation
+        if self.dynamics:
+            string += '\\' + self.dynamics
+        if self.markup:
+            string += "^\\markup{" + self.markup + "}"
+        if self.markdown:
+            string += "_\\markup{" + self.markdown + "}"
+        if self.suffix:
+            string += self.suffix
+        return string
 
     @property
     def tone(self):
