@@ -45,8 +45,8 @@ def after_grace(passage, grace):
     grace = deepcopy(grace)
     passage = flatten([passage])
     grace = flatten([grace])
-    passage[0].prefix = '\\afterGrace {' + passage[0].prefix
-    grace[0].prefix = '{' + passage[0].grace
+    passage[0].prefix = '\\afterGrace ' + passage[0].prefix
+    grace[0].prefix = '{' + grace[0].prefix
     grace[-1].suffix += '}'
     return passage + grace
 
