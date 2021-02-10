@@ -1,5 +1,6 @@
 from util import flatten
 from copy import deepcopy
+from keys import keyify
 
 linebreak = '\\break\n'
 
@@ -21,6 +22,15 @@ def time_signature(tempo, passage, end_tempo=""):
     passage[0].prefix = '\\time {} '.format(tempo) + passage[0].prefix
     if end_tempo:
         passage[-1].suffix += '\\time {} '.format(end_tempo)
+    return passage
+
+
+def key_signature(key1, passage, key2=""):
+    passage = deepcopy(passage)
+    passage = flatten([passage])
+    passage[0].prefix = str(keyify(key1)) + passage[0].prefix
+    if key2:
+        passage[-1].suffix += str(keyify(key2))
     return passage
 
 
