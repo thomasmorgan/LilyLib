@@ -1,6 +1,6 @@
 from piece import Piece
 from util import join, subset, select, flatten, rep
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace
@@ -54,7 +54,7 @@ class MarcheFunebre(Piece):
             return rise(tone) + rep(fall2(tone), 3) + rests(8)
 
         def plonk3(tone):
-            return rise(tone) + rep(fall(tone) + rest(4), 2)
+            return rise(tone) + rep(fall(tone), 2) + rest(4)
 
         def plod(tones):
             tones = tonify(tones)
@@ -76,8 +76,6 @@ class MarcheFunebre(Piece):
         drone_a = drone1('ef`') + drone1('cf`')
         self.set_key('bf minor')
         drone_b = drone2('gf`') + subset(drone1('ef`'), 1, 3) + notes('bf', 2)
-
-        drone_a[0].markup = "Play first repeat one octave lower and \\bold {\\italic {pp}}, second as written and \\bold {\\italic {p}}"
         drone_b[0].articulation = ">"
 
         intro = {
@@ -85,6 +83,7 @@ class MarcheFunebre(Piece):
             'bass': voices(drone_a + drone_b, plodding)
         }
 
+        intro['bass'][0].markup = "Play first repeat one octave lower and \\bold {\\italic {pp}}, second as written and \\bold {\\italic {p}}"
         intro['treble'][0].prefix = '\\grace s16. ' + intro['treble'][0].prefix
         intro['bass'][-1].suffix += linebreak
 
@@ -276,195 +275,204 @@ class MarcheFunebre(Piece):
         bridge_part_2_melody['treble'][0].prefix = self.key_signature + bridge_part_2_melody['treble'][0].prefix
         bridge_part_2_harmony['bass'][1][0].prefix = self.key_signature + bridge_part_2_harmony['bass'][1][0].prefix
 
+        bridge_part_2['bass'][-1].suffix += linebreak
+
         bridge = join(bridge_part_1, bridge_part_2)
 
         # """ Intro again again """
 
-        # self.set_key('Ef Minor')
-        # intro3_treble = drone1('ef') + drone1('cf')
-        # intro3_bass = 4 * plod('ef, ef,')
+        self.set_key('Ef Minor')
+        intro3_treble = drone1('ef') + drone1('cf')
+        intro3_bass = rep(plod('ef, ef,'), 4)
 
-        # self.set_key('ef harmonic')
-        # mini_motif = self.harmonize(notes('bf', ['4.', 8]) + self.scale('bf', -4, 4), -2)
-        # intro3_treble += (self.harmonize(notes(['gf', 'ef', 'af'], 2) + grace(note('gf', 16)) + note('f', 2), -2)
-        #                   + mini_motif + chord('d cf', 2) + deepcopy(mini_motif) + note('ef', 2) + 2 * (chord('d af cf`', 2, '->') + note('ef', 2)) + chord('d af cf`', 1, '->'))
-        # intro3_bass += (plod('ef, af,') + plod('f, bf,') + plod('gf, cf') + plod('bf, af,')
-        #                 + 2 * plink('gf,') + plonk3('cf') + plonk3('bf,') + plonk('ef,')
-        #                 + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(1))
+        self.set_key('ef harmonic')
+        mini_motif = self.harmonize(notes('bf', ['4.', 8]) + self.scale('bf', -4, 4), -2)
+        intro3_treble += (self.harmonize(notes('gf ef af', 2) + grace(note('gf', 16)) + note('f', 2), -2)
+                          + mini_motif + chord('d cf', 2) + deepcopy(mini_motif) + note('ef', 2) + rep(chord('d af cf`', 2, articulation='>') + note('ef', 2), 2) + chord('d af cf`', 1, articulation='>'))
+        intro3_bass += (plod('ef, af,') + plod('f, bf,') + plod('gf, cf') + plod('bf, af,')
+                        + rep(plink('gf,'), 2) + plonk3('cf') + plonk3('bf,') + plonk('ef,')
+                        + rest(2) + rep(plink('ef,'), 2) + rest(2) + plonk('ef,') + rest(1))
 
-        # intro3_treble[0].ornamentation = "^\\pp"
-        # intro3_treble[8].ornamentation = '->'
-        # intro3_bass[98] = deepcopy(intro3_bass[98])
-        # intro3_bass[98].ornamentation = '^\\markup {\\italic{ poco cresc.}}'
-        # intro3_treble[10].ornamentation = '->'
-        # intro3_treble[15].ornamentation = '->'
-        # intro3_treble[21].ornamentation = '->'
-        # intro3_treble[22].ornamentation = '^\\markup { \\italic { dim. }}'
-        # intro3_treble[23].ornamentation = '^\\>'
-        # intro3_treble[28].ornamentation = '^\\pp'
+        intro3_treble[0].suffix += "^\\pp"
+        intro3_treble[8].articulation = '>'
+        intro3_bass[68].markup = '\\italic{poco cresc.}'
+        intro3_treble[10].articulation = '>'
+        intro3_treble[13].articulation = '>'
+        intro3_treble[19].articulation = '>'
+        intro3_treble[20].markup = '\\italic {dim.}'
+        intro3_treble[22].suffix += '^\\>'
+        intro3_treble[26].dynamics = 'pp'
+        intro3_bass[-1].suffix += linebreak + pagebreak
 
-        # intro3 = {
-        #     'treble': self.key_signature + ['\\grace s16.'] + clef('treble') + rest(1) * 13,
-        #     'bass': self.key_signature + voices(intro3_treble, intro3_bass) + linebreak + pagebreak
-        # }
+        intro3 = {
+            'treble': clef('treble', rest(1, prefix=self.key_signature + ' \\grace s16.')) + rest(1) * 12,
+            'bass': key_signature(self.key, voices(intro3_treble, intro3_bass))
+        }
 
         # """ Cascade """
 
-        # self.set_key('ef major')
-        # key_change = {
-        #     'treble': self.key_signature,
-        #     'bass': self.key_signature
-        # }
+        self.set_key('ef major')
 
-        # def set_cascade_melody(melody, bars=8, is_repeated=False, end=False):
-        #     section = {
-        #         'treble': voices(melody, bars * self.scale('ef`', -4, 8)),
-        #         'bass': voices(bars * self.scale('g', -4, 8), bars * note('ef,', 2, '->')) + linebreak
-        #     }
-        #     if is_repeated:
-        #         section['bass'] = repeat(section['bass'])
-        #     if end:
-        #         section['bass'] += pagebreak
-        #     return section
+        def set_cascade_melody(melody, bars=8, is_repeated=False, end=False, key=False):
+            section = {
+                'treble': voices(melody, rep(self.scale('ef`', -4, 8), bars)),
+                'bass': voices(rep(self.scale('g', -4, 8), bars), rep(note('ef,', 2, articulation='>'), bars))
+            }
+            if key:
+                section['treble'] = key_signature(self.key, section['treble'])
+                section['bass'] = key_signature(self.key, section['bass'])
+            if is_repeated:
+                section['bass'] = repeat(section['bass'])
+            if end:
+                section['bass'][-1].suffix += pagebreak
+            else:
+                section['bass'][-1].suffix += linebreak
+            return section
 
-        # cascade_melody_1a = notes('g` af` g` af` bf` g` af`', [4, 4, 4, 8, 8, 4, 4])
-        # cascade_melody_1 = cascade_melody_1a + notes('g` f`', 4) + deepcopy(cascade_melody_1a) + note('g`', 2)
-        # cascade_meldody_2a = self.arpeggio('g`', 3, 4)
-        # cascade_meldody_2b = deepcopy(cascade_meldody_2a) + notes('bf` af`', 8)
-        # cascade_melody_2 = cascade_meldody_2b + cascade_meldody_2a + note('bf`', 4) + deepcopy(cascade_meldody_2b) + notes('g` af` bf` g`', [4, 8, 8, '4.']) + rest(8)
-        # cascade_melody_3a = notes('ef`` c`` d`` c`` g` g`', [4, 8, 8, 4, 4, 2])
-        # cascade_melody_3 = notes('c`` g`', 4) + cascade_melody_3a + notes('g` c`` d``', [4, 8, 8]) + deepcopy(cascade_melody_3a)
-        # cascade_melody_4 = deepcopy(subset(cascade_melody_1, 1, 14)) + notes('g` f` ef` g`', [4, 8, 8, 2])
-        # cascade_melody_5 = self.arpeggio('g`', 3, 4) + note('c``', 8) + self.scale('d``', -5, [8, 4, 8, 8, 2]) + note('g`', 4) + 2 * self.scale('c``', 3, [8, 8, 4]) + notes('g` f` g`', [8, 8, 2])
-        # cascade_melody_6 = deepcopy(cascade_melody_4)
+        cascade_melody_1a = notes('g` af` g` af` bf` g` af`', [4, 4, 4, 8, 8, 4, 4])
+        cascade_melody_1 = cascade_melody_1a + notes('g` f`', 4) + deepcopy(cascade_melody_1a) + note('g`', 2)
+        cascade_meldody_2a = self.arpeggio('g`', 3, 4)
+        cascade_meldody_2b = deepcopy(cascade_meldody_2a) + notes('bf` af`', 8)
+        cascade_melody_2 = cascade_meldody_2b + cascade_meldody_2a + note('bf`', 4) + deepcopy(cascade_meldody_2b) + notes('g` af` bf` g`', [4, 8, 8, '4.']) + rest(8)
+        cascade_melody_3a = notes('ef`` c`` d`` c`` g` g`', [4, 8, 8, 4, 4, 2])
+        cascade_melody_3 = notes('c`` g`', 4) + cascade_melody_3a + notes('g` c`` d``', [4, 8, 8]) + deepcopy(cascade_melody_3a)
+        cascade_melody_4 = deepcopy(subset(cascade_melody_1, 1, 14)) + notes('g` f` ef` g`', [4, 8, 8, 2])
+        cascade_melody_5 = self.arpeggio('g`', 3, 4) + note('c``', 8) + self.scale('d``', -5, [8, 4, 8, 8, 2]) + note('g`', 4) + 2 * self.scale('c``', 3, [8, 8, 4]) + notes('g` f` g`', [8, 8, 2])
+        cascade_melody_6 = deepcopy(cascade_melody_4)
 
-        # cascade_melody_1[0].ornamentation = "\\f"
-        # cascade_melody_2[0].ornamentation = "\\f"
-        # cascade_melody_3[0].ornamentation = "\\ff"
-        # cascade_melody_3[14].ornamentation = "\\>"
-        # cascade_melody_3[16].ornamentation = "\\!"
-        # cascade_melody_4[0].ornamentation = "\\p"
-        # cascade_melody_5[0].ornamentation = "\\ff"
-        # cascade_melody_5[18].ornamentation = "\\>"
-        # cascade_melody_6[0].ornamentation = "\\pp"
+        cascade_melody_1[0].dynamics = "f"
+        cascade_melody_2[0].dynamics = "f"
+        cascade_melody_3[0].dynamics = "ff"
+        cascade_melody_3[16].dynamics = ">"
+        cascade_melody_4[0].dynamics = "p"
+        cascade_melody_5[0].dynamics = "ff"
+        cascade_melody_5[18].dynamics = ">"
+        cascade_melody_6[0].dynamics = "pp"
 
-        # cascade = join(key_change,
-        #                set_cascade_melody(cascade_melody_1, is_repeated=True),
-        #                set_cascade_melody(cascade_melody_2, is_repeated=True),
-        #                set_cascade_melody(cascade_melody_3),
-        #                set_cascade_melody(cascade_melody_4),
-        #                set_cascade_melody(cascade_melody_5),
-        #                set_cascade_melody(cascade_melody_6, end=True)
-        #                )
+        cascade = join(set_cascade_melody(cascade_melody_1, is_repeated=True, key=True),
+                       set_cascade_melody(cascade_melody_2, is_repeated=True),
+                       set_cascade_melody(cascade_melody_3),
+                       set_cascade_melody(cascade_melody_4),
+                       set_cascade_melody(cascade_melody_5),
+                       set_cascade_melody(cascade_melody_6, end=True)
+                       )
 
         # """ Intro 4 """
 
-        # self.set_key('ef minor')
+        self.set_key('ef minor')
 
-        # intro4 = {
-        #     'treble': self.key_signature + 8 * rest(1),
-        #     'bass': self.key_signature + voices(
-        #         deepcopy(drone_a + drone_b),
-        #         plodding
-        #     ) + linebreak,
-        # }
+        intro4 = {
+            'treble': key_signature(self.key, rep(rest(1), 8)),
+            'bass': key_signature(self.key, voices(
+                deepcopy(drone_a + drone_b),
+                plodding
+            ))
+        }
 
-        # intro4['bass'][3].ornamentation = "\\p ^\\markup { Play left hand one octave lower }"
+        intro4['bass'][-1].suffix += linebreak
+        intro4['bass'][0].markup += "Play left hand one octave lower"
+        intro4['bass'][16].suffix += "^\\p"
 
         # """ bold chords 3 """
 
-        # rh_melody3 = subset(rh_melody, 1, 5) + self.transpose(subset(rh_melody, 4, 5), 2)
+        rh_melody3 = deepcopy(subset(rh_melody, 1, 5)) + self.transpose(subset(rh_melody, 4, 5), 2)
 
-        # rh_harmony3 = deepcopy(rh_harmony[0:7])
-        # add(rh_harmony3[1], 'bf')
-        # rh_harmony3[2] = chords(['bf cf` ef`', 'af cf`', 'af cf`', 'af bf d`'], [4, '8.', 16, 2])
-        # rh_harmony3[5] = subset(rh_harmony3[5], 1, 3) + chord('ef` gf` bf`', 2)
-        # rh_harmony3[6] = self.transpose(rh_harmony3[4], 2)
-        # add(select(rh_harmony3[6], 3), 'ef``')
-        # add(select(rh_harmony3[6], 4), 'df``')
+        rh_harmony3 = deepcopy(rh_harmony[0:7])
+        add(rh_harmony3[1], 'bf')
+        rh_harmony3[2] = chords(['bf cf` ef`', 'af cf`', 'af cf`', 'af bf d`'], [4, '8.', 16, 2])
+        rh_harmony3[5] = subset(rh_harmony3[5], 1, 3) + chord('ef` gf` bf`', 2)
+        rh_harmony3[6] = self.transpose(rh_harmony3[4], 2)
+        add(select(rh_harmony3[6], 3), 'ef``')
+        add(select(rh_harmony3[6], 4), 'df``')
 
-        # lh_melody3 = subset(lh_melody, 1, 4) + [rest(2) + self.scale('bf,', 'af', [8, 8, '8.', 16], step=2)]
-        # lh_melody3 += [[self.transpose(lh_melody3[3], 2)], [self.transpose(lh_melody3[4], 2)]]
+        lh_melody3 = deepcopy(subset(lh_melody, 1, 4)) + [rest(2) + self.scale('bf,', 'af', [8, 8, '8.', 16], step=2)]
+        lh_melody3 += [self.transpose(lh_melody3[3], 2), self.transpose(lh_melody3[4], 2)]
 
-        # lh_harmony3 = deepcopy(lh_harmony[0:7])
-        # add(lh_harmony3[1], 'bf,')
-        # add(subset(lh_harmony3[3], 1, 3), 'bf,')
-        # add(select(lh_harmony3[3], 1), 'ef,')
-        # add(select(lh_harmony3[4], 1), 'f,')
-        # add(select(lh_harmony3[4], 4), 'df')
-        # lh_harmony3[5] = subset(lh_harmony3[5], 1, 3) + chord('ef gf bf', 2)
-        # add(select(lh_harmony3[5], 1), 'gf,')
-        # lh_harmony3[6] = self.transpose(lh_harmony3[4], 2)
-        # add(select(lh_harmony3[6], 4), 'df`')
+        lh_harmony3 = deepcopy(lh_harmony[0:7])
+        add(lh_harmony3[1], 'bf,')
+        add(subset(lh_harmony3[3], 1, 3), 'bf,')
+        add(select(lh_harmony3[3], 1), 'ef,')
+        add(select(lh_harmony3[4], 1), 'f,')
+        add(select(lh_harmony3[4], 4), 'df')
+        lh_harmony3[5] = subset(lh_harmony3[5], 1, 3) + chord('ef gf bf', 2)
+        add(select(lh_harmony3[5], 1), 'gf,')
+        lh_harmony3[6] = self.transpose(lh_harmony3[4], 2)
+        add(select(lh_harmony3[6], 4), 'df`')
 
-        # rh_harmony3[5][0][0].ornamentation = "\\cresc"
-        # rh_harmony3[5][1][0].ornamentation = "\\!"
-        # lh_melody3[6][0][1].ornamentation = "^\\<"
-        # lh_melody3[6][0][4].ornamentation = "\\!"
+        rh_harmony3[5][0].dynamics = "cresc"
+        rh_harmony3[5][1].dynamics = "!"
+        lh_melody3[6][1].suffix += "^\\<"
+        lh_melody3[6][4].dynamics = "!"
 
-        # bold_chords3 = {
-        #     'treble': voices(rh_melody3, rh_harmony3),
-        #     'bass': voices(lh_melody3, lh_harmony3)
-        # }
+        bold_chords3 = {
+            'treble': voices(rh_melody3, rh_harmony3),
+            'bass': voices(lh_melody3, lh_harmony3)
+        }
 
         # """ bridge 2 """
 
-        # bridge2_part_1 = join(bridge_motif('gf``'), bridge_motif('f``'), bridge_motif('e``'))
+        bridge2_part_1 = join(bridge_motif('gf``'), bridge_motif('f``'), bridge_motif('e``'))
 
-        # bridge2_part_2_melody = {
-        #     'treble': self.key_signature + subset(bridge_part_2_melody['treble'], 1, 14) + bridge_grace(self.scale('e`', -4, bridge_rhythm4)) + note('b', 8) + self.scale('e`', 3, 8) + note('a`', 2) + rests(1, 1),
-        #     'bass': self.key_signature + rests(1, 2) + bridge_grace(self.scale('e,', -4, bridge_rhythm4)) + notes(['b,,'] + self.scale('e,', 3), 8) + bridge_grace(self.scale('e', -8, bridge_rhythm4 + [8, 8, 8, 8])) + bridge_grace(self.scale('e,', -8, bridge_rhythm4 + [8, 8, 8, 8])) + notes('e,, ds,, d,,', [4, 4, 1])
-        # }
+        bridge2_part_2_melody = {
+            'treble': key_signature(self.key, subset(bridge_part_2_melody['treble'], 1, 14) + bridge_grace(self.scale('e`', -4, bridge_rhythm4)) + note('b', 8) + self.scale('e`', 3, 8) + note('a`', 2) + rests(1, 1)),
+            'bass': key_signature(self.key, rests(1, 2) + bridge_grace(self.scale('e,', -4, bridge_rhythm4)) + notes(['b,,'] + self.scale('e,', 3), 8) + bridge_grace(self.scale('e', -8, bridge_rhythm4 + [8, 8, 8, 8])) + bridge_grace(self.scale('e,', -8, bridge_rhythm4 + [8, 8, 8, 8])) + notes('e,, ds,, d,,', [4, 4, 1]))
+        }
 
-        # bridge2_part_2_harmony = deepcopy(bridge_part_2_harmony)
-        # bridge2_part_2_harmony['treble'][3] = bridge_chords('e`')['treble'] + chord('fs b', 2)
-        # bridge2_part_2_harmony['treble'][4] = chords(['e b', 'fs b e`', 'gs b e`', 'a b fs`'], [4, 8, 8, 2])
-        # bridge2_part_2_harmony['bass'][6] = note('a,', 2)
+        bridge2_part_2_harmony = deepcopy(bridge_part_2_harmony)
+        bridge2_part_2_harmony['treble'][3] = bridge_chords('e`')['treble'] + chord('fs b', 2)
+        bridge2_part_2_harmony['treble'][4] = chords(['e b', 'fs b e`', 'gs b e`', 'a b fs`'], [4, 8, 8, 2])
+        bridge2_part_2_harmony['bass'][6] = note('a,', 2)
 
-        # bridge2_part_2 = {
-        #     'treble': clef('bass') + voices(bridge2_part_2_melody['treble'], bridge2_part_2_harmony['treble']),
-        #     'bass': voices(bridge2_part_2_harmony['bass'], bridge2_part_2_melody['bass']) + linebreak
-        # }
+        bridge2_part_2 = {
+            'treble': clef('bass', voices(bridge2_part_2_melody['treble'], bridge2_part_2_harmony['treble'])),
+            'bass': voices(bridge2_part_2_harmony['bass'], bridge2_part_2_melody['bass'])
+        }
 
-        # bridge2_part_1['treble'][0].ornamentation = "\\p"
+        bridge2_part_1['treble'][0].dynamics = "p"
+        bridge2_part_2['bass'][-1].suffix += linebreak
 
-        # bridge2 = join(bridge2_part_1, bridge2_part_2)
+        bridge2 = join(bridge2_part_1, bridge2_part_2)
 
         # """ outro """
 
-        # self.set_key('ef minor')
+        self.set_key('ef minor')
 
-        # outro = {
-        #     'treble': self.key_signature + ['\\grace s16.'] + 15 * rest(1) + linebreak,
-        #     'bass': self.key_signature + deepcopy(voices(intro3_treble[0:21] + chord('c ef', 2) + intro3_treble[15:19] + rest(2) + intro3_treble[19:21] + rest(2) + intro3_treble[28:33] + chords(['d af cf`'], [2, 2, 1], ['->']),
-        #                                                  intro3_bass[0:175] + plonk('a,') + 2 * plink('gf,') + plonk3('cf') + rest(2) + plonk3('bf,') + rest(2) + 2 * plink('ef,') + rest(2) + plonk('ef,') + rest(2) + 2 * plink('ef,') + rests(1, 1)))
-        # }
+        outro = {
+            'treble': key_signature(self.key, rep(rest(1), 15)),
+            'bass': key_signature(self.key, deepcopy(voices(intro3_treble[0:19] + chord('c ef', 2) + intro3_treble[13:17] + rest(2, ornamentation='fermata') + intro3_treble[17:19] + rest(2, ornamentation='fermata') + intro3_treble[26:31] + rep(chord('d af cf`', 2, articulation=">"), 2) + chord('d af cf`', 1, articulation=">"),
+                                                            intro3_bass[0:151] + rest(4) + rest(2) + plonk3('bf,') + rest(2) + rep(plink('ef,'), 2) + rest(2) + plonk('ef,') + rest(2) + rep(plink('ef,'), 2) + rests(1, 1))))
+        }
 
-        # outro['bass'][18] = chord(outro['bass'][18].tones, outro['bass'][18].dur, '->')
-        # outro['bass'][25].ornamentation = '^\\pp'
-        # outro['bass'][33].ornamentation = '^\\ppp'
-        # outro['bass'][39].ornamentation += '_\\markup { \\italic { dim. }}'
-        # outro['bass'][40].ornamentation += '^\\markup { \\italic { dim. }}'
-        # outro['bass'][142].ornamentation = ''
+        outro['treble'][0].prefix += '\\grace s16.'
+        outro['treble'][-1].suffix = linebreak
+
+        outro['bass'][13] = chord(outro['bass'][13].tones, outro['bass'][13].dur, articulation='>')
+        outro['bass'][17].dynamics = ''
+        outro['bass'][20].suffix = '^\\pp'
+        outro['bass'][20].articulation = ''
+        outro['bass'][28].suffix = '^\\ppp'
+        outro['bass'][28].dynamics = ''
+        outro['bass'][34].markdown = '\\italic { dim. }'
+        outro['bass'][35].markdown += '\\italic { dim. }'
+        outro['bass'][104].markup = ''
 
         # """ outro 2 """
 
-        # self.set_key('ef major')
+        self.set_key('ef major')
 
-        # outro2 = {
-        #     'treble': self.key_signature + clef('bass') + voices(chords(['ef g bf'], [2, 4]) + chord('ef af bf', 4) + chords(['ef g bf'], [2, 2]),
-        #                                                          4 * self.scale('g', -4, 8)) + chord('ef g bf', 1, ornamentation='\\arpeggio'),
-        #     'bass': self.key_signature + 4 * voices(self.scale('ef', -4, 8), chord('ef, bf,', 2)) + chord('ef,, bf,, ef, bf,', 1, ornamentation='\\arpeggio')
-        # }
+        outro2 = {
+            'treble': key_signature(self.key, clef('bass', voices(chords(['ef g bf'], [2, 4]) + chord('ef af bf', 4) + chords(['ef g bf'], [2, 2]),
+                                                                  rep(self.scale('g', -4, 8), 4)))) + chord('ef g bf', 1, ornamentation='arpeggio'),
+            'bass': key_signature(self.key, rep(voices(self.scale('ef', -4, 8), chord('ef, bf,', 2)), 4)) + chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')
+        }
 
-        # outro2['treble'][4].ornamentation = '\\mf'
-        # outro2['treble'][5].ornamentation = '_\\markup { \\italic { dim. }}'
-        # outro2['treble'][7].ornamentation = '_\\markup { \\italic { rall. }}'
-        # outro2['treble'][8].ornamentation = '\\pp'
-        # outro2['treble'][-1].ornamentation += '\\ppp'
+        outro2['treble'][0].dynamics = 'mf'
+        outro2['treble'][1].markdown = '\\italic { dim. }'
+        outro2['treble'][3].markdown = '\\italic { rall. }'
+        outro2['treble'][4].dynamics = 'pp'
+        outro2['treble'][-1].dynamics = 'ppp'
 
-        # self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/14)\n }\n }\n }')
