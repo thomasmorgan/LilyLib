@@ -182,6 +182,44 @@ def chords(tones, dur):
     return flatten([chord(t, d) for i, t, d in zip_list])
 
 
+def tied_note(tone, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
+    """ Returns a list of Points that prints as a series of tied notes with the same specified tone but different durations.
+    Passing an empty string or list as tone will return a rest.
+    Passing a list of tones (or a string that can be split into multiple tones raises an error. """
+    tone = flatten([tonify(tone)])
+    if len(tone) > 1:
+        raise ValueError("Cannot create tied note with tone of {}.".format(tone))
+    if not isinstance(dur, list):
+        raise ValueError("Cannot make tied note with duration {}. Dur must be a list of durations.".format(dur))
+
+    points = []
+    for i, d in enumerate(dur):
+        if i == 0:
+            points.append(Point(tone, d, "~", articulation, ornamentation, dynamics, markup, markdown, prefix, suffix))
+        elif i < (len(dur) - 1):
+            points.append(Point(tone, d, "~"))
+        else:
+            points.append(Point(tone, d))
+    return points
+
+
+def tied_chord(tones, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
+    """ Returns a list of Points that prints as a series of tied chords with the same specified tones but different durations. """
+    tones = flatten([tonify(tones)])
+    if not isinstance(dur, list):
+        raise ValueError("Cannot make tied chord with duration {}. Dur must be a list of durations.".format(dur))
+
+    points = []
+    for i, d in enumerate(dur):
+        if i == 0:
+            points.append(Point(tones, d, "~", articulation, ornamentation, dynamics, markup, markdown, prefix, suffix))
+        elif i < (len(dur) - 1):
+            points.append(Point(tones, d, "~"))
+        else:
+            points.append(Point(tones, d))
+    return points
+
+
 def add(point, tones, *tweaks):
     if isinstance(point, list):
         for subpoint in point:
