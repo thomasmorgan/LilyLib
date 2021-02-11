@@ -1,7 +1,7 @@
 from piece import Piece
 from keys import key_dictionary
 from points import note
-from markup import annotation
+from markup import key_signature
 
 
 class AllKeys(Piece):
@@ -17,8 +17,8 @@ class AllKeys(Piece):
         for mode in key_dictionary:
             for letter in key_dictionary[mode]:
                 self.set_key(key_dictionary[mode][letter])
-                self.score["treble"] += self.key_signature + note(self.key.root + "`", 1, ornamentation=annotation(self.key.name))
-                self.score["bass"] += self.key_signature + note(self.key.root, 1)
+                self.score["treble"] += key_signature(self.key, note(self.key.root + "`", 1, markup=self.key.name))
+                self.score["bass"] += key_signature(self.key, note(self.key.root, 1))
 
 
 if __name__ == "__main__":

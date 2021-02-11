@@ -1,4 +1,5 @@
 from piece import Piece
+from markup import key_signature
 
 
 class ChromaticScales(Piece):
@@ -10,7 +11,7 @@ class ChromaticScales(Piece):
         self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4]) + self.chromatic('c``', 'c`', [16] * 12 + [4])
 
         self.set_key("f major")
-        self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4]) + self.chromatic('f``', 'f`', [16] * 12 + [4])
+        self.score["treble"] += key_signature(self.key, self.chromatic('f`', 'f``', [16] * 12 + [4])) + self.chromatic('f``', 'f`', [16] * 12 + [4])
 
         self.score["bass"] = self.transpose(self.score["treble"], -1, 'octave')
 
