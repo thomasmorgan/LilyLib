@@ -73,15 +73,16 @@ class PreludeInCSimple(Piece):
         tones = tonify(tones)
         return rest(8) + notes(pattern(tones, 1, 2, 3, 4, 3, 2, 3, 2, 1, 2), 16)
 
+    @property
+    def outro(self):
+        return {
+            'treble': self.long_melody('f a c` f`') + notes('f d', 16) * 2 + self.long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1) + chord('e` g` c`', 1),
+            'bass': self.held_bass('c, c') + self.held_bass('c, b,') + chord('c, c', 1)
+        }
+
     def write_score(self):
         self.score = join([self.motif(chord) for chord in self.chords[1:33]])
-
-        self.score['treble'] += self.long_melody('f a c` f`') + notes('f d', 16) * 2
-        self.score['treble'] += self.long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1)
-        self.score['bass'] += self.held_bass('c, c') + self.held_bass('c, b,')
-
-        self.score['treble'] += chord('e` g` c`', 1)
-        self.score['bass'] += chord('c, c', 1)
+        self.score = join(self.score, self.outro)
 
 
 if __name__ == "__main__":
