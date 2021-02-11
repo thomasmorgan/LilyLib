@@ -51,6 +51,8 @@ def subset(List, start, stop):
 
 
 def join(*motifs):
+    if isinstance(motifs[0], list):
+        motifs = motifs[0]
     joined = motifs[0]
     for motif in motifs[1:]:
         for key in joined:
