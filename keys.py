@@ -238,7 +238,7 @@ class Key:
 class CFlatMajor(Key):
     def define(self):
         self.root = 'cf'
-        self.letters = ['cf', 'fd', 'ef', 'ff', 'gf', 'af', 'bf']
+        self.letters = ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']
         self.name = "c flat major"
 
 

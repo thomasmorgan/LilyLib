@@ -38,4 +38,4 @@ class Super(Stave):
 
     def __init__(self, name=None):
         super().__init__("treble", name)
-        self.start = "<< \\new Staff {{\n \\override Staff.StaffSymbol.line-count = #10 \n \\override Staff.StaffSymbol.line-positions = #'(-16 -14 -12 -10 -8 -4 -2 0 2 4)\n \\clef {}\n".format(self.clef)
+        self.extra_text = "\\override Staff.StaffSymbol.line-count = #10 \n \\override Staff.StaffSymbol.line-positions = #'(-16 -14 -12 -10 -8 -4 -2 0 2 4)"

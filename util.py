@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 def flatten(List):
     while any([isinstance(i, list) or isinstance(i, tuple) for i in List]):
         new_list = []
@@ -48,8 +51,17 @@ def subset(List, start, stop):
 
 
 def join(*motifs):
+    if isinstance(motifs[0], list):
+        motifs = motifs[0]
     joined = motifs[0]
     for motif in motifs[1:]:
         for key in joined:
             joined[key] += motif[key]
     return joined
+
+
+def rep(passage, times=1):
+    new_passage = []
+    for t in range(times):
+        new_passage += deepcopy(passage)
+    return(new_passage)

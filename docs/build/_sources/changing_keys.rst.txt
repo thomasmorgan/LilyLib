@@ -1,7 +1,7 @@
 Keys and changing key
 ==============================
 
-So far almost all the music we've seen set a key at the very start in the `details` function (or stuck with the default of C Major) and then wrote in that key. However, music often changes keys, in fact we've already seen one example of this with the chromatic scales demo:
+So far almost all the music we've seen set a key at the very start in the *details* function (or stuck with the default of C Major) and then wrote in that key. However, music often changes keys, in fact we've already seen one example of this with the chromatic scales demo:
 
 ::
 
@@ -17,7 +17,7 @@ So far almost all the music we've seen set a key at the very start in the `detai
 	        self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4]) + self.chromatic('c``', 'c`', [16] * 12 + [4])
 
 	        self.set_key("f major")
-	        self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4]) + self.chromatic('f``', 'f`', [16] * 12 + [4])
+	        self.score["treble"] += key_signature(self.key, self.chromatic('f`', 'f``', [16] * 12 + [4])) + self.chromatic('f``', 'f`', [16] * 12 + [4])
 
 	        self.score["bass"] = self.transpose(self.score["treble"], -1, 'octave')
 
@@ -61,7 +61,7 @@ But in each subclass it has meaningful content:
 	class CFlatMajor(Key):
 	    def define(self):
 	        self.root = 'cf'
-	        self.letters = ['cf', 'fd', 'ef', 'ff', 'gf', 'af', 'bf']
+	        self.letters = ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']
 	        self.name = "c flat major"
 
 In fact, overwriting `define` like this is all that needs to be done to create a specific key. After `define` is called the parent class runs `confirm_definition` to check that the values have all been set:
@@ -201,7 +201,7 @@ To change a piece's key you need to change it's `key` property, and it should co
 
 	self.key = keys.keyify('A Minor')
 
-This will work (assuming you hav imported `keys`), however, the `Piece` class offers a slightly tidier function to do this for you:
+This will work (assuming you have imported `keys`), however, the `Piece` class offers a slightly tidier function to do this for you:
 
 ::
 
@@ -220,9 +220,19 @@ Often this is enough to handle brief forays into alternative keys. However, wher
 
     @property
     def key_signature(self):
-        return [str(self.key)]
+        return str(self.key)
 
-This returns a text description of the key which can be added to the score and will be interpreted by a lilypond compiler as an instruction to print the key signature. It's inside a list so you can just add it to lists of Points, but note that it itself is just a string, and not a Point. The key signature is thus an example of what LilyLib considers markup; text instructions that modify the sheet music without actually corresponding to a note/chord/rest. More on markup in the next chapter.
+This returns a text description of the key which can be added to a point, for instabce, as it's prefix like so:
+
+::
+
+	passage = self.scale('c`', 8)
+
+	self.set_key('c minor)')
+	passage += self.scale('c`', 8)
+	passage[8].prefix = self.key_signature
+
+This will cause the key signature to print to the score and be interpreted by the lilypond compiler as an instruction to print the key signature on the sheet music. There's another way to do this using dedicated markup functions that we'll come to later.
 
 Pieces can also change to relative keys. For instance, when a piece shifts from C Major to G Major, you may prefer to describe this as a shift to the Major 5th. Pieces can do this, with keys specified by roman numerals (upper case indicates a major key, lower case a minor key):
 
@@ -237,7 +247,7 @@ Pieces can also change to relative keys. For instance, when a piece shifts from 
     def v(self):
         return self.relative_minor_key(4)
 
-LilyLib also introduces the notion of `cis` and `trans` keys. These are ways to switch to a major or minor key conditional on the mode of your current key; cis maintains the current mode, trans alters is. For instance, the cis fifth of C Major is G Major, while the trans fifth is G Minor. The utility of this distinction is quite uncommon, but it allows the user to compose music that is utterly agnostic of the starting key, meaning that th estarting key can be change, say, from E Major to B Minor, and the piece, including all key changes, will automatically adjust. A demo of this is provided with the piece "Mad Rush" later in the documentation. Cis and trans relative keys are denoted by the prefixes `c` and `t`:
+LilyLib also introduces the notion of `cis` and `trans` keys. These are ways to switch to a major or minor key conditional on the mode of your current key; cis maintains the current mode, trans alters it. For instance, the cis fifth of C Major is G Major, while the trans fifth is G Minor. The utility of this distinction is quite uncommon, but it allows the user to compose music that is utterly agnostic of the starting key, meaning that the starting key can be changed, say, from E Major to B Minor, and the piece, including all key changes, will automatically adjust. A demo of this is provided with the piece "Mad Rush" later in the documentation. Cis and trans relative keys are denoted by the suffixes `c` and `t`:
 
 ::
 
@@ -269,14 +279,17 @@ We've already seen an example of a key being changed, but the demo `demo_keys.py
 	        self.key = "cf major"
 
 	    def write_score(self):
-	        self.score["treble"] = ["\\set Staff.printKeyCancellation = ##f "]
-	        self.score["bass"] = ["\\set Staff.printKeyCancellation = ##f "]
+	        self.score["treble"] = []
+	        self.score["bass"] = []
 
 	        for mode in key_dictionary:
 	            for letter in key_dictionary[mode]:
 	                self.set_key(key_dictionary[mode][letter])
-	                self.score["treble"] += self.key_signature + note(self.key.root + "`", 1, ornamentation=annotation(self.key.name))
-	                self.score["bass"] += self.key_signature + note(self.key.root, 1)
+	                self.score["treble"] += key_signature(self.key, note(self.key.root + "`", 1, markup=self.key.name))
+	                self.score["bass"] += key_signature(self.key, note(self.key.root, 1))
+
+	        self.score["treble"][0].prefix = "\\set Staff.printKeyCancellation = ##f " + self.score["treble"][0].prefix
+	        self.score["bass"][0].prefix = "\\set Staff.printKeyCancellation = ##f " + self.score["bass"][0].prefix
 
 
 	if __name__ == "__main__":

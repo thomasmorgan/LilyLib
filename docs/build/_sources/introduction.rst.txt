@@ -18,7 +18,7 @@ But what if we could create sheet music directly from the higher-level structure
 	self.score["bass"] = scale('c`', 'c', ['8.', 16], key="C Minor")
 
 
-Not quite as familiar as spoken language, but note that it does not list the individual notes of the scale. Instead it calls a function called `scale`, providing it with the key (C minor), the start (c`) and stop (c) points, and a list of rhythms (8., 16). LilyLib does the rest: when this file is executed it outputs Lilypond which can then be converted into the pdf shown above.
+Not quite as familiar as spoken language, but note that it does not list the individual notes of the scale. Instead it calls a function called *scale*, providing it with the key (C minor), the start (c`) and stop (c) points, and a list of rhythms ('8.', 16). LilyLib does the rest: when this file is executed it outputs Lilypond which can then be converted into the pdf shown above.
 
 Why use LilyLib?
 ----------------------

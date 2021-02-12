@@ -39,6 +39,9 @@ util
 **join** (*\*motifs*)
 	Returns a dictionary which contains the contents of all passed motifs concatenated. Assumes all passed motifs have the same keys as the first motif.
 
+**rep** (*passage, n*)
+	Makes *n* deepcopies of the passed passage, joins them into a single list, and returns it.
+
 keys
 ----------
 
@@ -288,7 +291,7 @@ points
 		Internal function that validates the arguments passed to Point.\_\_init\_\_.
 
 	**Point.__str__** ()
-		Returns a liylpond string representation of the Point.
+		Returns a liylpond string representation of the Point, including all forms of markup.
 
 	**Point.tone**
 		If the Point has a single tone, returns the tone, otherwise raises an error.
@@ -317,23 +320,29 @@ points
 	**Point.replace** (*old_tones, new_tones*)
 		Removes the old_tones from the point and adds the new_tones in their place. The two arguments are flattened and zipped and iterated through together. If one is longer than the other, the shorter argument is cycled to reach the length of the longer.
 
-**rest** (*dur*)
-	Returns a list containing a single rest (i.e. a toneless Point) of the specified duration.
+**rest** (*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
+	Returns a list containing a single rest (i.e. a toneless Point) of the specified duration with the specified markup.
 
 **rests** (*\*dur*)
 	Returns a list of rests (i.e. toneless Points) with the specified durations.
 
-**note** (*tone, dur, ornamentation=""*)
-	Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and ornamentation.
+**note** (*tone, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
+	Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and markup.
 
 **notes** (*tones, dur, ornamentation*):
 	Returns a list of notes (i.e. Points with a single tone). The arguments are flattened, zipped and iterated to produce the notes. The longest argument determines the number of notes created, the other arguments are cycled to reach the same length.
 
-**chord** (*tones, dur, ornamentation*)
-	Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and ornamentation.
+**chord** (*tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
+	Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and markup.
 
 **chords** (*tones, dur, ornamentation*)
 	Returns a list of multiple chords (i.e. Points with multiple tones). The dur and ornamentation arguments are flattened, but *tones* is not and it must be a list of lists of tones. The arguments are then zipped and iterated to produce the chords. The longest argument determines the number of chords created, the other arguments are cycled to reach the same length.
+
+**tied_note** (*tone, durs*)
+	Returns a list of multiple Points all with the same tone, but different durations as specified and with phrasing set to "~" such that they print as a single tied note.
+
+**tied_chord** (*tones, durs*)
+	Returns a list of multiple Points all with the same tones, but different durations as specified and with phrasing set to "~" such that they print as a single tied chord.
 
 **add** (*points, tones, \*tweaks*)
 	Adds the passed tones to the passed points, if any tones are already present in a given point nothing happens. By default, rests (i.e. empty points) are skipped, pass "include rests" as an extra argument to edit rests too.
@@ -393,51 +402,47 @@ markup
 -----------
 
 **linebreak**
-	Causes a linebreak both in the sheetmusic and in the terminal output.
+	A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.
+
+**pagebreak**
+	A string that causes a pagebreak in the sheetmusic and a linebreak in the terminal output, can be added to Points, usually as part of their suffix.
 
 
-**clef** (*clef*)
-    Adds the indicated clef to the stave.
+**clef** (*clef, passage, end_clef=""*)
+    Returns a flattened deepcopy of the *passage* with the *clef* added to the prefix of the first point and the optional *end_clef* added to the suffix of the final point.
 
+**time_signature** (*tempo, passage, end_tempo=""*)
+    Returns a flattened deepcopy of the *passage* with the *tempo* added to the prefix of the first point and the optional *end_tempo* added to the suffix of the final point.
+
+**key_signature** (*key1, passage, key2=""*)
+    Returns a flattened deepcopy of the *passage* with *key1* added to the prefix of the first point and the optional *key2* added to the suffix of the final point.
 
 **triplets** (*passage*)
-    Returns the passage, wrapped in markup such that it appears as triplets.
+    Returns a deepcopy of the passage passage, with the first prefix and final suffix edited such that it appears as triplets.
 
 
 **grace** (*passage*)
-    Returns the passage, wrapped in markup such that it appears as grace notes.
+    Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.
 
 
 **after_grace** (*passage, grace*)
-	Returns the passage and grace with markup such that the grace appears as grace notes following the passage.
+	Returns a deepcopy of the passage and grace combined into a single list (passage then grace) with the first prefix and final suffix of both parts edited such that the grace appears as grace notes following the passage.
 
 
 **acciaccatura** (*passage*)
-    Returns the passage, wrapped in markup such that it appears as acciaccatura.
+    Returns a deep copy of the passage, with the first prefix and final suffix edited such that it appears as acciaccatura.
 
 
 **ottava** (*passage, shift*)
-    Returns the passage, wrapped in markup such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.
+    Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.
 
 
 **voices** (*\*voices*)
-	Returns a single passage with markup such that the voices are played on top of each other. Voices should be ordered as highest, lowest, 2nd highest, 2nd lowest, and so on.
+	Returns a single passage with markup such that the voices are played on top of each other. Voices should be ordered as highest, lowest, 2nd highest, 2nd lowest, and so on. The first prefix and final suffix or each voice are modified to do this.
 
 
 **repeat** (*passage, times=2*)
-	Wraps the passage in markup to place repeat bars around it. If the number of repeats is greater than two, the number is indicated above the closing bracket.
-
-
-**annotation** (*text*)
-    Adds the passed text above the staff at the indicated point.
-
-
-**name** (*passage, name*)
-	Adds the passed name to the first Point in the passage, it will appear above the Point on the sheet music. This is an in place modification.
-
-
-**tempo_change** (*tempo*)
-    Adds a change in time signature to the sheet music.
+	Returns a deepcopy of the passage with the first prefix and final suffix edited such that repeat bars are printed around it. If the number of repeats is greater than two, the number is indicated above the closing bracket.
 
 piece
 ---------
@@ -455,7 +460,7 @@ piece
         Sets the pieces key to the passed value. *key* can be a string, a subclass of *Key* or an instance of a *Key*.
 
 	**Piece.key_signature**
-		Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music.
+		Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music when added to a point.
 
     **Piece.write_score** ()
         Called by *Piece.str()*, creates a description of the score of the piece and adds it to the *self.score* dictionary.

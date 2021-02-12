@@ -6,20 +6,28 @@ from itertools import cycle
 from copy import deepcopy
 
 
-all_durs = ['\\longa' '\\breve', 1, 2, 4, 8, 16, 32, 64, 128, '1.', '2.', '4.', '8.', '16.', '32.', '64.', '128.', '1..', '2..', '4..', '8..', '16..', '32..', '64..', '128..']
+all_durs = ['\\longa' '\\breve', 1, '1', 2, '2', 4, '4', 8, '8', 16, '16', 32, '32', 64, '64', 128, '128', '1.', '2.', '4.', '8.', '16.', '32.', '64.', '128.', '1..', '2..', '4..', '8..', '16..', '32..', '64..', '128..']
 
 
 class Point:
     """ An element in sheet music with a specified duration.
-        Prints as either a rest, note or chord."""
+        Prints as either a rest, note or chord.
+        May have a variety of articulations, ornaments, dynamics and so on."""
 
-    def __init__(self, tones, dur, ornamentation=""):
-        self.check_init_arguments(tones, dur, ornamentation)
+    def __init__(self, tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
+        self.check_init_arguments(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
         self.tones = tones
         self.dur = dur
+        self.phrasing = phrasing
+        self.articulation = articulation
         self.ornamentation = ornamentation
+        self.dynamics = dynamics
+        self.markup = markup
+        self.markdown = markdown
+        self.prefix = prefix
+        self.suffix = suffix
 
-    def check_init_arguments(self, tones, dur, ornamentation):
+    def check_init_arguments(self, tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix):
         if not isinstance(tones, list):
             raise ValueError("Cannot create Point with {} as tones. tones must be a list.".format(tones))
         for t in tones:
@@ -27,18 +35,51 @@ class Point:
                 raise ValueError("Cannot create Point with tones containing {} as it is not a valid tone.".format(t))
         if dur not in all_durs:
             raise ValueError("Cannot create Point with {} as dur. dur must be one of {}.".format(dur, all_durs))
+        if not isinstance(phrasing, str):
+            raise ValueError("Cannot create Point with {} as phrasing. phrasing must be a string.".format(phrasing))
+        if not isinstance(articulation, str):
+            raise ValueError("Cannot create Point with {} as articulation. articulation must be a string.".format(articulation))
         if not isinstance(ornamentation, str):
             raise ValueError("Cannot create Point with {} as ornamentation. ornamentation must be a string.".format(ornamentation))
+        if not isinstance(dynamics, str):
+            raise ValueError("Cannot create Point with {} as dynamics. dynamics must be a string.".format(dynamics))
+        if not isinstance(markup, str):
+            raise ValueError("Cannot create Point with {} as markup. markup must be a string.".format(markup))
+        if not isinstance(markdown, str):
+            raise ValueError("Cannot create Point with {} as markdown. markdown must be a string.".format(markdown))
+        if not isinstance(prefix, str):
+            raise ValueError("Cannot create Point with {} as prefix. prefix must be a string.".format(prefix))
+        if not isinstance(suffix, str):
+            raise ValueError("Cannot create Point with {} as suffix. suffix must be a string.".format(suffix))
 
     def __str__(self):
         if self.is_rest:
-            return 'r' + str(self.dur) + self.ornamentation
+            tone_string = 'r'
         elif self.is_note:
-            return self.tone + str(self.dur) + self.ornamentation
+            tone_string = self.tone
         elif self.is_chord:
-            return "<" + " ".join(self.tones) + ">" + str(self.dur) + self.ornamentation
+            tone_string = "<" + " ".join(self.tones) + ">"
         else:
             raise ValueError("Cannot print {} as it is neither a rest, nor note, nor chord. Its tones are {}".format(self, self.tones))
+
+        string = '{}{}'.format(tone_string, self.dur)
+        if self.prefix:
+            string = self.prefix + string
+        if self.phrasing:
+            string += self.phrasing
+        if self.articulation:
+            string += '-' + self.articulation
+        if self.ornamentation:
+            string += '\\' + self.ornamentation
+        if self.dynamics:
+            string += '\\' + self.dynamics
+        if self.markup:
+            string += "^\\markup{" + self.markup + "}"
+        if self.markdown:
+            string += "_\\markup{" + self.markdown + "}"
+        if self.suffix:
+            string += self.suffix
+        return string
 
     @property
     def tone(self):
@@ -91,9 +132,9 @@ class Point:
                 self.add(new_tone)
 
 
-def rest(dur):
+def rest(dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list with a single Point that prints as a rest with the specified duration. """
-    return [Point([], dur)]
+    return [Point([], dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
 def rests(*dur):
@@ -101,17 +142,17 @@ def rests(*dur):
     return flatten([rest(d) for d in split_and_flatten(dur)])
 
 
-def note(tone, dur, ornamentation=""):
+def note(tone, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list with a single Point that prints as a note with the specified tone and duration.
     Passing an empty string or list as tone will return a rest.
     Passing a list of tones (or a string that can be split into multiple tones raises an error. """
     tone = flatten([tonify(tone)])
     if len(tone) > 1:
         raise ValueError("Cannot create single note with tone of {}.".format(tone))
-    return [Point(tone, dur, ornamentation)]
+    return [Point(tone, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
-def notes(tones, dur, ornamentation=""):
+def notes(tones, dur):
     """ Returns a list of Points that print as notes with the specified tone(s) and duration(s).
     If tones is a string including adjacent white space, rests are produced.
     If tones is a list including empty lists or empty strings, rests are produced.
@@ -119,28 +160,64 @@ def notes(tones, dur, ornamentation=""):
     tones = tonify(tones)
     tones = [tones] if isinstance(tones, str) else tones
     dur = split_and_flatten(dur)
-    orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
-    max_length = max([len(tones), len(dur), len(orn)])
+    max_length = max([len(tones), len(dur)])
 
-    zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-    return flatten([note(t, d, o) for i, t, d, o in zip_list])
+    zip_list = zip(range(max_length), cycle(tones), cycle(dur))
+    return flatten([note(t, d) for i, t, d in zip_list])
 
 
-def chord(tones, dur, ornamentation=""):
+def chord(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list containing a single Point that prints as a chord with the specified tones and duration. """
     tones = flatten([tonify(tones)])
-    return [Point(tones, dur, ornamentation)]
+    return [Point(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
-def chords(tones, dur, ornamentation=""):
+def chords(tones, dur):
     dur = split_and_flatten(dur)
-    orn = split_and_flatten(ornamentation) if '"' not in ornamentation else flatten([ornamentation])
 
-    max_length = max([len(tones), len(dur), len(orn)])
+    max_length = max([len(tones), len(dur)])
 
-    zip_list = zip(range(max_length), cycle(tones), cycle(dur), cycle(orn))
-    return flatten([chord(t, d, o) for i, t, d, o in zip_list])
+    zip_list = zip(range(max_length), cycle(tones), cycle(dur))
+    return flatten([chord(t, d) for i, t, d in zip_list])
+
+
+def tied_note(tone, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
+    """ Returns a list of Points that prints as a series of tied notes with the same specified tone but different durations.
+    Passing an empty string or list as tone will return a rest.
+    Passing a list of tones (or a string that can be split into multiple tones raises an error. """
+    tone = flatten([tonify(tone)])
+    if len(tone) > 1:
+        raise ValueError("Cannot create tied note with tone of {}.".format(tone))
+    if not isinstance(dur, list):
+        raise ValueError("Cannot make tied note with duration {}. Dur must be a list of durations.".format(dur))
+
+    points = []
+    for i, d in enumerate(dur):
+        if i == 0:
+            points.append(Point(tone, d, "~", articulation, ornamentation, dynamics, markup, markdown, prefix, suffix))
+        elif i < (len(dur) - 1):
+            points.append(Point(tone, d, "~"))
+        else:
+            points.append(Point(tone, d))
+    return points
+
+
+def tied_chord(tones, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
+    """ Returns a list of Points that prints as a series of tied chords with the same specified tones but different durations. """
+    tones = flatten([tonify(tones)])
+    if not isinstance(dur, list):
+        raise ValueError("Cannot make tied chord with duration {}. Dur must be a list of durations.".format(dur))
+
+    points = []
+    for i, d in enumerate(dur):
+        if i == 0:
+            points.append(Point(tones, d, "~", articulation, ornamentation, dynamics, markup, markdown, prefix, suffix))
+        elif i < (len(dur) - 1):
+            points.append(Point(tones, d, "~"))
+        else:
+            points.append(Point(tones, d))
+    return points
 
 
 def add(point, tones, *tweaks):
@@ -268,7 +345,15 @@ def transpose(item, shift, key, mode="scale"):
         return [transpose(subitem, shift, key, mode) for subitem in item]
 
     elif isinstance(item, Point):
-        return Point(transpose(item.tones, shift, key, mode), item.dur, item.ornamentation)
+        return Point(transpose(item.tones, shift, key, mode),
+                     item.dur,
+                     articulation=item.articulation,
+                     ornamentation=item.ornamentation,
+                     dynamics=item.dynamics,
+                     markup=item.markup,
+                     markdown=item.markdown,
+                     prefix=item.prefix,
+                     suffix=item.suffix)
 
     elif isinstance(item, str):
         try:

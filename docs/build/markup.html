@@ -35,42 +35,51 @@
             
   <div class="section" id="markup">
 <h1>Markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h1>
-<p>We’ve already seen how LilyLib writes music as a list of two kinds of things: <cite>Points</cite> and markup. Points are a class of object introduced by LilyLib that correspond to notes, chords and rests. Markup are strings that modify the presentation of points. We’ve seen one example of markup already: <cite>key_signature</cite>. This is a property of the <cite>Piece</cite> class and it can be used to insert the current key signature into a piece of music. First the property:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">key_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)]</span>
+<p>As we’ve covered, LilyLib writes music as a list of <em>Points</em>, a class of object introduced by LilyLib that correspond to notes, chords and rests. These points can be given values for a range of properties that modify how they print, and collectively we call this markup. This includes things like ornamentation, phrasing and so on, and these proprties of points can be edited at any time or assigned by the <em>note</em>, <em>rest</em> and <em>chord</em> functions. However, markup can do more than this, and, in particular, there are some forms of markup that don’t apply to a single note, but rather apply to a passage of multiple notes. An example might be the use of triplets. In these cases the markup requires that multiple points be edited, typically to denote the start and stop points of the markup and LilyLib includes a number of functions to do exactly this. We’ve seen one example of this already with the <em>key_signature</em> function from the key changing demo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">key_signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>And here’s it being used in <cite>demo_keys.py</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="n">note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ornamentation</span><span class="o">=</span><span class="n">annotation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+<p>Here we are applying the key change to a single note, but if we look at the underlying function (in <em>markup.py</em>) we can see it can be applied to a passage of any length:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">key_signature</span><span class="p">(</span><span class="n">key1</span><span class="p">,</span> <span class="n">passage</span><span class="p">,</span> <span class="n">key2</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="n">passage</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">passage</span><span class="p">)</span>
+    <span class="n">passage</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([</span><span class="n">passage</span><span class="p">])</span>
+    <span class="n">passage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyify</span><span class="p">(</span><span class="n">key1</span><span class="p">))</span> <span class="o">+</span> <span class="n">passage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span>
+    <span class="k">if</span> <span class="n">key2</span><span class="p">:</span>
+        <span class="n">passage</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyify</span><span class="p">(</span><span class="n">key2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">passage</span>
 </pre></div>
 </div>
-<p>Key signatures are unusual though in that they are one of the only kinds of markup that depends on the current state of the piece (the result of calling <cite>key_signature</cite> depends on the key the piece is in at the time the call is made). This is why <cite>key_signature</cite> is a property of the <cite>Piece</cite> class. Most other markup, however, it totally independent of any specific piece and so it resides in the file <cite>markup.py</cite>. This distinction is mirrored between the <cite>Piece</cite> class and <cite>points.py</cite>: functions that depend on the piece are part of the <cite>Piece</cite> class, but functions that don’t are in <cite>points.py</cite>. One example is the <cite>scale</cite> function, the <cite>Piece</cite> class contains a version that builds scales in the current key of the piece, while <cite>points.py</cite> contains a version that builds scales in any key, but the key must be passed as an argument.</p>
-<p>Here are the functions included in <cite>markup.py</cite>:</p>
-<dl class="simple">
-<dt><strong>clef</strong> (<em>clef</em>)</dt><dd><p>Change the clef. e.g. <cite>clef(‘bass’)</cite> inserts the bass clef.</p>
-</dd>
-<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns the passed passage, flagged as triplets.</p>
-</dd>
-<dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns the passed passage, flagged as grace notes.</p>
-</dd>
-<dt><strong>after_grace</strong> (<em>passage, grace</em>)</dt><dd><p>Returns the passed passage, with the passed grace notes appended as grace notes.</p>
-</dd>
-<dt><strong>acciaccatura</strong> (<em>passage</em>)</dt><dd><p>Returns the passed passage, flagged as acciaccatura (a visual tweak on grace notes).</p>
-</dd>
-<dt><strong>ottava</strong> (<em>passage, shift</em>)</dt><dd><p>Returns the passed passage, with ottava markings. The argument shift specifies the direction and number of octaves by which the printed notes and shifted.</p>
-</dd>
-<dt><strong>voices</strong> (<em>*voices</em>)</dt><dd><p>Returns a single passage in which all the passed passages are joined as multiple voices. Voices should be ordered from high to low.</p>
-</dd>
-<dt><strong>repeat</strong> (<em>passage, times=2</em>)</dt><dd><p>Returns the passed passage wrapped in repeat bar lines. The times argument is the number of repeats. If this this more than 2 (the default), the number of repeats is printed above the final bar line.</p>
-</dd>
-<dt><strong>annotation</strong> (<em>text</em>)</dt><dd><p>Adds text to the score at this point with the specified content.</p>
-</dd>
-<dt><strong>name</strong> (<em>passage, name</em>)</dt><dd><p>Adds a text label with content <em>name</em> to the first point in the passed passage.</p>
-</dd>
-<dt><strong>tempo_change</strong> (<em>tempo</em>)</dt><dd><p>Change the tempo of this stave. For example, <em>tempo_change(‘4/4’)</em> changes the tempo to 4/4.</p>
-</dd>
-</dl>
+<p>Here the function is given a key signature and a passage and it modifies the <em>prefix</em> of the first point to include a key change. If you want the key signature to change again at the end of the passage you can pass another key signature and this is added to the <em>suffix</em> of the final point. Note that the function also makes a deepcopy of the passage. This means that marking up a passage returns an new version of the passage with the markup, but the original passage is unchanged. This is because passages are often repeated, but with different markup, and so its useful to apply markup to one instance, but not the others. This behavior is common to all markup functions.</p>
+<p>Here’s another example, the <em>triplets</em> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">triplets</span><span class="p">(</span><span class="n">passage</span><span class="p">):</span>
+    <span class="n">passage</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">passage</span><span class="p">)</span>
+    <span class="n">passage</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">([</span><span class="n">passage</span><span class="p">])</span>
+    <span class="n">passage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">tuplet 3/2 {&#39;</span> <span class="o">+</span> <span class="n">passage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span>
+    <span class="n">passage</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+=</span> <span class="s1">&#39;}&#39;</span>
+    <span class="k">return</span> <span class="n">passage</span>
+</pre></div>
+</div>
+<p>Here both the first and final point must be modified because lilypond requires that the start and stop of triplets be explicitly defined.</p>
+<p>As one last example, here’s the voices function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">voices</span><span class="p">(</span><span class="o">*</span><span class="n">voices</span><span class="p">):</span>
+    <span class="n">voices</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">voice</span><span class="p">)</span> <span class="k">for</span> <span class="n">voice</span> <span class="ow">in</span> <span class="n">voices</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">voice</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">voices</span><span class="p">):</span>
+        <span class="n">voice</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">voice</span><span class="p">)</span>
+        <span class="n">voice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;{ &quot;</span> <span class="o">+</span> <span class="n">voice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="n">voice</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+=</span> <span class="s2">&quot; }&quot;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">voices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">voice</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\\\\\n</span><span class="s2">&quot;</span>
+    <span class="n">flatten</span><span class="p">(</span><span class="n">voices</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&lt;&lt;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">flatten</span><span class="p">(</span><span class="n">voices</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span>
+    <span class="n">flatten</span><span class="p">(</span><span class="n">voices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt;&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">passage</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">voice</span> <span class="ow">in</span> <span class="n">voices</span><span class="p">:</span>
+        <span class="n">passage</span> <span class="o">+=</span> <span class="n">voice</span>
+    <span class="k">return</span> <span class="n">passage</span>
+</pre></div>
+</div>
+<p>This function accepts a list of multiple passages and applies markup to them such that they print as multiple simultaneous voices. First each voice is bookended by curcly brackets to denote the start and stop of each voice. Then the final point of all but the last voice have slashes appeneded to their suffix to indicate the change from one voice to another. Finally, the first note of the first voice, and the last note of the last voice have chevrons added to indicate the beginning and end of the voiced section. These voices are then joined to form a single long list of points and returned.</p>
+<p>Note that, as per lilypond convention, voices should be passed in the following order: highest, lowest, 2nd highest, 2nd lowest, 3rd highest, and so on. Also, note than when counting points in order to seelct or modify a specific point (e.g. <em>passage[12]</em>), for voices you need to count through each voice, in order, one after another.</p>
+<p>The markup file also includes many other functions for things like clef changes, repeat bars, ottava markings, and so on. For a full list see the API doc file.</p>
 </div>
 
 

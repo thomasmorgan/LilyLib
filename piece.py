@@ -30,7 +30,7 @@ class Piece:
 
     @property
     def key_signature(self):
-        return [str(self.key)]
+        return str(self.key)
 
     def write_score(self):
         raise NotImplementedError("You must overwrite write_score to create a piece")
