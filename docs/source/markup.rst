@@ -1,53 +1,60 @@
 Markup
 ==========
 
-We've already seen how LilyLib writes music as a list of two kinds of things: `Points` and markup. Points are a class of object introduced by LilyLib that correspond to notes, chords and rests. Markup are strings that modify the presentation of points. We've seen one example of markup already: `key_signature`. This is a property of the `Piece` class and it can be used to insert the current key signature into a piece of music. First the property:
+As we've covered, LilyLib writes music as a list of *Points*, a class of object introduced by LilyLib that correspond to notes, chords and rests. These points can be given values for a range of properties that modify how they print, and collectively we call this markup. This includes things like ornamentation, phrasing and so on, and these proprties of points can be edited at any time or assigned by the *note*, *rest* and *chord* functions. However, markup can do more than this, and, in particular, there are some forms of markup that don't apply to a single note, but rather apply to a passage of multiple notes. An example might be the use of triplets. In these cases the markup requires that multiple points be edited, typically to denote the start and stop points of the markup and LilyLib includes a number of functions to do exactly this. We've seen one example of this already with the *key_signature* function from the key changing demo:
 
 ::
 
-    @property
-    def key_signature(self):
-        return [str(self.key)]
+    self.score["bass"] += key_signature(self.key, note(self.key.root, 1))
 
-And here's it being used in `demo_keys.py`:
+Here we are applying the key change to a single note, but if we look at the underlying function (in *markup.py*) we can see it can be applied to a passage of any length:
 
 ::
 
-	self.score["treble"] += self.key_signature + note(self.key.root + "`", 1, ornamentation=annotation(self.key.name))
+    def key_signature(key1, passage, key2=""):
+        passage = deepcopy(passage)
+        passage = flatten([passage])
+        passage[0].prefix = str(keyify(key1)) + passage[0].prefix
+        if key2:
+            passage[-1].suffix += str(keyify(key2))
+        return passage
 
-Key signatures are unusual though in that they are one of the only kinds of markup that depends on the current state of the piece (the result of calling `key_signature` depends on the key the piece is in at the time the call is made). This is why `key_signature` is a property of the `Piece` class. Most other markup, however, it totally independent of any specific piece and so it resides in the file `markup.py`. This distinction is mirrored between the `Piece` class and `points.py`: functions that depend on the piece are part of the `Piece` class, but functions that don't are in `points.py`. One example is the `scale` function, the `Piece` class contains a version that builds scales in the current key of the piece, while `points.py` contains a version that builds scales in any key, but the key must be passed as an argument.
+Here the function is given a key signature and a passage and it modifies the *prefix* of the first point to include a key change. If you want the key signature to change again at the end of the passage you can pass another key signature and this is added to the *suffix* of the final point. Note that the function also makes a deepcopy of the passage. This means that marking up a passage returns an new version of the passage with the markup, but the original passage is unchanged. This is because passages are often repeated, but with different markup, and so its useful to apply markup to one instance, but not the others. This behavior is common to all markup functions.
 
-Here are the functions included in `markup.py`:
+Here's another example, the *triplets* function:
 
-**clef** (*clef*)
-    Change the clef. e.g. `clef('bass')` inserts the bass clef.
+::
 
-**triplets** (*passage*)
-    Returns the passed passage, flagged as triplets.
+    def triplets(passage):
+        passage = deepcopy(passage)
+        passage = flatten([passage])
+        passage[0].prefix = '\\tuplet 3/2 {' + passage[0].prefix
+        passage[-1].suffix += '}'
+        return passage
 
-**grace** (*passage*)
-    Returns the passed passage, flagged as grace notes.
+Here both the first and final point must be modified because lilypond requires that the start and stop of triplets be explicitly defined.
 
-**after_grace** (*passage, grace*)
-	Returns the passed passage, with the passed grace notes appended as grace notes.
+As one last example, here's the voices function:
 
-**acciaccatura** (*passage*)
-    Returns the passed passage, flagged as acciaccatura (a visual tweak on grace notes).
+::
 
-**ottava** (*passage, shift*)
-    Returns the passed passage, with ottava markings. The argument shift specifies the direction and number of octaves by which the printed notes and shifted.
+    def voices(*voices):
+        voices = [deepcopy(voice) for voice in voices]
+        for i, voice in enumerate(voices):
+            voice = flatten(voice)
+            voice[0].prefix = "{ " + voice[0].prefix
+            voice[-1].suffix += " }"
+            if i < (len(voices) - 1):
+                voice[-1].suffix += "\n\\\\\n"
+        flatten(voices[0])[0].prefix = "\n<<\n" + flatten(voices[0])[0].prefix
+        flatten(voices[-1])[-1].suffix += "\n>>\n"
+        passage = []
+        for voice in voices:
+            passage += voice
+        return passage
 
-**voices** (*\*voices*)
-    Returns a single passage in which all the passed passages are joined as multiple voices. Voices should be ordered from high to low.
+This function accepts a list of multiple passages and applies markup to them such that they print as multiple simultaneous voices. First each voice is bookended by curcly brackets to denote the start and stop of each voice. Then the final point of all but the last voice have slashes appeneded to their suffix to indicate the change from one voice to another. Finally, the first note of the first voice, and the last note of the last voice have chevrons added to indicate the beginning and end of the voiced section. These voices are then joined to form a single long list of points and returned.
 
-**repeat** (*passage, times=2*)
-	Returns the passed passage wrapped in repeat bar lines. The times argument is the number of repeats. If this this more than 2 (the default), the number of repeats is printed above the final bar line.
+Note that, as per lilypond convention, voices should be passed in the following order: highest, lowest, 2nd highest, 2nd lowest, 3rd highest, and so on. Also, note than when counting points in order to seelct or modify a specific point (e.g. *passage[12]*), for voices you need to count through each voice, in order, one after another.
 
-**annotation** (*text*)
-	Adds text to the score at this point with the specified content.
-
-**name** (*passage, name*)
-	Adds a text label with content *name* to the first point in the passed passage.
-
-**tempo_change** (*tempo*)
-    Change the tempo of this stave. For example, *tempo_change('4/4')* changes the tempo to 4/4.
+The markup file also includes many other functions for things like clef changes, repeat bars, ottava markings, and so on. For a full list see the API doc file.

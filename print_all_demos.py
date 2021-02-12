@@ -7,8 +7,8 @@ from demos.demo_chromatic_scales import ChromaticScales
 from demos.demo_merge import Merge
 from demos.demo_harmonize import Harmonize
 from demos.demo_keys import AllKeys
-from demos.demo_prelude_in_c import PreludeInC
 from demos.demo_prelude_in_c_simple import PreludeInCSimple
+from demos.demo_prelude_in_c import PreludeInC
 from demos.demo_prelude_in_c_fancy import PreludeInCFancy
 from demos.demo_prelude_in_c_super import PreludeInCSuper
 from demos.demo_mad_rush import MadRush
@@ -23,8 +23,8 @@ ChromaticScales()
 Merge()
 Harmonize()
 AllKeys()
-PreludeInC()
 PreludeInCSimple()
+PreludeInC()
 PreludeInCFancy()
 PreludeInCSuper()
 MadRush()

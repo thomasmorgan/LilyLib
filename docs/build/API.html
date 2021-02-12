@@ -62,6 +62,8 @@
 </dd>
 <dt><strong>join</strong> (<em>*motifs</em>)</dt><dd><p>Returns a dictionary which contains the contents of all passed motifs concatenated. Assumes all passed motifs have the same keys as the first motif.</p>
 </dd>
+<dt><strong>rep</strong> (<em>passage, n</em>)</dt><dd><p>Makes <em>n</em> deepcopies of the passed passage, joins them into a single list, and returns it.</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="keys">
@@ -251,7 +253,7 @@
 </dd>
 <dt><strong>Point.check_init_arguments</strong> (<em>tones, dur, ornamentation</em>)</dt><dd><p>Internal function that validates the arguments passed to Point.__init__.</p>
 </dd>
-<dt><strong>Point.__str__</strong> ()</dt><dd><p>Returns a liylpond string representation of the Point.</p>
+<dt><strong>Point.__str__</strong> ()</dt><dd><p>Returns a liylpond string representation of the Point, including all forms of markup.</p>
 </dd>
 <dt><strong>Point.tone</strong></dt><dd><p>If the Point has a single tone, returns the tone, otherwise raises an error.</p>
 </dd>
@@ -273,17 +275,21 @@
 </dd>
 </dl>
 </dd>
-<dt><strong>rest</strong> (<em>dur</em>)</dt><dd><p>Returns a list containing a single rest (i.e. a toneless Point) of the specified duration.</p>
+<dt><strong>rest</strong> (<em>dur, phrasing=””, articulation=””, ornamentation=””, dynamics=””, markup=””, markdown=””, prefix=””, suffix=””</em>)</dt><dd><p>Returns a list containing a single rest (i.e. a toneless Point) of the specified duration with the specified markup.</p>
 </dd>
 <dt><strong>rests</strong> (<em>*dur</em>)</dt><dd><p>Returns a list of rests (i.e. toneless Points) with the specified durations.</p>
 </dd>
-<dt><strong>note</strong> (<em>tone, dur, ornamentation=””</em>)</dt><dd><p>Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and ornamentation.</p>
+<dt><strong>note</strong> (<em>tone, dur, phrasing=””, articulation=””, ornamentation=””, dynamics=””, markup=””, markdown=””, prefix=””, suffix=””</em>)</dt><dd><p>Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and markup.</p>
 </dd>
 <dt><strong>notes</strong> (<em>tones, dur, ornamentation</em>):</dt><dd><p>Returns a list of notes (i.e. Points with a single tone). The arguments are flattened, zipped and iterated to produce the notes. The longest argument determines the number of notes created, the other arguments are cycled to reach the same length.</p>
 </dd>
-<dt><strong>chord</strong> (<em>tones, dur, ornamentation</em>)</dt><dd><p>Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and ornamentation.</p>
+<dt><strong>chord</strong> (<em>tones, dur, phrasing=””, articulation=””, ornamentation=””, dynamics=””, markup=””, markdown=””, prefix=””, suffix=””</em>)</dt><dd><p>Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and markup.</p>
 </dd>
 <dt><strong>chords</strong> (<em>tones, dur, ornamentation</em>)</dt><dd><p>Returns a list of multiple chords (i.e. Points with multiple tones). The dur and ornamentation arguments are flattened, but <em>tones</em> is not and it must be a list of lists of tones. The arguments are then zipped and iterated to produce the chords. The longest argument determines the number of chords created, the other arguments are cycled to reach the same length.</p>
+</dd>
+<dt><strong>tied_note</strong> (<em>tone, durs</em>)</dt><dd><p>Returns a list of multiple Points all with the same tone, but different durations as specified and with phrasing set to “~” such that they print as a single tied note.</p>
+</dd>
+<dt><strong>tied_chord</strong> (<em>tones, durs</em>)</dt><dd><p>Returns a list of multiple Points all with the same tones, but different durations as specified and with phrasing set to “~” such that they print as a single tied chord.</p>
 </dd>
 <dt><strong>add</strong> (<em>points, tones, *tweaks</em>)</dt><dd><p>Adds the passed tones to the passed points, if any tones are already present in a given point nothing happens. By default, rests (i.e. empty points) are skipped, pass “include rests” as an extra argument to edit rests too.</p>
 </dd>
@@ -322,29 +328,29 @@
 <div class="section" id="markup">
 <h2>markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
-<dt><strong>linebreak</strong></dt><dd><p>Causes a linebreak both in the sheetmusic and in the terminal output.</p>
+<dt><strong>linebreak</strong></dt><dd><p>A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.</p>
 </dd>
-<dt><strong>clef</strong> (<em>clef</em>)</dt><dd><p>Adds the indicated clef to the stave.</p>
+<dt><strong>pagebreak</strong></dt><dd><p>A string that causes a pagebreak in the sheetmusic and a linebreak in the terminal output, can be added to Points, usually as part of their suffix.</p>
 </dd>
-<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it appears as triplets.</p>
+<dt><strong>clef</strong> (<em>clef, passage, end_clef=””</em>)</dt><dd><p>Returns a flattened deepcopy of the <em>passage</em> with the <em>clef</em> added to the prefix of the first point and the optional <em>end_clef</em> added to the suffix of the final point.</p>
 </dd>
-<dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it appears as grace notes.</p>
+<dt><strong>time_signature</strong> (<em>tempo, passage, end_tempo=””</em>)</dt><dd><p>Returns a flattened deepcopy of the <em>passage</em> with the <em>tempo</em> added to the prefix of the first point and the optional <em>end_tempo</em> added to the suffix of the final point.</p>
 </dd>
-<dt><strong>after_grace</strong> (<em>passage, grace</em>)</dt><dd><p>Returns the passage and grace with markup such that the grace appears as grace notes following the passage.</p>
+<dt><strong>key_signature</strong> (<em>key1, passage, key2=””</em>)</dt><dd><p>Returns a flattened deepcopy of the <em>passage</em> with <em>key1</em> added to the prefix of the first point and the optional <em>key2</em> added to the suffix of the final point.</p>
 </dd>
-<dt><strong>acciaccatura</strong> (<em>passage</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it appears as acciaccatura.</p>
+<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage passage, with the first prefix and final suffix edited such that it appears as triplets.</p>
 </dd>
-<dt><strong>ottava</strong> (<em>passage, shift</em>)</dt><dd><p>Returns the passage, wrapped in markup such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.</p>
+<dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.</p>
 </dd>
-<dt><strong>voices</strong> (<em>*voices</em>)</dt><dd><p>Returns a single passage with markup such that the voices are played on top of each other. Voices should be ordered as highest, lowest, 2nd highest, 2nd lowest, and so on.</p>
+<dt><strong>after_grace</strong> (<em>passage, grace</em>)</dt><dd><p>Returns a deepcopy of the passage and grace combined into a single list (passage then grace) with the first prefix and final suffix of both parts edited such that the grace appears as grace notes following the passage.</p>
 </dd>
-<dt><strong>repeat</strong> (<em>passage, times=2</em>)</dt><dd><p>Wraps the passage in markup to place repeat bars around it. If the number of repeats is greater than two, the number is indicated above the closing bracket.</p>
+<dt><strong>acciaccatura</strong> (<em>passage</em>)</dt><dd><p>Returns a deep copy of the passage, with the first prefix and final suffix edited such that it appears as acciaccatura.</p>
 </dd>
-<dt><strong>annotation</strong> (<em>text</em>)</dt><dd><p>Adds the passed text above the staff at the indicated point.</p>
+<dt><strong>ottava</strong> (<em>passage, shift</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.</p>
 </dd>
-<dt><strong>name</strong> (<em>passage, name</em>)</dt><dd><p>Adds the passed name to the first Point in the passage, it will appear above the Point on the sheet music. This is an in place modification.</p>
+<dt><strong>voices</strong> (<em>*voices</em>)</dt><dd><p>Returns a single passage with markup such that the voices are played on top of each other. Voices should be ordered as highest, lowest, 2nd highest, 2nd lowest, and so on. The first prefix and final suffix or each voice are modified to do this.</p>
 </dd>
-<dt><strong>tempo_change</strong> (<em>tempo</em>)</dt><dd><p>Adds a change in time signature to the sheet music.</p>
+<dt><strong>repeat</strong> (<em>passage, times=2</em>)</dt><dd><p>Returns a deepcopy of the passage with the first prefix and final suffix edited such that repeat bars are printed around it. If the number of repeats is greater than two, the number is indicated above the closing bracket.</p>
 </dd>
 </dl>
 </div>
@@ -361,7 +367,7 @@
 </dd>
 <dt><strong>Piece.set_key</strong> (<em>key</em>)</dt><dd><p>Sets the pieces key to the passed value. <em>key</em> can be a string, a subclass of <em>Key</em> or an instance of a <em>Key</em>.</p>
 <dl class="simple">
-<dt><strong>Piece.key_signature</strong></dt><dd><p>Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music.</p>
+<dt><strong>Piece.key_signature</strong></dt><dd><p>Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music when added to a point.</p>
 </dd>
 </dl>
 </dd>

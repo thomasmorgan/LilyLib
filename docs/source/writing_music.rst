@@ -1,12 +1,12 @@
 Writing music
 =========================
 
-So far we have seen how music in LilyLib is composed of Points, and how we can use the `notes`, `rests` and `chords` functions to make multiple `Points`. In this section we'll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within `points.py`.
+So far we have seen how music in LilyLib is composed of *Points*, and how we can use the *notes*, *rests* and *chords* functions to make multiple *Points*. In this section we'll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within *points.py*.
 
 Scales
 -----------
 
-The scale functions is as follows:
+The *scale* function is as follows:
 
 ::
 
@@ -16,13 +16,13 @@ The scale functions is as follows:
 
 The arguments are:
 
-- start; the tone at which to start the scale (can be a note too, the tone will be automatically extracted).
-- stop_or_length; either the tone at which to stop, or a integer length (negative lengths create descending scales).
-- key; the key in which to write the scale (see below for details)
-- dur; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.
-- step; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.
+- *start*; the tone at which to start the scale (can be a Point too, the tone will be automatically extracted).
+- *stop_or_length*; either the tone at which to stop, or the desired length of the scale (negative lengths create descending scales).
+- *key*; the key in which to write the scale (see below for details)
+- *dur*; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.
+- *step*; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.
 
-The demo_c_major_scale provides an example:
+The *demo_c_major_scale* provides an example:
 
 ::
 
@@ -45,7 +45,7 @@ The demo_c_major_scale provides an example:
 
 .. image:: _static/scales.png
 
-First look at the treble clef. Note how the first scale specifies a stop tone, but the second specifies a numeric length. Both specify the key as C Major, and the duration as 8 (i.e. quavers). The bass is different though, it doesn't specify a key and it calls `self.scale` instead of `scale`. This is because the `Piece` class offers wrappers to all these functions, with the only difference being that it automatically passes the key of the piece. In this way you can use `self.scale` to compose in the dominant key of the piece, but `scale` when you want to create scales in another key. The demo `c_major_modal_scales` shows this in action, we'll deal with it in two parts. The first is:
+First look at the treble clef. Note how the first scale specifies a stop tone, but the second specifies a numeric length. Both specify the key as C Major, and the duration as 8 (i.e. quavers). The bass is different though, it doesn't specify a key and it calls *self.scale* instead of *scale*. This is because the `Piece` class offers wrappers to all these functions, with the only difference being that it automatically passes the current key of the piece. In this way you can use *self.scale* to compose in the dominant key of the piece, but *scale* when you want to create scales in another key. The demo `c_major_modal_scales` shows this in action, we'll deal with it in two parts. The first is:
 
 ::
 
@@ -70,7 +70,7 @@ First look at the treble clef. Note how the first scale specifies a stop tone, b
 
 .. image:: _static/modal_scales1.png
 
-Note how first a scale of tones is generated, and then these tones are used as the start notes of a series of scales, all in the dominant key of C Major. The bass clef is just a transposition of the treble clef, but more on transposition below.
+Note how first a scale of tones is generated, and then these tones are used as the start notes of a series of scales, all in the key of C Major. The bass clef is just a transposition of the treble clef, but more on transposition below.
 
 ::
 
@@ -91,7 +91,7 @@ Note how first a scale of tones is generated, and then these tones are used as t
 
 .. image:: _static/modal_scales2.png
 
-The second part does the same thing, but note it takes the letter of the start tone and combines it with the word major to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format "<base letter> <mode>", for instance: "c major", "fs minor", "bf harmonic". The lookup function is case insensitive, so capitalization does not matter.
+The second part does the same thing, but note it takes the letter of the start tone and combines it with the word "major" to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format "<base letter> <mode>", for instance: "c major", "fs minor", "bf harmonic". The lookup function is case insensitive, so capitalization does not matter.
 
 In addition, note in the above demo that the treble clef sets the 'step' argument to 2, so the treble clef covers two octaves and catches up with the bass clef. Lastly, note that the score is the combination of the two dictionaries called `looped` and `smart` and they are combined with the function `join` which is imported from `util.py`.
 
@@ -189,7 +189,7 @@ Note that the dominant and diminished 7ths are the same for major, minor and har
 	        self.score["treble"] = self.chromatic('c`', 'c``', [16] * 12 + [4]) + self.chromatic('c``', 'c`', [16] * 12 + [4])
 
 	        self.set_key("f major")
-	        self.score["treble"] += self.key_signature + self.chromatic('f`', 'f``', [16] * 12 + [4]) + self.chromatic('f``', 'f`', [16] * 12 + [4])
+	        self.score["treble"] += key_signature(self.key, self.chromatic('f`', 'f``', [16] * 12 + [4])) + self.chromatic('f``', 'f`', [16] * 12 + [4])
 
 	        self.score["bass"] = self.transpose(self.score["treble"], -1, 'octave')
 
@@ -208,21 +208,21 @@ You can also create custom scales with `scale_subset`:
 	    custom_tones = key.scale_subset(positions)
 	    return series(custom_tones, start, stop_or_length, dur, step)
 
-Here, `positions` is a list of numbers describing the points of the regular scale you want to include. So setting `positions` to [1, 3, 5] would produce regular arpeggios. Similarly, if you were Johannes Brahms and you regularly want a rolling left hand that includes root tones and 3rds you would use a scale subset with positions [1, 3].
+Here, `positions` is a list of numbers describing the points of the regular scale you want to include. So setting `positions` to [1, 3, 5] would produce regular arpeggios. Similarly, a scale subset with positions [1, 3] would include only root and third notes.
 
 Tranposition
 ----------------
 
-We've seen `transpose` used a few times above. As the name suggests, it takes an (arbitrarily nested) list of Points, tones or strings, transposes it some a specified interval, and then returns the result. It's a long function so we won't show it all here, but here are the arguments:
+We've seen `transpose` used a few times above. It takes an (arbitrarily nested) list of Points or tones, transposes each item by the specified interval, and then returns the result. It's a long function so we won't show it all here, but here are the arguments:
 
 ::
 
 	def transpose(item, shift, key, mode="scale"):
 
-- item; the thing you want to transpose
-- shift; the interval you want it transposed by
-- key; the key in which the transposition occurs (see mode)
-- mode; the "`kind`" of transposition. Either 'scale', 'octave' or 'semitone'.
+- *item*; the thing you want to transpose
+- *shift*; the interval you want it transposed by
+- *key*; the key in which the transposition occurs
+- *mode*; the "`kind`" of transposition. Either 'scale', 'octave' or 'semitone'.
 
 You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we've seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.
 
@@ -244,10 +244,12 @@ Here's the bit of the function that does the transposing (by this point it is wo
 
 Note how if transposition fails, it tries again with the equivalent tone. This means if you try to transpose g-flat two steps up the scale of D Major, it will initially fail (g-flat is not in D Major) but will then transform g-flat to f-sharp, which can then be transposed to a.
 
+Lastly note that transposing a Point does not return a modified version of the original Point, but creates an entirely new tone. So if passage B is a transposition of passage A, modifications of A after the transposition has occurred will not affect B. Nonetheless, ornamentation that is present at the time of transposition will be included.
+
 Harmonization
 -----------------
 
-Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function `harmonize`. This function builds off `transpose`, but also another function `merge`. The `merge` function takes two or more series of points, and smushes them together to make a single series. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here's an example:
+Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function `harmonize`. This function builds off `transpose`, but also another function `merge`. The `merge` function takes two or more lists of points, and smushes them together to make a single list. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here's an example:
 
 ::
 
@@ -275,12 +277,12 @@ Lots of music involves relatively simple structures, like scales, but with harmo
 
 You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach see the section on markup.
 
-With this out of the way, harmonize works by first transposing points to the desired intervals and then merging the result with the original points:
+With merge covered let's return to harmonize. The harmonize function works by first transposing points to the desired intervals and then merging the result with the original points:
 
 ::
 
-	def harmonize(points, intervals, key, mode="scale"):
-	    return merge(points, transpose(points, intervals, key, mode))
+	def harmonize(points, interval, key, mode="scale"):
+	    return merge(points, transpose(points, interval, key, mode))
 
 Here's a demo:
 

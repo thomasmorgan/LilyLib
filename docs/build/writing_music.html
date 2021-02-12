@@ -35,10 +35,10 @@
             
   <div class="section" id="writing-music">
 <h1>Writing music<a class="headerlink" href="#writing-music" title="Permalink to this headline">¶</a></h1>
-<p>So far we have seen how music in LilyLib is composed of Points, and how we can use the <cite>notes</cite>, <cite>rests</cite> and <cite>chords</cite> functions to make multiple <cite>Points</cite>. In this section we’ll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within <cite>points.py</cite>.</p>
+<p>So far we have seen how music in LilyLib is composed of <em>Points</em>, and how we can use the <em>notes</em>, <em>rests</em> and <em>chords</em> functions to make multiple <em>Points</em>. In this section we’ll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within <em>points.py</em>.</p>
 <div class="section" id="scales">
 <h2>Scales<a class="headerlink" href="#scales" title="Permalink to this headline">¶</a></h2>
-<p>The scale functions is as follows:</p>
+<p>The <em>scale</em> function is as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">series</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">tones</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
@@ -46,13 +46,13 @@
 </div>
 <p>The arguments are:</p>
 <ul class="simple">
-<li><p>start; the tone at which to start the scale (can be a note too, the tone will be automatically extracted).</p></li>
-<li><p>stop_or_length; either the tone at which to stop, or a integer length (negative lengths create descending scales).</p></li>
-<li><p>key; the key in which to write the scale (see below for details)</p></li>
-<li><p>dur; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.</p></li>
-<li><p>step; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.</p></li>
+<li><p><em>start</em>; the tone at which to start the scale (can be a Point too, the tone will be automatically extracted).</p></li>
+<li><p><em>stop_or_length</em>; either the tone at which to stop, or the desired length of the scale (negative lengths create descending scales).</p></li>
+<li><p><em>key</em>; the key in which to write the scale (see below for details)</p></li>
+<li><p><em>dur</em>; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.</p></li>
+<li><p><em>step</em>; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.</p></li>
 </ul>
-<p>The demo_c_major_scale provides an example:</p>
+<p>The <em>demo_c_major_scale</em> provides an example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
 <span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">scale</span>
 
@@ -72,7 +72,7 @@
 </pre></div>
 </div>
 <img alt="_images/scales.png" src="_images/scales.png" />
-<p>First look at the treble clef. Note how the first scale specifies a stop tone, but the second specifies a numeric length. Both specify the key as C Major, and the duration as 8 (i.e. quavers). The bass is different though, it doesn’t specify a key and it calls <cite>self.scale</cite> instead of <cite>scale</cite>. This is because the <cite>Piece</cite> class offers wrappers to all these functions, with the only difference being that it automatically passes the key of the piece. In this way you can use <cite>self.scale</cite> to compose in the dominant key of the piece, but <cite>scale</cite> when you want to create scales in another key. The demo <cite>c_major_modal_scales</cite> shows this in action, we’ll deal with it in two parts. The first is:</p>
+<p>First look at the treble clef. Note how the first scale specifies a stop tone, but the second specifies a numeric length. Both specify the key as C Major, and the duration as 8 (i.e. quavers). The bass is different though, it doesn’t specify a key and it calls <em>self.scale</em> instead of <em>scale</em>. This is because the <cite>Piece</cite> class offers wrappers to all these functions, with the only difference being that it automatically passes the current key of the piece. In this way you can use <em>self.scale</em> to compose in the dominant key of the piece, but <em>scale</em> when you want to create scales in another key. The demo <cite>c_major_modal_scales</cite> shows this in action, we’ll deal with it in two parts. The first is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
 <span class="kn">from</span> <span class="nn">tones</span> <span class="kn">import</span> <span class="n">letter</span>
 <span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">scale</span>
@@ -94,7 +94,7 @@
 </pre></div>
 </div>
 <img alt="_images/modal_scales1.png" src="_images/modal_scales1.png" />
-<p>Note how first a scale of tones is generated, and then these tones are used as the start notes of a series of scales, all in the dominant key of C Major. The bass clef is just a transposition of the treble clef, but more on transposition below.</p>
+<p>Note how first a scale of tones is generated, and then these tones are used as the start notes of a series of scales, all in the key of C Major. The bass clef is just a transposition of the treble clef, but more on transposition below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="c1"># The smart section programmatically builds a series of scales in different keys</span>
         <span class="c1"># Note how we use list comprehension to avoid a for loop, and use step = 2 to play every other note in the treble clef</span>
         <span class="n">start_notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s1">&#39;c```&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">)</span>
@@ -111,7 +111,7 @@
 </pre></div>
 </div>
 <img alt="_images/modal_scales2.png" src="_images/modal_scales2.png" />
-<p>The second part does the same thing, but note it takes the letter of the start tone and combines it with the word major to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format “&lt;base letter&gt; &lt;mode&gt;”, for instance: “c major”, “fs minor”, “bf harmonic”. The lookup function is case insensitive, so capitalization does not matter.</p>
+<p>The second part does the same thing, but note it takes the letter of the start tone and combines it with the word “major” to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format “&lt;base letter&gt; &lt;mode&gt;”, for instance: “c major”, “fs minor”, “bf harmonic”. The lookup function is case insensitive, so capitalization does not matter.</p>
 <p>In addition, note in the above demo that the treble clef sets the ‘step’ argument to 2, so the treble clef covers two octaves and catches up with the bass clef. Lastly, note that the score is the combination of the two dictionaries called <cite>looped</cite> and <cite>smart</cite> and they are combined with the function <cite>join</cite> which is imported from <cite>util.py</cite>.</p>
 </div>
 <div class="section" id="arpeggios">
@@ -196,7 +196,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;c``&#39;</span><span class="p">,</span> <span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s2">&quot;f major&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_signature</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">key_signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic</span><span class="p">(</span><span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;treble&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;octave&#39;</span><span class="p">)</span>
 
@@ -213,19 +213,19 @@
     <span class="k">return</span> <span class="n">series</span><span class="p">(</span><span class="n">custom_tones</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here, <cite>positions</cite> is a list of numbers describing the points of the regular scale you want to include. So setting <cite>positions</cite> to [1, 3, 5] would produce regular arpeggios. Similarly, if you were Johannes Brahms and you regularly want a rolling left hand that includes root tones and 3rds you would use a scale subset with positions [1, 3].</p>
+<p>Here, <cite>positions</cite> is a list of numbers describing the points of the regular scale you want to include. So setting <cite>positions</cite> to [1, 3, 5] would produce regular arpeggios. Similarly, a scale subset with positions [1, 3] would include only root and third notes.</p>
 </div>
 <div class="section" id="tranposition">
 <h2>Tranposition<a class="headerlink" href="#tranposition" title="Permalink to this headline">¶</a></h2>
-<p>We’ve seen <cite>transpose</cite> used a few times above. As the name suggests, it takes an (arbitrarily nested) list of Points, tones or strings, transposes it some a specified interval, and then returns the result. It’s a long function so we won’t show it all here, but here are the arguments:</p>
+<p>We’ve seen <cite>transpose</cite> used a few times above. It takes an (arbitrarily nested) list of Points or tones, transposes each item by the specified interval, and then returns the result. It’s a long function so we won’t show it all here, but here are the arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>item; the thing you want to transpose</p></li>
-<li><p>shift; the interval you want it transposed by</p></li>
-<li><p>key; the key in which the transposition occurs (see mode)</p></li>
-<li><p>mode; the “<cite>kind</cite>” of transposition. Either ‘scale’, ‘octave’ or ‘semitone’.</p></li>
+<li><p><em>item</em>; the thing you want to transpose</p></li>
+<li><p><em>shift</em>; the interval you want it transposed by</p></li>
+<li><p><em>key</em>; the key in which the transposition occurs</p></li>
+<li><p><em>mode</em>; the “<cite>kind</cite>” of transposition. Either ‘scale’, ‘octave’ or ‘semitone’.</p></li>
 </ul>
 <p>You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we’ve seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.</p>
 <p>Here’s the bit of the function that does the transposing (by this point it is working only with tones):</p>
@@ -243,10 +243,11 @@
 </pre></div>
 </div>
 <p>Note how if transposition fails, it tries again with the equivalent tone. This means if you try to transpose g-flat two steps up the scale of D Major, it will initially fail (g-flat is not in D Major) but will then transform g-flat to f-sharp, which can then be transposed to a.</p>
+<p>Lastly note that transposing a Point does not return a modified version of the original Point, but creates an entirely new tone. So if passage B is a transposition of passage A, modifications of A after the transposition has occurred will not affect B. Nonetheless, ornamentation that is present at the time of transposition will be included.</p>
 </div>
 <div class="section" id="harmonization">
 <h2>Harmonization<a class="headerlink" href="#harmonization" title="Permalink to this headline">¶</a></h2>
-<p>Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function <cite>harmonize</cite>. This function builds off <cite>transpose</cite>, but also another function <cite>merge</cite>. The <cite>merge</cite> function takes two or more series of points, and smushes them together to make a single series. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here’s an example:</p>
+<p>Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function <cite>harmonize</cite>. This function builds off <cite>transpose</cite>, but also another function <cite>merge</cite>. The <cite>merge</cite> function takes two or more lists of points, and smushes them together to make a single list. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here’s an example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
 <span class="kn">from</span> <span class="nn">points</span> <span class="kn">import</span> <span class="n">rests</span><span class="p">,</span> <span class="n">merge</span>
 
@@ -270,9 +271,9 @@
 </div>
 <img alt="_images/merge.png" src="_images/merge.png" />
 <p>You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach see the section on markup.</p>
-<p>With this out of the way, harmonize works by first transposing points to the desired intervals and then merging the result with the original points:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harmonize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
+<p>With merge covered let’s return to harmonize. The harmonize function works by first transposing points to the desired intervals and then merging the result with the original points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harmonize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Here’s a demo:</p>
