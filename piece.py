@@ -65,11 +65,14 @@ class Piece:
             + '    title = "{}"\n'.format(self.title)
             + '    subtitle = "{}"\n'.format(self.subtitle)
             + '    composer = "{}"\n'.format(self.composer)
-            + '    mutopiacomposer = ""\n'
-            + '    mutopiainstrument = "piano"\n'
-            + '    source = ""\n'
-            + '    style = "Romatic"\n'
-            + '    license = "Creative Commons Attribution-ShareAlike 4.0"\n'
+            + '    date = "{}"\n'.format(self.date)
+            + '    mutopiacomposer = "{}"\n'.format(self.mutopiacomposer)
+            + '    mutopiainstrument = "{}"\n'.format(self.mutopiainstrument)
+            + '    maintainer = "{}"\n'.format(self.maintainer)
+            + '    maintainerEmail = "{}"\n'.format(self.mantainer_email)
+            + '    source = "{}"\n'.format(self.source)
+            + '    style = "{}"\n'.format(self.style)
+            + '    license = "{}"\n'.format(self.license)
             + '    maintainer = "Anonymous"\n'
             + '    opus = "{}"\n'.format(self.opus)
             + '}\n'
