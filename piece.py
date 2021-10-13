@@ -24,6 +24,7 @@ class Piece:
         self.tempo = "4/4"
         self.key = "C Major"
         self.score = {}
+        self.auto_add_bars = False
 
         self.details()
 
@@ -95,6 +96,9 @@ class Piece:
         if isinstance(stave, Point):
             return(str(stave))
         elif isinstance(stave, list):
+            if self.auto_add_bars:
+                stave = self.add_barlines(stave)
+
             stave = [str(item) for item in flatten(stave)]
             stave = " ".join(stave)
             stave = re.sub('\n ', '\n', stave)
