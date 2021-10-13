@@ -50,11 +50,15 @@ class Salut(Piece):
 		# Opening Chords #
 		##################
 
+		dim7 = chord(self.diminished7('bf,,', 6), 2, ornamentation="arpeggio")
+		dim7.replace('ff,', 'e,')
+		fmaj = chord(omit(arpeggio('f,,', 6, key='f major'), 2), 2, ornamentation="arpeggio")
+
 		opening_chords = {
 			'treble': rests(1, 2, 4, 8),
 			'bass': ottava(voices(
-				chords(['g, bf,', 'a, c', 'bf, df', 'a, c'], 2, ornamentation="arpeggio"),
-				chords(['bf,, df, e,', 'f,, c, f,', 'bf,, e, g,', 'f,, c, f,'], 2, ornamentation="arpeggio")
+				[dim7.select(4, 5), fmaj.select(4, 5), dim7.select(5, 6), fmaj.select(4, 5)],
+				[dim7.subset(1, 3), fmaj.subset(1, 3), dim7.select(1, 3, 4), fmaj.subset(1, 3)]
 			), -1)
 		}
 		opening_chords['treble'][0].prefix = '\\tempo 4 = 69'
