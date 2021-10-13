@@ -24,7 +24,10 @@ def split_and_flatten(item):
 
 def select(List, *indexes):
     indexes = flatten(list(indexes))
-    return [j for i, j in enumerate(List) if (i + 1) in indexes]
+    if len(indexes) == 1:
+        return List[indexes[0]-1]
+    else:
+        return [j for i, j in enumerate(List) if (i + 1) in indexes]
 
 
 def pattern(List, *indexes):
