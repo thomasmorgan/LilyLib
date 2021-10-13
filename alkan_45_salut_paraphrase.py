@@ -1,7 +1,7 @@
 from piece import Piece
 from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio
 from staves import Bass, Super
-from markup import voices, ottava, clef
+from markup import voices, ottava, clef, key_signature
 from util import join, rep, pattern, omit, select
 
 class Salut(Piece):
@@ -19,7 +19,7 @@ class Salut(Piece):
 		self.maintainer = "Thomas Morgan"
 		self.mantainer_email = "thomas.j.h.morgan@gmail.com"
 		self.opus = "45"
-		self.key = "G Minor"
+		self.key = "Bf major"
 		self.auto_add_bars = True
 		self.staves=[Super('treble'), Bass()]
 		self.staves[0].extra_text += '\\set Score.connectArpeggios = ##t'
@@ -51,7 +51,7 @@ class Salut(Piece):
 		##################
 
 		dim7 = chord(self.diminished7('bf,,', 6), 2, ornamentation="arpeggio")
-		dim7.replace('ff,', 'e,')
+		dim7.replace('ff, aff,', 'e, g,')
 		fmaj = chord(omit(arpeggio('f,,', 6, key='f major'), 2), 2, ornamentation="arpeggio")
 
 		opening_chords = {
@@ -114,7 +114,28 @@ class Salut(Piece):
 		select(melody1['bass'], 19).ornamentation = '('
 		select(melody1['bass'], 21).ornamentation = ')'
 
-		self.score = join(opening_chords, melody1)
+		####################
+		# Opening Chords 2 #
+		####################
+
+		self.key = ('f minor')
+
+		dim7 = chord(self.diminished7('f,,', 6), 2, ornamentation="arpeggio")
+		dim7.replace('cf, eff,', 'b,, d,')
+		cmaj = chord(omit(arpeggio('c,,', 6, key='c major'), 2), 2, ornamentation="arpeggio")
+
+		opening_chords2 = {
+			'treble': key_signature(self.key, rests(1, 2, 4, 8)),
+			'bass': key_signature(self.key, ottava(voices(
+				[dim7.select(4, 5), cmaj.select(4, 5), dim7.select(5, 6), cmaj.select(4, 5)],
+				[dim7.subset(1, 3), cmaj.subset(1, 3), dim7.select(1, 3, 4), cmaj.subset(1, 3)]
+			), -1))
+		}
+
+		select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
+		select(opening_chords['treble'], 1).dynamics = "mf"
+
+		self.score = join(opening_chords, melody1, opening_chords2)
 
 if __name__ == "__main__":
 	Salut()
