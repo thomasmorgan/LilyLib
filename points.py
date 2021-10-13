@@ -26,6 +26,7 @@ class Point:
         self.markdown = markdown
         self.prefix = prefix
         self.suffix = suffix
+        self.sort_tones()
 
     def check_init_arguments(self, tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix):
         if not isinstance(tones, list):
@@ -113,10 +114,12 @@ class Point:
         for tone in tones:
             if tone not in self.tones:
                 self.tones.append(tone)
+        self.sort_tones()
 
     def remove(self, tones):
         tones = flatten([tonify(tones)])
         self.tones = [tone for tone in self.tones if tone not in tones]
+        self.sort_tones()
 
     def replace(self, old_tones, new_tones):
         old_tones = flatten([tonify(old_tones)])
@@ -130,6 +133,9 @@ class Point:
             if old_tone in self.tones:
                 self.remove(old_tone)
                 self.add(new_tone)
+
+    def sort_tones(self):
+        self.tones = [tone for t in all_tones for tone in self.tones if tone == t]
 
 
 def rest(dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
