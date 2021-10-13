@@ -139,8 +139,8 @@ class Point:
 
 
 def rest(dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
-    """ Returns a list with a single Point that prints as a rest with the specified duration. """
-    return [Point([], dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
+    """ Returns a single Point that prints as a rest with the specified duration. """
+    return Point([], dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
 def rests(*dur):
@@ -149,13 +149,13 @@ def rests(*dur):
 
 
 def note(tone, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
-    """ Returns a list with a single Point that prints as a note with the specified tone and duration.
+    """ Returns a single Point that prints as a note with the specified tone and duration.
     Passing an empty string or list as tone will return a rest.
     Passing a list of tones (or a string that can be split into multiple tones raises an error. """
     tone = flatten([tonify(tone)])
     if len(tone) > 1:
         raise ValueError("Cannot create single note with tone of {}.".format(tone))
-    return [Point(tone, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
+    return Point(tone, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
 def notes(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
@@ -174,9 +174,9 @@ def notes(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="
 
 
 def chord(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
-    """ Returns a list containing a single Point that prints as a chord with the specified tones and duration. """
+    """ Returns a single Point that prints as a chord with the specified tones and duration. """
     tones = flatten([tonify(tones)])
-    return [Point(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
+    return Point(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
 def chords(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
