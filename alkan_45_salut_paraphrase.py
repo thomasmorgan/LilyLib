@@ -78,7 +78,6 @@ class Salut(Piece):
 			select(melody, len(melody)).ornamentation += ')'
 			return(melody)
 
-		lower_treble_voice = rests(8, 4) + notes('c` bf g f e f ef', 4) + rest(4) + notes('e f d c b,', 4) + note('bf,', 2)
 		lower_treble_voice = rests(8, 4) + notes('c` bf g f e f ef', 4) + rests(4) + notes('e f d c b,', 4) + notes('bf,', 2)
 		select(lower_treble_voice, 4).add('d`')
 		select(lower_treble_voice, 12).add('a')
@@ -89,9 +88,9 @@ class Salut(Piece):
 				lower_treble_voice
 			),
 			'bass': (
-				rest(4) + notes('a, bf,', 4) +
-				voices(self.chromatic('ef', -4, dur=[4, 4, 4, '4.']) + rest(8), self.chromatic('ef,', 3, dur=[4, '2.', 4])) +
-				rest(4) + notes('g, a,', 4) +
+				rests(4) + notes('a, bf,', 4) +
+				voices(self.chromatic('ef', -4, dur=[4, 4, 4, '4.']) + rests(8), self.chromatic('ef,', 3, dur=[4, '2.', 4])) +
+				rests(4) + notes('g, a,', 4) +
 				voices(self.chromatic('bf,', -4, dur=[4, 4, 4, 2]), notes('bf,, c, c,', [4, '2.', 4]))
 			)
 		}
