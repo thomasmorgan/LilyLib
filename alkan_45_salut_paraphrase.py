@@ -89,7 +89,7 @@ class Salut(Piece):
 			),
 			'bass': (
 				rests(4) + notes('a, bf,', 4) +
-				voices(self.chromatic('ef', -4, dur=[4, 4, 4, '4.']) + rests(8), self.chromatic('ef,', 3, dur=[4, '2.', 4])) +
+				voices(self.chromatic('ef', -4, dur=[4, 4, 4, '4.']) + rests(8), notes('ef, f, fs,', [4, '2.', 4])) +
 				rests(4) + notes('g, a,', 4) +
 				voices(self.chromatic('bf,', -4, dur=[4, 4, 4, 2]), notes('bf,, c, c,', [4, '2.', 4]))
 			)
