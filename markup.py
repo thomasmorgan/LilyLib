@@ -74,7 +74,7 @@ def acciaccatura(passage):
 def ottava(passage, shift):
     passage = deepcopy(passage)
     passage = flatten([passage])
-    passage[0].prefix + '\\ottava #{}'.format(shift) + passage[0].prefix
+    passage[0].prefix = '\\ottava #{} '.format(shift) + passage[0].prefix
     passage[-1].suffix += '\\ottava #0 '
     return passage
 
