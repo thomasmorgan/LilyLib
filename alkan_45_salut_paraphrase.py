@@ -1,8 +1,8 @@
 from piece import Piece
-from points import rest, rests, note, notes, tied_note, chords, chord
+from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio
 from staves import Bass, Super
 from markup import voices, ottava, clef
-from util import join, rep, pattern
+from util import join, rep, pattern, omit, select
 
 class Salut(Piece):
 
@@ -61,10 +61,10 @@ class Salut(Piece):
 				[dim7.subset(1, 3), fmaj.subset(1, 3), dim7.select(1, 3, 4), fmaj.subset(1, 3)]
 			), -1)
 		}
-		opening_chords['treble'][0].prefix = '\\tempo 4 = 69'
-		opening_chords['treble'][0].prefix += ' \\override Rest.transparent = ##t '
-		opening_chords['treble'][0].markup = "\\italic{adagio sostenuto}"
-		opening_chords['treble'][0].dynamics = "mf"
+		select(opening_chords['treble'], 1).prefix = '\\tempo 4 = 69'
+		select(opening_chords['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
+		select(opening_chords['treble'], 1).markup = "\\italic{adagio sostenuto}"
+		select(opening_chords['treble'], 1).dynamics = "mf"
 
 		############
 		# Melody 1 #
@@ -72,15 +72,16 @@ class Salut(Piece):
 
 		def melody1(tone, durs):
 			tones = self.scale(self.transpose(tone, -1, 'octave'), 9)
-			melody = (notes(pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3), [8, 2, 8, 8, 8, 8]+durs))
-			melody[0].ornamentation += '('
-			melody[1].phrasing += '~'
-			melody[-1].ornamentation += ')'
+			melody = notes(pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3), [8, 2, 8, 8, 8, 8]+durs)
+			select(melody, 1).ornamentation += '('
+			select(melody, 2).phrasing += '~'
+			select(melody, len(melody)).ornamentation += ')'
 			return(melody)
 
 		lower_treble_voice = rests(8, 4) + notes('c` bf g f e f ef', 4) + rest(4) + notes('e f d c b,', 4) + note('bf,', 2)
-		lower_treble_voice[3].add('d`')
-		lower_treble_voice[11].add('a')
+		lower_treble_voice = rests(8, 4) + notes('c` bf g f e f ef', 4) + rests(4) + notes('e f d c b,', 4) + notes('bf,', 2)
+		select(lower_treble_voice, 4).add('d`')
+		select(lower_treble_voice, 12).add('a')
 
 		melody1 = {
 			'treble': voices(
@@ -95,24 +96,24 @@ class Salut(Piece):
 			)
 		}
 
-		melody1['treble'][0].dynamics = 'p'
-		melody1['treble'][1].markup = '\\italic{Dolce cantabile e legatissimo}'
-		melody1['treble'][1].dynamics = '<'
-		melody1['treble'][3].dynamics = '!\\>'
-		melody1['treble'][5].dynamics = '!'
-		melody1['treble'][9].dynamics = '<'
-		melody1['treble'][11].dynamics = '!\\>'
-		melody1['treble'][13].dynamics = '!'
-		melody1['treble'][16].prefix += ' \\hide '
+		select(melody1['treble'], 1).dynamics = 'p'
+		select(melody1['treble'], 2).markup = '\\italic{Dolce cantabile e legatissimo}'
+		select(melody1['treble'], 2).dynamics = '<'
+		select(melody1['treble'], 4).dynamics = '!\\>'
+		select(melody1['treble'], 6).dynamics = '!'
+		select(melody1['treble'], 10).dynamics = '<'
+		select(melody1['treble'], 12).dynamics = '!\\>'
+		select(melody1['treble'], 14).dynamics = '!'
+		select(melody1['treble'], 17).prefix += ' \\hide '
 
-		melody1['bass'][3].ornamentation = '('
-		melody1['bass'][6].ornamentation = ')'
-		melody1['bass'][8].ornamentation = '('
-		melody1['bass'][10].ornamentation = ')'
-		melody1['bass'][14].ornamentation = '('
-		melody1['bass'][17].ornamentation = ')'
-		melody1['bass'][18].ornamentation = '('
-		melody1['bass'][20].ornamentation = ')'
+		select(melody1['bass'], 4).ornamentation = '('
+		select(melody1['bass'], 7).ornamentation = ')'
+		select(melody1['bass'], 9).ornamentation = '('
+		select(melody1['bass'], 11).ornamentation = ')'
+		select(melody1['bass'], 15).ornamentation = '('
+		select(melody1['bass'], 18).ornamentation = ')'
+		select(melody1['bass'], 19).ornamentation = '('
+		select(melody1['bass'], 21).ornamentation = ')'
 
 		self.score = join(opening_chords, melody1)
 
