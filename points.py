@@ -313,16 +313,28 @@ def chromatic(start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
     if isinstance(stop_or_length, int):
         if stop_or_length > 1:
-            return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
         else:
-            return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
     else:
         start_index = all_tones.index(tonify(start))
         stop_index = all_tones.index(tonify(stop_or_length))
         if stop_index > start_index:
-            return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
         else:
-            return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
 
 
 def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
