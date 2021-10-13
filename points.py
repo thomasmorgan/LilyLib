@@ -1,4 +1,4 @@
-from util import flatten, split_and_flatten
+from util import flatten, split_and_flatten, select, pattern, subset, omit
 from tones import tonify, all_pitches, pitch, letter, equivalent_tone, all_tones
 from keys import keyify
 
@@ -81,6 +81,35 @@ class Point:
         if self.suffix:
             string += self.suffix
         return string
+
+    def __getitem__(self, arg):
+        duplicate = deepcopy(self)
+        duplicate.tones = self.tones[arg]
+        return(duplicate)
+
+
+    def select(self, *indexes):
+        new_point = deepcopy(self)
+        new_point.tones = select(new_point.tones, indexes)
+        return(new_point)
+
+
+    def pattern(self, *indexes):
+        new_point = deepcopy(self)
+        new_point.tones = pattern(new_point.tones, indexes)
+        return(new_point)
+
+
+    def omit(self, *indexes):
+        new_point = deepcopy(self)
+        new_point.tones = omit(new_point.tones, indexes)
+        return(new_point)
+
+
+    def subset(self, start, stop):
+        new_point = deepcopy(self)
+        new_point.tones = subset(new_point.tones, start, stop)
+        return(new_point)
 
     @property
     def tone(self):
