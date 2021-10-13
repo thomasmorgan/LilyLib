@@ -6,6 +6,8 @@ linebreak = '\\break\n'
 
 pagebreak = '\\pageBreak\n\n'
 
+barbreak = ' |\n'
+
 
 def clef(clef, passage, end_clef=""):
     passage = deepcopy(passage)
