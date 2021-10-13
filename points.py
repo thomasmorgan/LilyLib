@@ -152,7 +152,7 @@ def note(tone, dur, phrasing="", articulation="", ornamentation="", dynamics="",
     return [Point(tone, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
-def notes(tones, dur):
+def notes(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list of Points that print as notes with the specified tone(s) and duration(s).
     If tones is a string including adjacent white space, rests are produced.
     If tones is a list including empty lists or empty strings, rests are produced.
@@ -164,7 +164,7 @@ def notes(tones, dur):
     max_length = max([len(tones), len(dur)])
 
     zip_list = zip(range(max_length), cycle(tones), cycle(dur))
-    return flatten([note(t, d) for i, t, d in zip_list])
+    return flatten([note(t, d, phrasing=phrasing, articulation=articulation, ornamentation=ornamentation, dynamics=dynamics, markup=markup, markdown=markdown, prefix=prefix, suffix=suffix) for i, t, d in zip_list])
 
 
 def chord(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
@@ -173,13 +173,13 @@ def chord(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="
     return [Point(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
 
 
-def chords(tones, dur):
+def chords(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     dur = split_and_flatten(dur)
 
     max_length = max([len(tones), len(dur)])
 
     zip_list = zip(range(max_length), cycle(tones), cycle(dur))
-    return flatten([chord(t, d) for i, t, d in zip_list])
+    return flatten([chord(t, d, phrasing=phrasing, articulation=articulation, ornamentation=ornamentation, dynamics=dynamics, markup=markup, markdown=markdown, prefix=prefix, suffix=suffix) for i, t, d in zip_list])
 
 
 def tied_note(tone, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
