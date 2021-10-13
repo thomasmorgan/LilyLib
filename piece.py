@@ -100,6 +100,56 @@ class Piece:
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
+    def add_barlines(self, stave):
+        num_bars = 0
+
+        bar_length = 1
+
+        bar_progress = 0.0
+
+        progress_at_voice_start = 0.0
+        bars_at_voice_start = 0
+
+        stave = flatten(stave)
+
+        for point in stave:
+
+            if "\n<<\n{ " in point.prefix:
+                progress_at_voice_start = bar_progress
+                bars_at_voice_start = num_bars
+
+            if isinstance(point.dur, int):
+                progress = 1 / float(point.dur)
+            else:
+                if point.dur == '\\longa':
+                    progress = 4.0
+                elif point.dur == '\\breve':
+                    progress = 2.0
+                elif '..' in point.dur:
+                    progress = (1 / float(int(point.dur[:-2]))) * 1.5 * 1.5
+                elif '.' in point.dur:
+                    progress = (1 / float(int(point.dur[:-1]))) * 1.5
+                else:
+                    progress = 1 / float(int(point.dur))
+            bar_progress += progress
+
+
+            if bar_progress > 1:
+                raise ValueError("Duration of notes crosses a bar line: {} in bar {}".format(str(point), num_bars+1))
+
+            if bar_progress == 1 and " }\n\\\\\n" not in point.suffix:
+                point.suffix += barbreak
+                bar_progress = 0
+                num_bars += 1
+
+            if " }\n\\\\\n" in point.suffix:
+                num_bars = bars_at_voice_start
+                bar_progress = progress_at_voice_start
+
+
+        return(stave)
+
+
     def scale(self, start, stop_or_length, dur=None, step=1):
         return scale(start, stop_or_length, self.key, dur, step)
 
