@@ -96,7 +96,9 @@ class Piece:
             return(str(stave))
         elif isinstance(stave, list):
             stave = [str(item) for item in flatten(stave)]
-            return(" ".join(stave))
+            stave = " ".join(stave)
+            stave = re.sub('\n ', '\n', stave)
+            return(stave)
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
 
