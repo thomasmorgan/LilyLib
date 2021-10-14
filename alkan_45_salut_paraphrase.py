@@ -105,7 +105,8 @@ class Salut(Piece):
 		}
 
 		select(melody1['treble'], 1).dynamics = 'p'
-		select(melody1['treble'], 2).markup = '\\italic{Dolce cantabile e legatissimo}'
+		select(melody1['treble'], 1).markup = '\\italic{Prima voce \\bold{p} e dolce cantabile}'
+		select(melody1['treble'], 1).markdown = '\\italic{Altre voci \\bold{pp} e legatissimo}'
 		select(melody1['treble'], 2).dynamics = '<'
 		select(melody1['treble'], 4).dynamics = '!\\>'
 		select(melody1['treble'], 6).dynamics = '!'
