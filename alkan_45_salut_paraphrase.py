@@ -174,7 +174,7 @@ class Salut(Piece):
 			return flatten([triple(octave(t)) for t in tonify(tones)])
 
 		upper_treble = notes('a cs` d` e` fs` gs`', ['2.', 8, 8]) + notes('a` b` gs` a` gs` g', [2, '4.', 8, 2, 4, 4])
-		lower_treble = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e d')
+		lower_treble = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e') + triple(chord('e, d', 8))
 
 		chords1 = {
 			'treble':key_signature(self.key, voices(upper_treble, lower_treble)),
