@@ -1,8 +1,9 @@
 from piece import Piece
-from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale
+from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose
 from staves import Bass, Super
-from markup import voices, ottava, clef, key_signature
-from util import join, rep, pattern, omit, select
+from markup import voices, ottava, clef, key_signature, triplets
+from util import join, rep, pattern, omit, select, rep, flatten
+from tones import tonify
 
 class Salut(Piece):
 
@@ -155,10 +156,33 @@ class Salut(Piece):
 		select(melody2['treble'], 21).prefix += ' \\hide '
 		select(melody2['treble'], 23).dynamics = 'pp'
 
+		############
+		# Chords 1 #
+		############
+
+		self.set_key('a major')
+
+		def octave(tone):
+			return chord([tone, transpose(tone, -1, 'a major', 'octave')], 8)
+
+		def triple(point):
+			return triplets(rep(point, 3))
+
+		def triple_octaves(tones):
+			return flatten([triple(octave(t)) for t in tonify(tones)])
+
+		upper_treble = notes('a cs` d` e` fs` gs`', ['2.', 8, 8]) + notes('a` b` gs` a` gs` g', [2, '4.', 8, 2, 4, 4])
+		lower_treble = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e d')
+
+		chords1 = {
+			'treble':key_signature(self.key, voices(upper_treble, lower_treble)),
+			'bass': key_signature(self.key, rests(1, 1, 1, 1))
+		}
 
 
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2)
+
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1)
 
 if __name__ == "__main__":
 	Salut()
