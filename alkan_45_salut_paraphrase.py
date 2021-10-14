@@ -79,11 +79,15 @@ class Salut(Piece):
 				melody = notes(pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3), [8, 2, 8, 8, 8, 8]+durs)
 			else:
 				melody = notes(pattern(tones, 1, 8, 8, 8, 9, 7, 5, 4, 4, 3, 6, 5), [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
+
 			select(melody, 1).ornamentation += '('
+			select(melody, 2).suffix = '^\\<'
 			if not alt:
 				select(melody, 2).phrasing += '~'
+				select(melody, 4).suffix = '^\\!'
 			else:
 				select(melody, 8).phrasing += "~"
+				select(melody, 5).suffix = '^\\!'
 			select(melody, len(melody)).ornamentation += ')'
 			return(melody)
 
@@ -104,15 +108,8 @@ class Salut(Piece):
 			)
 		}
 
-		select(melody1['treble'], 1).dynamics = 'p'
-		select(melody1['treble'], 1).markup = '\\italic{Prima voce \\bold{p} e dolce cantabile}'
-		select(melody1['treble'], 1).markdown = '\\italic{Altre voci \\bold{pp} e legatissimo}'
-		select(melody1['treble'], 2).dynamics = '<'
-		select(melody1['treble'], 4).dynamics = '!\\>'
-		select(melody1['treble'], 6).dynamics = '!'
-		select(melody1['treble'], 10).dynamics = '<'
-		select(melody1['treble'], 12).dynamics = '!\\>'
-		select(melody1['treble'], 14).dynamics = '!'
+		select(melody1['treble'], 1).markup = '\\italic{Voce principale \\bold{p} e dolce cantabile}'
+		select(melody1['treble'], 2).markdown = '\\italic{Altre voci \\bold{pp} e legatissimo}'
 		select(melody1['treble'], 17).prefix += ' \\hide '
 
 		select(melody1['bass'], 4).ornamentation = '('
