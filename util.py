@@ -63,8 +63,6 @@ def join(*motifs):
     return joined
 
 
-def rep(passage, times=1):
-    new_passage = []
-    for t in range(times):
-        new_passage += deepcopy(passage)
+def rep(passage, times=2):
+    new_passage = [deepcopy(passage) for t in range(times)]
     return(new_passage)
