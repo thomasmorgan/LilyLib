@@ -119,6 +119,8 @@ class Piece:
         progress_at_voice_start = 0.0
         bars_at_voice_start = 0
 
+        mult = 1.0
+
         stave = flatten(stave)
 
         for point in stave:
@@ -126,6 +128,9 @@ class Piece:
             if "\n<<\n{ " in point.prefix:
                 progress_at_voice_start = bar_progress
                 bars_at_voice_start = num_bars
+
+            if '\\tuplet 3/2 {' in point.prefix:
+                mult *= 2.0/3.0
 
             if isinstance(point.dur, int):
                 progress = 1 / float(point.dur)
@@ -140,7 +145,7 @@ class Piece:
                     progress = (1 / float(int(point.dur[:-1]))) * 1.5
                 else:
                     progress = 1 / float(int(point.dur))
-            bar_progress += progress
+            bar_progress += progress*mult
 
 
             if bar_progress > 1:
@@ -154,6 +159,9 @@ class Piece:
             if " }\n\\\\\n" in point.suffix:
                 num_bars = bars_at_voice_start
                 bar_progress = progress_at_voice_start
+
+            if '} %{ end triplets %}' in point.suffix:
+                mult /= 2.0/3.0
 
 
         return(stave)
