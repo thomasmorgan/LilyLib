@@ -1,5 +1,5 @@
 from piece import Piece
-from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio
+from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale
 from staves import Bass, Super
 from markup import voices, ottava, clef, key_signature
 from util import join, rep, pattern, omit, select
@@ -50,17 +50,20 @@ class Salut(Piece):
 		# Opening Chords #
 		##################
 
+		def rolled_chords(chord1, chord2):
+			return {
+				'treble': rests(1, 2, 4, 8),
+				'bass': ottava(voices(
+					[chord1.select(4, 5), chord2.select(4, 5), chord1.select(5, 6), chord2.select(4, 5)],
+					[chord1.subset(1, 3), chord2.subset(1, 3), chord1.select(1, 3, 4), chord2.subset(1, 3)]
+				), -1)
+			}
+
 		dim7 = chord(self.diminished7('bf,,', 6), 2, ornamentation="arpeggio")
 		dim7.replace('ff, aff,', 'e, g,')
 		fmaj = chord(omit(arpeggio('f,,', 6, key='f major'), 2), 2, ornamentation="arpeggio")
 
-		opening_chords = {
-			'treble': rests(1, 2, 4, 8),
-			'bass': ottava(voices(
-				[dim7.select(4, 5), fmaj.select(4, 5), dim7.select(5, 6), fmaj.select(4, 5)],
-				[dim7.subset(1, 3), fmaj.subset(1, 3), dim7.select(1, 3, 4), fmaj.subset(1, 3)]
-			), -1)
-		}
+		opening_chords = rolled_chords(dim7, fmaj)
 		select(opening_chords['treble'], 1).prefix = '\\tempo 4 = 69'
 		select(opening_chords['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
 		select(opening_chords['treble'], 1).markup = "\\italic{adagio sostenuto}"
@@ -118,11 +121,17 @@ class Salut(Piece):
 		# Opening Chords 2 #
 		####################
 
-		self.key = ('f minor')
-
-		dim7 = chord(self.diminished7('f,,', 6), 2, ornamentation="arpeggio")
+		dim7 = chord(diminished7('f,,', 6, key='f minor'), 2, ornamentation="arpeggio")
 		dim7.replace('cf, eff,', 'b,, d,')
 		cmaj = chord(omit(arpeggio('c,,', 6, key='c major'), 2), 2, ornamentation="arpeggio")
+		opening_chords2 = rolled_chords(dim7, cmaj)
+
+		select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
+		select(opening_chords2['treble'], 1).dynamics = "mf"
+
+		############
+		# Melody 2 #
+		############
 
 		opening_chords2 = {
 			'treble': key_signature(self.key, rests(1, 2, 4, 8)),
