@@ -40,7 +40,7 @@ def triplets(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\tuplet 3/2 {' + passage[0].prefix
-    passage[-1].suffix += '}'
+    passage[-1].suffix += '} %{ end triplets %}'
     return passage
 
 
