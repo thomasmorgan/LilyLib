@@ -1,7 +1,7 @@
 from piece import Piece
 from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose
 from staves import Bass, Super
-from markup import voices, ottava, clef, key_signature, triplets
+from markup import voices, ottava, clef, key_signature, triplets, linebreak
 from util import join, rep, pattern, omit, select, rep, flatten
 from tones import tonify
 
@@ -112,6 +112,7 @@ class Salut(Piece):
 		select(melody1['treble'], 1).markup = '\\italic{Voce principale \\bold{p} e dolce cantabile}'
 		select(melody1['treble'], 2).markdown = '\\italic{Altre voci \\bold{pp} e legatissimo}'
 		select(melody1['treble'], 17).prefix += ' \\hide '
+		select(melody1['treble'], len(melody1['treble'])).suffix += linebreak
 
 		select(melody1['bass'], 4).ornamentation = '('
 		select(melody1['bass'], 7).ornamentation = ')'
@@ -155,6 +156,7 @@ class Salut(Piece):
 		select(melody2['treble'], 18).markdown = '\\italic{tenuto}'
 		select(melody2['treble'], 21).prefix += ' \\hide '
 		select(melody2['treble'], 23).dynamics = 'pp'
+		select(melody2['treble'], len(melody2['treble'])).suffix += linebreak
 
 		############
 		# Chords 1 #
