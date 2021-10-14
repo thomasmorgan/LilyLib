@@ -73,11 +73,17 @@ class Salut(Piece):
 		# Melody 1 #
 		############
 
-		def melody1(tone, durs):
-			tones = self.scale(self.transpose(tone, -1, 'octave'), 9)
-			melody = notes(pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3), [8, 2, 8, 8, 8, 8]+durs)
+		def melody(tone, durs, key, alt=False):
+			tones = scale(self.transpose(tone, -1, 'octave'), 9, key=key)
+			if not alt:
+				melody = notes(pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3), [8, 2, 8, 8, 8, 8]+durs)
+			else:
+				melody = notes(pattern(tones, 1, 8, 8, 8, 9, 7, 5, 4, 4, 3, 6, 5), [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
 			select(melody, 1).ornamentation += '('
-			select(melody, 2).phrasing += '~'
+			if not alt:
+				select(melody, 2).phrasing += '~'
+			else:
+				select(melody, 8).phrasing += "~"
 			select(melody, len(melody)).ornamentation += ')'
 			return(melody)
 
@@ -87,7 +93,7 @@ class Salut(Piece):
 
 		melody1 = {
 			'treble': voices(
-				melody1('f`', [2, '4.']) + melody1('c`', ['2.', 4]),
+				melody('f`', [2, '4.'], self.key) + melody('c`', ['2.', 4], self.key),
 				lower_treble_voice
 			),
 			'bass': (
@@ -133,18 +139,16 @@ class Salut(Piece):
 		# Melody 2 #
 		############
 
-		opening_chords2 = {
-			'treble': key_signature(self.key, rests(1, 2, 4, 8)),
-			'bass': key_signature(self.key, ottava(voices(
-				[dim7.select(4, 5), cmaj.select(4, 5), dim7.select(5, 6), cmaj.select(4, 5)],
-				[dim7.subset(1, 3), cmaj.subset(1, 3), dim7.select(1, 3, 4), cmaj.subset(1, 3)]
-			), -1))
+		melody2 = {
+			'treble': melody('af`', [2, '4.'], 'bf minor') + melody('e`', ['2.', 4], 'a major', True),
+			'bass': rests(1, 1, 1, 1)
 		}
 
-		select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
-		select(opening_chords['treble'], 1).dynamics = "mf"
 
-		self.score = join(opening_chords, melody1, opening_chords2)
+
+
+
+		self.score = join(opening_chords, melody1, opening_chords2, melody2)
 
 if __name__ == "__main__":
 	Salut()
