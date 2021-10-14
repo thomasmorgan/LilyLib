@@ -137,11 +137,23 @@ class Salut(Piece):
 		# Melody 2 #
 		############
 
+		lower_treble_voice = rests(8, 4) + notes('ef` df` bf af g af af', 4) + rests(4) + chords(['e c`', 'e cs`'], 4) + notes('fs e fs d', [4, 4, 4, 2])
+
 		melody2 = {
-			'treble': melody('af`', [2, '4.'], 'bf minor') + melody('e`', ['2.', 4], 'a major', True),
-			'bass': rests(1, 1, 1, 1)
+			'treble': voices(
+				melody('af`', [2, '4.'], 'bf minor') + melody('e`', ['2.', 4], 'a major', True),
+				lower_treble_voice
+			),
+			'bass': rests(4) + voices(
+				notes('af gf, gf f e ef   d cs d, d cs d b, e,', [2, 8, 8, 4, 4, '4.', 8, 4, 4, 4, 8, 8, 4, 4, 4, 4]),
+				notes('c df gf, af, gs,  gs, a, d, e, e,', [4, 4, 4, '2.', 4, 4, 4, 4, 4, '2.', 4])
+			) 
 		}
 
+		select(melody2['treble'], 1).markup = '\\italic{\\bold{p} e dolce}'
+		select(melody2['treble'], 18).markdown = '\\italic{tenuto}'
+		select(melody2['treble'], 21).prefix += ' \\hide '
+		select(melody2['treble'], 23).dynamics = 'pp'
 
 
 
