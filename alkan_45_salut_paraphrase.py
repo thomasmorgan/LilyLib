@@ -82,13 +82,13 @@ class Salut(Piece):
 				melody = notes(pattern(tones, 1, 8, 8, 8, 9, 7, 5, 4, 4, 3, 6, 5), [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
 
 			select(melody, 1).ornamentation += '('
-			select(melody, 2).suffix = '^\\<'
+			select(melody, 2).dynamics = '<'
 			if not alt:
 				select(melody, 2).phrasing += '~'
-				select(melody, 4).suffix = '^\\!'
+				select(melody, 4).dynamics = '!'
 			else:
 				select(melody, 8).phrasing += "~"
-				select(melody, 5).suffix = '^\\!'
+				select(melody, 5).dynamics = '!'
 			select(melody, len(melody)).ornamentation += ')'
 			return(melody)
 
@@ -153,7 +153,8 @@ class Salut(Piece):
 			) 
 		}
 
-		select(melody2['treble'], 1).markup = '\\italic{\\bold{p} e dolce}'
+		select(melody2['treble'], 1).dynamics = 'p'
+		select(melody2['treble'], 1).markup = '\\italic{dolce}'
 		select(melody2['treble'], 18).markdown = '\\italic{tenuto}'
 		select(melody2['treble'], 21).prefix += ' \\hide '
 		select(melody2['treble'], 23).dynamics = 'pp'
@@ -174,7 +175,7 @@ class Salut(Piece):
 			return chord([tone, transpose(tone, -1, 'a major', 'octave')], 8)
 
 		def triple(points):
-			return flatten([triplets(rep(point, 3)) for point in flatten([points])])
+			return flatten([triplets(rep(point, 3), omit_number=True) for point in flatten([points])])
 
 		def triple_octaves(tones):
 			return flatten([triple(octave(t)) for t in tonify(tones)])
@@ -183,12 +184,10 @@ class Salut(Piece):
 		lower_treble4 = triple(chords(['cs e', 'cs e', 'cs e', 'e a', 'e b', 'e gs b', 'e gs b', 'b e`', 'a cs`', 'a cs`', 'b d` fs`', 'b d`', 'cs` e`', 'a cs` e`', 'gs b e`', 'g b e`'], 8))
 		bass4 = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e') + triple(chord('e, d', 8))
 
-		select(upper_treble4, 1).markup = '\\italic{Sempre sostenuto}'
-		select(lower_treble4, 1).markdown = '\\italic{Poco crescendo}'
+		select(lower_treble4, 1).markdown = '\\italic{sempre sostenuto e poco crescendo}'
 		select(lower_treble4, 25).dynamics = '<'
 		select(lower_treble4, 31).dynamics = '!\\>'
 		select(lower_treble4, 36).dynamics = '!'
-		select(bass4, 1).markdown = 'Ped: \\italic{sostenuto}'
 
 		upper_treble8 = notes('gs` b` d``', ['2.', 8, 8]) + notes('d`` e` a` cs`` cs`` d` cs` e`', [4, 2, 8, 8]) + notes('cs` b c`', [2, 4, 4])
 		lower_treble8 = triple(chords(['fs as cs`', 'fs as cs`', 'fs b d`', 'd` fs`', 'd` e`', 'e gs b', 'e a cs`', 'cs` e`', 'd` a`', 'e b', 'e b', 'e a', 'e a', 'fs a', 'gs', 'fs gs'], 8))
@@ -199,9 +198,9 @@ class Salut(Piece):
 		select(upper_treble8, 7).dynamics = '!'
 		select(upper_treble8, 8).dynamics = '>'
 		select(upper_treble8, 9).dynamics = '!'
-		select(upper_treble8, 9).markdown = '\\italic{dim.}'
 		select(lower_treble8, 1).dynamics = '<'
 		select(lower_treble8, 11).dynamics = '!'
+		select(lower_treble8, 29).markdown = '\\italic{dim.}'
 		select(lower_treble8, 37).dynamics = '>'
 		select(lower_treble8, 43).dynamics = '!'
 		select(lower_treble8, 46).dynamics = 'p'
