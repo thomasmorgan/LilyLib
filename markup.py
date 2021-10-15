@@ -4,6 +4,8 @@ from keys import keyify
 
 linebreak = '\\break\n'
 
+nolinebreak = '\\noBreak'
+
 pagebreak = '\\pageBreak\n\n'
 
 barbreak = ' |\n'
