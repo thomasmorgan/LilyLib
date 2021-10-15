@@ -38,10 +38,12 @@ def key_signature(key1, passage, key2=""):
     return passage
 
 
-def triplets(passage):
+def triplets(passage, omit_number=False):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\tuplet 3/2 {' + passage[0].prefix
+    if omit_number:
+        passage[0].prefix = '\\omit TupletNumber ' + passage[0].prefix
     passage[-1].suffix += '} %{ end triplets %}'
     return passage
 
