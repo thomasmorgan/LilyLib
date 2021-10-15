@@ -1,7 +1,7 @@
 from piece import Piece
-from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose
+from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add
 from staves import Bass, Super
-from markup import voices, ottava, clef, key_signature, triplets, linebreak
+from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak
 from util import join, rep, pattern, omit, select, rep, flatten
 from tones import tonify
 
@@ -134,12 +134,13 @@ class Salut(Piece):
 
 		select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
 		select(opening_chords2['treble'], 1).dynamics = "mf"
+		select(opening_chords2['bass'], 2).suffix = nolinebreak
 
 		############
 		# Melody 2 #
 		############
 
-		lower_treble_voice = rests(8, 4) + notes('ef` df` bf af g af af', 4) + rests(4) + chords(['e c`', 'e cs`'], 4) + notes('fs e fs d', [4, 4, 4, 2])
+		lower_treble_voice = rests(8, 4) + chords(['ef` gf`', 'df` f`'], 4) + notes('bf af g af af', 4) + rests(4) + chords(['e c`', 'e cs`'], 4) + notes('fs e fs d', [4, 4, 4, 2])
 
 		melody2 = {
 			'treble': voices(
@@ -148,7 +149,7 @@ class Salut(Piece):
 			),
 			'bass': rests(4) + voices(
 				notes('af gf, gf f e ef   d cs d, d cs d b, e,', [2, 8, 8, 4, 4, '4.', 8, 4, 4, 4, 8, 8, 4, 4, 4, 4]),
-				notes('c df gf, af, gs,  gs, a, d, e, e,', [4, 4, 4, '2.', 4, 4, 4, 4, 4, '2.', 4])
+				notes('c df gf, af, af,  gs, a, d, e, e,', [4, 4, 4, '2.', 4, 4, 4, 4, 4, '2.', 4])
 			) 
 		}
 
@@ -157,6 +158,11 @@ class Salut(Piece):
 		select(melody2['treble'], 21).prefix += ' \\hide '
 		select(melody2['treble'], 23).dynamics = 'pp'
 		select(melody2['treble'], len(melody2['treble'])).suffix += linebreak
+
+		select(melody2['treble'], 1).suffix = nolinebreak
+		select(melody2['treble'], 6).suffix = nolinebreak
+		select(melody2['treble'], 9).suffix = nolinebreak
+		select(melody2['treble'], 15).suffix = nolinebreak
 
 		############
 		# Chords 1 #
@@ -167,18 +173,42 @@ class Salut(Piece):
 		def octave(tone):
 			return chord([tone, transpose(tone, -1, 'a major', 'octave')], 8)
 
-		def triple(point):
-			return triplets(rep(point, 3))
+		def triple(points):
+			return flatten([triplets(rep(point, 3)) for point in flatten([points])])
 
 		def triple_octaves(tones):
 			return flatten([triple(octave(t)) for t in tonify(tones)])
 
-		upper_treble = notes('a cs` d` e` fs` gs`', ['2.', 8, 8]) + notes('a` b` gs` a` gs` g', [2, '4.', 8, 2, 4, 4])
-		lower_treble = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e') + triple(chord('e, d', 8))
+		upper_treble4 = notes('a cs` d` e` fs` gs`', ['2.', 8, 8]) + notes('a` b` fs` a` gs` g`', [2, '4.', 8, 2, 4, 4])
+		lower_treble4 = triple(chords(['cs e', 'cs e', 'cs e', 'e a', 'e b', 'e gs b', 'e gs b', 'b e`', 'a cs`', 'a cs`', 'b d` fs`', 'b d`', 'cs` e`', 'a cs` e`', 'gs b e`', 'g b e`'], 8))
+		bass4 = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e') + triple(chord('e, d', 8))
+
+		select(upper_treble4, 1).markup = '\\italic{Sempre sostenuto}'
+		select(lower_treble4, 1).markdown = '\\italic{Poco crescendo}'
+		select(lower_treble4, 25).dynamics = '<'
+		select(lower_treble4, 31).dynamics = '!\\>'
+		select(lower_treble4, 36).dynamics = '!'
+		select(bass4, 1).markdown = 'Ped: \\italic{sostenuto}'
+
+		upper_treble8 = notes('gs` b` d``', ['2.', 8, 8]) + notes('d`` e` a` cs`` cs`` d` cs` e`', [4, 2, 8, 8]) + notes('cs` b c`', [2, 4, 4])
+		lower_treble8 = triple(chords(['fs as cs`', 'fs as cs`', 'fs b d`', 'd` fs`', 'd` e`', 'e gs b', 'e a cs`', 'cs` e`', 'd` a`', 'e b', 'e b', 'e a', 'e a', 'fs a', 'gs', 'fs gs'], 8))
+		bass8 = add(triple(notes('cs e d b, gs, d cs a, fs,', 8)) + triple_octaves('gs, a, cs') + triple(notes('e, ds e', 8)), 'e,') + triple_octaves('d')
+
+		select(upper_treble8, 4).dynamics = '>'
+		select(upper_treble8, 5).dynamics = '!\\<'
+		select(upper_treble8, 7).dynamics = '!'
+		select(upper_treble8, 8).dynamics = '>'
+		select(upper_treble8, 9).dynamics = '!'
+		select(upper_treble8, 9).markdown = '\\italic{dim.}'
+		select(lower_treble8, 1).dynamics = '<'
+		select(lower_treble8, 11).dynamics = '!'
+		select(lower_treble8, 37).dynamics = '>'
+		select(lower_treble8, 43).dynamics = '!'
+		select(lower_treble8, 46).dynamics = 'p'
 
 		chords1 = {
-			'treble':key_signature(self.key, voices(upper_treble, lower_treble)),
-			'bass': key_signature(self.key, rests(1, 1, 1, 1))
+			'treble':key_signature(self.key, voices(upper_treble4 + upper_treble8, lower_treble4 + lower_treble8)),
+			'bass': key_signature(self.key, bass4 + bass8)
 		}
 
 
