@@ -1,7 +1,7 @@
 from piece import Piece
 from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add, merge
 from staves import Bass, Super
-from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak
+from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak, grace
 from util import join, rep, pattern, omit, select, rep, flatten, subset
 from tones import tonify
 
@@ -298,8 +298,54 @@ class Salut(Piece):
 			'bass': bass
 		}
 
+		#########
+		# Plods #
+		#########
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3)
+		def plod(tones):
+			tones = tonify(tones)
+			return grace(notes(tones, 16)) + notes(select(tonify(tones), 1), 8) + rests(8)
+
+		def octoplod(tones):
+			plink = plod(tones)
+			select(plink, 3).add(self.transpose(select(tonify(tones), 1), 1, 'octave'))
+			return plink
+
+		def superoctoplod(tones):
+			plink = octoplod(tones)
+			select(plink, 1).add(self.transpose(select(tonify(tones), 1), 1, 'octave'))
+			return plink
+
+		def harmoplod(tones):
+			tones = tonify(tones)
+			plink = plod(subset(tones, 1, 2))
+			select(plink, 3).add(select(tones, 3))
+			return plink
+
+		def harmoctoplod(tones):
+			tones = tonify(tones)
+			plink = superoctoplod(subset(tones, 1, 2))
+			select(plink, 1).add(select(tones, 3))
+			select(plink, 3).add(select(tones, 3))
+			return plink
+
+
+		bass = (
+			rep(plod('gf,, f,,'), 7) + rep(plod('fs,, es,,'), 37) + rep(octoplod('fs,, es,,'), 20) +
+			rep(superoctoplod('fs,, es,,'), 8) + rep(harmoctoplod('fs,, es,, cs,'), 4) + rep(superoctoplod('fs,, es,,'), 8) +
+			rep(octoplod('fs,, es,,'), 4) + rep(octoplod('gf,, f,,'), 4) + rep(harmoplod('gf,, f,, df,'), 4) +
+			rep(harmoplod('gf,, f,, bf,,'), 4) + rep(plod('gf,, f,,'), 4)
+		)
+
+		plods = {
+			'treble': rests(1, 1, 1, 1),
+			'bass': ottava(bass, -1)
+		}
+
+
+
+
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods)
 
 if __name__ == "__main__":
 	Salut()
