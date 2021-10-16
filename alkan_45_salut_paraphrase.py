@@ -1,8 +1,8 @@
 from piece import Piece
-from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add
+from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add, merge
 from staves import Bass, Super
 from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak
-from util import join, rep, pattern, omit, select, rep, flatten
+from util import join, rep, pattern, omit, select, rep, flatten, subset
 from tones import tonify
 
 class Salut(Piece):
@@ -81,7 +81,7 @@ class Salut(Piece):
 			else:
 				melody = notes(pattern(tones, 1, 8, 8, 8, 9, 7, 5, 4, 4, 3, 6, 5), [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
 
-			select(melody, 1).ornamentation += '('
+			select(melody, 1).articulation += '('
 			select(melody, 2).dynamics = '<'
 			if not alt:
 				select(melody, 2).phrasing += '~'
@@ -89,7 +89,7 @@ class Salut(Piece):
 			else:
 				select(melody, 8).phrasing += "~"
 				select(melody, 5).dynamics = '!'
-			select(melody, len(melody)).ornamentation += ')'
+			select(melody, len(melody)).articulation += ')'
 			return(melody)
 
 		upper_treble_voice = melody('f`', [2, '4.'], self.key) + melody('c`', ['2.', 4], self.key)
@@ -222,6 +222,7 @@ class Salut(Piece):
 		lower_treble16 = triple(chords(['ds` fs`', 'ds` a`', 'e` g`', 'g` b`', 'g` b` d``', 'b f`', 'c` e`', 'e` g`', 'e` gs`', 'fs d`', 'a c`', 'c` e`', 'f a', 'f a', 'e g', 'g bf'], 8))
 		bass16 = add(triple(notes('a fs g e', 8)), 'b') + add(triple(chords(['f b', 'ds g', 'e', 'c'], 8)), 'g') + add(triple(notes('d b, c a,', 8)), 'e') + triple(chords(['f, c']*4, 8))
 
+		select(lower_treble16, 1).markup = 'E Minor'
 		select(lower_treble16, 9).dynamics = '<'
 		select(lower_treble16, 12).dynamics = '!'
 		select(lower_treble16, 13).dynamics = '>'
@@ -234,18 +235,71 @@ class Salut(Piece):
 		select(lower_treble16, 37).markup = '\\italic{dolce}'
 		select(bass16, 37).markdown = '\\italic{sostenutissimo}'
 
+		upper_treble19 = notes('c` f` ef` df` g a bf', 4) + chords(['bf d`', 'a c`'], 8) + notes('bf a', [2, 4])
+		lower_treble19 = triple(chords(['f a', 'f c`', 'f c`', 'f bf', 'f', 'f g', 'e g', 'e', 'e g', 'e g', 'f'], 8))
+		bass19 = triple(chords(['f, c'], 8)) + triple_octaves('a, bf, df c c c c') + triple(chords(['f, c', 'c, f, c', 'f, c'], 8))
+
+		select(lower_treble19, 4).dynamics = '>'
+		select(lower_treble19, 12).dynamics = '!'
+		select(lower_treble19, 13).dynamics = '<'
+		select(lower_treble19, 22).dynamics = '!\\>'
+		select(lower_treble19, 24).dynamics = '!'
+
 		chords1 = {
 			'treble':key_signature(self.key, voices(
-				upper_treble4 + upper_treble8 + upper_treble12 + upper_treble16,
-				lower_treble4 + lower_treble8 + lower_treble12 + lower_treble16
-			)),
-			'bass': key_signature(self.key, bass4 + bass8 + bass12 + bass16)
+				upper_treble4 + upper_treble8 + upper_treble12 + upper_treble16 + upper_treble19,
+				lower_treble4 + lower_treble8 + lower_treble12 + lower_treble16 + lower_treble19
+			), 'bf major'),
+			'bass': key_signature(self.key, bass4 + bass8 + bass12 + bass16 + bass19, 'bf major')
+		}
+
+		############
+		# Chords 2 #
+		############
+
+		self.set_key('bf major')
+
+		def f_octave(dur):
+			return [note('f', 8, articulation="("), note('f`', dur, articulation=')')]
+
+		upper_bass = chords(['c ef', 'bf, d', 'gs, b,', 'a, c', 'd f', 'c ef', 'a, cs', 'bf, d', 'ef g', 'c ef', 'a, f', 'bf, d', 'g, ef', 'a, c'], 4)
+		select(upper_bass, 1).articulation = '('
+		select(upper_bass, 4).articulation = ')'
+		select(upper_bass, 5).articulation = '('
+		select(upper_bass, 8).articulation = ')'
+		select(upper_bass, 8).markup = '\\italic{poco cresc.}'
+		select(upper_bass, 9).articulation = '('
+		select(upper_bass, 14).articulation = ')'
+
+		chords2 = {
+			'treble': rep(rests(8) + f_octave('2.'), 2) + rests(8) + rep(f_octave('4.'), 2),
+			'bass': voices(upper_bass, rep(triple(notes('f,', 8)), 14))
+		}
+
+		select(chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##f '
+		select(chords2['treble'], 1).dynamics = 'p'
+
+		############
+		# Chords 3 #
+		############
+
+		upper_treble = subset(melody('f`', [2, 8], self.key), 1, 6) + tied_note('bf', [2, 8]) + notes('a g a', 8)
+		select(upper_treble, 7).articulation = ')-('
+		select(upper_treble, 11).articulation = ')'
+
+		lower_treble = rests(8, 4) + triple(notes('af g g f e ef c', 8))
+		select(lower_treble, 1).prefix += ' \\override Rest.transparent = ##t '
+		select(lower_treble, 14).markdown = '\\italic{smorz.}'
+
+		bass = merge(triple(notes('d, ef, ef,', 8)), notes('bf, bf, bf, bf, bf, b, c c ef,', 8)) + add(triple(notes('d cs c ef', 8)), 'f,')
+
+		chords3 = {
+			'treble': voices(upper_treble, lower_treble),
+			'bass': bass
 		}
 
 
-
-
-		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1)
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3)
 
 if __name__ == "__main__":
 	Salut()
