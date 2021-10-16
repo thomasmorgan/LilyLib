@@ -52,7 +52,7 @@ def grace(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\grace {' + passage[0].prefix
-    passage[-1].suffix += '}'
+    passage[-1].suffix += '}  %{ end grace %}'
     return passage
 
 
