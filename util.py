@@ -64,5 +64,5 @@ def join(*motifs):
 
 
 def rep(passage, times=2):
-    new_passage = [deepcopy(passage) for t in range(times)]
+    new_passage = flatten([deepcopy(passage) for t in range(times)])
     return(new_passage)
