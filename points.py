@@ -26,6 +26,7 @@ class Point:
         self.markdown = markdown
         self.prefix = prefix
         self.suffix = suffix
+        self.remove_duplicate_tones()
         self.sort_tones()
 
     def check_init_arguments(self, tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix):
@@ -165,6 +166,9 @@ class Point:
 
     def sort_tones(self):
         self.tones = [tone for t in all_tones for tone in self.tones if tone == t]
+
+    def remove_duplicate_tones(self):
+        self.tones = list(dict.fromkeys(self.tones))
 
 
 def rest(dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
