@@ -1,7 +1,7 @@
 from piece import Piece
-from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add, merge
+from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add, merge, tied_chord
 from staves import Bass, Super
-from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak, grace
+from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak, grace, pagebreak
 from util import join, rep, pattern, omit, select, rep, flatten, subset
 from tones import tonify
 
@@ -249,8 +249,8 @@ class Salut(Piece):
 			'treble':key_signature(self.key, voices(
 				upper_treble4 + upper_treble8 + upper_treble12 + upper_treble16 + upper_treble19,
 				lower_treble4 + lower_treble8 + lower_treble12 + lower_treble16 + lower_treble19
-			), 'bf major'),
-			'bass': key_signature(self.key, bass4 + bass8 + bass12 + bass16 + bass19, 'bf major')
+			)),
+			'bass': key_signature(self.key, bass4 + bass8 + bass12 + bass16 + bass19)
 		}
 
 		############
@@ -302,6 +302,8 @@ class Salut(Piece):
 		# Plods #
 		#########
 
+		self.set_key('b major')
+
 		def plod(tones):
 			tones = tonify(tones)
 			return grace(notes(tones, 16)) + notes(select(tonify(tones), 1), 8) + rests(8)
@@ -330,16 +332,84 @@ class Salut(Piece):
 			return plink
 
 
+		def treble_plod(one, two, three, held_note=2):
+			if len(one) == 3:
+				melody = chords(one, 8)
+			elif len(one) == 2:
+				tones = tonify(select(one, 1))
+				melody = chords([subset(tones, 1, 3), subset(tones, 2, 4), select(one, 2)], 8)
+			elif len(one) == 1:
+				tones = tonify(select(one, 1))
+				melody = chords([subset(tones, 1, 3), subset(tones, 2, 4), subset(tones, 3, 5)], 8)
+			melody = triplets(melody)
+
+			vs = voices(chords([omit(select(melody, 3).tones, held_note), two], ['4.', 8]), notes(select(select(melody, 3).tones, held_note), 2))
+			select(vs, 1).articulation = '('
+			select(vs, 2).articulation = ')'
+			melody += vs + chords([three], 4)
+			return melody
+
+		def extended_treble_plod(one, two, three, four, five, six, seven, eight):
+			melody = treble_plod(one, two, three)
+			melody = (
+				subset(melody, 1, 3) + chords([select(melody, 3).tones, two, three, three], [4, '8.', 16, 4]) +
+				chords([four, five, six, seven, eight], [8, 8, '8.', 16, 4]) + rests(4)
+			)
+			select(melody, 4).articulation = '('
+			select(melody, 5).articulation = ')'
+			select(melody, 7).articulation = '('
+			select(melody, 8).articulation = ')'
+			select(melody, 10).articulation = '('
+			select(melody, 12).articulation = ')'
+			return melody
+
+		def mini_treble_plod(one, two, three, alt=False):
+			tones = tonify(select(one, 1))
+			melody = (
+				triplets(chords([subset(tones, 1, 3), subset(tones, 2, 4), subset(tones, 3, 5)], 8)) +
+				chords([two], '8.', articulation='(') + chords([three], 16, articulation=')')
+			)
+			if not alt:
+				return melody + chords([two], 2)
+			else:
+				tones = tonify(two)
+				return (
+					melody + 
+					voices(chords([select(tones, 1, 3), three], ['4.', 8]), chords([select(tones, 2)], 2)) +
+					tied_chord(two, [4, 8]) + chords([three], 8) + rep(chords([two], 8, articulation="(") + chords([three], 8, articulation=")"), 3)
+				)
+
+		treble = (
+			rests(2, 4) + treble_plod(['as, cs fs as', 'e fs cs`'], 'd fs b', 'cs fs as') +
+			treble_plod(['cs fs as', 'e fs cs`', 'g as e`'], 'fs d`', 'e a cs`') +
+			extended_treble_plod(['e as cs`', 'g as e`', 'as e` g`'], 'as d` fs`', 'g as e`', 'fs as d`', 'e as cs`', 'd fs b', 'cs`', 'cs fs as') +
+			treble_plod(['b, d fs b d`'], 'e cs`', 'd fs b', held_note=1) + treble_plod(['d d fs b d`'], 'e cs`', 'd fs b', held_note=1) +
+			extended_treble_plod(['fs b d` fs` b`'], 'b d` g`', 'b d` fs`', 'g b e`', 'fs b d`', 'g as cs`', 'd`', 'd fs b') +
+			treble_plod(['d es gs b d`'], 'as cs`', 'es gs b') + treble_plod(['es gs b d` es`'], 'cs` e`', 'gs b d`') +
+			extended_treble_plod(['gs b d` es`', 'b d` es` gs`', 'd` es` gs` b`'], 'a d` fs` a`', 'fs a d` fs`', 'e a e`', 'd a d', 'ds a bs', 'e cs`', 'ds a bs') +
+			mini_treble_plod(['ds a bs ds` a`'], 'ds` a` bs`', 'e` cs``') + mini_treble_plod(['ds` a` bs` ds`` a``'], 'ds`` a`` bs``', 'e`` cs```', alt=True) +
+			merge(self.chromatic('ds``', -8, 8), self.chromatic('a``', -8, 8), self.chromatic('c```', -8, 8)) + 
+			merge(self.chromatic('fs``', -8, 8), self.chromatic('c```', -8, 8), self.chromatic('ds```', -8, 8)) + 
+			chords([subset(tonify('bs ds` fs` a` bs` ds`` fs`` a`` bs`` ds``` fs```'), i, i+3) for i in [8, 7, 6, 5, 4, 3, 2, 1]], 8) +
+			chords(['as cs` e` g`', 'gs b d` f`', 'fs a c` ef`', 'es gs b d`'], 4, articulation='^') +
+			chords(['ef fs a c`', 'd es gs b', 'as, cs fs', 'bf, df gf', 'bf, df gf', 'bf, df f'], [2, 2, 1]) + 
+			voices(notes('e', 1), notes('df', 2, articulation='(') + notes('c', 4) + notes('bf,', 4, articulation=')'))
+		)
+		select(treble, 40).replace('b', 'fs`')
+		select(treble, 42).replace('fs', 'b')
+		select(treble, 74).tones = tonify('d` fs` a` d``')
+
+
 		bass = (
-			rep(plod('gf,, f,,'), 7) + rep(plod('fs,, es,,'), 37) + rep(octoplod('fs,, es,,'), 20) +
+			rep(plod('fs,, es,,'), 44) + rep(octoplod('fs,, es,,'), 20) +
 			rep(superoctoplod('fs,, es,,'), 8) + rep(harmoctoplod('fs,, es,, cs,'), 4) + rep(superoctoplod('fs,, es,,'), 8) +
-			rep(octoplod('fs,, es,,'), 4) + rep(octoplod('gf,, f,,'), 4) + rep(harmoplod('gf,, f,, df,'), 4) +
-			rep(harmoplod('gf,, f,, bf,,'), 4) + rep(plod('gf,, f,,'), 4)
+			rep(octoplod('fs,, es,,'), 8) + rep(harmoplod('fs,, es,, cs,'), 4) +
+			rep(harmoplod('fs,, es,, as,,'), 4)
 		)
 
 		plods = {
-			'treble': rests(1, 1, 1, 1),
-			'bass': ottava(bass, -1)
+			'treble': key_signature(self.key, treble),
+			'bass': key_signature(self.key, ottava(bass, -1))
 		}
 
 
