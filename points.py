@@ -176,9 +176,9 @@ def rest(dur, phrasing="", articulation="", ornamentation="", dynamics="", marku
     return Point([], dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
-def rests(*dur):
+def rests(*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list of Points that print as rests with the specified durations. """
-    return flatten([rest(d) for d in split_and_flatten(dur)])
+    return flatten([rest(d, phrasing=phrasing, articulation=articulation, ornamentation=ornamentation, dynamics=dynamics, markup=markup, markdown=markdown, prefix=prefix, suffix=suffix) for d in split_and_flatten(dur)])
 
 
 def note(tone, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
