@@ -82,6 +82,12 @@ def ottava(passage, shift):
     passage[-1].suffix += '\\ottava #0 '
     return passage
 
+def slur(passage):
+    passage = deepcopy(flatten([passage]))
+    passage[0].articulation = '('
+    passage[-1].articulation = ')'
+    return passage
+
 
 def voices(*voices):
     voices = [deepcopy(voice) for voice in voices]
