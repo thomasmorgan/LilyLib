@@ -554,8 +554,94 @@ class Salut(Piece):
 			'bass': key_signature(self.key, bass_part1 + bass_part2 + bass_part3 + bass_part4)
 		}
 
+		############
+		# Chords 4 #
+		############
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge)
+		treble = (
+			rests(8, 4, 8) + subset(melody('f`', [4, 8], self.key), 1, 6) + slur(notes('ef` d`', [4, 8])) +
+			rests(8, 4, 8) + slur(notes('f f`', [8, 4])) + rests(8) +
+			notes('f f` g` ef` c`', 8) + slur(notes('ef` d`', [4, 8])) + rests(8, 4, 8) +
+			slur(notes('bf', 8) + tied_note('bf`', [2, 8]) + notes('c`` af` fs`', 8)) + slur(notes('g` af` f` d` ef` c` af fs', 8)) +
+			slur(notes('g a bf', 8) + chords(['ef ef`'], 8)) +
+			voices(slur(chords(['bf d`', 'a c`', 'bf'], [4, '8.', 16])), notes('f', 2))
+		)
+		select(treble, 4).markdown = '\\italic{dolce}'
+		select(treble, 9).articulation = ')'
+		select(treble, 15).dynamics = '<'
+		select(treble, 16).dynamics = '!'
+		select(treble, 18).articulation = '('
+		select(treble, 18).dynamics = '<'
+		select(treble, 20).dynamics = '!'
+		select(treble, 22).articulation = ')'
+		select(treble, 28).markdown = '\\italic{poco cresc.}'
+		select(treble, 29).dynamics = '<'
+		select(treble, 31).dynamics = '!'
+		select(treble, 33).dynamics = '<'
+		select(treble, 35).dynamics = '!'
+		select(treble, 39).markdown = '\\italic{dim.}'
+		select(treble, 46).markdown = '\\italic{ten.}'
+
+		bass_harmony = rep(triple(notes('f,', 8)), 4*4) + triple(notes('f, fs, g, af, af, af, af,', 8)) + notes('af,', 8)
+		bass_melody = notes('bf,, b,,', 2) + notes('c, d, ef, a,, bf,, b,, c, d, ef, c, g,, a,, bf,, bf,, bf,, bf,, b,, c, cs,', 4) + notes('d,', 8)
+		bass_joined = notes('bf, bf c` af fs g af f d', 8) + voices(notes('ef c d g,', 8) + notes('f, ef', 4), rests(2, prefix='\\omit ') + notes('f,', 2))
+		select(bass_harmony, 1).suffix += ' ^\\p '
+		select(bass_melody, 1).ornamentation = '('
+		select(bass_melody, 6).ornamentation = ')'
+		select(bass_melody, 7).ornamentation = '('
+		select(bass_melody, 14).ornamentation = ')'
+		select(bass_melody, 19).ornamentation = '('
+		select(bass_melody, 22).ornamentation = ')'
+		select(bass_joined, 1).ornamentation = '('
+		select(bass_joined, 9).ornamentation = ')'
+		select(bass_joined, 10).ornamentation = '('
+		select(bass_joined, 15).ornamentation = ')'
+
+		chords4 = {
+			'treble': treble,
+			'bass': ottava(voices(bass_harmony, bass_melody), -1) + bass_joined
+		}
+
+		############
+		# Chords 5 #
+		############
+
+		bass = (
+			slur(notes('bf, d ef f g a', ['2.', 8, 8])) + slur(notes('bf d` c`', [2, '4.', 8])) + slur(notes('bf a af', [2, 4, 4])) +
+			slur(notes('g c` ef`', ['2.', 8, 8])) + slur(notes('ef` f bf d`', [4, 2, 8, 8])) + slur(notes('f ef d ef c', ['8.', 16, 2, 8, 8]))
+		)
+
+		treble = triple(chords(['f bf d` f`', 'f bf d` f`', 'f bf d` f`', 'f bf d` f`',
+								'bf c` f`', 'bf c` f`', 'a c` f`', 'c` f`',
+								'g d` f`', 'g d` f`', 'g bf e`', 'g bf e`',
+								'f c` f`', 'f c` f`', 'f c` f`', 'f c` f`',
+								'f b d` f`', 'f b d` f`', 'f c` ef` f`', 'f f`',
+								'f a c` f`', 'a c` ef` f`', 'bf d` f`', 'f f`',
+								'bf d` f`', 'f bf d` f`', 'f bf d` f`'
+								], 8)) + triplets(chords(['f a c` f`', 'f a c` f`', 'f a ef` f`'], 8))
+
+		select(treble, 1).dynamics = 'pp'
+		select(treble, 1).markup = '\\italic{sostenuto sempre}'
+
+		select(bass, 1).markdown = '\\italic{dolce cantabile}'
+		select(bass, 4).dynamics = '<'
+		select(bass, 7).dynamics = '!'
+		select(bass, 8).dynamics = '>'
+		select(bass, 11).dynamics = '!'
+		select(bass, 13).dynamics = '<'
+		select(bass, 15).dynamics = '!'
+		select(bass, 16).dynamics = '>'
+		select(bass, 17).dynamics = '<'
+		select(bass, 19).dynamics = '!'
+		select(bass, 20).dynamics = '>'
+		select(bass, 24).dynamics = '!'
+
+		chords5 = {
+		'treble': treble,
+		'bass': bass
+		}
+
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5)
 
 if __name__ == "__main__":
 	Salut()
