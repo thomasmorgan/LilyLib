@@ -1,7 +1,7 @@
 from piece import Piece
 from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add, merge, tied_chord
 from staves import Bass, Super
-from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak, grace, pagebreak, slur, phrase
+from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak, grace, pagebreak, slur, phrase, after_grace
 from util import join, rep, pattern, omit, select, rep, flatten, subset
 from tones import tonify
 
@@ -641,7 +641,51 @@ class Salut(Piece):
 		'bass': bass
 		}
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5)
+		####################
+		# Opening Chords 3 #
+		####################
+
+		treble = (
+			chords(['g, bf,', 'a, c', 'bf, df', 'a, c', 'c ef', 'bf, df', 'ef gf', 'df f'], 2, ornamentation='arpeggio') +
+			chords(['f af', 'ef g', 'bf, d', 'bf, ef', 'g bf', 'f a', 'c e', 'c f', 'a c`', 'g bf', 'd fs', 'd g', 'b d`', 'a c`', 'ef gs', 'ef a'], 4, ornamentation='arpeggio')
+		)
+		bass = (
+			chords(['bf,, df, e,', 'f,, c, f,', 'bf,, e, g,', 'f,, c, f,', 'a,, c, gf,', 'bf,, df, f,', 'c, ef, af,', 'df, f, af,'], 2, ornamentation='arpeggio') +
+			chords(['d, f, bf,', 'ef, g, bf,', 'af,, bf,, f,', 'g,, bf,, ef,', 'e, g, c', 'f, a, c', 'bf,, c, g,', 'a,, c, f,', 'fs, a, d', 'g, bf, d', 'c, d, a,', 'bf,, d, g,', 'gf, b, ef', 'a, c ef', 'd, ef, b,', 'c, ef, a,'], 4, ornamentation='arpeggio')
+		)
+
+		treble2 = (
+			chords(
+				['ef f c` ef`', 'd f bf d`', 'g a c` ef` g`', 'f bf d` f`',
+				'a c` ef` f` a`', 'f bf d` f` bf`', 'ef` f` c`` ef``', 'd` f` bf` d``',
+				'g` a` c`` ef`` g``', 'f` bf` d`` f``', 'a` c`` ef`` f`` a``', 'f` bf` d`` f`` bf``',
+				'ef`` f`` c``` ef```', 'd`` f`` bf`` d```', 'ef`` a`` c``` ef```', 'ef`` a`` c``` ef``` e```',
+				'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` e```', 'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` fs```',
+				'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` fs```', 'ef`` a`` c``` ef``` g```', 'ef`` a`` c``` ef``` fs```',
+				'ef`` a`` c``` ef``` g```', 'ef`` a`` c``` ef``` gs```'], 4, ornamentation = 'arpeggio') +
+			after_grace(tied_note('a```', [2, 1, 1], ornamentation='startTrillSpan'), notes('g``` a```', 16))
+		)
+		select(treble2, 29).ornamentation = 'stopTrillSpan'
+
+		bass2 = (
+			chords(
+				['a,, c, ef, f, a,', 'bf,, d, f, bf,', 'c, ef, f, a, ef', 'd, f, bf, d',
+				'f, a, c, ef f', 'bf,, d, f, bf, d', 'a, c ef f a', 'bf, d f bf',
+				'c ef f a ef`', 'd f bf d`', 'f a c ef` f`', 'bf, d f bf d`',
+				'a c` ef` f` a`', 'bf d` f` bf`', 'f a c` ef` a`', 'f a c` ef` a`',
+				'f a c` ef` a`', 'f a c` ef` a`', 'f a c` ef` a`', 'f a c` ef` a`',
+				'f, a, c ef a', 'f a c` ef` a`', 'f a c` ef` a`', 'f, a, c ef a',
+				'f, a, c ef a', 'f a c` ef` a`', 'f` a` c`` ef`` a``', 'f a c` ef` a`',
+				'f, a, c ef a', 'f a c` ef` a`', 'f, a, c ef a', 'f,, a,, c, ef, a,',
+				'f, a, c ef a', 'f, ef g', 'f, d f', 'f c ef'], 4, ornamentation='arpeggio')
+		)
+
+		opening_chords3 = {
+			'treble': ottava(voices(treble, bass), -1) + voices(treble2, bass2),
+			'bass': rep(rests(1), 4)
+		}
+
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
 if __name__ == "__main__":
 	Salut()
