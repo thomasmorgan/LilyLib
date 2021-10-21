@@ -84,8 +84,26 @@ def ottava(passage, shift):
 
 def slur(passage):
     passage = deepcopy(flatten([passage]))
-    passage[0].articulation = '('
-    passage[-1].articulation = ')'
+    if passage[0].articulation == '':
+        passage[0].articulation = '('
+    else:
+        passage[0].articulation += '-('
+    if passage[-1].articulation == '':
+        passage[-1].articulation = ')'
+    else:
+        passage[-1].articulation += '-)'
+    return passage
+
+def phrase(passage):
+    passage = deepcopy(flatten([passage]))
+    if passage[0].ornamentation == '':
+        passage[0].ornamentation = '('
+    else:
+        passage[0].ornamentation += '\\('
+    if passage[-1].ornamentation == '':
+        passage[-1].ornamentation = ')'
+    else:
+        passage[-1].ornamentation += '\\)'
     return passage
 
 
