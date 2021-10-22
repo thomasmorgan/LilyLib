@@ -8,8 +8,7 @@ class PreludeInCFancy(PreludeInC):
 
     @property
     def chord_names(self):
-        return ['',
-                'I', 'ii D7', 'V D7', 'I',
+        return ['I', 'ii D7', 'V D7', 'I',
                 'vi', 'II D7', 'V', 'I7',
                 'vi7', 'II D7', 'V', 'V d7',
                 'ii', 'ii d7', 'I', 'IV7',
@@ -19,7 +18,7 @@ class PreludeInCFancy(PreludeInC):
                 'I', 'V 4/7', 'V D7', 'I D7']
 
     def write_score(self):
-        self.score = join([self.motif(chord, name) for chord, name in zip(self.chords[1:33], self.chord_names[1:33])])
+        self.score = join([self.motif(chord, name) for chord, name in zip(self.chords, self.chord_names)])
         self.score = join(self.score, self.outro)
 
     def motif(self, c, n):
@@ -28,8 +27,8 @@ class PreludeInCFancy(PreludeInC):
         if summary:
             tones = tonify(c)
             passage = {
-                'treble': chord(subset(tones, 3, 5), 4),
-                'bass': chord(subset(tones, 1, 2), 4)
+                'treble': [chord(subset(tones, 3, 5), 4)],
+                'bass': [chord(subset(tones, 1, 2), 4)]
             }
         else:
             passage = super().motif(c)
