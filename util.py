@@ -22,6 +22,10 @@ def split_and_flatten(item):
     return flatten([subitem.split(" ") if isinstance(subitem, str) else subitem for subitem in item])
 
 
+def assign(List, index, value):
+    List[index-1] = value
+
+
 def select(List, *indexes):
     indexes = flatten(list(indexes))
     if len(indexes) == 1:
