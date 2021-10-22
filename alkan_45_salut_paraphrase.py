@@ -207,7 +207,7 @@ class Salut(Piece):
 		select(lower_treble8, 43).dynamics = '!'
 		select(lower_treble8, 46).dynamics = 'p'
 
-		upper_treble12 = notes('ef` f` gf` af` bf` c``', ['2.', 8, 8]) + notes('df`` f`` ef``', [2, '4.', 8]) + notes('df`` c`` b`', [2, 4, 4])
+		upper_treble12 = notes('df` f` gf` af` bf` c``', ['2.', 8, 8]) + notes('df`` f`` ef``', [2, '4.', 8]) + notes('df`` c`` b`', [2, 4, 4])
 		lower_treble12 = triple(chords(['f af', 'f af', 'f af', 'f af df`', 'af ef`', 'af c` ef`', 'af c` ef`', 'c` ef` af`', 'ef` bf`', 'ef` g` bf`', 'g` bf` df``', 'ef` bf` df``', 'ef` g` bf`', 'ef` g` bf`', 'ef` af`', 'ef` af`'], 8))
 		bass12 = add(triple_octaves('df af f df c ef c af,'), 'af,') + add(triple_octaves('g, bf, ef, g,'), 'ef,') + add(triple_octaves('ef'), 'af,') + triple_octaves('ef') + add(triple_octaves('af'), 'ef') + add(triple(notes('b', 8)), 'af')
 
@@ -385,7 +385,7 @@ class Salut(Piece):
 
 		treble = (
 			rests(2, 4) + treble_plod(['as, cs fs as', 'e fs cs`'], 'd fs b', 'cs fs as') +
-			treble_plod(['cs fs as', 'e fs cs`', 'g as e`'], 'fs d`', 'e a cs`') +
+			treble_plod(['cs fs as', 'e fs cs`', 'g as e`'], 'fs d`', 'e as cs`') +
 			extended_treble_plod(['e as cs`', 'g as e`', 'as e` g`'], 'as d` fs`', 'g as e`', 'fs as d`', 'e as cs`', 'd fs b', 'cs`', 'cs fs as') +
 			treble_plod(['b, d fs b d`'], 'e cs`', 'd fs b', held_note=1) + treble_plod(['d d fs b d`'], 'e cs`', 'd fs b', held_note=1) +
 			extended_treble_plod(['fs b d` fs` b`'], 'b d` g`', 'b d` fs`', 'g b e`', 'fs b d`', 'e as cs`', 'd`', 'd fs b') +
