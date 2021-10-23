@@ -24,6 +24,9 @@ util
 	If a single index is passed, it returns the item in the passed list at that position (counting from 1, not 0). If multiple indexes are passed, it returns a list containing the subset of items in the passed list whose indexes are also passed (again, counting from 1). Respects ordering of passed list, not passed indexes. Items are not duplicated even if passed indexes contains duplicates.
 
 
+**assign** (*List, index, value*)
+	Modifies the passed list, by inserting the passed value at the passed index. The List is modified in place and this function does not return anything.
+
 **pattern** (*List, \*indexes*)
 	Builds and returns a new list by repeatedly selecting the items in the passed List at the passed indexes. Counts from 1 not 0. Ordering is determined by the passed indexes not the passed List. Duplicate indexes result in duplicate items in the returned list.
 
@@ -206,25 +209,25 @@ staves
 **Stave** ()
 	The parent staff class.
 
-	**Stave.__init__** (*clef, name*)
-		Creates a Stave instance. String clef must be a valid lilypond clef, name can be anything.
+	**Stave.__init__** (*clef, name, extra_text, _with*)
+		Creates a Stave instance. String clef must be a valid lilypond clef, name can be anything. `extra_text` and `_with` canbe used to add more details to the staves when printed.
 
 **Treble** ()
 	A subclass of Stave, appears as a staff starting with the treble clef.
 
-	**Treble.__init__** (*name*)
+	**Treble.__init__** (*name, extra_text, _with*)
 		Creates a treble staff. Name can be anything.
 
 **Bass** ()
 	A subclass of Stave, appears as a staff starting with the bass clef.
 
-	**Bass.__init__** (*name*)
+	**Bass.__init__** (*name, extra_text, _with*)
 		Creates a bass staff. Name can be anything.
 
 **Super** ()
 	A subclass of Stave, appears as a staff starting with the treble clef, but has rows for both the treble and bass staves. See demo_prelude_in_c_super.py for an example.
 
-	**Super.__init__** (*name*)
+	**Super.__init__** (*name, extra_text, _with*)
 		Creates a super staff. Name can be anything.
 
 tones
@@ -335,6 +338,9 @@ points
 	**Point.subset** (*start, stop*)
 		Applies util.subset to the tones of the Point and returns the result without modifying the point itself.
 
+	**Point.remove_duplicate_tones** ()
+		Removes any duplicate tones from Point.tones, called by `Point.__init__()`. The `Point.add()` function will ignore requests to add duplicate tones.
+
 **rest** (*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
 	Returns a single ppint corresponding to a rest (i.e. a toneless Point) of the specified duration with the specified markup.
 
@@ -422,6 +428,9 @@ markup
 **linebreak**
 	A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.
 
+**nolinebreak**
+	A string that prevents a linebreak both in the sheetmusic, can be added to Points, usually as part of their suffix.
+
 **pagebreak**
 	A string that causes a pagebreak in the sheetmusic and a linebreak in the terminal output, can be added to Points, usually as part of their suffix.
 
@@ -434,9 +443,14 @@ markup
 **key_signature** (*key1, passage, key2=""*)
 	Returns a flattened deepcopy of the *passage* with *key1* added to the prefix of the first point and the optional *key2* added to the suffix of the final point.
 
-**triplets** (*passage*)
-	Returns a deepcopy of the passage passage, with the first prefix and final suffix edited such that it appears as triplets.
+**slur** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a slur encloses the passage.
 
+**phrase** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a phrasing slur encloses the passage.
+
+**triplets** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as triplets.
 
 **grace** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.

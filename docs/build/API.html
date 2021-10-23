@@ -54,6 +54,8 @@
 </dd>
 <dt><strong>select</strong> (<em>List, *indexes</em>)</dt><dd><p>If a single index is passed, it returns the item in the passed list at that position (counting from 1, not 0). If multiple indexes are passed, it returns a list containing the subset of items in the passed list whose indexes are also passed (again, counting from 1). Respects ordering of passed list, not passed indexes. Items are not duplicated even if passed indexes contains duplicates.</p>
 </dd>
+<dt><strong>assign</strong> (<em>List, index, value</em>)</dt><dd><p>Modifies the passed list, by inserting the passed value at the passed index. The List is modified in place and this function does not return anything.</p>
+</dd>
 <dt><strong>pattern</strong> (<em>List, *indexes</em>)</dt><dd><p>Builds and returns a new list by repeatedly selecting the items in the passed List at the passed indexes. Counts from 1 not 0. Ordering is determined by the passed indexes not the passed List. Duplicate indexes result in duplicate items in the returned list.</p>
 </dd>
 <dt><strong>omit</strong> (<em>List, *indexes</em>)</dt><dd><p>Returns a list containing the subset of items in the passed list whose indexes are <strong>not</strong> in the passed indexes. Counts from 1, not 0. Inverse of <em>select</em>.</p>
@@ -183,25 +185,25 @@
 <dl>
 <dt><strong>Stave</strong> ()</dt><dd><p>The parent staff class.</p>
 <dl class="simple">
-<dt><strong>Stave.__init__</strong> (<em>clef, name</em>)</dt><dd><p>Creates a Stave instance. String clef must be a valid lilypond clef, name can be anything.</p>
+<dt><strong>Stave.__init__</strong> (<em>clef, name, extra_text, _with</em>)</dt><dd><p>Creates a Stave instance. String clef must be a valid lilypond clef, name can be anything. <cite>extra_text</cite> and <cite>_with</cite> canbe used to add more details to the staves when printed.</p>
 </dd>
 </dl>
 </dd>
 <dt><strong>Treble</strong> ()</dt><dd><p>A subclass of Stave, appears as a staff starting with the treble clef.</p>
 <dl class="simple">
-<dt><strong>Treble.__init__</strong> (<em>name</em>)</dt><dd><p>Creates a treble staff. Name can be anything.</p>
+<dt><strong>Treble.__init__</strong> (<em>name, extra_text, _with</em>)</dt><dd><p>Creates a treble staff. Name can be anything.</p>
 </dd>
 </dl>
 </dd>
 <dt><strong>Bass</strong> ()</dt><dd><p>A subclass of Stave, appears as a staff starting with the bass clef.</p>
 <dl class="simple">
-<dt><strong>Bass.__init__</strong> (<em>name</em>)</dt><dd><p>Creates a bass staff. Name can be anything.</p>
+<dt><strong>Bass.__init__</strong> (<em>name, extra_text, _with</em>)</dt><dd><p>Creates a bass staff. Name can be anything.</p>
 </dd>
 </dl>
 </dd>
 <dt><strong>Super</strong> ()</dt><dd><p>A subclass of Stave, appears as a staff starting with the treble clef, but has rows for both the treble and bass staves. See demo_prelude_in_c_super.py for an example.</p>
 <dl class="simple">
-<dt><strong>Super.__init__</strong> (<em>name</em>)</dt><dd><p>Creates a super staff. Name can be anything.</p>
+<dt><strong>Super.__init__</strong> (<em>name, extra_text, _with</em>)</dt><dd><p>Creates a super staff. Name can be anything.</p>
 </dd>
 </dl>
 </dd>
@@ -283,6 +285,8 @@
 </dd>
 <dt><strong>Point.subset</strong> (<em>start, stop</em>)</dt><dd><p>Applies util.subset to the tones of the Point and returns the result without modifying the point itself.</p>
 </dd>
+<dt><strong>Point.remove_duplicate_tones</strong> ()</dt><dd><p>Removes any duplicate tones from Point.tones, called by <cite>Point.__init__()</cite>. The <cite>Point.add()</cite> function will ignore requests to add duplicate tones.</p>
+</dd>
 </dl>
 </dd>
 <dt><strong>rest</strong> (<em>dur, phrasing=””, articulation=””, ornamentation=””, dynamics=””, markup=””, markdown=””, prefix=””, suffix=””</em>)</dt><dd><p>Returns a single ppint corresponding to a rest (i.e. a toneless Point) of the specified duration with the specified markup.</p>
@@ -342,6 +346,8 @@
 </dd>
 <dt><strong>linebreak</strong></dt><dd><p>A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.</p>
 </dd>
+<dt><strong>nolinebreak</strong></dt><dd><p>A string that prevents a linebreak both in the sheetmusic, can be added to Points, usually as part of their suffix.</p>
+</dd>
 <dt><strong>pagebreak</strong></dt><dd><p>A string that causes a pagebreak in the sheetmusic and a linebreak in the terminal output, can be added to Points, usually as part of their suffix.</p>
 </dd>
 <dt><strong>clef</strong> (<em>clef, passage, end_clef=””</em>)</dt><dd><p>Returns a flattened deepcopy of the <em>passage</em> with the <em>clef</em> added to the prefix of the first point and the optional <em>end_clef</em> added to the suffix of the final point.</p>
@@ -350,7 +356,11 @@
 </dd>
 <dt><strong>key_signature</strong> (<em>key1, passage, key2=””</em>)</dt><dd><p>Returns a flattened deepcopy of the <em>passage</em> with <em>key1</em> added to the prefix of the first point and the optional <em>key2</em> added to the suffix of the final point.</p>
 </dd>
-<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage passage, with the first prefix and final suffix edited such that it appears as triplets.</p>
+<dt><strong>slur</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a slur encloses the passage.</p>
+</dd>
+<dt><strong>phrase</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a phrasing slur encloses the passage.</p>
+</dd>
+<dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as triplets.</p>
 </dd>
 <dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.</p>
 </dd>
