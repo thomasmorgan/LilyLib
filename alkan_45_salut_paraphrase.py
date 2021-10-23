@@ -767,5 +767,8 @@ class Salut(Piece):
 
 		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
+	def end_score(self):
+		return '>> \\layout { } \\midi { } }'
+
 if __name__ == "__main__":
 	Salut()
