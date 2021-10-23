@@ -34,7 +34,7 @@ class PreludeInCFancy(PreludeInC):
             passage = super().motif(c)
 
         if annotate:
-            passage['treble'][0].markup = n
+            select(passage['treble'], 1).markup = n
 
         return passage
 
