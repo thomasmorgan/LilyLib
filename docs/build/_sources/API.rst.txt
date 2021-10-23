@@ -21,7 +21,7 @@ util
 	Splits any strings within the passed item at white space, flattens the result and returns it.
 
 **select** (*List, \*indexes*)
-	Returns a list containing the subset of items in the passed list whose indexes are also passed. Counts from 1, not 0. Respects ordering of passed list, not passed indexes. Items are not duplicated even if passed indexes contains duplicates.
+	If a single index is passed, it returns the item in the passed list at that position (counting from 1, not 0). If multiple indexes are passed, it returns a list containing the subset of items in the passed list whose indexes are also passed (again, counting from 1). Respects ordering of passed list, not passed indexes. Items are not duplicated even if passed indexes contains duplicates.
 
 
 **pattern** (*List, \*indexes*)
@@ -320,23 +320,38 @@ points
 	**Point.replace** (*old_tones, new_tones*)
 		Removes the old_tones from the point and adds the new_tones in their place. The two arguments are flattened and zipped and iterated through together. If one is longer than the other, the shorter argument is cycled to reach the length of the longer.
 
-**rest** (*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
-	Returns a list containing a single rest (i.e. a toneless Point) of the specified duration with the specified markup.
+	**Point.sort_tones** ()
+		Reorders the point's tones to be in ascending order. Called automatically by `Point.__init__` and `Point.add`, `remove` and `replace`.
 
-**rests** (*\*dur*)
-	Returns a list of rests (i.e. toneless Points) with the specified durations.
+	**Point.select** (*\*indexes*)
+		Applies util.select to the tones of the Point and returns the result without modifying the point itself.
+
+	**Point.pattern** (*\*indexes*)
+		Applies util.pattern to the tones of the Point and returns the result without modifying the point itself.
+
+	**Point.omit** (*\*indexes*)
+		Applies util.omit to the tones of the Point and returns the result without modifying the point itself.
+
+	**Point.subset** (*start, stop*)
+		Applies util.subset to the tones of the Point and returns the result without modifying the point itself.
+
+**rest** (*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
+	Returns a single ppint corresponding to a rest (i.e. a toneless Point) of the specified duration with the specified markup.
+
+**rests** (*\*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
+	Returns a list of rests (i.e. toneless Points) with the specified durations, and all with any provided phrasing etc.
 
 **note** (*tone, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
-	Returns a list containing a single note (i.e. a Point with one tone) with the specified tone, dur and markup.
+	Returns a single point corresponding to a note, with the specified tone, dur and markup.
 
-**notes** (*tones, dur, ornamentation*):
-	Returns a list of notes (i.e. Points with a single tone). The arguments are flattened, zipped and iterated to produce the notes. The longest argument determines the number of notes created, the other arguments are cycled to reach the same length.
+**notes** (*tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*):
+	Returns a list of notes (i.e. Points with a single tone). The arguments `tones` and `dur` are flattened, zipped and iterated to produce the notes. The longest of these arguments determine the number of notes created, the other argument is cycled to reach the same length. Any passed phrasing (etc.) is applied to all notes.
 
 **chord** (*tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""*)
-	Returns a list containing a single chord (i.e. a Point with multiple tones) with the specified tones, duration and markup.
+	Returns a single point corresponding to a chord (i.e. a Point with multiple tones) with the specified tones, duration and markup.
 
 **chords** (*tones, dur, ornamentation*)
-	Returns a list of multiple chords (i.e. Points with multiple tones). The dur and ornamentation arguments are flattened, but *tones* is not and it must be a list of lists of tones. The arguments are then zipped and iterated to produce the chords. The longest argument determines the number of chords created, the other arguments are cycled to reach the same length.
+	Returns a list of multiple chords (i.e. Points with multiple tones). The `dur` argument are flattened, but *tones* is not and it must be a list of lists of tones. The arguments `tones` and `dur` are zipped and iterated to produce the chords. The longest of these arguments determine the number of chords created, the other argument is cycled to reach the same length. Any passed phrasing (etc.) is applied to all chords.
 
 **tied_note** (*tone, durs*)
 	Returns a list of multiple Points all with the same tone, but different durations as specified and with phrasing set to "~" such that they print as a single tied note.
@@ -380,7 +395,7 @@ points
 
 
 **chromatic** (*start, stop_or_length, key, dur=None, step=1*)
-	Returns a chromatic scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. Ascending chromatic scales use sharps, descending scales use flats.
+	Returns a chromatic scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. Ascending chromatic scales use sharps, descending scales use flats, though you can violate this (e.g. by asking for a descending chromatic scale starting on a sharp).
 
 
 **scale_subset** (*positions, start, stop_or_length, key, dur=None, step=1*)
@@ -401,12 +416,14 @@ points
 markup
 -----------
 
+**barbreak**
+	A string that causes a bar line to appear in the sheet music and a linebreak to appear in the terminal output. Useful for formatting lilypond code as per mutopia requirements.
+
 **linebreak**
 	A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.
 
 **pagebreak**
 	A string that causes a pagebreak in the sheetmusic and a linebreak in the terminal output, can be added to Points, usually as part of their suffix.
-
 
 **clef** (*clef, passage, end_clef=""*)
 	Returns a flattened deepcopy of the *passage* with the *clef* added to the prefix of the first point and the optional *end_clef* added to the suffix of the final point.
@@ -467,6 +484,9 @@ piece
 
 	**Piece.__str__** ()
 		Prints a lilypond description of the piece. It concatenates the results of the Pieces *header*, *subtext*, *start_score*, *write_score* and *end_score* functions.
+
+	**Piece.add_barlines** ()
+		If `piece.auto_add_bars` is set to ``True`` this function will be called when the piece prints. It parses the music and attempts to add barlines (and line breaks in the output) at the end of each bar. This is useful for making the lilypond output more readable and for submitting to the mutopia project. The algorithm used is currently in development and should be considered experimental. Nonetheless it currently handles things like triplets. It is recommended to leave it off unless you are willing to contribute to its development.
 
 	**Piece.header** ()
 		Returns a string containing the metadata of the piece in lilypond format.
