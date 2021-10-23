@@ -6,7 +6,7 @@ Mad Rush, by Philip Glass, is a great piece to show how LilyLib can compress mus
 Structure
 -----------
 
-While the piece is long, it actually as a very simple structure. There are 4 main elements: (A) a quiet passage with quavers set against triplets, (B) a loud, fast section, (C) a hybrid of A and B, and (D) a modification of A. These are structured as AA B CC B AA B DD, with a small subsection linking all of them (which we'll call A0). We can express this structure as follows:
+While the piece is long, it actually as a very simple structure. There are 4 main elements: (A) a quiet passage with quavers set against triplets, (B) a loud, fast section, (C) a hybrid of A and B, and (D) a modification of A. Across the whole piece these are played in the order 'AA B CC B AA B DD', with a small subsection linking all of them (which we'll call 'A0'). We can express this structure as follows:
 
 ::
 
@@ -83,7 +83,7 @@ Conditional on the chord and tweaks this takes two of the 4th, 5th and 6th notes
                 motif['bass2'] = self.transpose(motif['bass2'], -9, "scale")
 
 
-This has two voices, one that contains alternating quavers (bass1) and another that contains held notes or crotchets (bass2), this doesn't vary conditional on the chord, but there are plenty of tweaks. Lastly, we use this function to build the differnent elements of section A, as well as A0, the briding subsection that links all sections:
+This has two voices, one that contains alternating quavers (``bass1``) and another that contains held notes or crotchets (``bass2``), this doesn't vary based on the chord, but there are plenty of tweaks. Lastly, we use this function to build the differnent elements of section A, as well as A0, the briding subsection that links all sections:
 
 ::
 
@@ -103,7 +103,7 @@ I'll leave reading through sections B, C and D up to you, but it's basically the
 Summarizing
 ------------
 
-The sheet music looks good, but its long (19 pages!) and very repetitive. What can we do to improve this? The solution is to use various markings and indicate whether the player should move between them. However, traditional sheet music is not really great at this and the result is still long and clunky. We can do better: we can print each sub-unit once only (with a label) and then provide a text description at the top of the piece describing the structure. Printing each element once only is easy, we just print the dictionary of subunits directly:
+The sheet music looks good, but its long (19 pages!) and very repetitive. What can we do to improve this? The usual solution is to use things like repeats, and 'dal segno' instructions telling the player to jump to different parts of the music. However, even with this the result is still long and clunky. We can do better: we can print each sub-unit once only (with a label) and then provide a text description at the top of the piece describing the structure. Printing each element once only is easy, we just print the dictionary of subunits directly:
 
 ::
 
@@ -159,7 +159,7 @@ This makes sense in F Major, but in E Major it doesn't: we ask for the arpeggio 
 
 Given this, a second attempt might be to write the piece in F Major and then use the *transpose* function to shift it. This will work (assuming you shift via semitones). However, there are two problems: (1) the printed key signature is not changed, so you'll end up with music full of accidentals and the actual harmonic centre of the transposed music will be totally obscured, and (2) because this technique preserves the relationships between all notes it can't change music from major into minor (or vice-versa), for instance changing this piece into F Minor.
 
-OK, so here's how to actually do it. First, set the key to whatever you want in the *details* function (as above), but then, and this is the mildly tricky bit, rewrite the chords such that the notes therein are not named. Instead the notes need to be defined relative to a start note that is dependent on the key. This is a little tricky, so let's revisit the *aI* chord, but this time with no explicit key:
+OK, so here's how to actually do it. First, set the key to whatever you want in the *details* function (as above), but then rewrite the chords such that their notes are not named. Instead the notes need to be defined relative to a start note that is dependent on the key. This is a little tricky, so let's revisit the *aI* chord, but this time with no explicit key:
 
 ::
 

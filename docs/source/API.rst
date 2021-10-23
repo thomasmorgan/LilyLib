@@ -118,70 +118,70 @@ keys
 		Returns the ith letter of the chromatic scale of the key (using Key.all_letters). Counts from 0, not 1.
 
 	**Key.tonic**
-	    Return the 1st letter of the scale of the key.
+		Return the 1st letter of the scale of the key.
 
 	**Key.supertonic**
-	    Return the 2nd letter of the scale of the key.
+		Return the 2nd letter of the scale of the key.
 
 	**Key.mediant**
-	    Return the 3rd letter of the scale of the key.
+		Return the 3rd letter of the scale of the key.
 
 	**Key.subdominant**
-	    Return the 4th letter of the scale of the key.
+		Return the 4th letter of the scale of the key.
 
 	**Key.dominant**
-	    Return the 5th letter of the scale of the key.
+		Return the 5th letter of the scale of the key.
 
 	**Key.submediant**
-	    Return the 6th letter of the scale of the key.
+		Return the 6th letter of the scale of the key.
 
 	**Key.leading**
-	    Return the 7th letter of the scale of the key.
+		Return the 7th letter of the scale of the key.
 
 	**Key.subtonic**
-	    Return the 7th letter of the scale of the key.
+		Return the 7th letter of the scale of the key.
 
 	**Key.i**
-	    Return the 1st letter of the scale of the key.
+		Return the 1st letter of the scale of the key.
 
 	**Key.ii**
-	    Return the 2nd letter of the scale of the key.
+		Return the 2nd letter of the scale of the key.
 
 	**Key.iii**
-	    Return the 3rd letter of the scale of the key.
+		Return the 3rd letter of the scale of the key.
 
 	**Key.iv**
-	    Return the 4th letter of the scale of the key.
+		Return the 4th letter of the scale of the key.
 
 	**Key.v**
-	    Return the 5th letter of the scale of the key.
+		Return the 5th letter of the scale of the key.
 
 	**Key.vi**
-	    Return the 6th letter of the scale of the key.
+		Return the 6th letter of the scale of the key.
 
 	**Key.vii**
-	    Return the 7th letter of the scale of the key.
+		Return the 7th letter of the scale of the key.
 
 	**Key.I**
-	    Return the 1st letter of the scale of the key.
+		Return the 1st letter of the scale of the key.
 
 	**Key.II**
-	    Return the 2nd letter of the scale of the key.
+		Return the 2nd letter of the scale of the key.
 
 	**Key.III**
-	    Return the 3rd letter of the scale of the key.
+		Return the 3rd letter of the scale of the key.
 
 	**Key.IV**
-	    Return the 4th letter of the scale of the key.
+		Return the 4th letter of the scale of the key.
 
 	**Key.V**
-	    Return the 5th letter of the scale of the key.
+		Return the 5th letter of the scale of the key.
 
 	**Key.VI**
-	    Return the 6th letter of the scale of the key.
+		Return the 6th letter of the scale of the key.
 
 	**Key.VII**
-	    Return the 7th letter of the scale of the key.
+		Return the 7th letter of the scale of the key.
 
 **CFlatMajor**
 	The Key subclass for C-flat Major.
@@ -364,11 +364,11 @@ points
 
 
 **arpeggio** (*start, stop_or_length, key, dur=None, step=1*)
-    Returns an arpeggio from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+	Returns an arpeggio from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
 
 
 **arpeggio7** (*start, stop_or_length, key, dur=None, step=1*)
-    Returns an arpeggio (including the 7th) from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+	Returns an arpeggio (including the 7th) from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
 
 
 **dominant7** (*start, stop_or_length, key, dur=None, step=1*)
@@ -376,15 +376,15 @@ points
 
 
 **diminished7** (*start, stop_or_length, key, dur=None, step=1*)
-    Returns a diminished 7th from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
+	Returns a diminished 7th from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*.
 
 
 **chromatic** (*start, stop_or_length, key, dur=None, step=1*)
-    Returns a chromatic scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. Ascending chromatic scales use sharps, descending scales use flats.
+	Returns a chromatic scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. Ascending chromatic scales use sharps, descending scales use flats.
 
 
 **scale_subset** (*positions, start, stop_or_length, key, dur=None, step=1*)
-    Returns a subset of a scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
+	Returns a subset of a scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
 
 **transpose** (*item, shift, key, mode="scale"*)
 	Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; "scale", "octave" or "semitone".
@@ -409,20 +409,20 @@ markup
 
 
 **clef** (*clef, passage, end_clef=""*)
-    Returns a flattened deepcopy of the *passage* with the *clef* added to the prefix of the first point and the optional *end_clef* added to the suffix of the final point.
+	Returns a flattened deepcopy of the *passage* with the *clef* added to the prefix of the first point and the optional *end_clef* added to the suffix of the final point.
 
 **time_signature** (*tempo, passage, end_tempo=""*)
-    Returns a flattened deepcopy of the *passage* with the *tempo* added to the prefix of the first point and the optional *end_tempo* added to the suffix of the final point.
+	Returns a flattened deepcopy of the *passage* with the *tempo* added to the prefix of the first point and the optional *end_tempo* added to the suffix of the final point.
 
 **key_signature** (*key1, passage, key2=""*)
-    Returns a flattened deepcopy of the *passage* with *key1* added to the prefix of the first point and the optional *key2* added to the suffix of the final point.
+	Returns a flattened deepcopy of the *passage* with *key1* added to the prefix of the first point and the optional *key2* added to the suffix of the final point.
 
 **triplets** (*passage*)
-    Returns a deepcopy of the passage passage, with the first prefix and final suffix edited such that it appears as triplets.
+	Returns a deepcopy of the passage passage, with the first prefix and final suffix edited such that it appears as triplets.
 
 
 **grace** (*passage*)
-    Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.
 
 
 **after_grace** (*passage, grace*)
@@ -430,11 +430,11 @@ markup
 
 
 **acciaccatura** (*passage*)
-    Returns a deep copy of the passage, with the first prefix and final suffix edited such that it appears as acciaccatura.
+	Returns a deep copy of the passage, with the first prefix and final suffix edited such that it appears as acciaccatura.
 
 
 **ottava** (*passage, shift*)
-    Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it is marked with ottava. Shift indicates the magnitude of the ottava, negative numbers shift down.
 
 
 **voices** (*\*voices*)
@@ -450,186 +450,186 @@ piece
 **Piece** ()
 	The base Piece class.
 
-    **Piece.__init__** ()
-    	Piece init function. Sets default values, calls *details* to overwrite them, then prints itself to the terminal.
-        
-    **Piece.details** ()
-        Must be overwritten by subclasses, allows configuration of piece deatils like title, composer, etc.
+	**Piece.__init__** ()
+		Piece init function. Sets default values, calls *details* to overwrite them, then prints itself to the terminal.
+		
+	**Piece.details** ()
+		Must be overwritten by subclasses, allows configuration of piece deatils like title, composer, etc.
 
-    **Piece.set_key** (*key*)
-        Sets the pieces key to the passed value. *key* can be a string, a subclass of *Key* or an instance of a *Key*.
+	**Piece.set_key** (*key*)
+		Sets the pieces key to the passed value. *key* can be a string, a subclass of *Key* or an instance of a *Key*.
 
 	**Piece.key_signature**
 		Returns lilypond formatted string of the pieces current key, will print as a key signature in sheet music when added to a point.
 
-    **Piece.write_score** ()
-        Called by *Piece.str()*, creates a description of the score of the piece and adds it to the *self.score* dictionary.
+	**Piece.write_score** ()
+		Called by *Piece.str()*, creates a description of the score of the piece and adds it to the *self.score* dictionary.
 
-    **Piece.__str__** ()
-    	Prints a lilypond description of the piece. It concatenates the results of the Pieces *header*, *subtext*, *start_score*, *write_score* and *end_score* functions.
+	**Piece.__str__** ()
+		Prints a lilypond description of the piece. It concatenates the results of the Pieces *header*, *subtext*, *start_score*, *write_score* and *end_score* functions.
 
-    **Piece.header** ()
-    	Returns a string containing the metadata of the piece in lilypond format.
+	**Piece.header** ()
+		Returns a string containing the metadata of the piece in lilypond format.
 
-    **Piece.subtext** ()
-        By default returns an empty string. Can be overwritten to add text between the header and score of a piece. Useful for starting sheetmusic with extended bodies of text.
+	**Piece.subtext** ()
+		By default returns an empty string. Can be overwritten to add text between the header and score of a piece. Useful for starting sheetmusic with extended bodies of text.
 
-    **Piece.start_score** ()
-        Returns Lilypond string to open the score.
+	**Piece.start_score** ()
+		Returns Lilypond string to open the score.
 
-    **Piece.end_score** ()
-        Returns Liylpond string to close the score
+	**Piece.end_score** ()
+		Returns Lilypond string to close the score
 
-    **Piece.print_stave** (*stave*)
-    	Returns a lilypond formatted string description of the contents of the passed stave.
+	**Piece.print_stave** (*stave*)
+		Returns a lilypond formatted string description of the contents of the passed stave.
 
-    **Piece.scale** (*start, stop_or_length, dur=None, step=1*)
-    	Creates a scale by passing all arguments and the piece's current key to points.scale.
+	**Piece.scale** (*start, stop_or_length, dur=None, step=1*)
+		Returns a list of Points forming a scale by passing all arguments and the piece's current key to points.scale().
 
-    **Piece.arpeggio** (*start, stop_or_length, dur=None, step=1*)
-        Creates an argpeggio by passing all arguments and the piece's current key to points.arpeggio.
+	**Piece.arpeggio** (*start, stop_or_length, dur=None, step=1*)
+		Returns a list of Points forming an argpeggio by passing all arguments and the piece's current key to points.arpeggio().
 
-    **Piece.arpeggio7** (*start, stop_or_length, dur=None, step=1*)
-        Creates an argpeggio7 by passing all arguments and the piece's current key to points.arpeggio7.
+	**Piece.arpeggio7** (*start, stop_or_length, dur=None, step=1*)
+		Returns a list of Points forming an argpeggio7 by passing all arguments and the piece's current key to points.arpeggio7().
 
-    **Piece.dominant7** (*start, stop_or_length, dur=None, step=1*)
-        Creates a dominant 7th by passing all arguments and the piece's current key to points.dominant7.
+	**Piece.dominant7** (*start, stop_or_length, dur=None, step=1*)
+		Returns a list of Points forming a dominant 7th by passing all arguments and the piece's current key to points.dominant7().
 
-    **Piece.diminished7** (*start, stop_or_length, dur=None, step=1*)
-        Creates a diminished 7th by passing all arguments and the piece's current key to points.diminished7.
+	**Piece.diminished7** (*start, stop_or_length, dur=None, step=1*)
+		Returns a list of Points forming a diminished 7th by passing all arguments and the piece's current key to points.diminished7().
 
-    **Piece.chromatic** (*start, stop_or_length, dur=None, step=1*)
-    	Creates a chromatic scale by passing all arguments and the piece's current key to points.chromatic.
+	**Piece.chromatic** (*start, stop_or_length, dur=None, step=1*)
+		Returns a list of Points forming a chromatic scale by passing all arguments and the piece's current key to points.chromatic().
 
-    **Piece.scale_subset** (*positions, start, stop_or_length, dur=None, step=1*)
-    	Returns a subset of a scale by passing all arguments and the piece's current key to points.scale_subset. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
+	**Piece.scale_subset** (*positions, start, stop_or_length, dur=None, step=1*)
+		Returns a subset of a scale by passing all arguments and the piece's current key to points.scale_subset. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
 
-    **Piece.transpose** (*item, shift, mode="scale"*)
-    	Returns a transposed version of the passed item or passage, by passing all arguments and the piece's current key to points.transpose.
+	**Piece.transpose** (*item, shift, mode="scale"*)
+		Returns a transposed version of the passed item or passage, by passing all arguments and the piece's current key to points.transpose.
 
-    **Piece.harmonize** (*points, intervals, mode="scale"*)
-        Returns a harmonized version of the passed points, by passing all arguments and the piece's current key to points.harmonize.
+	**Piece.harmonize** (*points, intervals, mode="scale"*)
+		Returns a harmonized version of the passed points, by passing all arguments and the piece's current key to points.harmonize.
 
-    **Piece.relative_key** (*mode, relationship*)
-    	Returns a key relative to the piece's current key. Mode is "major", "minor" or "harmonic". Relationship is the numeric distance between the current key and relative key. So if the current key is C Major (or minor), relative_key("minor", 2) returns E Minor.
+	**Piece.relative_key** (*mode, relationship*)
+		Returns a key relative to the piece's current key. Mode is "major", "minor" or "harmonic". Relationship is the numeric distance between the current key and relative key. So if the current key is C Major (or minor), relative_key("minor", 2) returns E Minor.
 
-    **Piece.relative_major_key** (*relationship*)
-        Returns the relative major key of the piece's current key by passing relationship and "major" to Piece.relative_key.
+	**Piece.relative_major_key** (*relationship*)
+		Returns the relative major key of the piece's current key by passing relationship and "major" to Piece.relative_key.
 
-    **Piece.relative_minor_key** (*relationship*)
-        Returns the relative minor key of the piece's current key by passing relationship and "minor" to Piece.relative_key.
+	**Piece.relative_minor_key** (*relationship*)
+		Returns the relative minor key of the piece's current key by passing relationship and "minor" to Piece.relative_key.
 
-    **Piece.relative_harmonic_key** (*relationship*)
-        Returns the relative harmonic key of the piece's current key by passing relationship and "harmonic" to Piece.relative_key.
+	**Piece.relative_harmonic_key** (*relationship*)
+		Returns the relative harmonic key of the piece's current key by passing relationship and "harmonic" to Piece.relative_key.
 
-    **Piece.relative_cis_key** (*relationship*)
-        Passes relationship to Piece.relative_key to generate a relative key. Mode is specified according to the current key; if the current key is major, then "major" is passed, otherwise "minor" is passed (note "harmonic" is never passed).
+	**Piece.relative_cis_key** (*relationship*)
+		Passes relationship to Piece.relative_key to generate a relative key. Mode is specified according to the current key; if the current key is major, then "major" is passed, otherwise "minor" is passed (note "harmonic" is never passed).
 
-    **Piece.relative_trans_key** (*relationship*)
-        Passes relationship to Piece.relative_key to generate a relative key. Mode is specified according to the current key; if the current key is major, then "minor" is passed, otherwise "major" is passed (note "harmonic" is never passed).
+	**Piece.relative_trans_key** (*relationship*)
+		Passes relationship to Piece.relative_key to generate a relative key. Mode is specified according to the current key; if the current key is major, then "minor" is passed, otherwise "major" is passed (note "harmonic" is never passed).
 
-    **Piece.I**
-        Returns the relative_major_key with position 0.
+	**Piece.I**
+		Returns the relative_major_key with position 0.
 
-    **Piece.II**
-        Returns the relative_major_key with position 1.
+	**Piece.II**
+		Returns the relative_major_key with position 1.
 
-    **Piece.III**
-        Returns the relative_major_key with position 2.
+	**Piece.III**
+		Returns the relative_major_key with position 2.
 
-    **Piece.IV**
-        Returns the relative_major_key with position 3.
+	**Piece.IV**
+		Returns the relative_major_key with position 3.
 
-    **Piece.V**
-        Returns the relative_major_key with position 4.
+	**Piece.V**
+		Returns the relative_major_key with position 4.
 
-    **Piece.VI**
-        Returns the relative_major_key with position 5.
+	**Piece.VI**
+		Returns the relative_major_key with position 5.
 
-    **Piece.VII**
-        Returns the relative_major_key with position 6.
+	**Piece.VII**
+		Returns the relative_major_key with position 6.
 
-    **Piece.i**
-        Returns the relative_minor_key with position 0.
+	**Piece.i**
+		Returns the relative_minor_key with position 0.
 
-    **Piece.i**
-        Returns the relative_minor_key with position 1.
+	**Piece.i**
+		Returns the relative_minor_key with position 1.
 
-    **Piece.i**
-        Returns the relative_minor_key with position 2.
+	**Piece.i**
+		Returns the relative_minor_key with position 2.
 
-    **Piece.i**
-        Returns the relative_minor_key with position 3.
+	**Piece.i**
+		Returns the relative_minor_key with position 3.
 
-    **Piece.v**
-        Returns the relative_minor_key with position 4.
+	**Piece.v**
+		Returns the relative_minor_key with position 4.
 
-    **Piece.v**
-        Returns the relative_minor_key with position 5.
+	**Piece.v**
+		Returns the relative_minor_key with position 5.
 
-    **Piece.v**
-        Returns the relative_minor_key with position 6.
+	**Piece.v**
+		Returns the relative_minor_key with position 6.
 
-    **Piece.ih**
-        Returns the relative_harmonic_key with position 0.
+	**Piece.ih**
+		Returns the relative_harmonic_key with position 0.
 
-    **Piece.ii**
-        Returns the relative_harmonic_key with position 1.
+	**Piece.ii**
+		Returns the relative_harmonic_key with position 1.
 
-    **Piece.ii**
-        Returns the relative_harmonic_key with position 2.
+	**Piece.ii**
+		Returns the relative_harmonic_key with position 2.
 
-    **Piece.iv**
-        Returns the relative_harmonic_key with position 3.
+	**Piece.iv**
+		Returns the relative_harmonic_key with position 3.
 
-    **Piece.vh**
-        Returns the relative_harmonic_key with position 4.
+	**Piece.vh**
+		Returns the relative_harmonic_key with position 4.
 
-    **Piece.vi**
-        Returns the relative_harmonic_key with position 5.
+	**Piece.vi**
+		Returns the relative_harmonic_key with position 5.
 
-    **Piece.vi**
-        Returns the relative_harmonic_key with position 6.
+	**Piece.vi**
+		Returns the relative_harmonic_key with position 6.
 
-    **Piece.Ic**
-        Returns the relative_cis_key with position 0.
+	**Piece.Ic**
+		Returns the relative_cis_key with position 0.
 
-    **Piece.IIc**
-        Returns the relative_cis_key with position 1.
+	**Piece.IIc**
+		Returns the relative_cis_key with position 1.
 
-    **Piece.IIIc**
-        Returns the relative_cis_key with position 2.
+	**Piece.IIIc**
+		Returns the relative_cis_key with position 2.
 
-    **Piece.IVc**
-        Returns the relative_cis_key with position 3.
+	**Piece.IVc**
+		Returns the relative_cis_key with position 3.
 
-    **Piece.Vc**
-        Returns the relative_cis_key with position 4.
+	**Piece.Vc**
+		Returns the relative_cis_key with position 4.
 
-    **Piece.VIc**
-        Returns the relative_cis_key with position 5.
+	**Piece.VIc**
+		Returns the relative_cis_key with position 5.
 
-    **Piece.VIIc**
-        Returns the relative_cis_key with position 6.
+	**Piece.VIIc**
+		Returns the relative_cis_key with position 6.
 
-    **Piece.It**
-        Returns the relative_trans_key with position 0.
+	**Piece.It**
+		Returns the relative_trans_key with position 0.
 
-    **Piece.IIt**
-        Returns the relative_trans_key with position 1.
+	**Piece.IIt**
+		Returns the relative_trans_key with position 1.
 
-    **Piece.IIIt**
-        Returns the relative_trans_key with position 2.
+	**Piece.IIIt**
+		Returns the relative_trans_key with position 2.
 
-    **Piece.IVt**
-        Returns the relative_trans_key with position 3.
+	**Piece.IVt**
+		Returns the relative_trans_key with position 3.
 
-    **Piece.Vt**
-        Returns the relative_trans_key with position 4.
+	**Piece.Vt**
+		Returns the relative_trans_key with position 4.
 
-    **Piece.VIt**
-        Returns the relative_trans_key with position 5.
+	**Piece.VIt**
+		Returns the relative_trans_key with position 5.
 
-    **Piece.VIIt**
-        Returns the relative_trans_key with position 6.
+	**Piece.VIIt**
+		Returns the relative_trans_key with position 6.
 

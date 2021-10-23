@@ -4,15 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Prelude in C &#8212; LilyLib 0.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Mad Rush" href="mad_rush.html" />
@@ -33,87 +33,86 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="prelude-in-c">
+  <section id="prelude-in-c">
 <h1>Prelude in C<a class="headerlink" href="#prelude-in-c" title="Permalink to this headline">¶</a></h1>
 <p>This and the next chapter go through a couple of demo pieces to show LilyLib in action. First we’ll start with Bach’s Prelude in C. There’s actually four different versions of this demo, of increasing complexity, and we’ll go through them in order.</p>
-<div class="section" id="simple">
+<section id="simple">
 <h2>Simple<a class="headerlink" href="#simple" title="Permalink to this headline">¶</a></h2>
 <p>The most basic demo is in <em>demo_prelude_in_c_simple.py</em>. As the name suggests this is quite simple. The main thing is to realize that the piece is constructed around an 8 note motif that progresses through different chords. So, for some basic refactoring, this demo first creates a function that produces this motif:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">motif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="n">tones</span> <span class="o">=</span> <span class="n">tonify</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">(</span><span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">notes</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
-        <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">(</span><span class="n">voices</span><span class="p">(</span><span class="n">rest</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="n">tied_note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;8.&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="n">note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">([</span><span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span> <span class="o">+</span> <span class="n">notes</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">(</span><span class="n">voices</span><span class="p">([</span><span class="n">rest</span><span class="p">(</span><span class="mi">16</span><span class="p">)]</span> <span class="o">+</span> <span class="n">tied_note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;8.&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="p">[</span><span class="n">note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="p">}</span>
 </pre></div>
 </div>
-<p>This function gets passed a five note chord (<em>c</em>) and then it adds the first two notes to the bass clef, and adds the 3rd, 4th and 5th to the treble (twice). The treble clef if semiquavers, preceded by a quaver rest. The bass clef has two voices because the notes are held. Both parts are doubled, because the motif is repeated twice for each chord.</p>
+<p>This function gets passed a five note chord (<em>c</em>) and then it adds the first two notes to the bass clef, and adds the 3rd, 4th and 5th to the treble (twice). The treble clef if semiquavers, preceded by a quaver rest. The bass clef has two voices because the notes are held. Both parts are doubled, because the motif is repeated twice for each chord. This function uses the <cite>pattern</cite> and <cite>select</cite> functions from <cite>util.py</cite> to grab appropriate parts of the chord, you can look them up in the API.</p>
 <p>After this the piece lists the different chords to be applied to the motif:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
 <span class="k">def</span> <span class="nf">chords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">bar</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">40</span>
+    <span class="n">bars</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;c` e` g` c`` e``&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;c` d` a` d`` f``&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b d` g` d`` f``&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;c` e` g` c`` e``&#39;</span><span class="p">,</span>
 
-    <span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;c` e` g` c`` e``&#39;</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;c` d` g` c`` e``&#39;</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b d` g` d`` f``&#39;</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;c` e` g` c`` e``&#39;</span>
-
-    <span class="n">bar</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;c` e` a` e`` a``&#39;</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;c` d` df` a` d``&#39;</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b d` g` d`` g``&#39;</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b c` e` g` c``&#39;</span>
+        <span class="s1">&#39;c` e` a` e`` a``&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;c` d` fs` a` d``&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b d` g` d`` g``&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;b c` e` g` c``&#39;</span><span class="p">,</span>
 </pre></div>
 </div>
-<p>These are simple strings, put in a list called <em>bar</em>. We start counting from 1, and because the motif is one bar long this means that <em>bar[x]</em> contains the chord played in the xth bar of the piece.</p>
+<p>These are simple strings, put in a list called <em>bars</em>. Because each chord corresponds to one bar of music <code class="docutils literal notranslate"><span class="pre">select(bars,</span> <span class="pre">x)</span></code> will return the chord for bar <cite>x</cite>.</p>
 <p>We then iterate through the chords, applying the motif function as we go:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">chord</span><span class="p">)</span> <span class="k">for</span> <span class="n">chord</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chords</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">33</span><span class="p">]])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">chord</span><span class="p">)</span> <span class="k">for</span> <span class="n">chord</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chords</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The end of the piece actually does something a bit different, so we need a bit more code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">held_bass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tones</span><span class="p">):</span>
     <span class="n">tones</span> <span class="o">=</span> <span class="n">tonify</span><span class="p">(</span><span class="n">tones</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">voices</span><span class="p">(</span><span class="n">rest</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="n">tied_note</span><span class="p">(</span><span class="n">tones</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;8.&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">note</span><span class="p">(</span><span class="n">tones</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">voices</span><span class="p">([</span><span class="n">rest</span><span class="p">(</span><span class="mi">16</span><span class="p">)]</span> <span class="o">+</span> <span class="n">tied_note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;8.&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="n">note</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">)])</span>
 
 <span class="k">def</span> <span class="nf">long_melody</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tones</span><span class="p">):</span>
     <span class="n">tones</span> <span class="o">=</span> <span class="n">tonify</span><span class="p">(</span><span class="n">tones</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">notes</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span> <span class="o">+</span> <span class="n">notes</span><span class="p">(</span><span class="n">pattern</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
 
 <span class="nd">@property</span>
 <span class="k">def</span> <span class="nf">outro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">long_melody</span><span class="p">(</span><span class="s1">&#39;f a c` f`&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">notes</span><span class="p">(</span><span class="s1">&#39;f d&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">long_melody</span><span class="p">(</span><span class="s1">&#39;g` b` d`` f``&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">pattern</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s1">&#39;d`&#39;</span><span class="p">,</span> <span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">chord</span><span class="p">(</span><span class="s1">&#39;e` g` c`&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-        <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">held_bass</span><span class="p">(</span><span class="s1">&#39;c, c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">held_bass</span><span class="p">(</span><span class="s1">&#39;c, b,&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">chord</span><span class="p">(</span><span class="s1">&#39;c, c&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">long_melody</span><span class="p">(</span><span class="s1">&#39;f a c` f`&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">rep</span><span class="p">(</span><span class="n">notes</span><span class="p">(</span><span class="s1">&#39;f d&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">long_melody</span><span class="p">(</span><span class="s1">&#39;g` b` d`` f``&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">pattern</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="s1">&#39;d`&#39;</span><span class="p">,</span> <span class="s1">&#39;f`&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">chord</span><span class="p">(</span><span class="s1">&#39;e` g` c`&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+        <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">held_bass</span><span class="p">(</span><span class="s1">&#39;c, c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">held_bass</span><span class="p">(</span><span class="s1">&#39;c, b,&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">chord</span><span class="p">(</span><span class="s1">&#39;c, c&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
     <span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">chord</span><span class="p">)</span> <span class="k">for</span> <span class="n">chord</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chords</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">33</span><span class="p">]])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">chord</span><span class="p">)</span> <span class="k">for</span> <span class="n">chord</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chords</span><span class="p">])</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outro</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>But with that complete the piece is ready to print:</p>
 <img alt="_images/prelude_in_c_simple.png" src="_images/prelude_in_c_simple.png" />
-</div>
-<div class="section" id="intermediate">
+</section>
+<section id="intermediate">
 <h2>Intermediate<a class="headerlink" href="#intermediate" title="Permalink to this headline">¶</a></h2>
 <p>The simple demo works fine, but listing out the chords note-for-note means we don’t make any attempt to understand what the piece is doing, we also don’t use any of the LilyLib functions like <em>arpeggio</em>. That’s where we go next in <em>demo_prelude_in_c.py</em>. Rather than list the notes in each chord, we describe what each chord <em>is</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
 <span class="k">def</span> <span class="nf">chords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">bar</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">40</span>
+    <span class="n">bars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">32</span>
 
-    <span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;e``&#39;</span><span class="p">)</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">omit</span><span class="p">(</span><span class="n">arpeggio7</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;D Minor&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">omit</span><span class="p">(</span><span class="n">dominant7</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;G Major&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;e``&#39;</span><span class="p">))</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">omit</span><span class="p">(</span><span class="n">arpeggio7</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;D Minor&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">omit</span><span class="p">(</span><span class="n">dominant7</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;f``&#39;</span><span class="p">,</span> <span class="s1">&#39;G Major&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
 
-    <span class="n">bar</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">omit</span><span class="p">(</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;a``&#39;</span><span class="p">,</span> <span class="s1">&#39;A Minor&#39;</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c`&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;d`&#39;</span><span class="p">,</span> <span class="s1">&#39;d``&#39;</span><span class="p">,</span> <span class="s1">&#39;D Major&#39;</span><span class="p">)</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">bar</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">bar</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">)</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">omit</span><span class="p">(</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;a``&#39;</span><span class="p">,</span> <span class="s1">&#39;A Minor&#39;</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c`&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;d`&#39;</span><span class="p">,</span> <span class="s1">&#39;d``&#39;</span><span class="p">,</span> <span class="s1">&#39;D Major&#39;</span><span class="p">))</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">assign</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c``&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Now whether this is more readable or not is debateable. But it is undoubtedly more explicit about the harmonic changes going on, and the structure of the chords. So the opening bar is an arpeggio in the root chord, then it moves to D Minor (which could also have been referenced as <em>self.II</em>), G Major (or <em>self.V</em>), before coming back to C Major. Note that we can take advantage of the fact that bar 4 is the same as bar 1 to explicitly make them copies of each other. Applying this to the whole piece takes a little while, but once it’s done you get the same nice sheet music.</p>
-<p>Note the neat trick here: inheritance. Because this is the same as the simple version, but with the chords defined differently, we can inherit everything else from the simpler version. This is done by having the new piece extend the simple version:</p>
+<p>Now whether this is more readable or not is debateable. But it is undoubtedly more explicit about the harmonic changes going on, and the structure of the chords. So the opening bar is an arpeggio in the root key, then it moves to D Minor (which could also have been referenced as <em>self.II</em>), G Major (or <em>self.V</em>), before coming back to C Major. Note that we can take advantage of the fact that bar 4 is the same as bar 1 to explicitly make them copies of each other. Applying this to the whole piece takes a little while, but once it’s done you get the same nice sheet music. The <cite>assign</cite> function is another from <cite>util.py</cite>.</p>
+<p>Note the neat trick here: inheritance. Because this is basically the same piece as the simple version, but with the chords defined differently, we can inherit everything else from the simpler version. This is done by having the new piece extend the simple version:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">demos.demo_prelude_in_c_simple</span> <span class="kn">import</span> <span class="n">PreludeInCSimple</span>
 
 
@@ -121,13 +120,13 @@
 </pre></div>
 </div>
 <p>We’ll do this a couple more times now.</p>
-</div>
-<div class="section" id="advanced">
+</section>
+<section id="advanced">
 <h2>Advanced<a class="headerlink" href="#advanced" title="Permalink to this headline">¶</a></h2>
 <p>LilyLib let’s you manipulate music in helpful ways. Let’s look at two specific examples in <em>demo_prelude_in_c_fancy.py</em>. First, imagine that you know Prelude in C well enough to not need to see the motif. What you really want is just a list of the chords. Second, let’s imagine you want to see the name of the chords on the sheet music too, just to remind you what’s going on harmonically. The motif function generates the motifs, and we can modify it to do both of these things. First, let’s provide a list of the chord names:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">chord_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;ii D7&#39;</span><span class="p">,</span> <span class="s1">&#39;V D7&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">chord_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;ii D7&#39;</span><span class="p">,</span> <span class="s1">&#39;V D7&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span>
             <span class="s1">&#39;vi&#39;</span><span class="p">,</span> <span class="s1">&#39;II D7&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;I7&#39;</span><span class="p">,</span>
             <span class="s1">&#39;vi7&#39;</span><span class="p">,</span> <span class="s1">&#39;II D7&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;V d7&#39;</span><span class="p">,</span>
             <span class="s1">&#39;ii&#39;</span><span class="p">,</span> <span class="s1">&#39;ii d7&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;IV7&#39;</span><span class="p">,</span>
@@ -139,7 +138,7 @@
 </div>
 <p>Now, let’s have the motif function accept both the chord and the name, and then (1) create either a motif or a single chord according to the <em>summary</em> property, and (2) and a text label, or not, according to the <em>annotate</em> property:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">chord</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chords</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">33</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">chord_names</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">33</span><span class="p">])])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">chord</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">chord</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chord_names</span><span class="p">)])</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outro</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">motif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -148,14 +147,14 @@
     <span class="k">if</span> <span class="n">summary</span><span class="p">:</span>
         <span class="n">tones</span> <span class="o">=</span> <span class="n">tonify</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="n">passage</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="n">chord</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
-            <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="n">chord</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">chord</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">4</span><span class="p">)],</span>
+            <span class="s1">&#39;bass&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">chord</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">tones</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">4</span><span class="p">)]</span>
         <span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">passage</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">annotate</span><span class="p">:</span>
-        <span class="n">passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">markup</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">select</span><span class="p">(</span><span class="n">passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">markup</span> <span class="o">=</span> <span class="n">n</span>
 
     <span class="k">return</span> <span class="n">passage</span>
 </pre></div>
@@ -168,13 +167,13 @@
 <p>That’s it! Here’s the sheet music that prints when both properties are set to <em>True</em>:</p>
 <img alt="_images/prelude_in_c_fancy.png" src="_images/prelude_in_c_fancy.png" />
 <p>For someone who is comfortable with this piece, the sheet music in this format is perfectly easy to read, but also more informative than the regular sheet music. Critically it takes just a few minutes to modify the basic LilyLib code to produce this format, and note we’re still using inheritance to avoid repeating code shared with other pieces.</p>
-</div>
-<div class="section" id="experimental">
+</section>
+<section id="experimental">
 <h2>Experimental<a class="headerlink" href="#experimental" title="Permalink to this headline">¶</a></h2>
-<p>Piano music is typically written across two staves. Often these correspond to the two hands, but this is often not the case too. Even when it is the case, the separation of the hands in this way can mask the unity of what the hands are doing. This is the case in Prelude in C: The two hands are actually playing a single voice (let’s ignore that the music is actually a little polyphonic). To better convey this I have been experimenting with a single combined staff. It resembles the traditional treble and bass staves, but the gap between them is “anatomically correct” and the music freely flows across them. This is baked into LilyLib, here’s how to implement it:</p>
+<p>Piano music is typically written across two staves. Often these correspond to the two hands, but this is often not the case too. Even when it is the case, the separation of the hands in this way can mask the unity of what the hands are doing. This is the case in Prelude in C: The two hands are playing a single voice (let’s ignore that the music is actually a little polyphonic). This can be signified by putting the two voices on a single staff, however, while the piece starts comfortably in the domain treble staff, it later descends and effectively spans both bass and treble staffs making single staff notation problematic. To better handle this I have been experimenting with a single combined staff. It resembles the traditional treble and bass staves, but the gap between them is “anatomically correct” (i.e. it is exactly two line widths) and the music freely flows across them. This is baked into LilyLib, here’s how to implement it:</p>
 <p>First, in the details, set the staves to a single <em>Super</em> staff:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Prelude in C&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">details</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">staves</span> <span class="o">=</span> <span class="p">[</span><span class="n">Super</span><span class="p">()]</span>
 </pre></div>
 </div>
@@ -182,20 +181,22 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">motif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="n">passage</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">motif</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
     <span class="n">new_passage</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="n">voices</span><span class="p">(</span><span class="n">passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="n">notes</span><span class="p">(</span><span class="n">tonify</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="n">rests</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="s1">&#39;treble&#39;</span><span class="p">:</span> <span class="n">voices</span><span class="p">(</span><span class="n">passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="n">rep</span><span class="p">(</span><span class="n">notes</span><span class="p">(</span><span class="n">subset</span><span class="p">(</span><span class="n">tonify</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="n">rests</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
     <span class="p">}</span>
-    <span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="se">\\</span><span class="s1">override Rest.transparent = ##t &#39;</span>
-    <span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">][</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="se">\\</span><span class="s1">override Rest.transparent = ##t &#39;</span>
-    <span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">][</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s1">&#39;laissezVibrer&#39;</span>
-    <span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">][</span><span class="mi">15</span><span class="p">]</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s1">&#39;laissezVibrer&#39;</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="se">\\</span><span class="s1">override Rest.transparent = ##t &#39;</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="se">\\</span><span class="s1">override Rest.transparent = ##t &#39;</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s1">&#39;laissezVibrer&#39;</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s1">&#39;laissezVibrer&#39;</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">19</span><span class="p">)</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s1">&#39;laissezVibrer&#39;</span>
+    <span class="n">select</span><span class="p">(</span><span class="n">new_passage</span><span class="p">[</span><span class="s1">&#39;treble&#39;</span><span class="p">],</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">ornamentation</span> <span class="o">=</span> <span class="s1">&#39;laissezVibrer&#39;</span>
     <span class="k">return</span> <span class="n">new_passage</span>
 </pre></div>
 </div>
 <p>All the stuff about rest transparency is to make rests invisible, this is to avoid cluttering the music given that there are two voices on the same staff. I also use <em>laissez vibrer</em> marks on the left hand, rather than multiple notes with ties. That’s basically it (there are some modifications to the outro too), and here’s what the music looks like:</p>
 <img alt="_images/prelude_in_c_super.png" src="_images/prelude_in_c_super.png" />
 <p>Maybe you like this (I do), maybe you hate it. The point is not that this is a good way to write music, the point is that LilyLib let’s you quickly rewrite music in multiple different ways with just a few tweaks to different functions.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -214,10 +215,10 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">LilyLib documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">The basics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing_music.html">Writing music</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changing_keys.html">Keys and changing key</a></li>
 <li class="toctree-l1"><a class="reference internal" href="markup.html">Markup</a></li>
@@ -245,7 +246,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -267,7 +268,7 @@
       &copy;2020, Thomas J. H. Morgan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -13,11 +13,11 @@ The most basic demo is in *demo_prelude_in_c_simple.py*. As the name suggests th
     def motif(self, c):
         tones = tonify(c)
         return {
-            'treble': rep(rest(8) + notes(pattern(tones, 2 * [3, 4, 5]), 16), 2),
-            'bass': rep(voices(rest(16) + tied_note(select(tones, 2), ['8.', 4]), note(select(tones, 1), 2)), 2)
+            'treble': rep([rest(8)] + notes(pattern(tones, 2 * [3, 4, 5]), 16), 2),
+            'bass': rep(voices([rest(16)] + tied_note(select(tones, 2), ['8.', 4]), [note(select(tones, 1), 2)]), 2)
         }
 
-This function gets passed a five note chord (*c*) and then it adds the first two notes to the bass clef, and adds the 3rd, 4th and 5th to the treble (twice). The treble clef if semiquavers, preceded by a quaver rest. The bass clef has two voices because the notes are held. Both parts are doubled, because the motif is repeated twice for each chord.
+This function gets passed a five note chord (*c*) and then it adds the first two notes to the bass clef, and adds the 3rd, 4th and 5th to the treble (twice). The treble clef if semiquavers, preceded by a quaver rest. The bass clef has two voices because the notes are held. Both parts are doubled, because the motif is repeated twice for each chord. This function uses the `pattern` and `select` functions from `util.py` to grab appropriate parts of the chord, you can look them up in the API.
 
 After this the piece lists the different chords to be applied to the motif:
 
@@ -25,26 +25,25 @@ After this the piece lists the different chords to be applied to the motif:
 
     @property
     def chords(self):
-        bar = [''] * 40
+        bars = [
+            'c` e` g` c`` e``',
+            'c` d` a` d`` f``',
+            'b d` g` d`` f``',
+            'c` e` g` c`` e``',
 
-        bar[1] = 'c` e` g` c`` e``'
-        bar[2] = 'c` d` g` c`` e``'
-        bar[3] = 'b d` g` d`` f``'
-        bar[4] = 'c` e` g` c`` e``'
+            'c` e` a` e`` a``',
+            'c` d` fs` a` d``',
+            'b d` g` d`` g``',
+            'b c` e` g` c``',
 
-        bar[5] = 'c` e` a` e`` a``'
-        bar[6] = 'c` d` df` a` d``'
-        bar[7] = 'b d` g` d`` g``'
-        bar[8] = 'b c` e` g` c``'
-
-These are simple strings, put in a list called *bar*. We start counting from 1, and because the motif is one bar long this means that *bar[x]* contains the chord played in the xth bar of the piece.
+These are simple strings, put in a list called *bars*. Because each chord corresponds to one bar of music ``select(bars, x)`` will return the chord for bar `x`.
 
 We then iterate through the chords, applying the motif function as we go:
 
 ::
 
     def write_score(self):
-        self.score = join([self.motif(chord) for chord in self.chords[1:33]])
+        self.score = join([self.motif(chord) for chord in self.chords])
 
 The end of the piece actually does something a bit different, so we need a bit more code:
 
@@ -52,21 +51,21 @@ The end of the piece actually does something a bit different, so we need a bit m
 
     def held_bass(self, tones):
         tones = tonify(tones)
-        return voices(rest(16) + tied_note(tones[1], ['8.', 4, 2]), note(tones[0], 1))
+        return voices([rest(16)] + tied_note(select(tones, 2), ['8.', 4, 2]), [note(select(tones, 1), 1)])
 
     def long_melody(self, tones):
         tones = tonify(tones)
-        return rest(8) + notes(pattern(tones, 1, 2, 3, 4, 3, 2, 3, 2, 1, 2), 16)
+        return [rest(8)] + notes(pattern(tones, 1, 2, 3, 4, 3, 2, 3, 2, 1, 2), 16)
 
     @property
     def outro(self):
         return {
-            'treble': self.long_melody('f a c` f`') + notes('f d', 16) * 2 + self.long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1) + chord('e` g` c`', 1),
-            'bass': self.held_bass('c, c') + self.held_bass('c, b,') + chord('c, c', 1)
+            'treble': self.long_melody('f a c` f`') + rep(notes('f d', 16), 2) + self.long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1) + [chord('e` g` c`', 1)],
+            'bass': self.held_bass('c, c') + self.held_bass('c, b,') + [chord('c, c', 1)]
         }
 
     def write_score(self):
-        self.score = join([self.motif(chord) for chord in self.chords[1:33]])
+        self.score = join([self.motif(chord) for chord in self.chords])
         self.score = join(self.score, self.outro)
 
 But with that complete the piece is ready to print:
@@ -82,21 +81,21 @@ The simple demo works fine, but listing out the chords note-for-note means we do
 
     @property
     def chords(self):
-        bar = [''] * 40
+        bars = [''] * 32
 
-        bar[1] = self.arpeggio('c`', 'e``')
-        bar[2] = omit(arpeggio7('c`', 'f``', 'D Minor'), 3, 5)
-        bar[3] = omit(dominant7('b', 'f``', 'G Major'), 3, 5)
-        bar[4] = deepcopy(bar[1])
+        assign(bars, 1, self.arpeggio('c`', 'e``'))
+        assign(bars, 2, omit(arpeggio7('c`', 'f``', 'D Minor'), 3, 5))
+        assign(bars, 3, omit(dominant7('b', 'f``', 'G Major'), 3, 5))
+        assign(bars, 4, deepcopy(select(bars, 1)))
 
-        bar[5] = omit(arpeggio('c`', 'a``', 'A Minor'), 4)
-        bar[6] = ['c`'] + arpeggio('d`', 'd``', 'D Major')
-        bar[7] = self.transpose(bar[5], -1)
-        bar[8] = ['b'] + self.arpeggio('c`', 'c``')
+        assign(bars, 5, omit(arpeggio('c`', 'a``', 'A Minor'), 4))
+        assign(bars, 6, ['c`'] + arpeggio('d`', 'd``', 'D Major'))
+        assign(bars, 7, self.transpose(select(bars, 5), -1))
+        assign(bars, 8, ['b'] + self.arpeggio('c`', 'c``'))
 
-Now whether this is more readable or not is debateable. But it is undoubtedly more explicit about the harmonic changes going on, and the structure of the chords. So the opening bar is an arpeggio in the root chord, then it moves to D Minor (which could also have been referenced as *self.II*), G Major (or *self.V*), before coming back to C Major. Note that we can take advantage of the fact that bar 4 is the same as bar 1 to explicitly make them copies of each other. Applying this to the whole piece takes a little while, but once it's done you get the same nice sheet music.
+Now whether this is more readable or not is debateable. But it is undoubtedly more explicit about the harmonic changes going on, and the structure of the chords. So the opening bar is an arpeggio in the root key, then it moves to D Minor (which could also have been referenced as *self.II*), G Major (or *self.V*), before coming back to C Major. Note that we can take advantage of the fact that bar 4 is the same as bar 1 to explicitly make them copies of each other. Applying this to the whole piece takes a little while, but once it's done you get the same nice sheet music. The `assign` function is another from `util.py`.
 
-Note the neat trick here: inheritance. Because this is the same as the simple version, but with the chords defined differently, we can inherit everything else from the simpler version. This is done by having the new piece extend the simple version:
+Note the neat trick here: inheritance. Because this is basically the same piece as the simple version, but with the chords defined differently, we can inherit everything else from the simpler version. This is done by having the new piece extend the simple version:
 
 ::
 
@@ -114,9 +113,9 @@ LilyLib let's you manipulate music in helpful ways. Let's look at two specific e
 
 ::
 
+    @property
     def chord_names(self):
-        return ['',
-                'I', 'ii D7', 'V D7', 'I',
+        return ['I', 'ii D7', 'V D7', 'I',
                 'vi', 'II D7', 'V', 'I7',
                 'vi7', 'II D7', 'V', 'V d7',
                 'ii', 'ii d7', 'I', 'IV7',
@@ -130,7 +129,7 @@ Now, let's have the motif function accept both the chord and the name, and then 
 ::
 
     def write_score(self):
-        self.score = join([self.motif(chord, name) for chord, name in zip(self.chords[1:33], self.chord_names[1:33])])
+        self.score = join([self.motif(chord, name) for chord, name in zip(self.chords, self.chord_names)])
         self.score = join(self.score, self.outro)
 
     def motif(self, c, n):
@@ -139,14 +138,14 @@ Now, let's have the motif function accept both the chord and the name, and then 
         if summary:
             tones = tonify(c)
             passage = {
-                'treble': chord(subset(tones, 3, 5), 4),
-                'bass': chord(subset(tones, 1, 2), 4)
+                'treble': [chord(subset(tones, 3, 5), 4)],
+                'bass': [chord(subset(tones, 1, 2), 4)]
             }
         else:
             passage = super().motif(c)
 
         if annotate:
-            passage['treble'][0].markup = n
+            select(passage['treble'], 1).markup = n
 
         return passage
 
@@ -166,14 +165,14 @@ For someone who is comfortable with this piece, the sheet music in this format i
 Experimental
 ---------------
 
-Piano music is typically written across two staves. Often these correspond to the two hands, but this is often not the case too. Even when it is the case, the separation of the hands in this way can mask the unity of what the hands are doing. This is the case in Prelude in C: The two hands are actually playing a single voice (let's ignore that the music is actually a little polyphonic). To better convey this I have been experimenting with a single combined staff. It resembles the traditional treble and bass staves, but the gap between them is "anatomically correct" and the music freely flows across them. This is baked into LilyLib, here's how to implement it:
+Piano music is typically written across two staves. Often these correspond to the two hands, but this is often not the case too. Even when it is the case, the separation of the hands in this way can mask the unity of what the hands are doing. This is the case in Prelude in C: The two hands are playing a single voice (let's ignore that the music is actually a little polyphonic). This can be signified by putting the two voices on a single staff, however, while the piece starts comfortably in the domain treble staff, it later descends and effectively spans both bass and treble staffs making single staff notation problematic. To better handle this I have been experimenting with a single combined staff. It resembles the traditional treble and bass staves, but the gap between them is "anatomically correct" (i.e. it is exactly two line widths) and the music freely flows across them. This is baked into LilyLib, here's how to implement it:
 
 First, in the details, set the staves to a single *Super* staff:
 
 ::
 
     def details(self):
-        self.title = "Prelude in C"
+        super().details()
         self.staves = [Super()]
 
 Next, modify the motif function to print both hands as separate voices on the same staff (treating the hands as separate voices keeps the stems of the two hands separate):
@@ -183,12 +182,14 @@ Next, modify the motif function to print both hands as separate voices on the sa
     def motif(self, c):
         passage = super().motif(c)
         new_passage = {
-            'treble': voices(passage['treble'], notes(tonify(c)[0:2], 16) + rests(8, 4))
+            'treble': voices(passage['treble'], rep(notes(subset(tonify(c), 1, 2), 16) + rests(8, 4), 2))
         }
-        new_passage['treble'][0].prefix += ' \\override Rest.transparent = ##t '
-        new_passage['treble'][14].prefix += ' \\override Rest.transparent = ##t '
-        new_passage['treble'][14].ornamentation = 'laissezVibrer'
-        new_passage['treble'][15].ornamentation = 'laissezVibrer'
+        select(new_passage['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
+        select(new_passage['treble'], 15).prefix += ' \\override Rest.transparent = ##t '
+        select(new_passage['treble'], 15).ornamentation = 'laissezVibrer'
+        select(new_passage['treble'], 16).ornamentation = 'laissezVibrer'
+        select(new_passage['treble'], 19).ornamentation = 'laissezVibrer'
+        select(new_passage['treble'], 20).ornamentation = 'laissezVibrer'
         return new_passage
 
 All the stuff about rest transparency is to make rests invisible, this is to avoid cluttering the music given that there are two voices on the same staff. I also use *laissez vibrer* marks on the left hand, rather than multiple notes with ties. That's basically it (there are some modifications to the outro too), and here's what the music looks like:

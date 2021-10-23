@@ -27,7 +27,7 @@ So far almost all the music we've seen set a key at the very start in the *detai
 
 .. image:: _static/chromatic.png
 
-Note how `self.set_key` is used to switch from C Major to F Major. This chapter will go into Keys in a little more detail.
+Note how ``self.set_key`` is used to switch from C Major to F Major. This chapter will go into Keys in a little more detail.
 
 The Key class and subclasses
 ------------------------------
@@ -47,7 +47,7 @@ LilyLib includes a `Key` class and it's located inside keys.py. Specific keys, l
         self.define()
         self.confirm_definition()
 
-As you can see all the values are set to `None` by default, so for the key to "work" they must be overwritten, and this is done by the `define` function of each subclass. In the parent class `define` just raises an error:
+As you can see all the values are set to ``None`` by default, so for the key to "work" they must be overwritten, and this is done by the `define` function of each subclass. In the parent class `define` just raises an error:
 
 ::
 
@@ -128,7 +128,7 @@ LilyLib includes all "real" keys in keys.py (i.e. it does not include impossible
 	        self.letters = ['c', 'd', 'ef', 'fs', 'g', 'a', 'bf']
 	        self.name = "g minor harmonic"
 
-This is useful because, even though harmonic key signatures are not printed in sheet music, pieces are often written in the harmonic as opposed to natural minor.
+This is useful because, even though harmonic key signatures are not printed in sheet music, pieces are often written in the harmonic (as opposed to natural) minor.
 
 The key dictionary
 ---------------------
@@ -230,7 +230,7 @@ This returns a text description of the key which can be added to a point, for in
 
 	self.set_key('c minor)')
 	passage += self.scale('c`', 8)
-	passage[8].prefix = self.key_signature
+	select(passage, 9).prefix = self.key_signature
 
 This will cause the key signature to print to the score and be interpreted by the lilypond compiler as an instruction to print the key signature on the sheet music. There's another way to do this using dedicated markup functions that we'll come to later.
 
@@ -247,7 +247,7 @@ Pieces can also change to relative keys. For instance, when a piece shifts from 
     def v(self):
         return self.relative_minor_key(4)
 
-LilyLib also introduces the notion of `cis` and `trans` keys. These are ways to switch to a major or minor key conditional on the mode of your current key; cis maintains the current mode, trans alters it. For instance, the cis fifth of C Major is G Major, while the trans fifth is G Minor. The utility of this distinction is quite uncommon, but it allows the user to compose music that is utterly agnostic of the starting key, meaning that the starting key can be changed, say, from E Major to B Minor, and the piece, including all key changes, will automatically adjust. A demo of this is provided with the piece "Mad Rush" later in the documentation. Cis and trans relative keys are denoted by the suffixes `c` and `t`:
+LilyLib also introduces the notion of `cis` and `trans` keys. These are ways to switch to a major or minor key conditional on the mode of your current key; cis maintains the current mode, trans alters it. For instance, the cis fifth of C Major is G Major, while the trans fifth of C Major is G `Minor`. The utility of this distinction is quite uncommon, but it allows the user to compose music that is utterly agnostic of the starting key, meaning that the starting key can be changed, say, from E Major to B Minor, and the piece, including all key changes, will automatically adjust. A demo of this is provided with the piece "Mad Rush" later in the documentation. Cis and trans relative keys are denoted by the suffixes `c` and `t`:
 
 ::
 

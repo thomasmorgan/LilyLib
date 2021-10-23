@@ -4,15 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Mad Rush &#8212; LilyLib 0.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Prelude in C" href="prelude_in_c.html" />
@@ -32,20 +32,20 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="mad-rush">
+  <section id="mad-rush">
 <h1>Mad Rush<a class="headerlink" href="#mad-rush" title="Permalink to this headline">¶</a></h1>
 <p>Mad Rush, by Philip Glass, is a great piece to show how LilyLib can compress music. Below I describe how the demo constructs the piece, and then how we can transpose it to any starting key.</p>
-<div class="section" id="structure">
+<section id="structure">
 <h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
-<p>While the piece is long, it actually as a very simple structure. There are 4 main elements: (A) a quiet passage with quavers set against triplets, (B) a loud, fast section, (C) a hybrid of A and B, and (D) a modification of A. These are structured as AA B CC B AA B DD, with a small subsection linking all of them (which we’ll call A0). We can express this structure as follows:</p>
+<p>While the piece is long, it actually as a very simple structure. There are 4 main elements: (A) a quiet passage with quavers set against triplets, (B) a loud, fast section, (C) a hybrid of A and B, and (D) a modification of A. Across the whole piece these are played in the order ‘AA B CC B AA B DD’, with a small subsection linking all of them (which we’ll call ‘A0’). We can express this structure as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
 <span class="n">structure</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
     <span class="n">structure</span> <span class="o">+=</span> <span class="p">[</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;A0&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="section-a">
+</section>
+<section id="section-a">
 <h2>Section A<a class="headerlink" href="#section-a" title="Permalink to this headline">¶</a></h2>
 <p>But, we need to actually describe the contents of the sections A through D too. Each section has a similar harmonic progression, being composed of 4 subunits (let’s label them 1 through 4) and they are played in the following order: 1, 1, 2, 2, 2, 3, 3, 4. Using section A as an example, we can describe this as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A3&#39;</span><span class="p">,</span> <span class="s1">&#39;A3&#39;</span><span class="p">,</span> <span class="s1">&#39;A4&#39;</span><span class="p">]</span>
@@ -99,7 +99,7 @@
     <span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">motif</span><span class="p">[</span><span class="s1">&#39;bass2&#39;</span><span class="p">],</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This has two voices, one that contains alternating quavers (bass1) and another that contains held notes or crotchets (bass2), this doesn’t vary conditional on the chord, but there are plenty of tweaks. Lastly, we use this function to build the differnent elements of section A, as well as A0, the briding subsection that links all sections:</p>
+<p>This has two voices, one that contains alternating quavers (<code class="docutils literal notranslate"><span class="pre">bass1</span></code>) and another that contains held notes or crotchets (<code class="docutils literal notranslate"><span class="pre">bass2</span></code>), this doesn’t vary based on the chord, but there are plenty of tweaks. Lastly, we use this function to build the differnent elements of section A, as well as A0, the briding subsection that links all sections:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aI</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;no treble&#39;</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aiii</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;no treble&#39;</span><span class="p">,</span> <span class="s1">&#39;low first&#39;</span><span class="p">))</span>
 <span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">][</span><span class="s1">&#39;treble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_signature</span><span class="p">(</span><span class="s1">&#39;4/4&#39;</span><span class="p">,</span> <span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">][</span><span class="s1">&#39;treble&#39;</span><span class="p">])</span>
 <span class="n">sections</span><span class="p">[</span><span class="s1">&#39;A1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">A_motif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aI</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">A_motif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aiii</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
@@ -111,10 +111,10 @@
 <p>This is all quite readable…ish. Note that A0 has a tempo change stuck at the start, this is because sometimes this section follows other sections that are in a different time signature.</p>
 <p>I’ll leave reading through sections B, C and D up to you, but it’s basically the same principle. The resulting music looks like this:</p>
 <img alt="_images/mad_rush.png" src="_images/mad_rush.png" />
-</div>
-<div class="section" id="summarizing">
+</section>
+<section id="summarizing">
 <h2>Summarizing<a class="headerlink" href="#summarizing" title="Permalink to this headline">¶</a></h2>
-<p>The sheet music looks good, but its long (19 pages!) and very repetitive. What can we do to improve this? The solution is to use various markings and indicate whether the player should move between them. However, traditional sheet music is not really great at this and the result is still long and clunky. We can do better: we can print each sub-unit once only (with a label) and then provide a text description at the top of the piece describing the structure. Printing each element once only is easy, we just print the dictionary of subunits directly:</p>
+<p>The sheet music looks good, but its long (19 pages!) and very repetitive. What can we do to improve this? The usual solution is to use things like repeats, and ‘dal segno’ instructions telling the player to jump to different parts of the music. However, even with this the result is still long and clunky. We can do better: we can print each sub-unit once only (with a label) and then provide a text description at the top of the piece describing the structure. Printing each element once only is easy, we just print the dictionary of subunits directly:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">:</span>
     <span class="n">sections_to_print</span> <span class="o">=</span> <span class="n">sections</span>
 <span class="k">else</span><span class="p">:</span>
@@ -149,8 +149,8 @@
 </div>
 <p>This uses lilypond markup language. There’s a bunch of empty line breaks, because this causes sections A, B, C and D to (almost) fall on a single page each which is really pleasing (and yes, we get down from 19 to just 4 pages). Here’s what the new sheet music looks like:</p>
 <img alt="_images/mad_rush_summary.png" src="_images/mad_rush_summary.png" />
-</div>
-<div class="section" id="keyless-music">
+</section>
+<section id="keyless-music">
 <h2>Keyless music<a class="headerlink" href="#keyless-music" title="Permalink to this headline">¶</a></h2>
 <p>This is another (pointlessly) advanced feature. So we’ve written the piece, and it’s in a specific key (F Major in this case). But, LilyLib supposedly “understands” music, so can’t we ask it to write the same music in a different key? The answer is yes, and it’s actually quite simple, but it’s perhaps not how you imagine.</p>
 <p>A first attempt, might just be to change <em>self.key</em> in the details function to something else, say E Major. But this won’t work. What it does is tell the piece to behave in accordance with E Major (so F sharp instead of F), but some of the piece will then no longer make sense. For instance the very first chord is:</p>
@@ -159,7 +159,7 @@
 </div>
 <p>This makes sense in F Major, but in E Major it doesn’t: we ask for the arpeggio to start on F, but an arpeggio in E Major doesn’t include an F, and neither does the key signature. Recognizing this, LilyLib will raise an error.</p>
 <p>Given this, a second attempt might be to write the piece in F Major and then use the <em>transpose</em> function to shift it. This will work (assuming you shift via semitones). However, there are two problems: (1) the printed key signature is not changed, so you’ll end up with music full of accidentals and the actual harmonic centre of the transposed music will be totally obscured, and (2) because this technique preserves the relationships between all notes it can’t change music from major into minor (or vice-versa), for instance changing this piece into F Minor.</p>
-<p>OK, so here’s how to actually do it. First, set the key to whatever you want in the <em>details</em> function (as above), but then, and this is the mildly tricky bit, rewrite the chords such that the notes therein are not named. Instead the notes need to be defined relative to a start note that is dependent on the key. This is a little tricky, so let’s revisit the <em>aI</em> chord, but this time with no explicit key:</p>
+<p>OK, so here’s how to actually do it. First, set the key to whatever you want in the <em>details</em> function (as above), but then rewrite the chords such that their notes are not named. Instead the notes need to be defined relative to a start note that is dependent on the key. This is a little tricky, so let’s revisit the <em>aI</em> chord, but this time with no explicit key:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">aI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpeggio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -172,8 +172,8 @@
 <p>In the first case the start note is set as ‘e’ and the key as A Major, in the second case the chord is defined totally differently: we take the initial chord and copy it note for note, except, if the note falls on the root note of the piece it is transposed down one note in the scale.</p>
 <p>We contiue this process, and in total there are 14 chords that need to be defined this way. But with this done, the entire process is complete. All the chords are defined, ultimately, relative to the key the piece is in, and so by changing the key, the chords (and thus all the music) is changed accordingly. As an example, here’s what the piece looks like in C-Sharp Minor:</p>
 <img alt="_images/mad_rush_keyless.png" src="_images/mad_rush_keyless.png" />
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -192,10 +192,10 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">LilyLib documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">The basics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing_music.html">Writing music</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changing_keys.html">Keys and changing key</a></li>
 <li class="toctree-l1"><a class="reference internal" href="markup.html">Markup</a></li>
@@ -222,7 +222,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -244,7 +244,7 @@
       &copy;2020, Thomas J. H. Morgan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
