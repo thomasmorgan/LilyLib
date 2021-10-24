@@ -382,29 +382,33 @@ def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
     return series(custom_tones, start, stop_or_length, dur, step)
 
 
-def transpose(item, shift, key, mode="scale"):
+def transpose(item, shift, key, mode="scale", clean=False):
     key = keyify(key)
     validate_transpose_args(shift, mode)
 
     if isinstance(item, dict):
         new_dict = {}
         for dict_key in item:
-            new_dict[dict_key] = transpose(item[dict_key], shift, key, mode)
+            new_dict[dict_key] = transpose(item[dict_key], shift, key, mode, clean)
         return new_dict
 
     elif isinstance(item, list):
-        return [transpose(subitem, shift, key, mode) for subitem in item]
+        return [transpose(subitem, shift, key, mode, clean) for subitem in item]
 
     elif isinstance(item, Point):
-        return Point(transpose(item.tones, shift, key, mode),
-                     item.dur,
-                     articulation=item.articulation,
-                     ornamentation=item.ornamentation,
-                     dynamics=item.dynamics,
-                     markup=item.markup,
-                     markdown=item.markdown,
-                     prefix=item.prefix,
-                     suffix=item.suffix)
+        if clean:
+            return Point(transpose(item.tones, shift, key, mode, clean), item.dur)
+        else:
+            return Point(transpose(item.tones, shift, key, mode, clean),
+                         item.dur,
+                         phrasing=item.phrasing,
+                         articulation=item.articulation,
+                         ornamentation=item.ornamentation,
+                         dynamics=item.dynamics,
+                         markup=item.markup,
+                         markdown=item.markdown,
+                         prefix=item.prefix,
+                         suffix=item.suffix)
 
     elif isinstance(item, str):
         try:
@@ -412,7 +416,7 @@ def transpose(item, shift, key, mode="scale"):
         except ValueError:
             return item
         if isinstance(item, list):
-            return transpose(item, shift, key, mode)
+            return transpose(item, shift, key, mode, clean)
         else:
             try:
                 if mode == "octave":
@@ -424,7 +428,7 @@ def transpose(item, shift, key, mode="scale"):
                 elif mode == "semitone":
                     return key.all_tones[key.all_tones.index(item) + shift]
             except ValueError:
-                return transpose(equivalent_tone(item), shift, key, mode)
+                return transpose(equivalent_tone(item), shift, key, mode, clean)
     else:
         raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
 

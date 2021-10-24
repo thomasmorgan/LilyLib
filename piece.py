@@ -195,8 +195,8 @@ class Piece:
     def scale_subset(self, positions, start, stop_or_length, dur=None, step=1):
         return scale_subset(positions, start, stop_or_length, self.key, dur, step)
 
-    def transpose(self, item, shift, mode="scale"):
-        return transpose(item, shift, self.key, mode)
+    def transpose(self, item, shift, mode="scale", clean=False):
+        return transpose(item, shift, self.key, mode, clean)
 
     def harmonize(self, points, intervals, mode="scale"):
         return harmonize(points, intervals, self.key, mode)
