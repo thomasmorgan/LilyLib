@@ -144,7 +144,7 @@ class Piece:
                 elif point.dur == '\\breve':
                     progress = 2.0
                 elif '..' in point.dur:
-                    progress = (1 / float(int(point.dur[:-2]))) * 1.5 * 1.5
+                    progress = (1 / float(int(point.dur[:-2]))) * 1.75
                 elif '.' in point.dur:
                     progress = (1 / float(int(point.dur[:-1]))) * 1.5
                 else:
