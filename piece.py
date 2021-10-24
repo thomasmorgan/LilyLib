@@ -155,7 +155,7 @@ class Piece:
             if bar_progress > 1:
                 raise ValueError("Duration of notes crosses a bar line: {} in bar {}".format(str(point), num_bars+1))
 
-            if bar_progress == 1 and " }\n\\\\\n" not in point.suffix:
+            if bar_progress == 1 and " }\n\\\\\n" not in point.suffix and progress*mult != 0.0:
                 point.suffix += barbreak
                 bar_progress = 0
                 num_bars += 1
