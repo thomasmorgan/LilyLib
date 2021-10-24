@@ -15,6 +15,7 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
+        self.improvements = False
 
     def subtext(self):
         return '''
@@ -122,32 +123,38 @@ class MarcheFunebre(Piece):
         select(rh, 12).dynamics = 'f'
         select(rh, 12).phrasing = '('
         select(rh, 16).phrasing = ')'
+        select(lh, 25).suffix += linebreak
+        select(lh, len(lh)).suffix += linebreak
 
         bold_chords = {
             'treble': rh,
             'bass': lh,
         }
 
-        # # """ Intro again """
+        # """ Intro again """
 
-        # self.set_key('fs minor')
-        # shifted_bass = self.transpose(plodding[0:119], 3, 'semitone') + time_signature('2/4', plonk('gs'), '4/4')
-        # shifted_bass[0].prefix = self.key_signature + shifted_bass[0].prefix
+        self.set_key('fs minor')
+        shifted_bass = self.transpose(subset(plodding, 1, 119), 3, 'semitone') + plonk('gs')
+        if self.improvements:
+            select(shifted_bass, 1).prefix = self.key_signature + select(shifted_bass, 1).prefix
 
-        # drone_c = drone1('fs`', 5) + drone1('d`', 5)
-        # add(drone_c, 'fs`')
-        # drone_c[0].prefix = self.key_signature + '\\grace s16.'
-        # drone_c[0].dynamics = "p"
+        drone_c = drone1('fs`', 5) + drone1('d`', 5)
+        add(drone_c, 'fs`')
+        if self.improvements:
+            select(drone_c, 1).prefix = self.key_signature
+        select(drone_c, 1).prefix += ' \\grace s16.'
+        select(drone_c, 1).dynamics = "p"
 
-        # self.set_key('cs minor')
-        # drone_d = merge(drone2('a`', 5) + drone1('fs`', 5)[0:3], notes('cs`` cs`` bs` a` a` gs` fs`', 2))
-        # drone_d[0].articulation = ">"
-        # drone_d[-1].suffix += linebreak
+        self.set_key('cs minor')
+        drone_d = merge(drone2('a`', 5) + subset(drone1('fs`', 5), 1, 3), notes('cs`` cs`` bs` a` a` gs` fs`', 1))
+        select(drone_d, 1).articulation = ">"
+        select(drone_d, 7).phrasing = ")"
+        select(drone_d, len(drone_d)).suffix += linebreak
 
-        # intro2 = {
-        #     'treble': drone_c + drone_d,
-        #     'bass': shifted_bass
-        # }
+        intro2 = {
+            'treble': drone_c + drone_d,
+            'bass': shifted_bass
+        }
 
         # # """ Bold Chords again """
 
@@ -457,7 +464,7 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords) #, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2) #bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/14)\n }\n }\n }')
