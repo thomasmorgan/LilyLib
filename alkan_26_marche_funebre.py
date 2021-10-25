@@ -1,6 +1,6 @@
 from piece import Piece
 from util import join, subset, select, flatten, rep, assign
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace
@@ -123,6 +123,7 @@ class MarcheFunebre(Piece):
         select(rh, 12).dynamics = 'f'
         select(rh, 12).phrasing = '('
         select(rh, 16).phrasing = ')'
+        select(rh, 34).dynamics = 'p'
         select(lh, 25).suffix += linebreak
         select(lh, len(lh)).suffix += linebreak
 
@@ -158,7 +159,24 @@ class MarcheFunebre(Piece):
 
         # # """ Bold Chords again """
 
-        # self.set_key('fs minor')
+        self.set_key('fs minor')
+
+        rh2 = self.transpose(subset(rh, 1, 30), 3, 'semitone')
+        replace(rh2, 'f`', 'es`')
+        add(subset(rh2, 3, 5), 'cs`')
+        replace(subset(rh2, 6, 11), 'ds` c` f`', 'd` b es`')
+        replace(select(rh2, 21), 'd``', 'cs``')
+        replace(select(rh2, 22), 'fs``', 'd``')
+        select(rh2, 26).markdown = '\\italic{cresc}'
+        replace(subset(rh2, 26, 28), 'fs`', 'e`')
+        remove(select(rh2, 30), 'fs` a`')
+
+        lh2 = self.transpose(subset(lh, 1, 28), 3, 'semitone')
+        replace(lh2, 'f', 'es')
+        add(subset(lh2, 12, 14), 'cs')
+        add(select(lh2, 12), 'fs,')
+        remove(subset(lh2, 26, 28), 'e`')
+        lh2 = subset(lh2, 1, 25) + acciaccatura(note('a,', 8)) + subset(lh2, 26, 28)
 
         # rh_melody2 = self.transpose(rh_melody[0:7], 3, 'semitone')
         # rh_melody2[4] = note('gs`', 8) + self.scale('b`', 'e``', [8, '8.', 16, 2])
@@ -195,10 +213,10 @@ class MarcheFunebre(Piece):
         # lh_melody2[6][1].suffix = "^\\>"
         # lh_melody2[6][4].suffix = "\\!"
 
-        # bold_chords2 = {
-        #     'treble': voices(rh_melody2, rh_harmony2),
-        #     'bass': voices(lh_melody2, lh_harmony2)
-        # }
+        bold_chords2 = {
+            'treble': rh2,
+            'bass': lh2
+        }
 
         # # """ bridge """
 
@@ -464,7 +482,7 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2) #bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2) #bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/14)\n }\n }\n }')
