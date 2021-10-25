@@ -72,7 +72,7 @@ def acciaccatura(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\acciaccatura {' + passage[0].prefix
-    passage[-1].suffix += '}'
+    passage[-1].suffix += '} %{ end acciaccatura %}'
     return passage
 
 

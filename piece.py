@@ -132,7 +132,7 @@ class Piece:
             if '\\tuplet 3/2 {' in point.prefix:
                 mult *= 2.0/3.0
 
-            if '\\grace {' in point.prefix or ' %{ start grace %}{' in point.prefix:
+            if '\\grace {' in point.prefix or ' %{ start grace %}{' in point.prefix or '\\acciaccatura {' in point.prefix:
                 old_mult = mult
                 mult = 0.0
 
@@ -167,7 +167,7 @@ class Piece:
             if '} %{ end triplets %}' in point.suffix:
                 mult /= 2.0/3.0
 
-            if '} %{ end grace %}' in point.suffix:
+            if '} %{ end grace %}' in point.suffix or '} %{ end acciaccatura %}' in point.suffix:
                 mult = old_mult
 
 
