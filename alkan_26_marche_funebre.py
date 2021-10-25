@@ -170,6 +170,7 @@ class MarcheFunebre(Piece):
         select(rh2, 26).markdown = '\\italic{cresc}'
         replace(subset(rh2, 26, 28), 'fs`', 'e`')
         remove(select(rh2, 30), 'fs` a`')
+        rh2 += voices(notes('b` d``', 4), [chord('gs` b`', 2)]) + chords(['gs` b` d`` fs``', 'b` d`` fs`` a``', 'gs` b` d`` gs``'], ['4.', 8, 1])
 
         lh2 = self.transpose(subset(lh, 1, 28), 3, 'semitone')
         replace(lh2, 'f', 'es')
@@ -177,6 +178,11 @@ class MarcheFunebre(Piece):
         add(select(lh2, 12), 'fs,')
         remove(subset(lh2, 26, 28), 'e`')
         lh2 = subset(lh2, 1, 25) + acciaccatura(note('a,', 8)) + subset(lh2, 26, 28)
+        lh2 += voices([chord('a cs`', 1)], notes('d fs a', [2, '4.', 8])) + chords(['gs b d` fs`'], [2, '4.', 8]) + voices([chord('e gs b d`', 1)], notes('e gs b d`', [4, 4, '4.', 8]))
+        select(lh2, 38).ornamentation ='sustainOn'
+        select(lh2, 39).suffix = '^\\> ' + select(lh2, 39).suffix
+        select(lh2, 41).suffix = '^\\! ' + select(lh2, 41).suffix
+        select(lh2, 41).ornamentation ='sustainOff'
 
         # rh_melody2 = self.transpose(rh_melody[0:7], 3, 'semitone')
         # rh_melody2[4] = note('gs`', 8) + self.scale('b`', 'e``', [8, '8.', 16, 2])
