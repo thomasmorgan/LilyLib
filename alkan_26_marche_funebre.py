@@ -380,21 +380,21 @@ class MarcheFunebre(Piece):
 
         
 
-        # # """ Intro 4 """
+        # """ Intro 4 """
 
-        # self.set_key('ef minor')
+        self.set_key('ef minor')
 
-        # intro4 = {
-        #     'treble': key_signature(self.key, rep(rest(1), 8)),
-        #     'bass': key_signature(self.key, voices(
-        #         deepcopy(drone_a + drone_b),
-        #         plodding
-        #     ))
-        # }
+        intro4 = {
+            'treble': key_signature(self.key, rep(rest(1), 8)),
+            'bass': key_signature(self.key, voices(
+                deepcopy(drone_a + drone_b),
+                plodding
+            ))
+        }
 
-        # intro4['bass'][-1].suffix += linebreak
-        # intro4['bass'][0].markup += "Play left hand one octave lower"
-        # intro4['bass'][16].suffix += "^\\p"
+        select(intro4['bass'], len(intro4['bass'])).suffix += linebreak
+        select(intro4['bass'], 18).markup += "Play left hand one octave lower"
+        select(intro4['bass'], 17).markup += "\\dynamic{p} \\italic{e senza} Ped."
 
         # # """ bold chords 3 """
 
@@ -495,7 +495,7 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade) # intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4) # bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
