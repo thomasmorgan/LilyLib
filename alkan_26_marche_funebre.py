@@ -280,7 +280,7 @@ class MarcheFunebre(Piece):
         select(intro3_bass, len(intro3_bass)).suffix += linebreak + pagebreak
 
         intro3 = {
-            'treble': clef('treble', [rest(1, ' \\grace s16.')]) + rep([rest(1)], 12),
+            'treble': clef('treble', [rest(1, ' \\grace s16.')]) + rep([rest(1)], 24),
             'bass': voices(intro3_treble, intro3_bass)
         }
 
@@ -288,53 +288,97 @@ class MarcheFunebre(Piece):
             intro3['bass'] = key_signature(self.key, intro3['bass'])
             select(intro3['treble'], 1).prefix = self.key_signature + select(intro3['treble'], 1).prefix
 
-        # # """ Cascade """
+        # """ Cascade """
 
-        # self.set_key('ef major')
+        self.set_key('ef major')
 
-        # def set_cascade_melody(melody, bars=8, is_repeated=False, end=False, key=False):
-        #     section = {
-        #         'treble': voices(melody, rep(self.scale('ef`', -4, 8), bars)),
-        #         'bass': voices(rep(self.scale('g', -4, 8), bars), rep(note('ef,', 2, articulation='>'), bars))
-        #     }
-        #     if key:
-        #         section['treble'] = key_signature(self.key, section['treble'])
-        #         section['bass'] = key_signature(self.key, section['bass'])
-        #     if is_repeated:
-        #         section['bass'] = repeat(section['bass'])
-        #     if end:
-        #         section['bass'][-1].suffix += pagebreak
-        #     else:
-        #         section['bass'][-1].suffix += linebreak
-        #     return section
+        def set_cascade_melody(melody, bars=8, is_repeated=False, end=False, key=False, rh=[]):
+            rh_scale = self.scale('ef`', -4, 4)
+            lh_scale = self.scale('g', -4, 4)
+            rh_scale_alt = deepcopy(rh_scale)
+            lh_scale_alt = deepcopy(lh_scale)
+            select(lh_scale_alt, 1).prefix = '\\hideNotes '
+            select(lh_scale_alt, 1).suffix = '\\unHideNotes '
+            add(select(rh_scale_alt, 1), 'g')
 
-        # cascade_melody_1a = notes('g` af` g` af` bf` g` af`', [4, 4, 4, 8, 8, 4, 4])
-        # cascade_melody_1 = cascade_melody_1a + notes('g` f`', 4) + deepcopy(cascade_melody_1a) + note('g`', 2)
-        # cascade_meldody_2a = self.arpeggio('g`', 3, 4)
-        # cascade_meldody_2b = deepcopy(cascade_meldody_2a) + notes('bf` af`', 8)
-        # cascade_melody_2 = cascade_meldody_2b + cascade_meldody_2a + note('bf`', 4) + deepcopy(cascade_meldody_2b) + notes('g` af` bf` g`', [4, 8, 8, '4.']) + rest(8)
-        # cascade_melody_3a = notes('ef`` c`` d`` c`` g` g`', [4, 8, 8, 4, 4, 2])
-        # cascade_melody_3 = notes('c`` g`', 4) + cascade_melody_3a + notes('g` c`` d``', [4, 8, 8]) + deepcopy(cascade_melody_3a)
-        # cascade_melody_4 = deepcopy(subset(cascade_melody_1, 1, 14)) + notes('g` f` ef` g`', [4, 8, 8, 2])
-        # cascade_melody_5 = self.arpeggio('g`', 3, 4) + note('c``', 8) + self.scale('d``', -5, [8, 4, 8, 8, 2]) + note('g`', 4) + 2 * self.scale('c``', 3, [8, 8, 4]) + notes('g` f` g`', [8, 8, 2])
-        # cascade_melody_6 = deepcopy(cascade_melody_4)
+            rh_full = []
+            lh_full = []
+            for i in range(8):
+                if rh == True or (i+1) in rh:
+                    rh_full += deepcopy(rh_scale_alt)
+                    lh_full += deepcopy(lh_scale_alt)
+                else:
+                    rh_full += deepcopy(rh_scale)
+                    lh_full += deepcopy(lh_scale)
 
-        # cascade_melody_1[0].dynamics = "f"
-        # cascade_melody_2[0].dynamics = "f"
-        # cascade_melody_3[0].dynamics = "ff"
-        # cascade_melody_3[16].dynamics = ">"
-        # cascade_melody_4[0].dynamics = "p"
-        # cascade_melody_5[0].dynamics = "ff"
-        # cascade_melody_5[18].dynamics = ">"
-        # cascade_melody_6[0].dynamics = "pp"
+            section = {
+                'treble': voices(melody, rh_full),
+                'bass': voices(rep(note('ef,', 1, suffix='_\\accent'), bars), lh_full)
+            }
+            if key:
+                section['treble'] = key_signature(self.key, section['treble'])
+                section['bass'] = key_signature(self.key, section['bass'])
+            if is_repeated:
+                section['bass'] = repeat(section['bass'])
+            if end:
+                select(section['bass'], len(section['bass'])).suffix += pagebreak
+                add(subset(section['bass'], 1, 8), 'bf,')
+            else:
+                select(section['bass'], len(section['bass'])).suffix += linebreak
+            return section
 
-        # cascade = join(set_cascade_melody(cascade_melody_1, is_repeated=True, key=True),
-        #                set_cascade_melody(cascade_melody_2, is_repeated=True),
-        #                set_cascade_melody(cascade_melody_3),
-        #                set_cascade_melody(cascade_melody_4),
-        #                set_cascade_melody(cascade_melody_5),
-        #                set_cascade_melody(cascade_melody_6, end=True)
-        #                )
+        cascade_melody_1a = notes('g` af` g` af` bf` g` af`', [2, 2, 2, 4, 4, 2, 2])
+        cascade_melody_1 = cascade_melody_1a + notes('g` f`', 2) + deepcopy(cascade_melody_1a) + [note('g`', 1)]
+        cascade_meldody_2a = self.arpeggio('g`', 3, 2)
+        cascade_meldody_2b = deepcopy(cascade_meldody_2a) + notes('bf` af`', 4)
+        cascade_melody_2 = cascade_meldody_2b + cascade_meldody_2a + [note('bf`', 2)] + deepcopy(cascade_meldody_2b) + notes('g` af` bf` g`', [2, 4, 4, '2.']) + [rest(4)]
+        cascade_melody_3a = notes('ef`` c`` d`` c`` g`', [2, 4, 4, 2, 2])
+        cascade_melody_3 = notes('c`` g`', 2) + cascade_melody_3a + notes('g` g` c`` d``', [1, 2, 4, 4]) + deepcopy(cascade_melody_3a) + [note('g`', '2.')] + [rest(4)]
+        cascade_melody_4 = deepcopy(subset(cascade_melody_1, 1, 14)) + notes('g` f` ef` g`', [2, 4, 4, 1])
+        cascade_melody_5 = self.arpeggio('g`', 3, 2) + [note('c``', 4)] + self.scale('d``', -5, [4, 2, 4, 4, 1]) + [note('g`', 2)] + rep(self.scale('c``', 3, [4, 4, 2]), 2) + notes('g` f` g`', [4, 4, '2.']) + rests(4)
+        cascade_melody_6 = deepcopy(cascade_melody_4)
+
+        select(cascade_melody_1, 1).phrasing = '('
+        select(cascade_melody_1, 5).phrasing = ')'
+        select(cascade_melody_1, 6).phrasing = '('
+        select(cascade_melody_1, 9).phrasing = ')'
+        select(cascade_melody_1, 1).markdown = "\\dynamic{f} \\italic{e ben vibrato il suono}"
+        select(cascade_melody_1, 10).markdown = "\\italic{sempre legato}"
+        select(cascade_melody_3, 1).dynamics = "ff"
+        select(cascade_melody_3, 17).dynamics = ">"
+        select(cascade_melody_3, 18).dynamics = "!"
+        select(cascade_melody_4, 1).markdown = "\\dynamic{p} \\italic{e sempre} Ped."
+        select(cascade_melody_5, 1).dynamics = "ff"
+        select(cascade_melody_5, 19).dynamics = ">"
+        select(cascade_melody_5, 20).dynamics = "!"
+        select(cascade_melody_6, 1).markdown = "\\dynamic{pp} \\italic{e sempre il medesimo} Ped."
+
+        cascade1 = set_cascade_melody(cascade_melody_1, is_repeated=True, key=True, rh=True)
+        select(cascade1['bass'], 1).markdown = '\\italic{sempre }Ped.'
+        select(cascade1['bass'], 9).phrasing = '('
+        select(cascade1['bass'], 12).phrasing = ')'
+        select(cascade1['bass'], 13).phrasing = '('
+        select(cascade1['bass'], 16).phrasing = ')'
+        select(cascade1['bass'], 17).phrasing = '('
+        select(cascade1['bass'], 20).phrasing = ')'
+        select(cascade1['bass'], 21).phrasing = '('
+        select(cascade1['bass'], 24).phrasing = ')'
+        select(cascade1['bass'], 25).phrasing = '('
+        select(cascade1['bass'], 28).phrasing = ')'
+
+        cascade2 = set_cascade_melody(cascade_melody_2, is_repeated=True, rh=True)
+        select(cascade2['treble'], 1).markdown = '\\italic{sempre }\\dynamic{f}'
+        select(cascade2['bass'], 1).markdown = '\\italic{sempre }Ped.'
+
+        cascade3 = set_cascade_melody(cascade_melody_3, rh=[4, 5, 8])
+        cascade4 = set_cascade_melody(cascade_melody_4, rh=True)
+        cascade5 = set_cascade_melody(cascade_melody_5, rh=[1, 4, 5, 8])
+        cascade6 = set_cascade_melody(cascade_melody_6, end=True, rh=True)
+
+
+        cascade = join(cascade1, cascade2, cascade3, cascade4, cascade5, cascade6)
+
+        
 
         # # """ Intro 4 """
 
@@ -451,7 +495,7 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3) # cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade) # intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
