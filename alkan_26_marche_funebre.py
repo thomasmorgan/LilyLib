@@ -1,9 +1,9 @@
 from piece import Piece
-from util import join, subset, select, flatten, rep, assign
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura
+from util import join, subset, select, flatten, rep, assign, omit
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava
 from tones import tonify, letter
 from copy import deepcopy
-from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace
+from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, tied_chord
 
 
 class MarcheFunebre(Piece):
@@ -184,116 +184,70 @@ class MarcheFunebre(Piece):
         select(lh2, 41).suffix = '^\\! ' + select(lh2, 41).suffix
         select(lh2, 41).ornamentation ='sustainOff'
 
-        # rh_melody2 = self.transpose(rh_melody[0:7], 3, 'semitone')
-        # rh_melody2[4] = note('gs`', 8) + self.scale('b`', 'e``', [8, '8.', 16, 2])
-        # rh_melody2[6] = self.scale('b`', 'a``', [8, 8, '8.', 16], step=2) + note('gs``', 2)
-
-        # lh_melody2 = self.transpose(lh_melody[0:7], 3, 'semitone')
-        # lh_melody2[5] = rest(2) + self.scale('d', 'a', [4, '8.', 16], step=2)
-        # lh_melody2[6] = rest(2) + self.scale('e', 'd`', [8, 8, '8.', 16], step=2)
-
-        # self.set_key('cs major')
-
-        # rh_harmony2 = self.transpose(rh_harmony[0:7], 3, 'semitone')
-        # add(subset(rh_harmony2[1], 3, 5), 'cs`')
-        # rh_harmony2[2] = chord('d` fs`', 4) + chord('b d`', '8.') + chord('b d`', 16) + chord(self.arpeggio('cs`', 3), 2)
-        # rh_harmony2[5] = subset(rh_harmony2[5], 1, 4)
-        # remove(subset(rh_harmony2[5], 1, 3), 'fs`')
-        # add(subset(rh_harmony2[5], 1, 3), 'e`')
-        # rh_harmony2[5][3].dur = 2
-        # rh_harmony2[6] = chord('gs` b`', 4) + chord('gs` b` cs``', '8.') + chord('b` cs`` fs``', 16) + chord(select(diminished7('gs`', 5, key='gs minor'), 1, 2, 3, 5), 2)
-
-        # lh_harmony2 = self.transpose(lh_harmony[0:7], 3, 'semitone')
-        # replace(lh_harmony2[2], 'ds', 'd')
-        # add(subset(lh_harmony2[3], 1, 3), 'cs')
-        # add(select(lh_harmony2[3], 1), 'fs,')
-        # add(select(lh_harmony2[4], 1), 'b')
-        # remove(select(lh_harmony2[4], 4), 'e')
-        # lh_harmony2[5] = subset(lh_harmony2[5], 1, 3) + chord('a cs`', 2)
-        # remove(lh_harmony2[5], 'e`')
-        # add(select(lh_harmony2[5], 1), 'a,')
-        # lh_harmony2[6] = chord('gs b d` fs`', 4) + chord('gs b d` fs`', '8.') + chord('gs b d` fs`', 16) + chord('e gs b d`', 2)
-
-        # rh_harmony2[5][0].dynamics = "cresc"
-        # rh_harmony2[5][1].dynamics = "!"
-        # lh_melody2[6][1].suffix = "^\\>"
-        # lh_melody2[6][4].suffix = "\\!"
-
         bold_chords2 = {
             'treble': rh2,
             'bass': lh2
         }
 
-        # # """ bridge """
+        # """ bridge """
 
-        # bridge_rhythm = [4, '8.', 16]
+        bridge_rhythm = [2, '4.', 8]
 
-        # def bridge_chords(tone):
-        #     self.set_key(letter(tone) + ' major')
-        #     tones = self.arpeggio(tone, -8)
-        #     return {
-        #         'treble': chords([subset(tones, 1, 4)], bridge_rhythm),
-        #         'bass': chords([subset(tones, 5, 8)], bridge_rhythm)
-        #     }
+        def bridge_chords(tone):
+            self.set_key(letter(tone) + ' major')
+            tones = self.arpeggio(tone, -8)
+            return {
+                'treble': chords([subset(tones, 1, 4)], bridge_rhythm),
+                'bass': chords([subset(tones, 5, 8)], bridge_rhythm)
+            }
 
-        # def tremble(tone):
-        #     bass_tone = self.transpose(tone, -2, 'octave')
-        #     start_grace = grace(notes([self.transpose(bass_tone, -1, 'semitone'), bass_tone, self.transpose(bass_tone, 2, 'semitone')], 32))
-        #     stop_grace = notes([self.transpose(bass_tone, -1, 'semitone'), bass_tone], 32)
+        def tremble(tone):
+            bass_tone = self.transpose(tone, -2, 'octave')
+            start_grace = grace(notes([self.transpose(bass_tone, -1, 'semitone'), bass_tone, self.transpose(bass_tone, 2, 'semitone')], 16))
+            stop_grace = notes([self.transpose(bass_tone, -1, 'semitone'), bass_tone], 16)
 
-        #     treble_chord = chord(arpeggio(tone, -4, key=letter(tone) + ' major'), 2)
-        #     if tone == 'b`':
-        #         add(treble_chord, 'a')
-        #     return {
-        #         'treble': treble_chord,
-        #         'bass': start_grace + after_grace(note(bass_tone, 2, ornamentation='trill'), stop_grace)
-        #     }
+            treble_chord = [chord(arpeggio(tone, -4, key=letter(tone) + ' major'), 1)]
+            if tone == 'b`':
+                add(treble_chord, 'a')
+            return {
+                'treble': treble_chord,
+                'bass': slur(start_grace + after_grace(note(bass_tone, 1, ornamentation='trill'), stop_grace))
+            }
 
-        # def bridge_motif(tone):
-        #     return join(bridge_chords(tone), tremble(self.transpose(tone, -3)))
+        def bridge_motif(tone):
+            return join(bridge_chords(tone), tremble(self.transpose(tone, -3)))
 
-        # bridge_part_1 = join(bridge_motif('af``'), bridge_motif('gf``'), bridge_motif('e``'))
+        bridge_part_1 = join(bridge_motif('af``'), bridge_motif('gf``'), bridge_motif('e``'))
+        select(bridge_part_1['treble'], 1).dynamics = 'p'
 
-        # def bridge_grace(passage):
-        #     return subset(passage, 1, 2) + grace(note(passage[1].tone, 16)) + subset(passage, 3, len(passage))
+        def bridge_grace(passage):
+            return slur(subset(passage, 1, 2) + acciaccatura(note(select(passage, 2).tone, 8)) + subset(passage, 3, len(passage)))
 
-        # bridge_rhythm4 = [8, 8, '8.', 16]
+        bridge_rhythm4 = [4, 4, '4.', 8]
 
-        # bridge_part_2_melody = {
-        #     'treble': rep(notes('e`', bridge_rhythm) + self.scale('e`', -4, 8) + self.scale('e`', 4, bridge_rhythm + [2]), 2) + rep(rests(1), 2),
-        #     'bass': rests(1, 2) + bridge_grace(self.scale('e,', -4, 8)) + notes(['b,,'] + self.scale('e,', 3), 8) + note('a,', 2) + self.scale('a,', -4, 8) + self.scale('e,', -4, bridge_rhythm4) + self.scale('b,,', -4, 8) + notes('e,, ds,, d,,', [4, 4, 1])
-        # }
+        bridge_part_2 = {
+            'treble': (
+                clef('bass', bridge_chords('e`')['treble']) + voices(slur(self.scale('e`', -2, 4)) + self.scale('cs`', -2, 4), chords(['fs a b', 'e a', 'ds a'], [2, 4, 4])) +
+                chords([self.arpeggio('e', 4), 'fs b e` fs`', self.arpeggio('gs', 4)], bridge_rhythm) + [chord(omit(dominant7('a', 5, key='b major'), 3), 1)] +
+                bridge_chords('e`')['treble'] + voices(slur(self.scale('e`', -2, 4)) + self.scale('cs`', -2, 4), chords(['fs b', 'e b', 'ds'], [2, 4, 4])) +
+                chords(['e b e`', 'fs b e` fs`', self.arpeggio('gs', 4)], bridge_rhythm) + tied_chord('a b fs` a`', [1, 1]) + rests(1, 1)
+            ),
+            'bass': (
+                chords(['b,, b,'], bridge_rhythm) + tremble('b`')['bass'] +
+                voices(
+                    notes('b,', bridge_rhythm) + [note('b,', 1)] +
+                    notes('b,', bridge_rhythm) + tremble('b`')['bass'] +
+                    notes('b,', bridge_rhythm) + [note('b,', 2)],
+                    notes('ef,', bridge_rhythm) + bridge_grace(self.scale('e,', -4, 4)) +
+                    slur(notes(['b,,'] + self.scale('e,', 3), 4)) + [note('a,', 1)] +
+                    slur(self.scale('a,', -4, 4)) + slur(self.scale('e,', -4, bridge_rhythm4))
+                ) + ottava(slur(self.scale('b,,', -4, 4)) + slur(notes('e,, ds,, d,,', [2, 2, 1])), -1)
+            )
+        }
 
-        # bridge_part_2_harmony = {'treble': [[]] * 6, 'bass': [[]] * 9}
-        # bridge_part_2_harmony['treble'][1] = bridge_chords('e`')['treble'] + chords(['fs a b', 'e a', 'ds a'], [4, 8, 8])
-        # bridge_part_2_harmony['treble'][2] = chords([self.arpeggio('e', 4), 'fs b e`', self.arpeggio('gs', 4)], bridge_rhythm) + chord(select(dominant7('a', 5, key='b major'), 1, 2, 4, 5), 2)
-        # bridge_part_2_harmony['treble'][3] = replace(deepcopy(bridge_part_2_harmony['treble'][1]), 'a', 'b')
-        # bridge_part_2_harmony['treble'][4] = deepcopy(bridge_part_2_harmony['treble'][2])
+        select(bridge_part_2['treble'], 1).markdown = '\\italic{sempre \\dynamic{p} e sostenuto}'
 
-        # bridge_part_2_harmony['bass'][1] = chords(['b,, b,'], bridge_rhythm)
-        # bridge_part_2_harmony['bass'][2] = tremble('b`')['bass']
-        # bridge_part_2_harmony['bass'][3] = chords(['e, b,'], bridge_rhythm)
-        # bridge_part_2_harmony['bass'][4] = note('b,', 2)
-        # bridge_part_2_harmony['bass'][5] = notes('b,', bridge_rhythm)
-        # bridge_part_2_harmony['bass'][6] = tremble('b`')['bass']
-        # bridge_part_2_harmony['bass'][7] = notes('b,', bridge_rhythm)
-        # bridge_part_2_harmony['bass'][8] = note('b,', 2)
-
-        # bridge_part_2 = {
-        #     'treble': clef('bass', voices(bridge_part_2_melody['treble'], bridge_part_2_harmony['treble'])),
-        #     'bass': voices(bridge_part_2_harmony['bass'], bridge_part_2_melody['bass'])
-        # }
-        # bridge_part_2_melody['bass'][-1].suffix += linebreak
-
-        # bridge_part_1['treble'][0].dynamics = "p"
-        # bridge_part_2_harmony['treble'][1][0].dynamics = "p"
-
-        # bridge_part_2_melody['treble'][0].prefix = self.key_signature + bridge_part_2_melody['treble'][0].prefix
-        # bridge_part_2_harmony['bass'][1][0].prefix = self.key_signature + bridge_part_2_harmony['bass'][1][0].prefix
-
-        # bridge_part_2['bass'][-1].suffix += linebreak
-
-        # bridge = join(bridge_part_1, bridge_part_2)
+        bridge = join(bridge_part_1, bridge_part_2)
 
         # # """ Intro again again """
 
@@ -488,7 +442,7 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2) #bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge) #bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/14)\n }\n }\n }')
