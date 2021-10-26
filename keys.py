@@ -21,95 +21,69 @@ class Key:
         self.name = None
         self.define()
         self.confirm_definition()
+        self.generate_tones()
 
     def confirm_definition(self):
         if None in [self.root, self.letters, self.name]:
             raise ValueError("Must define root, letters and name of Key {}".format(self))
 
-    @property
-    def all_letters(self):
-        all_letters = [l for l in self.letters]
+    def generate_tones(self):
+        self.all_letters = [l for l in self.letters]
         for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in all_letters and equivalent_letters[l] not in all_letters:
-                all_letters.append(l)
+            if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                self.all_letters.append(l)
 
         if self.bias() == "sharp":
             for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in all_letters and equivalent_letters[l] not in all_letters:
-                    all_letters.append(l)
+                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                    self.all_letters.append(l)
         if self.bias() == "flat":
             for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in all_letters and equivalent_letters[l] not in all_letters:
-                    all_letters.append(l)
-        return [l for l in tones.all_letters if l in all_letters]
+                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
+                    self.all_letters.append(l)
+        self.all_letters = [l for l in tones.all_letters if l in self.all_letters]
 
-    @property
-    def all_tones(self):
-        return [t for t in tones.all_tones if letter(t) in self.all_letters]
+        self.all_tones = [t for t in tones.all_tones if letter(t) in self.all_letters]
 
-    @property
-    def tones(self):
-        return [t for t in self.all_tones if letter(t) in self.letters]
+        self.tones = [t for t in self.all_tones if letter(t) in self.letters]
 
-    @property
-    def arpeggio_letters(self):
         index_of_root = self.letters.index(self.root)
-        return [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
 
-    @property
-    def arpeggio_tones(self):
-        return [t for t in self.all_tones if letter(t) in self.arpeggio_letters]
+        self.arpeggio_tones = [t for t in self.all_tones if letter(t) in self.arpeggio_letters]
+
+        self.arpeggio7_tones = self.scale_subset([1, 3, 5, 7])
+
+        if "major" in self.name:
+            self.dominant7_letters = self.arpeggio_letters + [tones.flatten(self.VII)]
+        elif "harmonic" in self.name:
+            self.dominant7_letters = [self.root, tones.sharpen(self.iii), self.V, tones.flatten(self.VII)]
+        elif "minor" in self.name:
+            self.dominant7_letters = [self.root, tones.sharpen(self.iii), self.V, self.VII]
+        else:
+            raise ValueError("Cannot provide dominant 7 tones for key {}".format(self.name))
+
+        self.dominant7_tones = [t for t in tones.all_tones if letter(t) in self.dominant7_letters]
+
+        if "major" in self.name:
+            self.diminished7_letters = [self.root, tones.flatten(self.III), tones.flatten(self.V), tones.flatten(tones.flatten(self.VII))]
+        elif "harmonic" in self.name:
+            self.diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
+        elif "minor" in self.name:
+            self.diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
+        else:
+            raise ValueError("Cannot provide diminished 7 tones for key {}".format(self.name))
+        self.diminished7_tones = [t for t in tones.all_tones if letter(t) in self.diminished7_letters]
+
+        self.descending_chromatic_letters = ['c', 'df', 'd', 'ef', 'e', 'f', 'gf', 'g', 'af', 'a', 'bf', 'b']
+        self.descending_chromatic_tones = [t for t in tones.all_tones if letter(t) in self.descending_chromatic_letters]
+        self.ascending_chromatic_letters = ['c', 'cs', 'd', 'ds', 'e', 'f', 'fs', 'g', 'gs', 'a', 'as', 'b']
+        self.ascending_chromatic_tones = [t for t in tones.all_tones if letter(t) in self.ascending_chromatic_letters]
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
         custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
         return [t for t in self.all_tones if letter(t) in custom_letters]
-
-    @property
-    def arpeggio7_tones(self):
-        return self.scale_subset([1, 3, 5, 7])
-
-    @property
-    def dominant7_tones(self):
-        if "major" in self.name:
-            dominant7_letters = self.arpeggio_letters + [tones.flatten(self.VII)]
-        elif "harmonic" in self.name:
-            dominant7_letters = [self.root, tones.sharpen(self.iii), self.V, tones.flatten(self.VII)]
-        elif "minor" in self.name:
-            dominant7_letters = [self.root, tones.sharpen(self.iii), self.V, self.VII]
-        else:
-            raise ValueError("Cannot provide dominant 7 tones for key {}".format(self.name))
-
-        return [t for t in tones.all_tones if letter(t) in dominant7_letters]
-
-    @property
-    def diminished7_tones(self):
-        if "major" in self.name:
-            diminished7_letters = [self.root, tones.flatten(self.III), tones.flatten(self.V), tones.flatten(tones.flatten(self.VII))]
-        elif "harmonic" in self.name:
-            diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
-        elif "minor" in self.name:
-            diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
-        else:
-            raise ValueError("Cannot provide diminished 7 tones for key {}".format(self.name))
-
-        return [t for t in tones.all_tones if letter(t) in diminished7_letters]
-
-    @property
-    def descending_chromatic_letters(self):
-        return ['c', 'df', 'd', 'ef', 'e', 'f', 'gf', 'g', 'af', 'a', 'bf', 'b']
-
-    @property
-    def descending_chromatic_tones(self):
-        return [t for t in tones.all_tones if letter(t) in self.descending_chromatic_letters]
-
-    @property
-    def ascending_chromatic_letters(self):
-        return ['c', 'cs', 'd', 'ds', 'e', 'f', 'fs', 'g', 'gs', 'a', 'as', 'b']
-
-    @property
-    def ascending_chromatic_tones(self):
-        return [t for t in tones.all_tones if letter(t) in self.ascending_chromatic_letters]
 
     def bias(self):
         num_sharps = len([l for l in self.letters if "s" in l])
