@@ -1,6 +1,6 @@
 from piece import Piece
 from util import join, subset, select, flatten, rep, assign, omit
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, tied_chord
@@ -43,10 +43,10 @@ class MarcheFunebre(Piece):
             return passage
 
         def fall(tone):
-            return self.harmonize([note(tone, 4, articulation='.')], -1, 'octave')
+            return self.harmonize([note(tone, 8)], -1, 'octave') + [rest(8)]
 
         def fall2(tone):
-            return [note(self.transpose(tone, -1, 'octave'), 4, articulation='.')]
+            return [note(self.transpose(tone, -1, 'octave'), 8), rest(8)]
 
         def plink(tone):
             return rise(tone) + fall(tone) + [rest(4)]
@@ -60,7 +60,7 @@ class MarcheFunebre(Piece):
             return passage
 
         def plonk3(tone):
-            return rise(tone) + rep(fall(tone), 2) + rest(2)
+            return rise(tone) + rep(fall(tone), 2) + [rest(2)]
 
         def plod(tones):
             tones = tonify(tones)
@@ -135,7 +135,7 @@ class MarcheFunebre(Piece):
         # """ Intro again """
 
         self.set_key('fs minor')
-        shifted_bass = self.transpose(subset(plodding, 1, 119), 3, 'semitone') + plonk('gs')
+        shifted_bass = self.transpose(subset(plodding, 1, 154), 3, 'semitone') + plonk('gs')
         if self.improvements:
             select(shifted_bass, 1).prefix = self.key_signature + select(shifted_bass, 1).prefix
 
@@ -246,38 +246,47 @@ class MarcheFunebre(Piece):
         }
 
         select(bridge_part_2['treble'], 1).markdown = '\\italic{sempre \\dynamic{p} e sostenuto}'
+        select(bridge_part_2['bass'], len(bridge_part_2['bass'])).suffix += linebreak
 
         bridge = join(bridge_part_1, bridge_part_2)
 
-        # # """ Intro again again """
+        # """ Intro again again """
 
-        # self.set_key('Ef Minor')
-        # intro3_treble = drone1('ef') + drone1('cf')
-        # intro3_bass = rep(plod('ef, ef,'), 4)
+        self.set_key('Ef Minor')
+        intro3_treble = drone1('ef') + drone1('cf')
+        intro3_bass = rep(plod('ef, ef,'), 4)
 
-        # self.set_key('ef harmonic')
-        # mini_motif = self.harmonize(notes('bf', ['4.', 8]) + self.scale('bf', -4, 4), -2)
-        # intro3_treble += (self.harmonize(notes('gf ef af', 2) + grace(note('gf', 16)) + note('f', 2), -2)
-        #                   + mini_motif + chord('d cf', 2) + deepcopy(mini_motif) + note('ef', 2) + rep(chord('d af cf`', 2, articulation='>') + note('ef', 2), 2) + chord('d af cf`', 1, articulation='>'))
-        # intro3_bass += (plod('ef, af,') + plod('f, bf,') + plod('gf, cf') + plod('bf, af,')
-        #                 + rep(plink('gf,'), 2) + plonk3('cf') + plonk3('bf,') + plonk('ef,')
-        #                 + rest(2) + rep(plink('ef,'), 2) + rest(2) + plonk('ef,') + rest(1))
+        self.set_key('ef harmonic')
+        mini_motif = self.harmonize(notes('bf', ['2.', 4]) + slur(self.scale('bf', -4, 2)), -2)
+        intro3_treble += (
+            slur(self.harmonize(notes('gf ef', 1), -2)) + slur(self.harmonize(after_grace([note('af', 1)], [note('gf', 8)]) + [note('f', 1)], -2))
+            + mini_motif + [chord('d cf', 1)] + deepcopy(mini_motif) + rep(slur([note('ef', 1)] + [chord('d af cf`', 1, articulation='>')]), 3)
+        )
+        intro3_bass += (plod('ef, af,') + plod('f, bf,') + plod('gf, cf') + plod('bf, af,')
+                        + rep(plink('gf,'), 2) + plonk3('cf') + plonk3('bf,') + plonk('ef,')
+                        + [rest(1)] + rep(plink('ef,'), 2) + [rest(1)] + plonk('ef,') + [rest(1)])
 
-        # intro3_treble[0].suffix += "^\\pp"
-        # intro3_treble[8].articulation = '>'
-        # intro3_bass[68].markup = '\\italic{poco cresc.}'
-        # intro3_treble[10].articulation = '>'
-        # intro3_treble[13].articulation = '>'
-        # intro3_treble[19].articulation = '>'
-        # intro3_treble[20].markup = '\\italic {dim.}'
-        # intro3_treble[22].suffix += '^\\>'
-        # intro3_treble[26].dynamics = 'pp'
-        # intro3_bass[-1].suffix += linebreak + pagebreak
+        select(intro3_treble, 1).suffix += "^\\pp"
+        select(intro3_treble, 9).articulation = '>'
+        select(intro3_bass, 89).markup = '\\italic{poco cresc.}'
+        select(intro3_treble, 11).articulation = '>'
+        select(intro3_treble, 14).articulation = '>'
+        select(intro3_treble, 20).articulation = '>'
+        select(intro3_treble, 21).markup = '\\italic {dim.}'
+        select(intro3_treble, 23).suffix += '^\\>'
+        select(intro3_treble, 24).phrasing += ')'
+        select(intro3_treble, 25).phrasing += '('
+        select(intro3_treble, 27).dynamics = 'pp'
+        select(intro3_bass, len(intro3_bass)).suffix += linebreak + pagebreak
 
-        # intro3 = {
-        #     'treble': clef('treble', rest(1, prefix=self.key_signature + ' \\grace s16.')) + rest(1) * 12,
-        #     'bass': key_signature(self.key, voices(intro3_treble, intro3_bass))
-        # }
+        intro3 = {
+            'treble': clef('treble', [rest(1, ' \\grace s16.')]) + rep([rest(1)], 12),
+            'bass': voices(intro3_treble, intro3_bass)
+        }
+
+        if self.improvements:
+            intro3['bass'] = key_signature(self.key, intro3['bass'])
+            select(intro3['treble'], 1).prefix = self.key_signature + select(intro3['treble'], 1).prefix
 
         # # """ Cascade """
 
@@ -442,10 +451,10 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge) #bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3) # cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
-        return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/14)\n }\n }\n }')
+        return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
 
 
 if __name__ == "__main__":
