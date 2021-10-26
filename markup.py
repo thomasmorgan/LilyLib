@@ -62,9 +62,9 @@ def after_grace(passage, grace):
     passage = flatten([passage])
     grace = flatten([grace])
     passage[0].prefix = '\\afterGrace {' + passage[0].prefix
-    passage[-1].suffix += ' } '
-    grace[0].prefix = ' %{ start grace %}{' + grace[0].prefix
-    grace[-1].suffix += '} %{ end grace %}'
+    passage[-1].suffix += ' } %{ end after grace passage %} '
+    grace[0].prefix = ' %{ start after grace %}{' + grace[0].prefix
+    grace[-1].suffix += '} %{ end after grace %}'
     return passage + grace
 
 

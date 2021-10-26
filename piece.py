@@ -132,7 +132,7 @@ class Piece:
             if '\\tuplet 3/2 {' in point.prefix:
                 mult *= 2.0/3.0
 
-            if '\\grace {' in point.prefix or ' %{ start grace %}{' in point.prefix or '\\acciaccatura {' in point.prefix:
+            if '\\grace {' in point.prefix or ' %{ start grace %}{' in point.prefix or '\\acciaccatura {' in point.prefix or ' %{ start after grace %}{' in point.prefix:
                 old_mult = mult
                 mult = 0.0
 
@@ -153,9 +153,12 @@ class Piece:
 
 
             if bar_progress > 1:
-                raise ValueError("Duration of notes crosses a bar line: {} in bar {}".format(str(point), num_bars+1))
+                raise ValueError("Duration of notes crosses a bar line: {} in bar {}. Progress: {} -> {}".format(str(point), num_bars+1, bar_progress - progress*mult, bar_progress))
 
-            if bar_progress == 1 and " }\n\\\\\n" not in point.suffix and progress*mult != 0.0:
+            if bar_progress == 1 and (
+                " }\n\\\\\n" not in point.suffix and
+                (progress*mult != 0.0 or '} %{ end after grace %}' in point.suffix) and
+                ' } %{ end after grace passage %} ' not in point.suffix):
                 point.suffix += barbreak
                 bar_progress = 0
                 num_bars += 1
