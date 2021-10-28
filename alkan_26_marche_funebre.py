@@ -1,6 +1,6 @@
 from piece import Piece
 from util import join, subset, select, flatten, rep, assign, omit
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak, sustain
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, tied_chord
@@ -378,59 +378,67 @@ class MarcheFunebre(Piece):
 
         cascade = join(cascade1, cascade2, cascade3, cascade4, cascade5, cascade6)
 
-        
-
         # """ Intro 4 """
 
         self.set_key('ef minor')
 
-        intro4 = {
-            'treble': key_signature(self.key, rep(rest(1), 8)),
-            'bass': key_signature(self.key, voices(
-                deepcopy(drone_a + drone_b),
-                plodding
-            ))
-        }
+        if self.improvements:
+            intro4 = {
+                'treble': key_signature(self.key, rep(rest(1), 8)),
+                'bass': key_signature(self.key, voices(
+                    deepcopy(drone_a + drone_b),
+                    plodding
+                ))
+            }
+            select(intro4['bass'], 18).markup += "Play left hand one octave lower"
+            select(intro4['bass'], 17).markup += "\\dynamic{p} \\italic{e senza} Ped."
+        else:
+            intro4 = {
+                'treble': key_signature(self.key, deepcopy(drone_a + drone_b)),
+                'bass': key_signature(self.key, ottava(self.transpose(plodding, -1, 'octave'), -1))
+            }
+            select(intro4['bass'], 1).markup += "\\dynamic{p} \\italic{e senza} Ped."
 
         select(intro4['bass'], len(intro4['bass'])).suffix += linebreak
-        select(intro4['bass'], 18).markup += "Play left hand one octave lower"
-        select(intro4['bass'], 17).markup += "\\dynamic{p} \\italic{e senza} Ped."
+        
 
-        # # """ bold chords 3 """
+        # """ bold chords 3 """
 
-        # rh_melody3 = deepcopy(subset(rh_melody, 1, 5)) + self.transpose(subset(rh_melody, 4, 5), 2)
+        rh3 = (
+            deepcopy(subset(rh, 1, 28)) + 
+            voices(notes('ef`` cf``', ['2.', 4]), [chord(['ef` gf` bf`'], 1)]) +
+            voices(notes('af` cf``', 4), [chord('f` af`', 2)]) + chords(['f` af` cf`` ef``', 'f` af` cf`` ef`` gf``'], ['4.', 8]) +
+            [chord('f` af` cf`` df`` f``', 1)]
+        )
+        add(subset(rh3, 1, 5), 'bf')
+        select(rh3, 2).markdown = ''
+        add(select(rh3, 8), 'bf')
+        add(select(rh3, 11), 'af')
+        select(rh3, 12).phrasing = ''
+        select(rh3, 16).phrasing = ''
+        select(rh3, 16).phrasing = ''
+        select(rh3, 26).markdown = '\\italic{cresc.}'
 
-        # rh_harmony3 = deepcopy(rh_harmony[0:7])
-        # add(rh_harmony3[1], 'bf')
-        # rh_harmony3[2] = chords(['bf cf` ef`', 'af cf`', 'af cf`', 'af bf d`'], [4, '8.', 16, 2])
-        # rh_harmony3[5] = subset(rh_harmony3[5], 1, 3) + chord('ef` gf` bf`', 2)
-        # rh_harmony3[6] = self.transpose(rh_harmony3[4], 2)
-        # add(select(rh_harmony3[6], 3), 'ef``')
-        # add(select(rh_harmony3[6], 4), 'df``')
+        lh3 = (
+            deepcopy(subset(lh, 1, 18)) + acciaccatura([note('f,', 8)]) + deepcopy(subset(lh, 19, 21)) +
+            voices([chord('bf, df f af', 1)], sustain(notes('bf, df f af', [4, 4, '4.', 8]))) + 
+            acciaccatura([note('gf,', 8)]) + [chord('gf, ef gf bf df`', 2)] + chords(['ef gf bf df`'], ['4.', 8]) +
+            voices([chord('ef gf bf', 1)], notes('cf ef gf', [2, '4.', 8])) +
+            acciaccatura([note('af,', 8)]) + [chord('af, f af cf` ef`', 2)] + chords(['f af cf` ef`'], ['4.', 8]) +
+            voices([chord('df f af cf` df`', 1)], sustain(slur(notes('df f af cf`', [4, 4, '4.', 8]))))
+        )
+        add(select(lh3, 12), 'ef,')
+        add(subset(lh3, 12, 14), 'bf,')
+        select(lh3, 16).phrasing = ''
+        select(lh3, 18).phrasing = ''
+        add(select(lh3, 20), 'f,')
+        select(lh3, 41).suffix += ' ^\\<'
+        select(lh3, 44).dynamics += '!'
 
-        # lh_melody3 = deepcopy(subset(lh_melody, 1, 4)) + [rest(2) + self.scale('bf,', 'af', [8, 8, '8.', 16], step=2)]
-        # lh_melody3 += [self.transpose(lh_melody3[3], 2), self.transpose(lh_melody3[4], 2)]
-
-        # lh_harmony3 = deepcopy(lh_harmony[0:7])
-        # add(lh_harmony3[1], 'bf,')
-        # add(subset(lh_harmony3[3], 1, 3), 'bf,')
-        # add(select(lh_harmony3[3], 1), 'ef,')
-        # add(select(lh_harmony3[4], 1), 'f,')
-        # add(select(lh_harmony3[4], 4), 'df')
-        # lh_harmony3[5] = subset(lh_harmony3[5], 1, 3) + chord('ef gf bf', 2)
-        # add(select(lh_harmony3[5], 1), 'gf,')
-        # lh_harmony3[6] = self.transpose(lh_harmony3[4], 2)
-        # add(select(lh_harmony3[6], 4), 'df`')
-
-        # rh_harmony3[5][0].dynamics = "cresc"
-        # rh_harmony3[5][1].dynamics = "!"
-        # lh_melody3[6][1].suffix += "^\\<"
-        # lh_melody3[6][4].dynamics = "!"
-
-        # bold_chords3 = {
-        #     'treble': voices(rh_melody3, rh_harmony3),
-        #     'bass': voices(lh_melody3, lh_harmony3)
-        # }
+        bold_chords3 = {
+            'treble': rh3,
+            'bass': lh3
+        }
 
         # # """ bridge 2 """
 
@@ -495,7 +503,7 @@ class MarcheFunebre(Piece):
         # outro2['treble'][4].dynamics = 'pp'
         # outro2['treble'][-1].dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4) # bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3) # bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
