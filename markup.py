@@ -48,6 +48,14 @@ def triplets(passage, omit_number=False):
     return passage
 
 
+def sustain(passage):
+    passage = deepcopy(passage)
+    passage = flatten([passage])
+    passage[0].suffix += '\\sustainOn '
+    passage[-1].suffix += '\\sustainOff '
+    return passage
+
+
 def grace(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
