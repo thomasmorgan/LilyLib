@@ -16,7 +16,7 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = True
+        self.improvements = False
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
 
@@ -148,6 +148,9 @@ class MarcheFunebre(Piece):
 
         self.set_key('fs minor')
         shifted_bass = self.transpose(subset(plodding, 1, 154), 3, 'semitone') + plonk('gs')
+        select(shifted_bass, 44).suffix += linebreak
+        select(shifted_bass, 88).suffix += linebreak
+        select(shifted_bass, 132).suffix += linebreak
         if self.improvements:
             select(shifted_bass, 1).prefix = self.key_signature + select(shifted_bass, 1).prefix
 
@@ -155,14 +158,15 @@ class MarcheFunebre(Piece):
         add(drone_c, 'fs`')
         if self.improvements:
             select(drone_c, 1).prefix = self.key_signature
-        select(drone_c, 1).prefix += ' \\grace s16.'
+        select(drone_c, 1).prefix += ' \\grace s8.'
         select(drone_c, 1).dynamics = "p"
 
         self.set_key('cs minor')
         drone_d = merge(drone2('a`', 5) + subset(drone1('fs`', 5), 1, 3), notes('cs`` cs`` bs` a` a` gs` fs`', 1))
         select(drone_d, 1).articulation = ">"
+        select(drone_d, 4).suffix += linebreak
         select(drone_d, 7).phrasing = ")"
-        select(drone_d, len(drone_d)).suffix += linebreak
+        select(drone_d, 7).suffix += thinthick_barbreak
 
         intro2 = {
             'treble': drone_c + drone_d,
@@ -292,7 +296,7 @@ class MarcheFunebre(Piece):
         select(intro3_bass, len(intro3_bass)).suffix += linebreak + pagebreak
 
         intro3 = {
-            'treble': clef('treble', [rest(1, ' \\grace s16.')]) + rep([rest(1)], 24),
+            'treble': clef('treble', [rest(1, ' \\grace s8.')]) + rep([rest(1)], 24),
             'bass': voices(intro3_treble, intro3_bass)
         }
 
@@ -529,7 +533,7 @@ class MarcheFunebre(Piece):
         select(outro2['treble'], 5).dynamics = 'pp'
         select(outro2['treble'], len(outro2['treble'])).dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords) #, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2) #, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
