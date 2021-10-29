@@ -1,6 +1,6 @@
 from piece import Piece
 from util import join, subset, select, flatten, rep, assign, omit
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak, sustain, thinthick_barbreak
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak, sustain, thinthick_barbreak, double_barbreak
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, tied_chord
@@ -16,7 +16,7 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = True
+        self.improvements = False
         self.piano_staff = not self.improvements
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
@@ -421,7 +421,7 @@ class MarcheFunebre(Piece):
 
         if self.improvements:
             intro4 = {
-                'treble': key_signature(self.key, rep(rest(1), 8)),
+                'treble': key_signature(self.key, rep(rest(1), 16)),
                 'bass': key_signature(self.key, voices(
                     deepcopy(drone_a + drone_b),
                     plodding
@@ -429,6 +429,7 @@ class MarcheFunebre(Piece):
             }
             select(intro4['bass'], 18).markup += "Play left hand one octave lower"
             select(intro4['bass'], 17).markup += "\\dynamic{p} \\italic{e senza} Ped."
+            select(intro4['bass'], len(intro4['bass'])).suffix += thinthick_barbreak
         else:
             intro4 = {
                 'treble': key_signature(self.key, deepcopy(drone_a + drone_b)),
@@ -436,6 +437,7 @@ class MarcheFunebre(Piece):
             }
             select(intro4['bass'], 1).markup += "\\dynamic{p} \\italic{e senza} Ped."
 
+        select(intro4['treble'], 1).prefix += ' \\grace s8.'
         select(intro4['bass'], len(intro4['bass'])).suffix += linebreak
         
 
@@ -481,6 +483,7 @@ class MarcheFunebre(Piece):
 
         bridge2_part_1 = join(bridge_motif('gf``'), bridge_motif('f``'), bridge_motif('e``'))
         select(bridge2_part_1['bass'], len(bridge2_part_1['bass'])).suffix += linebreak
+        select(bridge2_part_1['treble'], 1).markdown = '\\dynamic{p}\\italic{ sostenuto}'
 
         bridge2_part_2 = deepcopy(bridge_part_2)
 
@@ -503,6 +506,7 @@ class MarcheFunebre(Piece):
         select(bridge2_part_2['bass'], len(bridge2_part_2['bass'])).suffix += linebreak
 
         bridge2 = join(bridge2_part_1, bridge2_part_2)
+        select(bridge2['bass'], len(bridge2['bass'])).suffix += thinthick_barbreak
 
         # """ outro """
 
@@ -516,8 +520,6 @@ class MarcheFunebre(Piece):
         select(bass_upper, 24).phrasing = ')'
         select(bass_upper, 26).phrasing = '('
         select(bass_upper, 29).dynamics = ''
-        select(bass_upper, 35).markup = '\\italic{dim.}'
-        select(bass_upper, 36).markup = '\\italic{dim.}'
 
         bass_lower = (
             deepcopy(subset(intro3_bass, 1, 176)) + rep(plink('gf,'), 2) + subset(plonk('cf'), 1, 7) + [rest(2)] +
@@ -526,35 +528,58 @@ class MarcheFunebre(Piece):
         )
         select(bass_lower, 89).markup = ''
         select(bass_lower, 177).suffix += '^\\pp'
+        select(bass_lower, 200).markup = '\\italic{smorz.}'
+        select(bass_lower, 209).suffix = '^\\ppp' + select(bass_lower, 200).suffix
+        select(bass_lower, len(bass_lower)).suffix += double_barbreak + linebreak
 
-        outro = {
-            'treble': key_signature(self.key, rep(rest(1), 29)),
-            'bass': key_signature(self.key, voices(bass_upper, bass_lower))
-        }
+        if self.improvements:
+            select(bass_upper, 35).markup = '\\italic{dim.}'
+            select(bass_upper, 36).markup = '\\italic{dim.}'
+            outro = {
+                'treble': key_signature(self.key, rep(rest(1), 29)),
+                'bass': key_signature(self.key, voices(bass_upper, bass_lower))
+            }
+        else:
+            select(bass_upper, 30).markdown = '\\italic{m.s.}'
+            select(bass_upper, 35).markdown = '\\italic{dim.}'
+            select(bass_upper, 36).markdown = '\\italic{dim.}'
+            outro = {
+                'treble': key_signature(self.key, bass_upper),
+                'bass': ottava(key_signature(self.key, bass_lower), -1)
+            }
+        select(outro['treble'], 1).prefix += ' \\grace s8. '
 
 
         # """ outro 2 """
 
         self.set_key('ef major')
 
+
         outro2 = {
-            'treble': key_signature(self.key, clef('bass', voices(
+            'treble': clef('bass', voices(
                 chords(['ef g bf'], [1, 2]) + [chord('ef af bf', 2)] + chords(['ef g bf'], [1, 1]),
                 rep(slur(self.scale('g', -4, 4)), 4)
-            ))) + [chord('ef g bf', 1, ornamentation='arpeggio')],
-            'bass': key_signature(self.key, rep(voices(
+            )) + [chord('ef g bf', 1, ornamentation='arpeggio')],
+            'bass': rep(voices(
                 slur(self.scale('ef', -4, 4)),
                 [chord('ef, bf,', 1)]
-            ), 4)) + [chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')]
+            ), 4) + [chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')]
         }
+        if self.improvements:
+            outro2['treble'] = key_signature(self.key, outro2['treble'])
+            outro2['bass'] = key_signature(self.key, outro2['bass'])
 
+        select(outro2['treble'], 1).suffix += '\\set Score.connectArpeggios = ##t'
         select(outro2['treble'], 1).dynamics = 'mf'
         select(outro2['treble'], 2).markdown = '\\italic{dim.}'
         select(outro2['treble'], 4).markdown = '\\italic{rall. e dim. molto}'
         select(outro2['treble'], 5).dynamics = 'pp'
         select(outro2['treble'], len(outro2['treble'])).dynamics = 'ppp'
+        select(outro2['bass'], len(outro2['bass'])).suffix += thinthick_barbreak
+        select(outro2['bass'], 1).ornamentation = 'sustainOn'
+        select(outro2['bass'], len(outro2['bass'])).ornamentation += '\\sustainOff'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade) #intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         if self.improvements:
