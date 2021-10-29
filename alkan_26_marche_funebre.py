@@ -1,9 +1,10 @@
 from piece import Piece
 from util import join, subset, select, flatten, rep, assign, omit
-from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak, sustain
+from markup import linebreak, pagebreak, clef, grace, after_grace, repeat, voices, time_signature, key_signature, slur, phrase, acciaccatura, ottava, nolinebreak, sustain, thinthick_barbreak
 from tones import tonify, letter
 from copy import deepcopy
 from points import note, notes, rest, rests, chord, chords, dominant7, diminished7, arpeggio, remove, add, merge, replace, tied_chord
+from staves import Bass
 
 
 class MarcheFunebre(Piece):
@@ -16,6 +17,8 @@ class MarcheFunebre(Piece):
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
         self.improvements = False
+        if not self.improvements:
+            self.staves = [Bass('treble'), Bass('bass')]
 
     def subtext(self):
         return '''
@@ -67,7 +70,6 @@ class MarcheFunebre(Piece):
             return rep(plink(select(tones, 1)), 2) + plonk(select(tones, 2))
 
         plodding = flatten([plod(x) for x in 4 * ['ef ef'] + ['ef f', 'f gf', 'ef f']]) + plonk('f') + plonk2('bf')
-        select(plodding, 4).prefix += '\\stemDown'
 
         def drone1(tone, interval=-2):
             note = notes(tone, 1)
@@ -84,13 +86,23 @@ class MarcheFunebre(Piece):
         drone_b = drone2('gf`') + subset(drone1('ef`'), 1, 3) + notes('bf', 1, phrasing=')')
         select(drone_b, 1).articulation = ">"
 
-        intro = {
-            'treble': repeat(rep(rests(1), 16)),
-            'bass': voices(drone_a + drone_b, plodding)
-        }
+        if self.improvements:
+            intro = {
+                'treble': repeat(rep(rests(1), 16)),
+                'bass': voices(drone_a + drone_b, plodding)
+            }
+            select(intro['bass'], 1).markup = "Play first repeat one octave lower and \\bold {\\italic {pp}}, second as written and \\bold {\\italic {p}}"
+        else:
+            intro = {
+                'treble': self.transpose(drone_a + drone_b, -1, 'octave') + clef('treble', drone_a) + drone_b,
+                'bass': ottava(self.transpose(plodding, -1, 'octave'), -1) + plodding
+            }
+            select(intro['treble'], 1).dynamics = 'pp'
+            select(intro['treble'], 17).dynamics = 'p'
+            select(intro['treble'], 17).articulation = '>'
+            select(intro['treble'], len(intro['treble'])).suffix = thinthick_barbreak
 
         select(intro['treble'], 1).prefix = '\\tempo 4 = 126 \\grace s8. ' + select(intro['treble'], 1).prefix
-        select(intro['bass'], 1).markup = "Play first repeat one octave lower and \\bold {\\italic {pp}}, second as written and \\bold {\\italic {p}}"
         select(intro['bass'], len(intro['bass'])).suffix += linebreak
 
         """ Bold Chords """
