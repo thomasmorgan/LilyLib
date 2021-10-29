@@ -16,7 +16,8 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = False
+        self.improvements = True
+        self.piano_staff = not self.improvements
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
 
@@ -164,9 +165,8 @@ class MarcheFunebre(Piece):
         self.set_key('cs minor')
         drone_d = merge(drone2('a`', 5) + subset(drone1('fs`', 5), 1, 3), notes('cs`` cs`` bs` a` a` gs` fs`', 1))
         select(drone_d, 1).articulation = ">"
-        select(drone_d, 4).suffix += linebreak
         select(drone_d, 7).phrasing = ")"
-        select(drone_d, 7).suffix += thinthick_barbreak
+        select(drone_d, 7).suffix += thinthick_barbreak + linebreak
 
         intro2 = {
             'treble': drone_c + drone_d,
@@ -183,7 +183,7 @@ class MarcheFunebre(Piece):
         replace(subset(rh2, 6, 11), 'ds` c` f`', 'd` b es`')
         replace(select(rh2, 21), 'd``', 'cs``')
         replace(select(rh2, 22), 'fs``', 'd``')
-        select(rh2, 26).markdown = '\\italic{cresc}'
+        select(rh2, 26).markdown = '\\italic{cresc.}'
         replace(subset(rh2, 26, 28), 'fs`', 'e`')
         remove(select(rh2, 30), 'fs` a`')
         rh2 += voices(notes('b` d``', 4), [chord('gs` b`', 2)]) + chords(['gs` b` d`` fs``', 'b` d`` fs`` a``', 'gs` b` d`` gs``'], ['4.', 8, 1])
@@ -262,7 +262,7 @@ class MarcheFunebre(Piece):
         }
 
         select(bridge_part_2['treble'], 1).markdown = '\\italic{sempre \\dynamic{p} e sostenuto}'
-        select(bridge_part_2['bass'], len(bridge_part_2['bass'])).suffix += linebreak
+        select(bridge_part_2['bass'], len(bridge_part_2['bass'])).suffix += thinthick_barbreak + linebreak
 
         bridge = join(bridge_part_1, bridge_part_2)
 
@@ -282,27 +282,41 @@ class MarcheFunebre(Piece):
                         + rep(plink('gf,'), 2) + plonk3('cf') + plonk3('bf,') + plonk('ef,')
                         + [rest(1)] + rep(plink('ef,'), 2) + [rest(1)] + plonk('ef,') + [rest(1)])
 
-        select(intro3_treble, 1).suffix += "^\\pp"
         select(intro3_treble, 9).articulation = '>'
-        select(intro3_bass, 89).markup = '\\italic{poco cresc.}'
         select(intro3_treble, 11).articulation = '>'
         select(intro3_treble, 14).articulation = '>'
         select(intro3_treble, 20).articulation = '>'
-        select(intro3_treble, 21).markup = '\\italic {dim.}'
-        select(intro3_treble, 23).suffix += '^\\>'
         select(intro3_treble, 24).phrasing += ')'
         select(intro3_treble, 25).phrasing += '('
+        select(intro3_treble, 26).dynamics = '!'
         select(intro3_treble, 27).dynamics = 'pp'
-        select(intro3_bass, len(intro3_bass)).suffix += linebreak + pagebreak
+        select(intro3_bass, 89).markup = '\\italic{poco cresc.}'
+        select(intro3_bass, len(intro3_bass)).suffix += thinthick_barbreak + linebreak + pagebreak
 
-        intro3 = {
-            'treble': clef('treble', [rest(1, ' \\grace s8.')]) + rep([rest(1)], 24),
-            'bass': voices(intro3_treble, intro3_bass)
-        }
+        select(intro3_bass, 44).suffix += linebreak
+        select(intro3_bass, 88).suffix += linebreak
+        select(intro3_bass, 132).suffix += linebreak
 
+        
         if self.improvements:
+            select(intro3_treble, 1).suffix += "^\\pp"
+            select(intro3_treble, 21).markup = '\\italic {dim.}'
+            select(intro3_treble, 23).suffix += '^\\>'
+            intro3 = {
+                'treble': rep([rest(1)], 25), #clef('treble', [rest(1, prefix=' \\grace s8.')]) + rep([rest(1)], 24),
+                'bass': voices(intro3_treble, intro3_bass)
+            }
             intro3['bass'] = key_signature(self.key, intro3['bass'])
             select(intro3['treble'], 1).prefix = self.key_signature + select(intro3['treble'], 1).prefix
+        else:
+            select(intro3_treble, 1).dynamics += "pp"
+            select(intro3_treble, 21).markdown = '\\italic {dim.}'
+            select(intro3_treble, 23).dynamics += '>'
+            select(intro3_treble, 28).markdown = '\\italic{m.s.}'
+            intro3 = {
+                'treble': intro3_treble,
+                'bass': intro3_bass
+            }
 
         # """ Cascade """
 
@@ -533,10 +547,13 @@ class MarcheFunebre(Piece):
         select(outro2['treble'], 5).dynamics = 'pp'
         select(outro2['treble'], len(outro2['treble'])).dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2) #, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3) #cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
-        return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
+        if self.improvements:
+            return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
+        else:
+            return ('>>\n>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
 
 
 if __name__ == "__main__":
