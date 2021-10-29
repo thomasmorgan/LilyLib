@@ -28,6 +28,7 @@ class Piece:
         self.key = "C Major"
         self.score = {}
         self.auto_add_bars = False
+        self.piano_staff = True
 
         self.details()
 
@@ -86,10 +87,16 @@ class Piece:
         return ""
 
     def start_score(self):
-        return('\\score { <<\n')
+        if self.piano_staff:
+            return('\\score { << \n\\new PianoStaff <<\n')
+        else:
+            return('\\score { <<\n')
 
     def end_score(self):
-        return('>> }\n')
+        if self.piano_staff:
+            return('>>\n>> }\n')
+        else:
+            return('>> }\n')
 
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
