@@ -8,7 +8,19 @@ nolinebreak = '\\noBreak'
 
 pagebreak = '\\pageBreak\n\n'
 
-barbreak = ' |\n'
+barbreak = ' \\bar "|" %{ bar %}\n'
+
+thick_barbreak = ' \\bar "." %{ bar %}\n'
+
+double_barbreak = ' \\bar "||" %{ bar %}\n'
+
+thickthin_barbreak = ' \\bar ".|" %{ bar %}\n'
+
+doublethick_barbreak = ' \\bar ".." %{ bar %}\n'
+
+triple_barbreak = ' \\bar "|.|" %{ bar %}\n'
+
+thinthick_barbreak = ' \\bar "|." %{ bar %}\n'
 
 
 def clef(clef, passage, end_clef=""):
