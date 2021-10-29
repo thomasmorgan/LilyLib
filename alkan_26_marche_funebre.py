@@ -289,9 +289,8 @@ class MarcheFunebre(Piece):
         select(intro3_treble, 24).phrasing += ')'
         select(intro3_treble, 25).phrasing += '('
         select(intro3_treble, 26).dynamics = '!'
-        select(intro3_treble, 27).dynamics = 'pp'
         select(intro3_bass, 89).markup = '\\italic{poco cresc.}'
-        select(intro3_bass, len(intro3_bass)).suffix += thinthick_barbreak + linebreak + pagebreak
+        select(intro3_bass, len(intro3_bass)).suffix += linebreak + pagebreak
 
         select(intro3_bass, 44).suffix += linebreak
         select(intro3_bass, 88).suffix += linebreak
@@ -302,8 +301,9 @@ class MarcheFunebre(Piece):
             select(intro3_treble, 1).suffix += "^\\pp"
             select(intro3_treble, 21).markup = '\\italic {dim.}'
             select(intro3_treble, 23).suffix += '^\\>'
+            select(intro3_treble, 27).suffix += '^\\pp'
             intro3 = {
-                'treble': rep([rest(1)], 25), #clef('treble', [rest(1, prefix=' \\grace s8.')]) + rep([rest(1)], 24),
+                'treble': [rest(1, prefix=' \\grace s8.')] + rep([rest(1)], 24),
                 'bass': voices(intro3_treble, intro3_bass)
             }
             intro3['bass'] = key_signature(self.key, intro3['bass'])
@@ -311,7 +311,8 @@ class MarcheFunebre(Piece):
         else:
             select(intro3_treble, 1).dynamics += "pp"
             select(intro3_treble, 21).markdown = '\\italic {dim.}'
-            select(intro3_treble, 23).dynamics += '>'
+            select(intro3_treble, 23).dynamics = '>'
+            select(intro3_treble, 27).dynamics = 'pp'
             select(intro3_treble, 28).markdown = '\\italic{m.s.}'
             intro3 = {
                 'treble': intro3_treble,
@@ -384,6 +385,7 @@ class MarcheFunebre(Piece):
         select(cascade_melody_6, 1).markdown = "\\dynamic{pp} \\italic{e sempre il medesimo} Ped."
 
         cascade1 = set_cascade_melody(cascade_melody_1, is_repeated=True, key=True, rh=True)
+        cascade1['treble'] = clef('treble', cascade1['treble'])
         select(cascade1['bass'], 1).markdown = '\\italic{sempre }Ped.'
         select(cascade1['bass'], 9).phrasing = '('
         select(cascade1['bass'], 12).phrasing = ')'
@@ -404,6 +406,11 @@ class MarcheFunebre(Piece):
         cascade4 = set_cascade_melody(cascade_melody_4, rh=True)
         cascade5 = set_cascade_melody(cascade_melody_5, rh=[1, 4, 5, 8])
         cascade6 = set_cascade_melody(cascade_melody_6, end=True, rh=True)
+
+        select(cascade3['bass'], len(cascade3['bass'])).suffix += thinthick_barbreak
+        select(cascade4['bass'], len(cascade4['bass'])).suffix += thinthick_barbreak
+        select(cascade5['bass'], len(cascade5['bass'])).suffix += thinthick_barbreak
+        select(cascade6['bass'], len(cascade6['bass'])).suffix += thinthick_barbreak
 
 
         cascade = join(cascade1, cascade2, cascade3, cascade4, cascade5, cascade6)
@@ -547,7 +554,7 @@ class MarcheFunebre(Piece):
         select(outro2['treble'], 5).dynamics = 'pp'
         select(outro2['treble'], len(outro2['treble'])).dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3) #cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade) #intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         if self.improvements:
