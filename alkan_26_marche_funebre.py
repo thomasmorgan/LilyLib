@@ -16,7 +16,7 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = False
+        self.improvements = True
         self.piano_staff = not self.improvements
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
@@ -139,6 +139,8 @@ class MarcheFunebre(Piece):
         select(rh, 34).dynamics = 'p'
         select(lh, 25).suffix += linebreak
         select(lh, len(lh)).suffix += thinthick_barbreak + linebreak
+        if self.improvements:
+            select(lh, len(lh)).suffix += pagebreak
 
         bold_chords = {
             'treble': rh,
@@ -154,6 +156,8 @@ class MarcheFunebre(Piece):
         select(shifted_bass, 132).suffix += linebreak
         if self.improvements:
             select(shifted_bass, 1).prefix = self.key_signature + select(shifted_bass, 1).prefix
+        else:
+            select(shifted_bass, len(shifted_bass)).suffix += pagebreak
 
         drone_c = drone1('fs`', 5) + drone1('d`', 5)
         add(drone_c, 'fs`')
@@ -411,7 +415,10 @@ class MarcheFunebre(Piece):
         select(cascade4['bass'], len(cascade4['bass'])).suffix += thinthick_barbreak
         select(cascade5['bass'], len(cascade5['bass'])).suffix += thinthick_barbreak
         select(cascade6['bass'], len(cascade6['bass'])).suffix += thinthick_barbreak
-
+        if not self.improvements:
+            select(cascade6['bass'], 16).suffix += nolinebreak
+        else:
+            select(cascade6['bass'], 24).suffix += nolinebreak
 
         cascade = join(cascade1, cascade2, cascade3, cascade4, cascade5, cascade6)
 
@@ -519,6 +526,7 @@ class MarcheFunebre(Piece):
         )
         select(bass_upper, 24).phrasing = ')'
         select(bass_upper, 26).phrasing = '('
+        select(bass_upper, 29).suffix = ''
         select(bass_upper, 29).dynamics = ''
 
         bass_lower = (
@@ -529,7 +537,7 @@ class MarcheFunebre(Piece):
         select(bass_lower, 89).markup = ''
         select(bass_lower, 177).suffix += '^\\pp'
         select(bass_lower, 200).markup = '\\italic{smorz.}'
-        select(bass_lower, 209).suffix = '^\\ppp' + select(bass_lower, 200).suffix
+        select(bass_lower, 209).suffix = '^\\ppp' + select(bass_lower, 209).suffix
         select(bass_lower, len(bass_lower)).suffix += double_barbreak + linebreak
 
         if self.improvements:
