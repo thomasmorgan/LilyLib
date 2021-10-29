@@ -16,7 +16,7 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = False
+        self.improvements = True
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
 
@@ -137,7 +137,7 @@ class MarcheFunebre(Piece):
         select(rh, 16).phrasing = ')'
         select(rh, 34).dynamics = 'p'
         select(lh, 25).suffix += linebreak
-        select(lh, len(lh)).suffix += linebreak
+        select(lh, len(lh)).suffix += thinthick_barbreak + linebreak
 
         bold_chords = {
             'treble': rh,
@@ -529,7 +529,7 @@ class MarcheFunebre(Piece):
         select(outro2['treble'], 5).dynamics = 'pp'
         select(outro2['treble'], len(outro2['treble'])).dynamics = 'ppp'
 
-        self.score = join(intro) #, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
+        self.score = join(intro, bold_chords) #, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
