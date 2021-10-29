@@ -440,70 +440,84 @@ class MarcheFunebre(Piece):
             'bass': lh3
         }
 
-        # # """ bridge 2 """
+        # """ bridge 2 """
 
-        # bridge2_part_1 = join(bridge_motif('gf``'), bridge_motif('f``'), bridge_motif('e``'))
+        bridge2_part_1 = join(bridge_motif('gf``'), bridge_motif('f``'), bridge_motif('e``'))
+        select(bridge2_part_1['bass'], len(bridge2_part_1['bass'])).suffix += linebreak
 
-        # bridge2_part_2_melody = {
-        #     'treble': key_signature(self.key, subset(bridge_part_2_melody['treble'], 1, 14) + bridge_grace(self.scale('e`', -4, bridge_rhythm4)) + note('b', 8) + self.scale('e`', 3, 8) + note('a`', 2) + rests(1, 1)),
-        #     'bass': key_signature(self.key, rests(1, 2) + bridge_grace(self.scale('e,', -4, bridge_rhythm4)) + notes(['b,,'] + self.scale('e,', 3), 8) + bridge_grace(self.scale('e', -8, bridge_rhythm4 + [8, 8, 8, 8])) + bridge_grace(self.scale('e,', -8, bridge_rhythm4 + [8, 8, 8, 8])) + notes('e,, ds,, d,,', [4, 4, 1]))
-        # }
+        bridge2_part_2 = deepcopy(bridge_part_2)
 
-        # bridge2_part_2_harmony = deepcopy(bridge_part_2_harmony)
-        # bridge2_part_2_harmony['treble'][3] = bridge_chords('e`')['treble'] + chord('fs b', 2)
-        # bridge2_part_2_harmony['treble'][4] = chords(['e b', 'fs b e`', 'gs b e`', 'a b fs`'], [4, 8, 8, 2])
-        # bridge2_part_2_harmony['bass'][6] = note('a,', 2)
+        bridge2_part_2['treble'] = (
+            subset(bridge2_part_2['treble'], 1, 17) +
+            voices(bridge_grace(self.scale('e`', -4, bridge_rhythm4)), [chord('fs b', 1)]) +
+            voices(notes('b e`', 4) + [rest(2, prefix='\\omit ')] + tied_chord('a b fs` a`', [1, 1]) + rests([1, 1]), chords(['e b', 'fs b e` fs`', 'gs b e` gs`'], [2, 4, 4]) + rests([1, 1], prefix='\\omit '))
+        )
+        select(bridge2_part_2['treble'], 1).markdown = '\\italic{sempre }\\dynamic{p}'
+        select(bridge2_part_2['treble'], 24).phrasing = '('
+        select(bridge2_part_2['treble'], 27).phrasing += ')'
 
-        # bridge2_part_2 = {
-        #     'treble': clef('bass', voices(bridge2_part_2_melody['treble'], bridge2_part_2_harmony['treble'])),
-        #     'bass': voices(bridge2_part_2_harmony['bass'], bridge2_part_2_melody['bass'])
-        # }
+        bridge2_part_2['bass'] = (
+            subset(bridge2_part_2['bass'], 1, 9) + chords(['e, b,'], [2, '4.', 8]) +
+            voices(notes('b,', [1, 2, '4.', 8]), bridge_grace(self.scale('e,', -4, bridge_rhythm4)) + slur(notes('b,, e, fs, gs,', 4))) +
+            voices(bridge_grace(self.scale('e', -4, bridge_rhythm4)), [note('a,', 1)]) +
+            voices(notes('b,', [2, '4.', 8, 1]), self.scale('a,', -4, 4) + bridge_grace(self.scale('e,', -4, bridge_rhythm4))) +
+            ottava(slur(self.scale('b,,', -4, 4)) + slur(notes('e,, ds,, d,,', [2, 2, 1])), -1)
+        )
+        select(bridge2_part_2['bass'], len(bridge2_part_2['bass'])).suffix += linebreak
 
-        # bridge2_part_1['treble'][0].dynamics = "p"
-        # bridge2_part_2['bass'][-1].suffix += linebreak
+        bridge2 = join(bridge2_part_1, bridge2_part_2)
 
-        # bridge2 = join(bridge2_part_1, bridge2_part_2)
+        # """ outro """
 
-        # # """ outro """
+        self.set_key('ef minor')
 
-        # self.set_key('ef minor')
+        bass_upper = deepcopy(
+            subset(intro3_treble, 1, 19) + [chord('c ds', 1)] + deepcopy(subset(intro3_treble, 14, 17)) + [rest(1)] +
+            deepcopy(subset(intro3_treble, 18, 19)) + [rest(1)] + deepcopy(subset(intro3_treble, 27, 31)) +
+            [chord('d af cf`', 1, articulation=">", phrasing=')')] + [chord('d af cf`', 1, articulation=">")] + [chord('d af cf`', 1, articulation=">")]
+        )
+        select(bass_upper, 24).phrasing = ')'
+        select(bass_upper, 26).phrasing = '('
+        select(bass_upper, 29).dynamics = ''
+        select(bass_upper, 35).markup = '\\italic{dim.}'
+        select(bass_upper, 36).markup = '\\italic{dim.}'
 
-        # outro = {
-        #     'treble': key_signature(self.key, rep(rest(1), 15)),
-        #     'bass': key_signature(self.key, deepcopy(voices(intro3_treble[0:19] + chord('c ef', 2) + intro3_treble[13:17] + rest(2, ornamentation='fermata') + intro3_treble[17:19] + rest(2, ornamentation='fermata') + intro3_treble[26:31] + rep(chord('d af cf`', 2, articulation=">"), 2) + chord('d af cf`', 1, articulation=">"),
-        #                                                     intro3_bass[0:151] + rest(4) + rest(2) + plonk3('bf,') + rest(2) + rep(plink('ef,'), 2) + rest(2) + plonk('ef,') + rest(2) + rep(plink('ef,'), 2) + rests(1, 1))))
-        # }
+        bass_lower = (
+            deepcopy(subset(intro3_bass, 1, 176)) + rep(plink('gf,'), 2) + subset(plonk('cf'), 1, 7) + [rest(2)] +
+            [rest(1)] + subset(plonk('bf,'), 1, 7) + [rest(2)] + [rest(1)] +
+            rep(plink('ef,'), 2) + [rest(1)] + plonk('ef,') + [rest(1)] + rep(plink('ef,'), 2) + rests(1, 1, 1)
+        )
+        select(bass_lower, 89).markup = ''
+        select(bass_lower, 177).suffix += '^\\pp'
 
-        # outro['treble'][0].prefix += '\\grace s16.'
-        # outro['treble'][-1].suffix = linebreak
+        outro = {
+            'treble': key_signature(self.key, rep(rest(1), 29)),
+            'bass': key_signature(self.key, voices(bass_upper, bass_lower))
+        }
 
-        # outro['bass'][13] = chord(outro['bass'][13].tones, outro['bass'][13].dur, articulation='>')
-        # outro['bass'][17].dynamics = ''
-        # outro['bass'][20].suffix = '^\\pp'
-        # outro['bass'][20].articulation = ''
-        # outro['bass'][28].suffix = '^\\ppp'
-        # outro['bass'][28].dynamics = ''
-        # outro['bass'][34].markdown = '\\italic { dim. }'
-        # outro['bass'][35].markdown += '\\italic { dim. }'
-        # outro['bass'][104].markup = ''
 
-        # # """ outro 2 """
+        # """ outro 2 """
 
-        # self.set_key('ef major')
+        self.set_key('ef major')
 
-        # outro2 = {
-        #     'treble': key_signature(self.key, clef('bass', voices(chords(['ef g bf'], [2, 4]) + chord('ef af bf', 4) + chords(['ef g bf'], [2, 2]),
-        #                                                           rep(self.scale('g', -4, 8), 4)))) + chord('ef g bf', 1, ornamentation='arpeggio'),
-        #     'bass': key_signature(self.key, rep(voices(self.scale('ef', -4, 8), chord('ef, bf,', 2)), 4)) + chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')
-        # }
+        outro2 = {
+            'treble': key_signature(self.key, clef('bass', voices(
+                chords(['ef g bf'], [1, 2]) + [chord('ef af bf', 2)] + chords(['ef g bf'], [1, 1]),
+                rep(slur(self.scale('g', -4, 4)), 4)
+            ))) + [chord('ef g bf', 1, ornamentation='arpeggio')],
+            'bass': key_signature(self.key, rep(voices(
+                slur(self.scale('ef', -4, 4)),
+                [chord('ef, bf,', 1)]
+            ), 4)) + [chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')]
+        }
 
-        # outro2['treble'][0].dynamics = 'mf'
-        # outro2['treble'][1].markdown = '\\italic { dim. }'
-        # outro2['treble'][3].markdown = '\\italic { rall. }'
-        # outro2['treble'][4].dynamics = 'pp'
-        # outro2['treble'][-1].dynamics = 'ppp'
+        select(outro2['treble'], 1).dynamics = 'mf'
+        select(outro2['treble'], 2).markdown = '\\italic{dim.}'
+        select(outro2['treble'], 4).markdown = '\\italic{rall. e dim. molto}'
+        select(outro2['treble'], 5).dynamics = 'pp'
+        select(outro2['treble'], len(outro2['treble'])).dynamics = 'ppp'
 
-        self.score = join(intro, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3) # bridge2, outro, outro2)
+        self.score = join(intro) #, bold_chords, intro2, bold_chords2, bridge, intro3, cascade, intro4, bold_chords3, bridge2, outro, outro2)
 
     def end_score(self):
         return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
