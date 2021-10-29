@@ -158,10 +158,10 @@ class Piece:
             if bar_progress == 1 and (
                 " }\n\\\\\n" not in point.suffix and
                 (progress*mult != 0.0 or '} %{ end after grace %}' in point.suffix) and
-                ' } %{ end after grace passage %} ' not in point.suffix and
-                '%{ bar %}' not in point.suffix
+                ' } %{ end after grace passage %} ' not in point.suffix
             ):
-                point.suffix += ' |\n'
+                if '%{ bar %}' not in point.suffix:
+                    point.suffix += ' |\n'
                 bar_progress = 0
                 num_bars += 1
 
