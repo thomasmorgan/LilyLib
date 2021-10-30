@@ -16,7 +16,7 @@ class MarcheFunebre(Piece):
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = True
+        self.improvements = False
         self.piano_staff = not self.improvements
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
@@ -520,8 +520,8 @@ class MarcheFunebre(Piece):
         self.set_key('ef minor')
 
         bass_upper = deepcopy(
-            subset(intro3_treble, 1, 19) + [chord('c ds', 1)] + deepcopy(subset(intro3_treble, 14, 17)) + [rest(1)] +
-            deepcopy(subset(intro3_treble, 18, 19)) + [rest(1)] + deepcopy(subset(intro3_treble, 27, 31)) +
+            subset(intro3_treble, 1, 19) + [chord('c ds', 1)] + deepcopy(subset(intro3_treble, 14, 17)) + [rest(1, markup='1')] +
+            deepcopy(subset(intro3_treble, 18, 19)) + [rest(1, markup='1')] + deepcopy(subset(intro3_treble, 27, 31)) +
             [chord('d af cf`', 1, articulation=">", phrasing=')')] + [chord('d af cf`', 1, articulation=">")] + [chord('d af cf`', 1, articulation=">")]
         )
         select(bass_upper, 24).phrasing = ')'
@@ -531,13 +531,17 @@ class MarcheFunebre(Piece):
 
         bass_lower = (
             deepcopy(subset(intro3_bass, 1, 176)) + rep(plink('gf,'), 2) + subset(plonk('cf'), 1, 7) + [rest(2)] +
-            [rest(1)] + subset(plonk('bf,'), 1, 7) + [rest(2)] + [rest(1)] +
+            [rest(1, markup='1')] + subset(plonk('bf,'), 1, 7) + [rest(2)] + [rest(1, markup='1')] +
             rep(plink('ef,'), 2) + [rest(1)] + plonk('ef,') + [rest(1)] + rep(plink('ef,'), 2) + rests(1, 1, 1)
         )
         select(bass_lower, 89).markup = ''
         select(bass_lower, 177).suffix += '^\\pp'
         select(bass_lower, 200).markup = '\\italic{smorz.}'
         select(bass_lower, 209).suffix = '^\\ppp' + select(bass_lower, 209).suffix
+        if self.improvements:
+            select(bass_lower, 197).markup = ''
+            select(bass_lower, 206).markup = ''
+
         select(bass_lower, len(bass_lower)).suffix += double_barbreak + linebreak
 
         if self.improvements:
