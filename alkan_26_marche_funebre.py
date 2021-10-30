@@ -13,10 +13,18 @@ class MarcheFunebre(Piece):
         self.title = "Marche Funebre"
         self.composer = "Charles Valentin Alkan"
         self.opus = "Op. 26"
+        self.date = "1846"
+        self.mutopiacomposer = "AlkanCV"
+        self.mutopiainstrument = "piano"
+        self.source = "F. Lucca, 1847"
+        self.style = "Romantic"
+        self.license = "Creative Commons Attribution-ShareAlike 4.0"
+        self.maintainer = "Thomas Morgan"
+        self.mantainer_email = "thomas.j.h.morgan@gmail.com"
         self.key = "Ef Minor"
         select(self.staves, 1).extra_text = '\\set Score.connectArpeggios = ##t'
         self.auto_add_bars = True
-        self.improvements = False
+        self.improvements = True
         self.piano_staff = not self.improvements
         if not self.improvements:
             self.staves = [Bass('treble'), Bass('bass')]
@@ -103,7 +111,7 @@ class MarcheFunebre(Piece):
             select(intro['treble'], 17).articulation = '>'
             select(intro['treble'], len(intro['treble'])).suffix = thinthick_barbreak
 
-        select(intro['treble'], 1).prefix = '\\tempo 4 = 126 \\grace s8. ' + select(intro['treble'], 1).prefix
+        select(intro['treble'], 1).prefix = '\\tempo "Moderato" 4 = 126 \\grace s8. ' + select(intro['treble'], 1).prefix
         select(intro['bass'], len(intro['bass'])).suffix += linebreak
 
         """ Bold Chords """
@@ -575,7 +583,7 @@ class MarcheFunebre(Piece):
             'bass': rep(voices(
                 slur(self.scale('ef', -4, 4)),
                 [chord('ef, bf,', 1)]
-            ), 4) + [chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')]
+            ), 4) + ottava([chord('ef,, bf,, ef, bf,', 1, ornamentation='arpeggio')], -1)
         }
         if self.improvements:
             outro2['treble'] = key_signature(self.key, outro2['treble'])
@@ -595,9 +603,9 @@ class MarcheFunebre(Piece):
 
     def end_score(self):
         if self.improvements:
-            return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
+            return ('>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n \\midi { } }')
         else:
-            return ('>>\n>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n }')
+            return ('>>\n>>\n  \\layout {\n \\context {\n \\Score\n \\override SpacingSpanner.common-shortest-duration =\n #(ly:make-moment 1/10)\n }\n }\n \\midi { } }')
 
 
 if __name__ == "__main__":
