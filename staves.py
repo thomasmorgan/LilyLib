@@ -16,7 +16,7 @@ class Stave:
 
     @property
     def start(self):
-        return '<< \\new Staff \\with {{\n{}\n}}{{\n{}\n\\clef {}\n'.format(self._with, self.extra_text, self.clef)
+        return '<< \\new Staff = "{}" \\with {{\n{}\n}}{{\n{}\n\\clef {}\n'.format(self.name, self._with, self.extra_text, self.clef)
 
     @property
     def end(self):
