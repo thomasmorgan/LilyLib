@@ -109,6 +109,7 @@ class MarcheFunebre(Piece):
             select(intro['treble'], 1).dynamics = 'pp'
             select(intro['treble'], 17).dynamics = 'p'
             select(intro['treble'], 17).articulation = '>'
+            select(intro['treble'], 17).prefix += '\\grace s8. '
             select(intro['treble'], len(intro['treble'])).suffix = thinthick_barbreak
 
         select(intro['treble'], 1).prefix = '\\tempo "Moderato" 4 = 126 \\grace s8. ' + select(intro['treble'], 1).prefix
@@ -302,7 +303,9 @@ class MarcheFunebre(Piece):
         select(intro3_treble, 25).phrasing += '('
         select(intro3_treble, 26).dynamics = '!'
         select(intro3_bass, 89).markup = '\\italic{poco cresc.}'
-        select(intro3_bass, len(intro3_bass)).suffix += linebreak + pagebreak
+        select(intro3_bass, len(intro3_bass)).suffix += linebreak
+        if not self.improvements:
+            select(intro3_bass, len(intro3_bass)).suffix += pagebreak
 
         select(intro3_bass, 44).suffix += linebreak
         select(intro3_bass, 88).suffix += linebreak
@@ -328,7 +331,7 @@ class MarcheFunebre(Piece):
             select(intro3_treble, 28).markdown = '\\italic{m.s.}'
             intro3 = {
                 'treble': intro3_treble,
-                'bass': intro3_bass
+                'bass': ottava(intro3_bass, -1)
             }
 
         # """ Cascade """
@@ -556,16 +559,16 @@ class MarcheFunebre(Piece):
             select(bass_upper, 35).markup = '\\italic{dim.}'
             select(bass_upper, 36).markup = '\\italic{dim.}'
             outro = {
-                'treble': key_signature(self.key, rep(rest(1), 29)),
-                'bass': key_signature(self.key, voices(bass_upper, bass_lower))
+                'treble': rep(rest(1), 29),
+                'bass': voices(bass_upper, bass_lower)
             }
         else:
             select(bass_upper, 30).markdown = '\\italic{m.s.}'
             select(bass_upper, 35).markdown = '\\italic{dim.}'
             select(bass_upper, 36).markdown = '\\italic{dim.}'
             outro = {
-                'treble': key_signature(self.key, bass_upper),
-                'bass': ottava(key_signature(self.key, bass_lower), -1)
+                'treble': bass_upper,
+                'bass': ottava(bass_lower, -1)
             }
         select(outro['treble'], 1).prefix += ' \\grace s8. '
 
