@@ -22,9 +22,16 @@ def split_and_flatten(item):
     return flatten([subitem.split(" ") if isinstance(subitem, str) else subitem for subitem in item])
 
 
+def assign(List, index, value):
+    List[index-1] = value
+
+
 def select(List, *indexes):
     indexes = flatten(list(indexes))
-    return [j for i, j in enumerate(List) if (i + 1) in indexes]
+    if len(indexes) == 1:
+        return List[indexes[0]-1]
+    else:
+        return [j for i, j in enumerate(List) if (i + 1) in indexes]
 
 
 def pattern(List, *indexes):
@@ -60,8 +67,6 @@ def join(*motifs):
     return joined
 
 
-def rep(passage, times=1):
-    new_passage = []
-    for t in range(times):
-        new_passage += deepcopy(passage)
+def rep(passage, times=2):
+    new_passage = flatten([deepcopy(passage) for t in range(times)])
     return(new_passage)

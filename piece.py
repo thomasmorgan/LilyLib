@@ -1,8 +1,11 @@
+import re
+
 from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
 from tones import equivalent_letters
 from points import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose, harmonize
+from markup import barbreak
 
 
 class Piece:
@@ -11,11 +14,21 @@ class Piece:
         self.title = ""
         self.subtitle = ""
         self.composer = ""
+        self.date = ""
+        self.mutopiacomposer = ""
+        self.mutopiainstrument = "piano"
+        self.source = ""
+        self.style = ""
+        self.license = "Creative Commons Attribution-ShareAlike 4.0"
+        self.maintainer = ""
+        self.mantainer_email = ""
         self.opus = ""
         self.staves = [Treble(), Bass()]
         self.tempo = "4/4"
         self.key = "C Major"
         self.score = {}
+        self.auto_add_bars = False
+        self.piano_staff = True
 
         self.details()
 
@@ -57,11 +70,14 @@ class Piece:
             + '    title = "{}"\n'.format(self.title)
             + '    subtitle = "{}"\n'.format(self.subtitle)
             + '    composer = "{}"\n'.format(self.composer)
-            + '    mutopiacomposer = ""\n'
-            + '    mutopiainstrument = "piano"\n'
-            + '    source = ""\n'
-            + '    style = "Romatic"\n'
-            + '    license = "Creative Commons Attribution-ShareAlike 4.0"\n'
+            + '    date = "{}"\n'.format(self.date)
+            + '    mutopiacomposer = "{}"\n'.format(self.mutopiacomposer)
+            + '    mutopiainstrument = "{}"\n'.format(self.mutopiainstrument)
+            + '    maintainer = "{}"\n'.format(self.maintainer)
+            + '    maintainerEmail = "{}"\n'.format(self.mantainer_email)
+            + '    source = "{}"\n'.format(self.source)
+            + '    style = "{}"\n'.format(self.style)
+            + '    license = "{}"\n'.format(self.license)
             + '    maintainer = "Anonymous"\n'
             + '    opus = "{}"\n'.format(self.opus)
             + '}\n'
@@ -71,10 +87,16 @@ class Piece:
         return ""
 
     def start_score(self):
-        return('\\score { <<\n')
+        if self.piano_staff:
+            return('\\score { << \n\\new PianoStaff <<\n')
+        else:
+            return('\\score { <<\n')
 
     def end_score(self):
-        return('>> }\n')
+        if self.piano_staff:
+            return('>>\n>> }\n')
+        else:
+            return('>> }\n')
 
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
@@ -84,10 +106,85 @@ class Piece:
         if isinstance(stave, Point):
             return(str(stave))
         elif isinstance(stave, list):
+            if self.auto_add_bars:
+                stave = self.add_barlines(stave)
+
             stave = [str(item) for item in flatten(stave)]
-            return(" ".join(stave))
+            stave = " ".join(stave)
+            stave = re.sub('\n ', '\n', stave)
+            return(stave)
         else:
             raise TypeError("stave with value {} cannot be printed".format(stave))
+
+    def add_barlines(self, stave):
+        num_bars = 0
+
+        bar_length = 1
+
+        bar_progress = 0.0
+
+        progress_at_voice_start = 0.0
+        bars_at_voice_start = 0
+
+        mult = 1.0
+
+        stave = flatten(stave)
+
+        for point in stave:
+
+            if "\n<<\n{ " in point.prefix:
+                progress_at_voice_start = bar_progress
+                bars_at_voice_start = num_bars
+
+            if '\\tuplet 3/2 {' in point.prefix:
+                mult *= 2.0/3.0
+
+            if '\\grace {' in point.prefix or ' %{ start grace %}{' in point.prefix or '\\acciaccatura {' in point.prefix or ' %{ start after grace %}{' in point.prefix:
+                old_mult = mult
+                mult = 0.0
+
+            if isinstance(point.dur, int):
+                progress = 1 / float(point.dur)
+            else:
+                if point.dur == '\\longa':
+                    progress = 4.0
+                elif point.dur == '\\breve':
+                    progress = 2.0
+                elif '..' in point.dur:
+                    progress = (1 / float(int(point.dur[:-2]))) * 1.75
+                elif '.' in point.dur:
+                    progress = (1 / float(int(point.dur[:-1]))) * 1.5
+                else:
+                    progress = 1 / float(int(point.dur))
+            bar_progress += progress*mult
+
+
+            if bar_progress > 1:
+                raise ValueError("Duration of notes crosses a bar line: {} in bar {}. Progress: {} -> {}".format(str(point), num_bars+1, bar_progress - progress*mult, bar_progress))
+
+            if bar_progress == 1 and (
+                " }\n\\\\\n" not in point.suffix and
+                (progress*mult != 0.0 or '} %{ end after grace %}' in point.suffix) and
+                ' } %{ end after grace passage %} ' not in point.suffix
+            ):
+                if '%{ bar %}' not in point.suffix:
+                    point.suffix += ' |\n'
+                bar_progress = 0
+                num_bars += 1
+
+            if " }\n\\\\\n" in point.suffix:
+                num_bars = bars_at_voice_start
+                bar_progress = progress_at_voice_start
+
+            if '} %{ end triplets %}' in point.suffix:
+                mult /= 2.0/3.0
+
+            if '} %{ end grace %}' in point.suffix or '} %{ end acciaccatura %}' in point.suffix:
+                mult = old_mult
+
+
+        return(stave)
+
 
     def scale(self, start, stop_or_length, dur=None, step=1):
         return scale(start, stop_or_length, self.key, dur, step)
@@ -110,8 +207,8 @@ class Piece:
     def scale_subset(self, positions, start, stop_or_length, dur=None, step=1):
         return scale_subset(positions, start, stop_or_length, self.key, dur, step)
 
-    def transpose(self, item, shift, mode="scale"):
-        return transpose(item, shift, self.key, mode)
+    def transpose(self, item, shift, mode="scale", clean=False):
+        return transpose(item, shift, self.key, mode, clean)
 
     def harmonize(self, points, intervals, mode="scale"):
         return harmonize(points, intervals, self.key, mode)

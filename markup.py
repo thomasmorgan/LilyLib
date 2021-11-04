@@ -4,7 +4,23 @@ from keys import keyify
 
 linebreak = '\\break\n'
 
+nolinebreak = '\\noBreak'
+
 pagebreak = '\\pageBreak\n\n'
+
+barbreak = ' \\bar "|" %{ bar %}\n'
+
+thick_barbreak = ' \\bar "." %{ bar %}\n'
+
+double_barbreak = ' \\bar "||" %{ bar %}\n'
+
+thickthin_barbreak = ' \\bar ".|" %{ bar %}\n'
+
+doublethick_barbreak = ' \\bar ".." %{ bar %}\n'
+
+triple_barbreak = ' \\bar "|.|" %{ bar %}\n'
+
+thinthick_barbreak = ' \\bar "|." %{ bar %}\n'
 
 
 def clef(clef, passage, end_clef=""):
@@ -34,11 +50,21 @@ def key_signature(key1, passage, key2=""):
     return passage
 
 
-def triplets(passage):
+def triplets(passage, omit_number=False):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\tuplet 3/2 {' + passage[0].prefix
-    passage[-1].suffix += '}'
+    if omit_number:
+        passage[0].prefix = '\\omit TupletNumber ' + passage[0].prefix
+    passage[-1].suffix += '} %{ end triplets %}'
+    return passage
+
+
+def sustain(passage):
+    passage = deepcopy(passage)
+    passage = flatten([passage])
+    passage[0].suffix += '\\sustainOn '
+    passage[-1].suffix += '\\sustainOff '
     return passage
 
 
@@ -46,7 +72,7 @@ def grace(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\grace {' + passage[0].prefix
-    passage[-1].suffix += '}'
+    passage[-1].suffix += '} %{ end grace %}'
     return passage
 
 
@@ -55,9 +81,10 @@ def after_grace(passage, grace):
     grace = deepcopy(grace)
     passage = flatten([passage])
     grace = flatten([grace])
-    passage[0].prefix = '\\afterGrace ' + passage[0].prefix
-    grace[0].prefix = '{' + grace[0].prefix
-    grace[-1].suffix += '}'
+    passage[0].prefix = '\\afterGrace {' + passage[0].prefix
+    passage[-1].suffix += ' } %{ end after grace passage %} '
+    grace[0].prefix = ' %{ start after grace %}{' + grace[0].prefix
+    grace[-1].suffix += '} %{ end after grace %}'
     return passage + grace
 
 
@@ -65,15 +92,39 @@ def acciaccatura(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
     passage[0].prefix = '\\acciaccatura {' + passage[0].prefix
-    passage[-1].suffix += '}'
+    passage[-1].suffix += '} %{ end acciaccatura %}'
     return passage
 
 
 def ottava(passage, shift):
     passage = deepcopy(passage)
     passage = flatten([passage])
-    passage[0].prefix + '\\ottava #{}'.format(shift) + passage[0].prefix
+    passage[0].prefix = '\\ottava #{} '.format(shift) + passage[0].prefix
     passage[-1].suffix += '\\ottava #0 '
+    return passage
+
+def slur(passage):
+    passage = deepcopy(flatten([passage]))
+    if passage[0].phrasing == '':
+        passage[0].phrasing = '('
+    else:
+        passage[0].phrasing += '('
+    if passage[-1].phrasing == '':
+        passage[-1].phrasing = ')'
+    else:
+        passage[-1].phrasing += ')'
+    return passage
+
+def phrase(passage):
+    passage = deepcopy(flatten([passage]))
+    if passage[0].ornamentation == '':
+        passage[0].ornamentation = '('
+    else:
+        passage[0].ornamentation += '\\('
+    if passage[-1].ornamentation == '':
+        passage[-1].ornamentation = ')'
+    else:
+        passage[-1].ornamentation += '\\)'
     return passage
 
 

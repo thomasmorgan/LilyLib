@@ -4,19 +4,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Writing music &#8212; LilyLib 0.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Keys and changing key" href="changing_keys.html" />
-    <link rel="prev" title="Core concepts" href="core_concepts.html" />
+    <link rel="prev" title="The basics" href="core_concepts.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,12 +33,16 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="writing-music">
+  <section id="writing-music">
 <h1>Writing music<a class="headerlink" href="#writing-music" title="Permalink to this headline">¶</a></h1>
-<p>So far we have seen how music in LilyLib is composed of <em>Points</em>, and how we can use the <em>notes</em>, <em>rests</em> and <em>chords</em> functions to make multiple <em>Points</em>. In this section we’ll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within <em>points.py</em>.</p>
-<div class="section" id="scales">
+<p>So far we have seen how music in LilyLib is composed of <em>Points</em>, and how we can use the <em>notes</em>, <em>rests</em> and <em>chords</em> functions to make multiple <em>Points</em>. In this section we’ll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All these functions exist in two versions, one found in <em>points.py</em>, the other within the the Piece class in <em>piece.py</em>. The difference between the two is that the functions in <em>points.py</em> need to be told what key they are operating in, while the those within the Point class automatically operate in the current key of the piece. If you look at the code, you’ll see the functions in the Piece class are just wrappers the call the functions in <em>points.py</em> but pass the piece’s current key as an argument.</p>
+</div>
+<section id="scales">
 <h2>Scales<a class="headerlink" href="#scales" title="Permalink to this headline">¶</a></h2>
-<p>The <em>scale</em> function is as follows:</p>
+<p>The <em>scale</em> function within <em>points.py</em> returns a list of points corresponding to a series of notes drawn from a scale. Here’s the function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">keyify</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">series</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">tones</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">dur</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
@@ -49,7 +53,7 @@
 <li><p><em>start</em>; the tone at which to start the scale (can be a Point too, the tone will be automatically extracted).</p></li>
 <li><p><em>stop_or_length</em>; either the tone at which to stop, or the desired length of the scale (negative lengths create descending scales).</p></li>
 <li><p><em>key</em>; the key in which to write the scale (see below for details)</p></li>
-<li><p><em>dur</em>; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.</p></li>
+<li><p><em>dur</em>; the duration of any notes, can be a single value or a list of values which will be cycled. If no value is provided the function returns tones, and not Points.</p></li>
 <li><p><em>step</em>; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.</p></li>
 </ul>
 <p>The <em>demo_c_major_scale</em> provides an example:</p>
@@ -113,8 +117,8 @@
 <img alt="_images/modal_scales2.png" src="_images/modal_scales2.png" />
 <p>The second part does the same thing, but note it takes the letter of the start tone and combines it with the word “major” to set the key. Thus the key of the scale changes with the start note. Keys are actually a class of object in Lilylib (see later docs), but they can be referred to with strings of the format “&lt;base letter&gt; &lt;mode&gt;”, for instance: “c major”, “fs minor”, “bf harmonic”. The lookup function is case insensitive, so capitalization does not matter.</p>
 <p>In addition, note in the above demo that the treble clef sets the ‘step’ argument to 2, so the treble clef covers two octaves and catches up with the bass clef. Lastly, note that the score is the combination of the two dictionaries called <cite>looped</cite> and <cite>smart</cite> and they are combined with the function <cite>join</cite> which is imported from <cite>util.py</cite>.</p>
-</div>
-<div class="section" id="arpeggios">
+</section>
+<section id="arpeggios">
 <h2>Arpeggios<a class="headerlink" href="#arpeggios" title="Permalink to this headline">¶</a></h2>
 <p>In addition to <cite>scale</cite>, <cite>points.py</cite> includes the function <cite>arpeggio</cite>, and <cite>Piece</cite> has a corresponding function which can be called with <cite>self.arpeggio</cite> too. Here’s the function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">arpeggio</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop_or_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -173,8 +177,8 @@
 </div>
 <img alt="_images/arpeggios.png" src="_images/arpeggios.png" />
 <p>This shows a variety of ways you can make arpeggios. First using the <cite>note</cite> and <cite>notes</cite> functions, but then with <cite>arpeggio</cite> function itself. The <cite>stepped</cite> section uses a list of values for the step argument (along with pythonic list comprehension) to create something reminiscent of Beethoven’s 3rd piano sonata.</p>
-</div>
-<div class="section" id="other-series">
+</section>
+<section id="other-series">
 <h2>Other series<a class="headerlink" href="#other-series" title="Permalink to this headline">¶</a></h2>
 <p>Lilylib also includes functions that generate other common series of tones:</p>
 <ul class="simple">
@@ -214,11 +218,11 @@
 </pre></div>
 </div>
 <p>Here, <cite>positions</cite> is a list of numbers describing the points of the regular scale you want to include. So setting <cite>positions</cite> to [1, 3, 5] would produce regular arpeggios. Similarly, a scale subset with positions [1, 3] would include only root and third notes.</p>
-</div>
-<div class="section" id="tranposition">
+</section>
+<section id="tranposition">
 <h2>Tranposition<a class="headerlink" href="#tranposition" title="Permalink to this headline">¶</a></h2>
 <p>We’ve seen <cite>transpose</cite> used a few times above. It takes an (arbitrarily nested) list of Points or tones, transposes each item by the specified interval, and then returns the result. It’s a long function so we won’t show it all here, but here are the arguments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -226,6 +230,7 @@
 <li><p><em>shift</em>; the interval you want it transposed by</p></li>
 <li><p><em>key</em>; the key in which the transposition occurs</p></li>
 <li><p><em>mode</em>; the “<cite>kind</cite>” of transposition. Either ‘scale’, ‘octave’ or ‘semitone’.</p></li>
+<li><p><em>clean</em>; whether or not the transposed passage is stripped on any ornamentation (etc.)</p></li>
 </ul>
 <p>You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we’ve seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.</p>
 <p>Here’s the bit of the function that does the transposing (by this point it is working only with tones):</p>
@@ -243,9 +248,9 @@
 </pre></div>
 </div>
 <p>Note how if transposition fails, it tries again with the equivalent tone. This means if you try to transpose g-flat two steps up the scale of D Major, it will initially fail (g-flat is not in D Major) but will then transform g-flat to f-sharp, which can then be transposed to a.</p>
-<p>Lastly note that transposing a Point does not return a modified version of the original Point, but creates an entirely new tone. So if passage B is a transposition of passage A, modifications of A after the transposition has occurred will not affect B. Nonetheless, ornamentation that is present at the time of transposition will be included.</p>
-</div>
-<div class="section" id="harmonization">
+<p>Lastly note that transposing a Point does not return a modified version of the original Point, but creates an entirely new Point. So if passage B is a transposition of passage A, modifications of A after the transposition has occurred will not affect B. Nonetheless, ornamentation that is present at the time of transposition will be added to the new passage.</p>
+</section>
+<section id="harmonization">
 <h2>Harmonization<a class="headerlink" href="#harmonization" title="Permalink to this headline">¶</a></h2>
 <p>Lots of music involves relatively simple structures, like scales, but with harmonies imposed on the top. Lilylib can do this with the function <cite>harmonize</cite>. This function builds off <cite>transpose</cite>, but also another function <cite>merge</cite>. The <cite>merge</cite> function takes two or more lists of points, and smushes them together to make a single list. This has a few limitations: to work the multiple passages must have the same number of points in them, and if their durations differ then the durations of the first passage overwrite the others. Lastly, if the multiple series have a nested structure then the return list will have the same structure as the first series the function is passed. Here’s an example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">piece</span> <span class="kn">import</span> <span class="n">Piece</span>
@@ -270,7 +275,7 @@
 </pre></div>
 </div>
 <img alt="_images/merge.png" src="_images/merge.png" />
-<p>You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach see the section on markup.</p>
+<p>You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach to voices see the section on markup.</p>
 <p>With merge covered let’s return to harmonize. The harmonize function works by first transposing points to the desired intervals and then merging the result with the original points:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harmonize</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">merge</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
@@ -301,8 +306,8 @@
 </pre></div>
 </div>
 <img alt="_images/harmonize.png" src="_images/harmonize.png" />
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -321,10 +326,10 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">LilyLib documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">The basics</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Writing music</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#scales">Scales</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#arpeggios">Arpeggios</a></li>
@@ -344,7 +349,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="core_concepts.html" title="previous chapter">Core concepts</a></li>
+      <li>Previous: <a href="core_concepts.html" title="previous chapter">The basics</a></li>
       <li>Next: <a href="changing_keys.html" title="next chapter">Keys and changing key</a></li>
   </ul></li>
 </ul>
@@ -353,7 +358,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -375,7 +380,7 @@
       &copy;2020, Thomas J. H. Morgan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

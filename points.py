@@ -1,4 +1,4 @@
-from util import flatten, split_and_flatten
+from util import flatten, split_and_flatten, select, pattern, subset, omit
 from tones import tonify, all_pitches, pitch, letter, equivalent_tone, all_tones
 from keys import keyify
 
@@ -26,6 +26,8 @@ class Point:
         self.markdown = markdown
         self.prefix = prefix
         self.suffix = suffix
+        self.remove_duplicate_tones()
+        self.sort_tones()
 
     def check_init_arguments(self, tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix):
         if not isinstance(tones, list):
@@ -81,6 +83,35 @@ class Point:
             string += self.suffix
         return string
 
+    def __getitem__(self, arg):
+        duplicate = deepcopy(self)
+        duplicate.tones = self.tones[arg]
+        return(duplicate)
+
+
+    def select(self, *indexes):
+        new_point = deepcopy(self)
+        new_point.tones = select(new_point.tones, indexes)
+        return(new_point)
+
+
+    def pattern(self, *indexes):
+        new_point = deepcopy(self)
+        new_point.tones = pattern(new_point.tones, indexes)
+        return(new_point)
+
+
+    def omit(self, *indexes):
+        new_point = deepcopy(self)
+        new_point.tones = omit(new_point.tones, indexes)
+        return(new_point)
+
+
+    def subset(self, start, stop):
+        new_point = deepcopy(self)
+        new_point.tones = subset(new_point.tones, start, stop)
+        return(new_point)
+
     @property
     def tone(self):
         if len(self.tones) == 1:
@@ -113,10 +144,12 @@ class Point:
         for tone in tones:
             if tone not in self.tones:
                 self.tones.append(tone)
+        self.sort_tones()
 
     def remove(self, tones):
         tones = flatten([tonify(tones)])
         self.tones = [tone for tone in self.tones if tone not in tones]
+        self.sort_tones()
 
     def replace(self, old_tones, new_tones):
         old_tones = flatten([tonify(old_tones)])
@@ -131,28 +164,34 @@ class Point:
                 self.remove(old_tone)
                 self.add(new_tone)
 
+    def sort_tones(self):
+        self.tones = [tone for t in all_tones for tone in self.tones if tone == t]
+
+    def remove_duplicate_tones(self):
+        self.tones = list(dict.fromkeys(self.tones))
+
 
 def rest(dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
-    """ Returns a list with a single Point that prints as a rest with the specified duration. """
-    return [Point([], dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
+    """ Returns a single Point that prints as a rest with the specified duration. """
+    return Point([], dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
-def rests(*dur):
+def rests(*dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list of Points that print as rests with the specified durations. """
-    return flatten([rest(d) for d in split_and_flatten(dur)])
+    return flatten([rest(d, phrasing=phrasing, articulation=articulation, ornamentation=ornamentation, dynamics=dynamics, markup=markup, markdown=markdown, prefix=prefix, suffix=suffix) for d in split_and_flatten(dur)])
 
 
 def note(tone, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
-    """ Returns a list with a single Point that prints as a note with the specified tone and duration.
+    """ Returns a single Point that prints as a note with the specified tone and duration.
     Passing an empty string or list as tone will return a rest.
     Passing a list of tones (or a string that can be split into multiple tones raises an error. """
     tone = flatten([tonify(tone)])
     if len(tone) > 1:
         raise ValueError("Cannot create single note with tone of {}.".format(tone))
-    return [Point(tone, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
+    return Point(tone, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
-def notes(tones, dur):
+def notes(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     """ Returns a list of Points that print as notes with the specified tone(s) and duration(s).
     If tones is a string including adjacent white space, rests are produced.
     If tones is a list including empty lists or empty strings, rests are produced.
@@ -164,22 +203,22 @@ def notes(tones, dur):
     max_length = max([len(tones), len(dur)])
 
     zip_list = zip(range(max_length), cycle(tones), cycle(dur))
-    return flatten([note(t, d) for i, t, d in zip_list])
+    return flatten([note(t, d, phrasing=phrasing, articulation=articulation, ornamentation=ornamentation, dynamics=dynamics, markup=markup, markdown=markdown, prefix=prefix, suffix=suffix) for i, t, d in zip_list])
 
 
 def chord(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
-    """ Returns a list containing a single Point that prints as a chord with the specified tones and duration. """
+    """ Returns a single Point that prints as a chord with the specified tones and duration. """
     tones = flatten([tonify(tones)])
-    return [Point(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)]
+    return Point(tones, dur, phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix, suffix)
 
 
-def chords(tones, dur):
+def chords(tones, dur, phrasing="", articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
     dur = split_and_flatten(dur)
 
     max_length = max([len(tones), len(dur)])
 
     zip_list = zip(range(max_length), cycle(tones), cycle(dur))
-    return flatten([chord(t, d) for i, t, d in zip_list])
+    return flatten([chord(t, d, phrasing=phrasing, articulation=articulation, ornamentation=ornamentation, dynamics=dynamics, markup=markup, markdown=markdown, prefix=prefix, suffix=suffix) for i, t, d in zip_list])
 
 
 def tied_note(tone, dur, articulation="", ornamentation="", dynamics="", markup="", markdown="", prefix="", suffix=""):
@@ -313,16 +352,28 @@ def chromatic(start, stop_or_length, key, dur=None, step=1):
     key = keyify(key)
     if isinstance(stop_or_length, int):
         if stop_or_length > 1:
-            return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
         else:
-            return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
     else:
         start_index = all_tones.index(tonify(start))
         stop_index = all_tones.index(tonify(stop_or_length))
         if stop_index > start_index:
-            return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
         else:
-            return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            try:
+                return series(key.descending_chromatic_tones, start, stop_or_length, dur, step)
+            except ValueError:
+                return series(key.ascending_chromatic_tones, start, stop_or_length, dur, step)
 
 
 def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
@@ -331,29 +382,33 @@ def scale_subset(positions, start, stop_or_length, key, dur=None, step=1):
     return series(custom_tones, start, stop_or_length, dur, step)
 
 
-def transpose(item, shift, key, mode="scale"):
+def transpose(item, shift, key, mode="scale", clean=False):
     key = keyify(key)
     validate_transpose_args(shift, mode)
 
     if isinstance(item, dict):
         new_dict = {}
         for dict_key in item:
-            new_dict[dict_key] = transpose(item[dict_key], shift, key, mode)
+            new_dict[dict_key] = transpose(item[dict_key], shift, key, mode, clean)
         return new_dict
 
     elif isinstance(item, list):
-        return [transpose(subitem, shift, key, mode) for subitem in item]
+        return [transpose(subitem, shift, key, mode, clean) for subitem in item]
 
     elif isinstance(item, Point):
-        return Point(transpose(item.tones, shift, key, mode),
-                     item.dur,
-                     articulation=item.articulation,
-                     ornamentation=item.ornamentation,
-                     dynamics=item.dynamics,
-                     markup=item.markup,
-                     markdown=item.markdown,
-                     prefix=item.prefix,
-                     suffix=item.suffix)
+        if clean:
+            return Point(transpose(item.tones, shift, key, mode, clean), item.dur)
+        else:
+            return Point(transpose(item.tones, shift, key, mode, clean),
+                         item.dur,
+                         phrasing=item.phrasing,
+                         articulation=item.articulation,
+                         ornamentation=item.ornamentation,
+                         dynamics=item.dynamics,
+                         markup=item.markup,
+                         markdown=item.markdown,
+                         prefix=item.prefix,
+                         suffix=item.suffix)
 
     elif isinstance(item, str):
         try:
@@ -361,7 +416,7 @@ def transpose(item, shift, key, mode="scale"):
         except ValueError:
             return item
         if isinstance(item, list):
-            return transpose(item, shift, key, mode)
+            return transpose(item, shift, key, mode, clean)
         else:
             try:
                 if mode == "octave":
@@ -373,7 +428,7 @@ def transpose(item, shift, key, mode="scale"):
                 elif mode == "semitone":
                     return key.all_tones[key.all_tones.index(item) + shift]
             except ValueError:
-                return transpose(equivalent_tone(item), shift, key, mode)
+                return transpose(equivalent_tone(item), shift, key, mode, clean)
     else:
         raise ValueError("Cannot transpose {} as it is a {}".format(item, type(item)))
 

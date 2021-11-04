@@ -1,5 +1,5 @@
 from piece import Piece
-from util import flatten, pattern, subset, select, join, rep
+from util import flatten, pattern, subset, select, join, rep, assign
 from points import note, notes, rest, arpeggio, arpeggio7, tied_note
 from markup import triplets, time_signature, voices
 
@@ -124,10 +124,10 @@ class MadRush(Piece):
         sections['B3'] = join(B_motif(self.bii7, 2), B_motif(self.bI7, 1), B_motif(self.bI7, 1, 'alt'))
         sections['B4'] = join(B_motif(self.bii7, 1), B_motif(self.bii7d5, 1), B_motif(self.bI7, 1), B_motif(self.bI7, 1, 'alt'))
 
-        sections['B1']['treble'][0] = time_signature('12/8', sections['B1']['treble'][0])[0]
-        sections['B2']['treble'][0] = time_signature('12/8', sections['B2']['treble'][0])[0]
-        sections['B3']['treble'][0] = time_signature('12/8', sections['B3']['treble'][0])[0]
-        sections['B4']['treble'][0] = time_signature('12/8', sections['B4']['treble'][0])[0]
+        assign(sections['B1']['treble'], 1, select(time_signature('12/8', select(sections['B1']['treble'], 1)), 1))
+        assign(sections['B2']['treble'], 1, select(time_signature('12/8', select(sections['B2']['treble'], 1)), 1))
+        assign(sections['B3']['treble'], 1, select(time_signature('12/8', select(sections['B3']['treble'], 1)), 1))
+        assign(sections['B4']['treble'], 1, select(time_signature('12/8', select(sections['B4']['treble'], 1)), 1))
 
         B = ['B1', 'B1', 'B2', 'B2', 'B2', 'B3', 'B3', 'B4']
 
@@ -139,7 +139,7 @@ class MadRush(Piece):
             }
 
         sections['C1'] = combine('A1', 'B1')
-        sections['C1']['treble'][0].prefix = '\\time 4/4 ' + sections['C1']['treble'][0].prefix
+        select(sections['C1']['treble'], 1).prefix = '\\time 4/4 ' + select(sections['C1']['treble'], 1).prefix
         sections['C2'] = combine('A2', 'B2')
         sections['C3'] = combine('A3', 'B3')
         sections['C4'] = combine('A4', 'B4')
@@ -151,9 +151,9 @@ class MadRush(Piece):
             motif['bass1'] = sections[section]['bass1']
             motif['bass2'] = sections[section]['bass2']
             if len(chord) == 3:
-                motif['treble'] = self.harmonize(tied_note(chord[0], [1, 2]) + note(chord[1], 2) + tied_note(chord[2], [1, 1]), 1, 'octave')
+                motif['treble'] = self.harmonize(tied_note(select(chord, 1), [1, 2]) + [note(select(chord, 2), 2)] + tied_note(select(chord, 3), [1, 1]), 1, 'octave')
             else:
-                motif['treble'] = self.harmonize(tied_note(chord[0], [1, 1]) + tied_note(chord[1], [1, 1]), 1, 'octave')
+                motif['treble'] = self.harmonize(tied_note(select(chord, 1), [1, 1]) + tied_note(select(chord, 2), [1, 1]), 1, 'octave')
             return motif
 
         sections['D1'] = D_motif(self.diii, 'A1')

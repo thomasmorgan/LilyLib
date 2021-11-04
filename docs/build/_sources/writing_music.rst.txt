@@ -1,12 +1,15 @@
 Writing music
 =========================
 
-So far we have seen how music in LilyLib is composed of *Points*, and how we can use the *notes*, *rests* and *chords* functions to make multiple *Points*. In this section we'll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization. All these functions can be found within *points.py*.
+So far we have seen how music in LilyLib is composed of *Points*, and how we can use the *notes*, *rests* and *chords* functions to make multiple *Points*. In this section we'll look at functions that let us quickly writes higher-level musical entities, things like scales and arpeggios, as well as perform operations like transposition and harmonization.
+
+.. NOTE::
+	All these functions exist in two versions, one found in *points.py*, the other within the the Piece class in *piece.py*. The difference between the two is that the functions in *points.py* need to be told what key they are operating in, while the those within the Point class automatically operate in the current key of the piece. If you look at the code, you'll see the functions in the Piece class are just wrappers the call the functions in *points.py* but pass the piece's current key as an argument.
 
 Scales
 -----------
 
-The *scale* function is as follows:
+The *scale* function within *points.py* returns a list of points corresponding to a series of notes drawn from a scale. Here's the function:
 
 ::
 
@@ -19,7 +22,7 @@ The arguments are:
 - *start*; the tone at which to start the scale (can be a Point too, the tone will be automatically extracted).
 - *stop_or_length*; either the tone at which to stop, or the desired length of the scale (negative lengths create descending scales).
 - *key*; the key in which to write the scale (see below for details)
-- *dur*; the duration of any notes, can be a single value or a list of values which will be cycled. If no values is provided the function returns tones, and not Points.
+- *dur*; the duration of any notes, can be a single value or a list of values which will be cycled. If no value is provided the function returns tones, and not Points.
 - *step*; the step size. 1 = a full scale, 2 = every other note, 3 = every third note, and so on.
 
 The *demo_c_major_scale* provides an example:
@@ -217,12 +220,13 @@ We've seen `transpose` used a few times above. It takes an (arbitrarily nested) 
 
 ::
 
-	def transpose(item, shift, key, mode="scale"):
+	def transpose(item, shift, key, mode="scale", clean=False):
 
 - *item*; the thing you want to transpose
 - *shift*; the interval you want it transposed by
 - *key*; the key in which the transposition occurs
 - *mode*; the "`kind`" of transposition. Either 'scale', 'octave' or 'semitone'.
+- *clean*; whether or not the transposed passage is stripped on any ornamentation (etc.)
 
 You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we've seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.
 
@@ -244,7 +248,7 @@ Here's the bit of the function that does the transposing (by this point it is wo
 
 Note how if transposition fails, it tries again with the equivalent tone. This means if you try to transpose g-flat two steps up the scale of D Major, it will initially fail (g-flat is not in D Major) but will then transform g-flat to f-sharp, which can then be transposed to a.
 
-Lastly note that transposing a Point does not return a modified version of the original Point, but creates an entirely new tone. So if passage B is a transposition of passage A, modifications of A after the transposition has occurred will not affect B. Nonetheless, ornamentation that is present at the time of transposition will be included.
+Lastly note that transposing a Point does not return a modified version of the original Point, but creates an entirely new Point. So if passage B is a transposition of passage A, modifications of A after the transposition has occurred will not affect B. Nonetheless, ornamentation that is present at the time of transposition will be added to the new passage.
 
 Harmonization
 -----------------
@@ -275,7 +279,7 @@ Lots of music involves relatively simple structures, like scales, but with harmo
 
 .. image:: _static/merge.png
 
-You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach see the section on markup.
+You might be tempted to use the merge function to write music with multiple voices, and while that is possible, it removes any visual indication of the voices and so this is not the recommended method. For a better approach to voices see the section on markup.
 
 With merge covered let's return to harmonize. The harmonize function works by first transposing points to the desired intervals and then merging the result with the original points:
 

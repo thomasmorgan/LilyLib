@@ -4,15 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Introduction &#8212; LilyLib 0.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Core concepts" href="core_concepts.html" />
@@ -33,48 +33,53 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="introduction">
+  <section id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="what-is-lilylib">
+<section id="what-is-lilylib">
 <h2>What is LilyLib?<a class="headerlink" href="#what-is-lilylib" title="Permalink to this headline">¶</a></h2>
-<p>When musicians talk about a piece of music they don’t do so note-by-note, rather they talk about higher-level structures; scales, arpeggios, harmonies, motifs, key changes, and so on. Nonetheless sheet music adopts the note-by-note approach, as does Lilypond; a typesetting language for creating sheet music. Here’s a basic example illustrating this difference:</p>
+<p>When musicians talk about a piece of music they don’t do so note-by-note, rather they talk about higher-level structures; scales, arpeggios, harmonies, motifs, key changes, and so on. For instance, an instructor might tell their student:</p>
 <blockquote>
-<div><blockquote>
-<div><p><em>“Play a descending scale in C minor, from middle C, with a swing rhythm.”</em></p>
+<div><p><em>“Play a one-octave, descending scale in C minor, from middle C, with a swing rhythm.”</em></p>
 </div></blockquote>
-<img alt="_images/intro_scale.png" src="_images/intro_scale.png" />
+<p>Lilypond is a typesetting language that lets you create your own sheet music. In Lilypond’s language the above instruction would look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>c`8. b16 af8. g16 f8. ef16 d8. c16
+</pre></div>
+</div>
+<p>Here, each “word” corresponds to a note, with a letter (e.g. c), pitch (e.g. `) and duration (e.g. 8.). With a suitable typesetting program to interpret these instructions, you would get this:</p>
+<blockquote>
+<div><img alt="_images/intro_scale.png" src="_images/intro_scale.png" />
 </div></blockquote>
-<p>But what if we could create sheet music directly from the higher-level structures musicians talk about? This is where LilyLib comes in: LilyLib is a python library that allows the user to describe a piece of music in terms of the concepts that are familiar to musicians. LilyLib automatically compiles into Lilypond, which can itself be compiled into sheet music. Here’s the LilyLib for the scale above:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;8.&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;C Minor&quot;</span><span class="p">)</span>
+<p>Looks very nice, but note that higher level concepts, like scales or the swing rhythm, are absent in the Lilypond code. This is where LilyLib comes in: LilyLib is a python library that allows the user to describe a piece of music in terms of the concepts that are familiar to musicians. LilyLib automatically compiles into Lilypond, which can itself be compiled into sheet music. Here’s the LilyLib for the scale above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scale</span><span class="p">(</span><span class="s1">&#39;c`&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;8.&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;C Minor&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Not quite as familiar as spoken language, but note that it does not list the individual notes of the scale. Instead it calls a function called <em>scale</em>, providing it with the key (C minor), the start (c`) and stop (c) points, and a list of rhythms (‘8.’, 16). LilyLib does the rest: when this file is executed it outputs Lilypond which can then be converted into the pdf shown above.</p>
-</div>
-<div class="section" id="why-use-lilylib">
+</section>
+<section id="why-use-lilylib">
 <h2>Why use LilyLib?<a class="headerlink" href="#why-use-lilylib" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="lilylib-is-scalable">
+<section id="lilylib-is-scalable">
 <h3>LilyLib is scalable<a class="headerlink" href="#lilylib-is-scalable" title="Permalink to this headline">¶</a></h3>
 <p>Many pieces repeat certain motifs or patterns. LilyLib lets the user extract these as functions and repeatedly apply them as necessary. LilyLib even understands concepts such as transposition, so if a motif is repeated but in a different key, that can all be handled automatically. This means that even long pieces, consisting of thousands of notes, can often be expressed as a relatively short amount of code.</p>
-</div>
-<div class="section" id="lilylib-encourages-musical-analysis">
+</section>
+<section id="lilylib-encourages-musical-analysis">
 <h3>LilyLib encourages musical analysis<a class="headerlink" href="#lilylib-encourages-musical-analysis" title="Permalink to this headline">¶</a></h3>
 <p>To most effectively take advantage of LilyLib, the user should decompose a piece of music into its motifs, key signatures and overall structure. In doing so the users gains insight into how the music works at a higher level than is required when reading sheet music.</p>
-</div>
-<div class="section" id="lilylib-allows-high-level-manipulation-of-music">
+</section>
+<section id="lilylib-allows-high-level-manipulation-of-music">
 <h3>LilyLib allows high level manipulation of music<a class="headerlink" href="#lilylib-allows-high-level-manipulation-of-music" title="Permalink to this headline">¶</a></h3>
 <p>The whole point of LilyLib is to describe music at a higher level, “refactoring” it in programming terms. Once this is done, unusual manipulations of sheet music that would take a lot of effort with traditional methods take just a few minutes, or even seconds. For instance, transposing an entire piece into a different key, changing the rhythm of a motif, switching the hands, or reducing a piece to a list of its unique motifs. We’ll see some of these later.</p>
-</div>
-</div>
-<div class="section" id="how-to-run-lilylib">
+</section>
+</section>
+<section id="how-to-run-lilylib">
 <h2>How to run LilyLib<a class="headerlink" href="#how-to-run-lilylib" title="Permalink to this headline">¶</a></h2>
 <p>Executing a LilyLib file once it is created take just a few seconds. First you will need to have installed python 3 and a Lilypond compiler (e.g. Frescobaldi). After that you should download LilyLib from github.</p>
 <p>Any files you wish to run need to be inside the LilyLib directory, and you can run them with the terminal command “python3 &lt;file_name&gt;.py”. This will spit out the corresponding Lilypond into the terminal which can be pasted into your Lilypond compiler to produce a pdf.</p>
-</div>
-<div class="section" id="what-next">
+</section>
+<section id="what-next">
 <h2>What next?<a class="headerlink" href="#what-next" title="Permalink to this headline">¶</a></h2>
 <p>The rest of this guide walks you through the key concepts of LilyLib, illustrating each with some toy examples. After that there are a couple of examples of full pieces that had been converted to LilyLib. All the demos are included in the github repo, as is all the source code, so you should feel free to open it up and explore the files themselves. The hope is that by the end of this guide the reader should have a vague sense of how to write in LilyLib should they so desire.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -93,7 +98,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">LilyLib documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-lilylib">What is LilyLib?</a></li>
@@ -124,7 +129,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -146,7 +151,7 @@
       &copy;2020, Thomas J. H. Morgan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,7 +1,7 @@
-Core concepts
+The basics
 ================
 
-Piece
+Pieces
 --------------
 
 When a piece of music is written in LilyLib, it is written as a subclass of the LilyLib class *Piece*. *Piece* is a somewhat powerful class, and you can see the source code in *piece.py*, but for now, we'll look at the two functions all custom pieces must overwrite; *details* and *write_score*. To illustrate, here's the code for a piece that is just middle C played in both hands:
@@ -51,23 +51,36 @@ Our new piece contains two functions: *details* and *write_score*. These contain
 	class Piece:
 
 	    def __init__(self):
-	        self.title = ""
-	        self.subtitle = ""
-	        self.composer = ""
-	        self.opus = ""
-	        self.staves = [Treble(), Bass()]
-	        self.tempo = "4/4"
-	        self.key = "C Major"
-	        self.score = {}
+            self.title = ""
+            self.subtitle = ""
+            self.composer = ""
+            self.date = ""
+            self.mutopiacomposer = ""
+            self.mutopiainstrument = "piano"
+            self.source = ""
+            self.style = ""
+            self.license = "Creative Commons Attribution-ShareAlike 4.0"
+            self.maintainer = ""
+            self.mantainer_email = ""
+            self.opus = ""
+            self.staves = [Treble(), Bass()]
+            self.tempo = "4/4"
+            self.key = "C Major"
+            self.score = {}
+            self.auto_add_bars = False
+            self.piano_staff = True
 
 	        self.details()
 
 	        self.set_key(self.key)
 	        print(self)
 
-From top to bottom this function sets default values for things like the title, subtitle, composer and so on, before later calling *self.details()*. By writing our own details function and having it change these values we can overwrite things like the title, tempo or key signature, and so on.
+From top to bottom this function sets default values for things like the title, subtitle, composer, tempo, key signature and so on, and it then calls *self.details()* to give you the opportunity to change as many of them as you want in your own piece. This is what the demo above does; it uses the *details* function to add a title, but leaves the tempo and key signature at their defaults.
 
-The *write_score* function does most of the work though, and for complex pieces it will get quite complex too. But, whatever the piece is, the requirement is that it modifies the score of the *Piece* (referred to as *self.score*) adding the contents of the staves. Here our piece has the default staves: one treble, one bass. We refer to these staves by name; *self.score["treble"]* and *self.score["bass"]*.
+.. NOTE::
+    Don't worry if you are not sure what some of the more esoteric variables do (e.g. *mutopiacomposer*) as they typically relate to esoteric purposes. Instead, just remember that you can use the *details* function to change any of these values for your own piece and you can look inside *piece.py* to see the full list of options.
+
+The *write_score* function does most of the work though, and for complex pieces it will get quite complex too. But, whatever the piece is, the requirement is that it modifies the score of the *Piece* (referred to as *self.score*) adding the contents of the staves as a list of notes, rest, chords, and so on. Here our piece has the default staves: one treble, one bass. We refer to these staves by name (*self.score["treble"]* and *self.score["bass"]*) and give them both a single press of middle C.
 
 ::
 
@@ -90,31 +103,61 @@ is just python for "when this file runs, run the MiddleC class". This ensures th
 Single notes, chords and rests
 ---------------------------------
 
-The above demo uses the *note* function to create a single note. In general, LilyLib discourages the use of atomistic functions like this, in favor of higher-level functions we'll come to later. However, we'll look at a few low-level functions first to get comfortable with what's going on under-the-hood. *note* takes at least two arguments: the tone of the note (effectively the "name" of the sound produced; a combination of letter, accent and pitch) and the duration of the note. You can also pass any of the following arguments:
+The above demo uses the *note* function to create a single note. In general, LilyLib discourages the use of atomistic functions like this, in favor of higher-level functions we'll come to later. However, we'll look at a few low-level functions first to get comfortable with what's going on under-the-hood. The function *note* takes at least two arguments: the tone of the note (effectively the "name" of the sound produced; a combination of letter, accent and pitch) and the duration of the note. We will cover tones in more detail below, but simple durations can be integers or strings (e.g. ``4`` and ``'4'`` produce a crotchet, while ``2`` and ``'2'`` produce a minim), but more complex durations must be strings (e.g. ``'4.'`` produces a dotted crotchet, ``'\\longa'`` produces a longa).
+
+In addition to the required tone and duration, you can also create notes with the following kinds of additional content:
 
 * phrasing: ties, slurs, etc.
 * articulation: accents, etc.
 * ornamentation: trills, mordents, etc.
-* dynamics: piano, forte, etc.
+* dynamics: piano, forte, hairpins, etc.
 * markup: text to appear above the note.
 * markdown: text to appear below the note.
 * suffix: extra lilypond added at the end.
 * prefix: extra lilpyond added at the start.
 
-This is a lot of options, but we'll worry about those later. Getting back to the *note* function: It builds notes one at a time, but these are returned in lists and so can be concatenated by adding. Here's a simple example with 4 notes of various tones, durations and ornamentation:
+All of these are strings and follow Lilypond conventions, so to make a note *forte*:
+
+::
+
+    note('c`', 1, dynamics='f')
+
+Or to make a note staccato:
+
+::
+
+    note('c`', 1, articulation='.')
+
+Or to add the word "dolce" in italics above:
+
+::
+
+    note('c`', 1, markup='\\italic{dolce}')
+
+.. TIP::
+    Lilylib follows Lilypond conventions for how different ornaments are written, so if you are unsure how to write a mordent, just look it up in the lilypond docs. The important thing to know for Lilylib is whether each kind of modifier should be passed as phrasing, articulation or ornamentation. The answer lies in whether lilypond appends the value directly to the note (like slurs ``c`1(`` and ties ``c`1~``, in which case it is phrasing), adds them after a dash (like staccato ``c`1-.`` or an accent ``c`1->``, in which case they are articulation), or adds them after a slash (like a mordent ``c`1\mordent`` or fermata ``c`1\fermata``, in which case they are ornamentation).
+
+    Lilylib doesn't sanitize any values you pass. So, for instance, because Lilypond denotes both ornamentation and dynamics with a slash, you could pass ``'f'`` as *ornamentation*, and it would still print as dynamics without problem. You can also stack multiple ornaments by concatenating them with their prefix. For instance, if you want a note with a fermata and a trill you can pass ``fermata\\trill`` as ornamentation (the slash is doubled because python requires a double slash to print a single slash).
+
+Getting back to the *note* function: It builds notes one at a time, so to have a melody of multiple notes you need to join them together in a list; a python object indicated by square brackets. Here's a simple example with 4 notes of various tones, durations and ornamentation:
 
 ::
 
     def write_score(self):
-        self.score["treble"] = note("c`", 4) + note("e`", '4.', phrasing="~") + note("e`", 8) + note("c`", 4, articulation=".")
+        self.score["treble"] = [
+            note("c`", 4),
+            note("e`", '4.', phrasing="~"),
+            note("e`", 8),
+            note("c`", 4, articulation=".")
+        ]
         self.score["bass"] = note("c`", 1)
 
 
 .. image:: _static/core_concepts_fig1.png
 
-We'll discuss tones in more detail shortly. But for now, note that durations are integers, unless they are dotted in which case they are strings. Note also that ornamentation (or phrasing, etc) are strings. Here we make one note tied (*phrasing="~"*) and another staccato (*articulation="."*).
+Here the treble clef is four notes, made individually, but wrapped in square brackets and separated with commas to create a list (the list is split over multiple lines to make it easier to read). Lists can also be joined by addition, so the could could just as effectively wrap each note in its own set of square brackets and then put + signs between them instead of commas. Lastly, note that because the bass clef contains a single note, it doesn't need to be a list. 
 
-The function *rest* lets you make rests. It behaves just like *note* however you don't need to specofy a tone, because rests don't have one. Here's the same code from above, but switching out the third note for a rest:
+The function *rest* lets you make rests. It behaves just like *note* however you don't need to specify a tone, because rests don't have one. Here's the same code from above, but switching out the third note for a rest:
 
 ::
 
@@ -124,7 +167,7 @@ The function *rest* lets you make rests. It behaves just like *note* however you
 
 .. image:: _static/core_concepts_fig2.png
 
-Just remember that these functions reside in *points.py* and to use them in a piece you need to import them like so:
+Just remember that these functions reside in *points.py* and so to use them in a piece you need to import them like so:
 
 ::
 
@@ -157,7 +200,9 @@ To create chords, *piece.py* includes the function *chord*. Like *note* it accep
 Multiple notes, chords and rests
 -------------------------------------
 
-The functions *note*, *chord* and *rest* each return a single item, but each function has a corresponding function that returns multiple items. These are called *notes*, *chords* and *rests*, respectively. All of them behave somewhat like their singular counterparts, but take lists of arguments for tone(s) and duration. In addition they don't accept any kind of ornamentation. Let's start with *rests*. In this case, the only argument is the duration of the rests and so the user must supply a list of these durations (or a string of multiple durations separated by spaces). For example:
+The functions *note*, *chord* and *rest* each return a single item, but each function has a corresponding function that returns multiple items. These are called *notes*, *chords* and *rests*, respectively. All of them behave somewhat like their singular counterparts, but take lists of arguments for tone(s) and duration. You can also pass articulation, ornamentation, etc., but these must be single values that get applied to all the created notes, chords or rests.
+
+Let's start with *rests*. In this case, the only argument is the duration of the rests and so the user must supply a list of these durations (or a string of multiple durations separated by spaces). For example:
 
 ::
 
@@ -187,9 +232,9 @@ Here's a more complicated example:
 
 .. image:: _static/core_concepts_notes2.png
 
-There's a couple of things to note here: First, the durations are specified as a single string separated by spaces. Second, because all these functions return lists of notes/rests/etc., you can multiply the result to continue the pattern. Here the treble clef is multipled by 2, doubling the passage. However, note that when you continue passages in this way the same notes are repeated, but they are not duplicated. This means that if you later edit a note to, say, give it an accent, the copies of that note will gain the accent too. To avoid this, you can use the *rep* function (short for repeat) which takes a passage and how many times you want to repeat it as arguments and then duplicates the passage (called a deepcopy in python) that many times to produce a new passage where each note is independent of the others. More on functions like *rep* later.
+There's a couple of things to note here: First, the durations are specified as a single string separated by spaces, it would have been equally fine to provide a list of durations instead. Second, because all these functions return lists of notes/rests/etc., you can multiply the result to continue the pattern. Here the treble clef is multipled by 2, doubling the passage. However, note that when you continue passages in this way the same notes are repeated, but they are not duplicated. This means that if you later edit a note to, say, give it an accent, the copies of that note will gain the accent too. To avoid this, you can use the *rep* function (short for repeat) which takes a passage and how many times you want to repeat it as arguments and then duplicates the passage (called a deepcopy in python) that many times to produce a new passage where each note is independent of the others. More on functions like *rep* later.
 
-The *notes* function can also return a mix of rests and notes, and rests are indicated by either whitespace (in a single string) or an empty list (*[]*) in a list. To illustrate:
+The *notes* function can also return a mix of rests and notes, and rests are indicated by either whitespace (in a single string) or an empty list (``[]``) within a list. To illustrate:
 
 ::
 
@@ -199,7 +244,7 @@ The *notes* function can also return a mix of rests and notes, and rests are ind
 
 .. image:: _static/core_concepts_notes_and_rests.png
 
-Lastly, the *chords* function can create multiple chords. As with *notes*, duration can be a single value or a list (or a string containing multiple values separated by spaces). The first argument, however, must be either a list-of-lists of tones, or a list of strings, each of which can contain multiple tones. Here's an example:
+Lastly, the *chords* function can create multiple chords. As with *notes*, duration can be a single value or a list (or a string containing multiple values separated by spaces). The first argument, however, must be either (1) a list-of-lists of tones, or (2) a list of strings each of which can contain multiple tones. Even if you only want to specify a single set of tones, it should still be wrapped in a list. Here's an example:
 
 ::
 
@@ -209,15 +254,19 @@ Lastly, the *chords* function can create multiple chords. As with *notes*, durat
 
 .. image:: _static/core_concepts_chords.png
 
-Because the *notes* and *chords* functions do not accept any ornamentation, this can make it tedious to create tied notes as these are actually a series of points with *phrasing="~"*. To this end, LilyLib also includes a *tied_note* and *tied_chord* function which take a single tone (or a single list of tones in the case of a tied chord) and a list of durations and returns a list of points that create the desired tied note/chord.
+.. NOTE::
+    Tied notes (or chords) are created as separate notes, with all but the last having the phrasing '~'. However, because the *notes* and *chords* functions apply any passed phrasing to *all* created notes or chords, they are not well suited to creating ties. To this end, LilyLib also includes a *tied_note* and *tied_chord* function which take a single tone (or a single list of tones in the case of a tied chord) and a list of durations and returns a list of notes/chords with the desired phrasing.
 
 
 Points
 ----------
 
-So far we've been talking about notes, chords and rests as if they were different things. However, under the hood they are actually all instances of the same class, *Point*. In LilyLib a *Point* is any element that appears in sheet music and corresponds to some sound (or absence of sound). When you write music in LilyLib *everything* is a point. Even things like clef changes, key or time signature changes, and whether or not notes are triplets are just bits of markup added to points, just like accents or ornamentation. The benefit of this is that a passage of music is just a list of points, and so if you want to get, say, the 10th note to modify it in some way, you can simply grab the 10th element of the list.
+So far we've been talking about notes, chords and rests as if they were different things. However, under the hood they are actually all instances of the same class, *Point*. In LilyLib a *Point* is any element that appears in sheet music and corresponds to some sound (or absence of sound). When you write music in LilyLib *everything* is a point. Even things like clef changes, key or time signature changes, and whether or not notes are triplets are just extra information added to points, just like accents or ornamentation. The benefit of this is that a passage of music is just a list of points, and so if you want to get, say, the 10th note to modify it in some way, you can simply grab the 10th element of the list.
 
-You can see the code for the *Point* class in *points.py*. A *Point* is a python object that when asked to print produces a string representation of itself in Lilypond code that can be compiled into sheet music. The values that affect what prints out are, most importantly, the tones and duration, however, as briefly mentioned above, points also have phrasing, articulation, ornamentation, dynamics, markup, markdown, prefix and suffix. All of these are strings, except for tones, which is a list of strings. If tones is empty, it prints as a rest, if tones contains a single string it prints as a note, and if tones contains multiple strings it prints as a chord:
+.. NOTE::
+    The word *Point* was chosen as it is suitably generic to subsume rests, notes and chords, but also because it has a historical basis: In the middle ages, written notes, which often lacked stems, were referred to with the Latin word '*punctum*' which translates to the modern English word point. One vestige of this is the word 'counterpoint' which refers to music comprising multiple voices that overlap each other. Early composers described this style of music as '*punctum contra punctum*', which means "note against note", and this phrase was later condensed to counterpoint.
+
+You can see the code for the *Point* class in *points.py*. A *Point* is a python object that when asked to print produces a string representation of itself in Lilypond code that can be compiled into sheet music. The values that affect what prints out are, most importantly, the tones and duration, however, as briefly mentioned above, points also have phrasing, articulation, ornamentation, dynamics, markup, markdown, a prefix and a suffix. All of these are strings, except for tones, which is a list of strings. If tones is empty, it prints as a rest, if tones contains a single string it prints as a note, and if tones contains multiple strings it prints as a chord:
 
 ::
 
@@ -254,7 +303,7 @@ This code creates a string that represents the tone, but next it needs to add th
             string += self.suffix
         return string
 
-The most important thing to note here is that some values have extra strings added to the front of them. For instance, if the point has articulation, this is preceded with "-", while ornamentation and dynamics are preceded by "\\". This is in order to comply with lilypond. For instance, to make a note or chord staccato, lilpond wants you to add "-." to it, because the "-" is common to all articulation, LilyLib adds it for you. Ditto for dynamics and "\\": for *forte*, lilypond wants "\f", but because the slashes are always there, LilyLib lets you write *dynamics='f'* instead. This places some constraints on what you can put where, for instance *articulation="."* and *ornamentation="staccato"* will both produce a staccato note because "-." and "\staccato" are both acceptable lilypond, but *articulation="stacatto"* will not because *-staccato* is not valid lilypond. For cases where you need total control, you can use the *prefix* and *suffix* values as these let you place whatever extra text you want at the start and end of the point, respectively. Various markup functions we'll come to later use these values too.
+Here you can see why phrasing is only for things printed as directly attached to the note, while articulartion is preceded by '-' and ornamentation is preceded by '\': it is because these characters are added infront of this information when the point is printed. This is in order to comply with lilypond. For instance, to make a note or chord staccato, lilpond wants you to add "-." to it, because the "-" is common to all articulation, LilyLib adds it for you. Ditto for dynamics and "\\": for *forte*, lilypond wants "\f", but because the slashes are always there, LilyLib lets you write ``dynamics='f'`` instead. This places some constraints on what you can put where, for instance ``articulation="."*``and ``ornamentation="staccato"`` will both produce a staccato note because "-." and "\staccato" are both acceptable lilypond, but ``articulation="staccato"`` will not because *-staccato* is not valid lilypond. For cases where you need total control, you can use the *prefix* and *suffix* values as these let you place whatever extra content you want at the start and end of the point, respectively. Various markup functions we'll come to later use these values too.
 
 Points also have some other functions that make them easier to work with. Note that the *str* function calls the functions *is_rest*, *is_note* and *is_chord* to determine how to print. Here's what these functions look like:
 
@@ -321,12 +370,10 @@ Lastly, you can *add* new tones to a Point, *remove* existing tones, or even *re
 
 These functions are only possible because rests, notes and chords are all just Points. For instance, adding a tone to a rest makes it immediately behave like a note. Similarly, if you keep removing tones from a chord it will turn first into a note and then into a rest.
 
-As a slight digression, the word *Point* was chosen as it is suitably generic to subsume rests, notes and chords, but also because it has a historical tie-in: In the middle ages, written notes, which often lacked stems, were referred to with the Latin word '*punctum*' which translates to the modern English word point. One vestige of this is the word 'counterpoint' which refers to music comprising multiple voices that overlap each other. Early composers described this style of music as '*punctum contra punctum*', which means "note against note", and this phrase was later condensed to counterpoint. OK, digression over.
-
 Tones
 ----------
 
-We've encountered the word "tone" a lot so far: *Points* have tones (one if they're a note, multiple if they're a chord, none if they're a rest) and the *note*, *notes*, *chord* and *chords* functions all take one or more tones as an argument. But what exactly is a tone? The good news is that it's quite basic: a tone is just a string and there is no special *Tone* class. Not all strings are tones though, and for a string to be a valid tone it must correspond to a sound an instrument can make. We can see how all possible tones are contructed inside *tones.py*. First, note that a tone is made of a letter and a pitch, and that the letter itself can be decomposed into a base letter and an accent. Here's the code for these:
+We've encountered the word "tone" a lot so far: *Points* have tones (one if they're a note, multiple if they're a chord, none if they're a rest) and the *note*, *notes*, *chord* and *chords* functions all take one or more tones as an argument. But what exactly is a tone? The good news is that it's quite basic: a tone is just a string and there is no special *Tone* class. Not all strings are valid tones though, and for a string to be a valid tone it must correspond to a sound an instrument can make. We can see how all possible tones are contructed inside *tones.py*. First, note that a tone is made of a letter and a pitch, and that the letter itself can be decomposed into a base letter and an accent. Here's the code for these:
 
 ::
 
@@ -380,7 +427,10 @@ So *all_tones* includes everything all the way from *cff,,,* to *bss\`\`\`*. Not
 	    new_tone = new_letter + new_pitch
 	    return new_tone
 
-However these don't handle double sharps or double flats currently. It's also worth noting that the equivalence of these tones is an artefact of modern equal tuning. Prior to the 20th century it was widely accepted that there were subtle differences between, say, f-sharp and g-flat, and different tuning systems placed them at different frequencies. Some pianos were even made with split black keys allowing the performer to select which of the tones they wanted.
+However these don't handle double sharps or double flats currently.
+
+.. NOTE::
+    The equivalence of tones life *es* and *f* is an artefact of modern equal tuning. Prior to the 20th century it was widely accepted that there were subtle differences between, say, f-sharp and g-flat, and different tuning systems placed them at different frequencies. Some pianos were even made with split black keys allowing the performer to select which of the tones they wanted.
 
 Just as *tones.py* inlcudes instructions for building tones, it also provides functions to decompose a tone into it's letter, pitch, accent, and base letter:
 

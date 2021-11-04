@@ -4,18 +4,28 @@ Introduction
 What is LilyLib?
 -----------------------
 
-When musicians talk about a piece of music they don’t do so note-by-note, rather they talk about higher-level structures; scales, arpeggios, harmonies, motifs, key changes, and so on. Nonetheless sheet music adopts the note-by-note approach, as does Lilypond; a typesetting language for creating sheet music. Here’s a basic example illustrating this difference:
+When musicians talk about a piece of music they don’t do so note-by-note, rather they talk about higher-level structures; scales, arpeggios, harmonies, motifs, key changes, and so on. For instance, an instructor might tell their student:
 
-	*“Play a descending scale in C minor, from middle C, with a swing rhythm.”*
+	*“Play a one-octave, descending scale in C minor, from middle C, with a swing rhythm.”*
  
- .. image:: _static/intro_scale.png
-
-But what if we could create sheet music directly from the higher-level structures musicians talk about? This is where LilyLib comes in: LilyLib is a python library that allows the user to describe a piece of music in terms of the concepts that are familiar to musicians. LilyLib automatically compiles into Lilypond, which can itself be compiled into sheet music. Here’s the LilyLib for the scale above:
+Lilypond is a typesetting language that lets you create your own sheet music. In Lilypond's language the above instruction would look like this:
 
 
 ::
 
-	self.score["bass"] = scale('c`', 'c', ['8.', 16], key="C Minor")
+	c`8. b16 af8. g16 f8. ef16 d8. c16
+
+
+Here, each "word" corresponds to a note, with a letter (e.g. c), pitch (e.g. \`) and duration (e.g. 8.). With a suitable typesetting program to interpret these instructions, you would get this:
+
+ .. image:: _static/intro_scale.png
+
+Looks very nice, but note that higher level concepts, like scales or the swing rhythm, are absent in the Lilypond code. This is where LilyLib comes in: LilyLib is a python library that allows the user to describe a piece of music in terms of the concepts that are familiar to musicians. LilyLib automatically compiles into Lilypond, which can itself be compiled into sheet music. Here’s the LilyLib for the scale above:
+
+
+::
+
+	scale('c`', 'c', ['8.', 16], key="C Minor")
 
 
 Not quite as familiar as spoken language, but note that it does not list the individual notes of the scale. Instead it calls a function called *scale*, providing it with the key (C minor), the start (c`) and stop (c) points, and a list of rhythms ('8.', 16). LilyLib does the rest: when this file is executed it outputs Lilypond which can then be converted into the pdf shown above.

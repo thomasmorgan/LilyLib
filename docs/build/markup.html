@@ -4,15 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Markup &#8212; LilyLib 0.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API" href="API.html" />
@@ -33,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="markup">
+  <section id="markup">
 <h1>Markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h1>
 <p>As we’ve covered, LilyLib writes music as a list of <em>Points</em>, a class of object introduced by LilyLib that correspond to notes, chords and rests. These points can be given values for a range of properties that modify how they print, and collectively we call this markup. This includes things like ornamentation, phrasing and so on, and these proprties of points can be edited at any time or assigned by the <em>note</em>, <em>rest</em> and <em>chord</em> functions. However, markup can do more than this, and, in particular, there are some forms of markup that don’t apply to a single note, but rather apply to a passage of multiple notes. An example might be the use of triplets. In these cases the markup requires that multiple points be edited, typically to denote the start and stop points of the markup and LilyLib includes a number of functions to do exactly this. We’ve seen one example of this already with the <em>key_signature</em> function from the key changing demo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">key_signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">note</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -49,7 +49,7 @@
     <span class="k">return</span> <span class="n">passage</span>
 </pre></div>
 </div>
-<p>Here the function is given a key signature and a passage and it modifies the <em>prefix</em> of the first point to include a key change. If you want the key signature to change again at the end of the passage you can pass another key signature and this is added to the <em>suffix</em> of the final point. Note that the function also makes a deepcopy of the passage. This means that marking up a passage returns an new version of the passage with the markup, but the original passage is unchanged. This is because passages are often repeated, but with different markup, and so its useful to apply markup to one instance, but not the others. This behavior is common to all markup functions.</p>
+<p>Here the function is given a key signature and a passage and it modifies the <em>prefix</em> of the first point to include a key change. If you want the key signature to change again at the end of the passage you can pass another key signature and this is added to the <em>suffix</em> of the final point. Note that the function also makes a deepcopy of the passage. This means that marking up a passage returns a new version of the passage with the markup, but the original passage is unchanged. This is because passages are often repeated, but with different markup, and so its useful to apply markup to one instance, but not the others. This behavior is common to all markup functions.</p>
 <p>Here’s another example, the <em>triplets</em> function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">triplets</span><span class="p">(</span><span class="n">passage</span><span class="p">):</span>
     <span class="n">passage</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">passage</span><span class="p">)</span>
@@ -77,10 +77,10 @@
     <span class="k">return</span> <span class="n">passage</span>
 </pre></div>
 </div>
-<p>This function accepts a list of multiple passages and applies markup to them such that they print as multiple simultaneous voices. First each voice is bookended by curcly brackets to denote the start and stop of each voice. Then the final point of all but the last voice have slashes appeneded to their suffix to indicate the change from one voice to another. Finally, the first note of the first voice, and the last note of the last voice have chevrons added to indicate the beginning and end of the voiced section. These voices are then joined to form a single long list of points and returned.</p>
-<p>Note that, as per lilypond convention, voices should be passed in the following order: highest, lowest, 2nd highest, 2nd lowest, 3rd highest, and so on. Also, note than when counting points in order to seelct or modify a specific point (e.g. <em>passage[12]</em>), for voices you need to count through each voice, in order, one after another.</p>
+<p>This function accepts a list of multiple passages and applies markup to them such that they print as multiple simultaneous voices. First each voice is bookended by curly brackets to denote the start and stop of each voice. Then the final point of all but the last voice have slashes appeneded to their suffix to indicate the change from one voice to another. Finally, the first note of the first voice, and the last note of the last voice have chevrons added to indicate the beginning and end of the voiced section. These voices are then joined to form a single long list of points and returned.</p>
+<p>Note that, as per lilypond convention, voices should be passed in the following order: highest, lowest, 2nd highest, 2nd lowest, 3rd highest, and so on. Also, note than when counting points in order to seelct or modify a specific point (e.g. <code class="docutils literal notranslate"><span class="pre">select(passage,</span> <span class="pre">12)</span></code>), for voices you need to count through each voice, in order, one after another.</p>
 <p>The markup file also includes many other functions for things like clef changes, repeat bars, ottava markings, and so on. For a full list see the API doc file.</p>
-</div>
+</section>
 
 
           </div>
@@ -99,10 +99,10 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">LilyLib documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">LilyLib documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">The basics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing_music.html">Writing music</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changing_keys.html">Keys and changing key</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Markup</a></li>
@@ -124,7 +124,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -146,7 +146,7 @@
       &copy;2020, Thomas J. H. Morgan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

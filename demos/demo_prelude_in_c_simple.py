@@ -15,73 +15,73 @@ class PreludeInCSimple(Piece):
     def motif(self, c):
         tones = tonify(c)
         return {
-            'treble': rep(rest(8) + notes(pattern(tones, 2 * [3, 4, 5]), 16), 2),
-            'bass': rep(voices(rest(16) + tied_note(select(tones, 2), ['8.', 4]), note(select(tones, 1), 2)), 2)
+            'treble': rep([rest(8)] + notes(pattern(tones, 2 * [3, 4, 5]), 16), 2),
+            'bass': rep(voices([rest(16)] + tied_note(select(tones, 2), ['8.', 4]), [note(select(tones, 1), 2)]), 2)
         }
 
     @property
     def chords(self):
-        bar = [''] * 40
+        bars = [
+            'c` e` g` c`` e``',
+            'c` d` a` d`` f``',
+            'b d` g` d`` f``',
+            'c` e` g` c`` e``',
 
-        bar[1] = 'c` e` g` c`` e``'
-        bar[2] = 'c` d` g` c`` e``'
-        bar[3] = 'b d` g` d`` f``'
-        bar[4] = 'c` e` g` c`` e``'
+            'c` e` a` e`` a``',
+            'c` d` fs` a` d``',
+            'b d` g` d`` g``',
+            'b c` e` g` c``',
 
-        bar[5] = 'c` e` a` e`` a``'
-        bar[6] = 'c` d` df` a` d``'
-        bar[7] = 'b d` g` d`` g``'
-        bar[8] = 'b c` e` g` c``'
+            'a c` e` g` c``',
+            'd a d` fs` c``',
+            'g b d` g` b`',
+            'g bf e` g` cs``',
 
-        bar[9] = 'a c` e` g` c``'
-        bar[10] = 'd a d` fs` c``'
-        bar[11] = 'g b d` g` b`'
-        bar[12] = 'g bf e` g` cs``'
+            'f a d` a` d``',
+            'f af d` f` b`',
+            'e g c` g` c``',
+            'e f a c` f`',
 
-        bar[13] = 'f a d` a` d``'
-        bar[14] = 'f af d` f` b`'
-        bar[15] = 'e g c` g` c``'
-        bar[16] = 'e f a c` f`'
+            'd f a c` f`',
+            'g, d g b f`',
+            'c e g c` e`',
+            'c g bf c` e`',
 
-        bar[17] = 'd f a c` f`'
-        bar[18] = 'g, d g b f`'
-        bar[19] = 'c e g c` e`'
-        bar[20] = 'c g bf c` e`'
+            'f, f a c` e`',
+            'fs, c a c` ef`',
+            'af, f b c` d`',
+            'g, f g b d`',
 
-        bar[21] = 'f, f a c` e`'
-        bar[22] = 'fs, c a c` ef`'
-        bar[23] = 'af, f b c` d`'
-        bar[24] = 'g, f g b d`'
+            'g, e g c` e`',
+            'g, d g c` f`',
+            'g, d g b f`',
+            'g, ef a c` fs`',
 
-        bar[25] = 'g, e g c` e`'
-        bar[26] = 'g, d g c` f`'
-        bar[27] = 'g, d g b f`'
-        bar[28] = 'g, ef a c` fs`'
+            'g, e g c` g`',
+            'g, d g c` f`',
+            'g, d g b f`',
+            'c, c g bf e`'
+        ]
 
-        bar[29] = 'g, e g c` g`'
-        bar[30] = 'g, d g c` f`'
-        bar[31] = 'g, d g b f`'
-        bar[32] = 'c, c g bf e`'
-
-        return bar
+        return bars
 
     def held_bass(self, tones):
         tones = tonify(tones)
-        return voices(rest(16) + tied_note(tones[1], ['8.', 4, 2]), note(tones[0], 1))
+        return voices([rest(16)] + tied_note(select(tones, 2), ['8.', 4, 2]), [note(select(tones, 1), 1)])
 
     def long_melody(self, tones):
         tones = tonify(tones)
-        return rest(8) + notes(pattern(tones, 1, 2, 3, 4, 3, 2, 3, 2, 1, 2), 16)
+        return [rest(8)] + notes(pattern(tones, 1, 2, 3, 4, 3, 2, 3, 2, 1, 2), 16)
 
     @property
     def outro(self):
         return {
-            'treble': self.long_melody('f a c` f`') + notes('f d', 16) * 2 + self.long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1) + chord('e` g` c`', 1),
-            'bass': self.held_bass('c, c') + self.held_bass('c, b,') + chord('c, c', 1)
+            'treble': self.long_melody('f a c` f`') + rep(notes('f d', 16), 2) + self.long_melody('g` b` d`` f``') + pattern(self.scale('d`', 'f`', 16), 1, 3, 2, 1) + [chord('e` g` c`', 1)],
+            'bass': self.held_bass('c, c') + self.held_bass('c, b,') + [chord('c, c', 1)]
         }
 
     def write_score(self):
-        self.score = join([self.motif(chord) for chord in self.chords[1:33]])
+        self.score = join([self.motif(chord) for chord in self.chords])
         self.score = join(self.score, self.outro)
 
 

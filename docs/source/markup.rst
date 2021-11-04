@@ -19,7 +19,7 @@ Here we are applying the key change to a single note, but if we look at the unde
             passage[-1].suffix += str(keyify(key2))
         return passage
 
-Here the function is given a key signature and a passage and it modifies the *prefix* of the first point to include a key change. If you want the key signature to change again at the end of the passage you can pass another key signature and this is added to the *suffix* of the final point. Note that the function also makes a deepcopy of the passage. This means that marking up a passage returns an new version of the passage with the markup, but the original passage is unchanged. This is because passages are often repeated, but with different markup, and so its useful to apply markup to one instance, but not the others. This behavior is common to all markup functions.
+Here the function is given a key signature and a passage and it modifies the *prefix* of the first point to include a key change. If you want the key signature to change again at the end of the passage you can pass another key signature and this is added to the *suffix* of the final point. Note that the function also makes a deepcopy of the passage. This means that marking up a passage returns a new version of the passage with the markup, but the original passage is unchanged. This is because passages are often repeated, but with different markup, and so its useful to apply markup to one instance, but not the others. This behavior is common to all markup functions.
 
 Here's another example, the *triplets* function:
 
@@ -53,8 +53,8 @@ As one last example, here's the voices function:
             passage += voice
         return passage
 
-This function accepts a list of multiple passages and applies markup to them such that they print as multiple simultaneous voices. First each voice is bookended by curcly brackets to denote the start and stop of each voice. Then the final point of all but the last voice have slashes appeneded to their suffix to indicate the change from one voice to another. Finally, the first note of the first voice, and the last note of the last voice have chevrons added to indicate the beginning and end of the voiced section. These voices are then joined to form a single long list of points and returned.
+This function accepts a list of multiple passages and applies markup to them such that they print as multiple simultaneous voices. First each voice is bookended by curly brackets to denote the start and stop of each voice. Then the final point of all but the last voice have slashes appeneded to their suffix to indicate the change from one voice to another. Finally, the first note of the first voice, and the last note of the last voice have chevrons added to indicate the beginning and end of the voiced section. These voices are then joined to form a single long list of points and returned.
 
-Note that, as per lilypond convention, voices should be passed in the following order: highest, lowest, 2nd highest, 2nd lowest, 3rd highest, and so on. Also, note than when counting points in order to seelct or modify a specific point (e.g. *passage[12]*), for voices you need to count through each voice, in order, one after another.
+Note that, as per lilypond convention, voices should be passed in the following order: highest, lowest, 2nd highest, 2nd lowest, 3rd highest, and so on. Also, note than when counting points in order to seelct or modify a specific point (e.g. ``select(passage, 12)``), for voices you need to count through each voice, in order, one after another.
 
 The markup file also includes many other functions for things like clef changes, repeat bars, ottava markings, and so on. For a full list see the API doc file.
