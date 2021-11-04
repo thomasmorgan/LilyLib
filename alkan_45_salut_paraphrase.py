@@ -136,18 +136,28 @@ class Salut(Piece):
 				'bass': bass
 			}
 
-		# ####################
-		# # Opening Chords 2 #
-		# ####################
+		####################
+		# Opening Chords 2 #
+		####################
 
-		# dim7 = chord(diminished7('f,,', 6, key='f minor'), 2, ornamentation="arpeggio")
-		# dim7.replace('cf, eff,', 'b,, d,')
-		# cmaj = chord(omit(arpeggio('c,,', 6, key='c major'), 2), 2, ornamentation="arpeggio")
-		# opening_chords2 = rolled_chords(dim7, cmaj)
+		dim7 = diminished7('f,,', 6, key='b minor')
+		cmaj = omit(arpeggio('c,,', 6, key='c major'), 2)
+		opening_chords2 = rolled_chords(dim7, cmaj)
 
-		# select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
-		# select(opening_chords2['treble'], 1).dynamics = "mf"
-		# select(opening_chords2['bass'], 2).suffix = nolinebreak
+		if self.improvements:
+			opening_chords2 = {
+				'treble': rests(1, 2, 4, 8),
+				'bass': ottava(voices(select(opening_chords2, 1), select(opening_chords2, 2)), -1)
+			}
+			select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
+		else:
+			opening_chords2 = {
+				'treble': clef('bass', select(opening_chords2, 1)),
+				'bass': select(opening_chords2, 2)
+			}
+
+		select(opening_chords2['treble'], 1).dynamics = "mf"
+		#select(opening_chords2['bass'], 2).suffix = nolinebreak
 
 		# ############
 		# # Melody 2 #
@@ -776,7 +786,7 @@ class Salut(Piece):
 		# 	'bass': rep(rests(1), 24)
 		# }
 
-		self.score = join(opening_chords, melody1) # opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
+		self.score = join(opening_chords, melody1, opening_chords2) # melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
 	def end_score(self):
 		if self.improvements:
