@@ -220,12 +220,13 @@ We've seen `transpose` used a few times above. It takes an (arbitrarily nested) 
 
 ::
 
-	def transpose(item, shift, key, mode="scale"):
+	def transpose(item, shift, key, mode="scale", clean=False):
 
 - *item*; the thing you want to transpose
 - *shift*; the interval you want it transposed by
 - *key*; the key in which the transposition occurs
 - *mode*; the "`kind`" of transposition. Either 'scale', 'octave' or 'semitone'.
+- *clean*; whether or not the transposed passage is stripped on any ornamentation (etc.)
 
 You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we've seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.
 

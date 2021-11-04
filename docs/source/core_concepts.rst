@@ -68,6 +68,7 @@ Our new piece contains two functions: *details* and *write_score*. These contain
             self.key = "C Major"
             self.score = {}
             self.auto_add_bars = False
+            self.piano_staff = True
 
 	        self.details()
 
