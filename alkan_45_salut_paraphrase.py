@@ -24,26 +24,23 @@ class Salut(Piece):
 		self.auto_add_bars = True
 		self.staves=[Super('treble', _with='\\consists "Span_arpeggio_engraver"'), Bass(_with='\\consists "Span_arpeggio_engraver"')]
 		self.staves[0].extra_text += '\\set Score.connectArpeggios = ##t'
+		self.piano_staff = False
 
 	def subtext(self):
 		return '''
-			\\layout {
-			  \\context {
-				\\Staff
-				\\RemoveEmptyStaves
-			  }
-			}
-			\\layout {
-			  \\context {
-				\\Score
-				\\consists "Span_arpeggio_engraver"
-			  }
-			}
+\\layout {
+  \\context {
+	\\Staff
+	\\RemoveEmptyStaves
+  }
+}
+\\layout {
+  \\context {
+	\\Score
+	\\consists "Span_arpeggio_engraver"
+  }
+}
 		'''
-
-# piece is in G minor or Bf Major
-# V: D Minor or F Major
-# IV: C minor or Ef Major
 
 	def write_score(self):
 
