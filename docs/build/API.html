@@ -329,7 +329,7 @@
 </dd>
 <dt><strong>scale_subset</strong> (<em>positions, start, stop_or_length, key, dur=None, step=1</em>)</dt><dd><p>Returns a subset of a scale from <em>start</em> to <em>stop</em> or of length <em>length</em> in the key of <em>key</em> with stepsize <em>step</em>. The <em>positions</em> argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.</p>
 </dd>
-<dt><strong>transpose</strong> (<em>item, shift, key, mode=”scale”</em>)</dt><dd><p>Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; “scale”, “octave” or “semitone”.</p>
+<dt><strong>transpose</strong> (<em>item, shift, key, mode=”scale”, clean=False</em>)</dt><dd><p>Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; “scale”, “octave” or “semitone”. If clean is set to True, then the transposed passage is stripped of any ornamentation, phrasing, etc.</p>
 </dd>
 <dt><strong>validate_transpose_args</strong> (<em>shift, mode</em>)</dt><dd><p>Internal function that validates arguments for <em>transpose</em>.</p>
 </dd>
@@ -342,7 +342,19 @@
 <section id="markup">
 <h2>markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
-<dt><strong>barbreak</strong></dt><dd><p>A string that causes a bar line to appear in the sheet music and a linebreak to appear in the terminal output. Useful for formatting lilypond code as per mutopia requirements.</p>
+<dt><strong>barbreak</strong></dt><dd><p>A string that causes a bar line to appear in the sheet music and a linebreak to appear in the terminal output.</p>
+</dd>
+<dt><strong>thick_barbreak</strong></dt><dd><p>A string that causes a thick bar line to appear in the sheet music and a linebreak to appear in the terminal output.</p>
+</dd>
+<dt><strong>double_barbreak</strong></dt><dd><p>A string that causes a double bar line to appear in the sheet music and a linebreak to appear in the terminal output.</p>
+</dd>
+<dt><strong>thickthin_barbreak</strong></dt><dd><p>A string that causes a thick bar line, followed by a thin bar line, to appear in the sheet music and a linebreak to appear in the terminal output.</p>
+</dd>
+<dt><strong>doublethick_barbreak</strong></dt><dd><p>A string that causes two thick bar lines to appear in the sheet music and a linebreak to appear in the terminal output.</p>
+</dd>
+<dt><strong>triple_barbreak</strong></dt><dd><p>A string that causes a triple bar line to appear (with the middle line being thick) in the sheet music and a linebreak to appear in the terminal output.</p>
+</dd>
+<dt><strong>thinthick_barbreak</strong></dt><dd><p>A string that causes a thin bar line, followed by a thick bar line, to appear in the sheet music and a linebreak to appear in the terminal output.</p>
 </dd>
 <dt><strong>linebreak</strong></dt><dd><p>A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.</p>
 </dd>
@@ -357,6 +369,8 @@
 <dt><strong>key_signature</strong> (<em>key1, passage, key2=””</em>)</dt><dd><p>Returns a flattened deepcopy of the <em>passage</em> with <em>key1</em> added to the prefix of the first point and the optional <em>key2</em> added to the suffix of the final point.</p>
 </dd>
 <dt><strong>slur</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a slur encloses the passage.</p>
+</dd>
+<dt><strong>sustain</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a passage starts with a pedal marking and ends with the symbol to release the pedal.</p>
 </dd>
 <dt><strong>phrase</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a phrasing slur encloses the passage.</p>
 </dd>
@@ -383,7 +397,7 @@
 <dl class="simple">
 <dt><strong>Piece.__init__</strong> ()</dt><dd><p>Piece init function. Sets default values, calls <em>details</em> to overwrite them, then prints itself to the terminal.</p>
 </dd>
-<dt><strong>Piece.details</strong> ()</dt><dd><p>Must be overwritten by subclasses, allows configuration of piece deatils like title, composer, etc.</p>
+<dt><strong>Piece.details</strong> ()</dt><dd><p>Must be overwritten by subclasses, allows configuration of piece details like title, composer, etc.</p>
 </dd>
 <dt><strong>Piece.set_key</strong> (<em>key</em>)</dt><dd><p>Sets the pieces key to the passed value. <em>key</em> can be a string, a subclass of <em>Key</em> or an instance of a <em>Key</em>.</p>
 </dd>
@@ -419,7 +433,7 @@
 </dd>
 <dt><strong>Piece.scale_subset</strong> (<em>positions, start, stop_or_length, dur=None, step=1</em>)</dt><dd><p>Returns a subset of a scale by passing all arguments and the piece’s current key to points.scale_subset. The <em>positions</em> argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.</p>
 </dd>
-<dt><strong>Piece.transpose</strong> (<em>item, shift, mode=”scale”</em>)</dt><dd><p>Returns a transposed version of the passed item or passage, by passing all arguments and the piece’s current key to points.transpose.</p>
+<dt><strong>Piece.transpose</strong> (<em>item, shift, mode=”scale”, clean=False</em>)</dt><dd><p>Returns a transposed version of the passed item or passage, by passing all arguments and the piece’s current key to points.transpose.</p>
 </dd>
 <dt><strong>Piece.harmonize</strong> (<em>points, intervals, mode=”scale”</em>)</dt><dd><p>Returns a harmonized version of the passed points, by passing all arguments and the piece’s current key to points.harmonize.</p>
 </dd>

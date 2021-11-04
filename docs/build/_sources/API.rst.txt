@@ -407,8 +407,8 @@ points
 **scale_subset** (*positions, start, stop_or_length, key, dur=None, step=1*)
 	Returns a subset of a scale from *start* to *stop* or of length *length* in the key of *key* with stepsize *step*. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
 
-**transpose** (*item, shift, key, mode="scale"*)
-	Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; "scale", "octave" or "semitone".
+**transpose** (*item, shift, key, mode="scale", clean=False*)
+	Returns a transposed version of the passed item or passage. The shift is the size of the transposition. Key is the key in which the transposition occurs. Mode indicates the kind of transposition; "scale", "octave" or "semitone". If clean is set to True, then the transposed passage is stripped of any ornamentation, phrasing, etc.
 
 **validate_transpose_args** (*shift, mode*)
 	Internal function that validates arguments for *transpose*.
@@ -423,7 +423,25 @@ markup
 -----------
 
 **barbreak**
-	A string that causes a bar line to appear in the sheet music and a linebreak to appear in the terminal output. Useful for formatting lilypond code as per mutopia requirements.
+	A string that causes a bar line to appear in the sheet music and a linebreak to appear in the terminal output.
+
+**thick_barbreak**
+	A string that causes a thick bar line to appear in the sheet music and a linebreak to appear in the terminal output.
+
+**double_barbreak**
+	A string that causes a double bar line to appear in the sheet music and a linebreak to appear in the terminal output.
+
+**thickthin_barbreak**
+	A string that causes a thick bar line, followed by a thin bar line, to appear in the sheet music and a linebreak to appear in the terminal output.
+
+**doublethick_barbreak**
+	A string that causes two thick bar lines to appear in the sheet music and a linebreak to appear in the terminal output.
+
+**triple_barbreak**
+	A string that causes a triple bar line to appear (with the middle line being thick) in the sheet music and a linebreak to appear in the terminal output.
+
+**thinthick_barbreak**
+	A string that causes a thin bar line, followed by a thick bar line, to appear in the sheet music and a linebreak to appear in the terminal output.
 
 **linebreak**
 	A string that causes a linebreak both in the sheetmusic and in the terminal output, can be added to Points, usually as part of their suffix.
@@ -445,6 +463,9 @@ markup
 
 **slur** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a slur encloses the passage.
+
+**sustain** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a passage starts with a pedal marking and ends with the symbol to release the pedal.
 
 **phrase** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a phrasing slur encloses the passage.
@@ -485,7 +506,7 @@ piece
 		Piece init function. Sets default values, calls *details* to overwrite them, then prints itself to the terminal.
 		
 	**Piece.details** ()
-		Must be overwritten by subclasses, allows configuration of piece deatils like title, composer, etc.
+		Must be overwritten by subclasses, allows configuration of piece details like title, composer, etc.
 
 	**Piece.set_key** (*key*)
 		Sets the pieces key to the passed value. *key* can be a string, a subclass of *Key* or an instance of a *Key*.
@@ -538,7 +559,7 @@ piece
 	**Piece.scale_subset** (*positions, start, stop_or_length, dur=None, step=1*)
 		Returns a subset of a scale by passing all arguments and the piece's current key to points.scale_subset. The *positions* argument indicates which notes are included and is indexed from 1. So [1, 3, 5] returns arpeggios and [1, 2, 3, 4, 5, 6, 7] returns full scales.
 
-	**Piece.transpose** (*item, shift, mode="scale"*)
+	**Piece.transpose** (*item, shift, mode="scale", clean=False*)
 		Returns a transposed version of the passed item or passage, by passing all arguments and the piece's current key to points.transpose.
 
 	**Piece.harmonize** (*points, intervals, mode="scale"*)

@@ -222,7 +222,7 @@
 <section id="tranposition">
 <h2>Tranposition<a class="headerlink" href="#tranposition" title="Permalink to this headline">¶</a></h2>
 <p>We’ve seen <cite>transpose</cite> used a few times above. It takes an (arbitrarily nested) list of Points or tones, transposes each item by the specified interval, and then returns the result. It’s a long function so we won’t show it all here, but here are the arguments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -230,6 +230,7 @@
 <li><p><em>shift</em>; the interval you want it transposed by</p></li>
 <li><p><em>key</em>; the key in which the transposition occurs</p></li>
 <li><p><em>mode</em>; the “<cite>kind</cite>” of transposition. Either ‘scale’, ‘octave’ or ‘semitone’.</p></li>
+<li><p><em>clean</em>; whether or not the transposed passage is stripped on any ornamentation (etc.)</p></li>
 </ul>
 <p>You need to specify a key because otherwise transposing according to a scale is not possible. Most of the cases we’ve seen above are where the bass clef is a -1 octave (or -7 scale) transposition of the treble clef.</p>
 <p>Here’s the bit of the function that does the transposing (by this point it is working only with tones):</p>
