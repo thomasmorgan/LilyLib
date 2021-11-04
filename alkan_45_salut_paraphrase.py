@@ -179,97 +179,150 @@ class Salut(Piece):
 		else:
 			melody2 = {'treble': clef('treble', treble), 'bass': bass}
 
+		select(melody2['bass'], len(melody2['bass'])).suffix = linebreak + select(melody2['bass'], len(melody2['bass'])).suffix
 
-		# ############
-		# # Chords 1 #
-		# ############
 
-		# self.set_key('a major')
+		############
+		# Chords 1 #
+		############
 
-		# def octave(tone):
-		# 	return chord([tone, transpose(tone, -1, 'a major', 'octave')], 8)
+		self.set_key('a major')
 
-		# def triple(points):
-		# 	return flatten([triplets(rep(point, 3), omit_number=True) for point in flatten([points])])
+		def octave(tone):
+			return chord([tone, transpose(tone, -1, 'a major', 'octave')], 8)
 
-		# def triple_octaves(tones):
-		# 	return flatten([triple(octave(t)) for t in flatten([tonify(tones)])])
+		def triple(points):
+			return flatten([triplets(rep(point, 3), omit_number=True) for point in flatten([points])])
 
-		# upper_treble4 = notes('a cs` d` e` fs` gs`', ['2.', 8, 8]) + notes('a` b` fs` a` gs` g`', [2, '4.', 8, 2, 4, 4])
-		# lower_treble4 = triple(chords(['cs e', 'cs e', 'cs e', 'e a', 'e b', 'e gs b', 'e gs b', 'b e`', 'a cs`', 'a cs`', 'b d` fs`', 'b d`', 'cs` e`', 'a cs` e`', 'gs b e`', 'g b e`'], 8))
-		# bass4 = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e') + triple(chord('e, d', 8))
+		def triple_octaves(tones):
+			return flatten([triple(octave(t)) for t in flatten([tonify(tones)])])
 
-		# select(lower_treble4, 1).markdown = '\\italic{sempre sostenuto e poco cres.}'
-		# select(lower_treble4, 25).dynamics = '<'
-		# select(lower_treble4, 31).dynamics = '!\\>'
-		# select(lower_treble4, 36).dynamics = '!'
+		upper_treble4 = notes('a cs` d` e` fs` gs`', ['2.', 8, 8]) + notes('a` b` fs`', [2, '4.', 8]) + slur(notes('a` gs` g`', [2, 4, 4]))
+		lower_treble4 = triple(chords(['cs e', 'cs e', 'cs e', 'e a', 'e b', 'e gs b', 'e gs b', 'b e`', 'a cs`', 'a cs`', 'b d` fs`', 'b d`', 'cs` e`', 'a cs` e`', 'gs b e`', 'g b e`'], 8))
+		bass4 = triple_octaves('a, e cs a, gs, b, gs, e fs, a, d, fs, e, ds e') + triple(chord('e, d', 8))
 
-		# upper_treble8 = notes('fs` b` d``', ['2.', 8, 8]) + notes('d`` e` a` cs`` cs`` d` cs` e`', [4, 2, 8, 8]) + notes('cs` b c`', [2, 4, 4])
-		# lower_treble8 = triple(chords(['fs as cs`', 'fs as cs`', 'fs b d`', 'd` fs`', 'd` e`', 'e gs b', 'e a cs`', 'cs` e`', 'd` a`', 'e b', 'e b', 'e a', 'e a', 'fs a', 'gs', 'fs gs'], 8))
-		# bass8 = add(triple(notes('cs e d b, gs, d cs a, fs,', 8)) + triple_octaves('gs, a, cs') + triple(notes('e, ds e', 8)), 'e,') + triple_octaves('d')
+		if self.improvements:
+			select(upper_treble4, 1).prefix += self.key_signature
+			select(bass4, 1).prefix += self.key_signature
 
-		# select(upper_treble8, 4).dynamics = '>'
-		# select(upper_treble8, 5).dynamics = '!\\<'
-		# select(upper_treble8, 7).dynamics = '!'
-		# select(upper_treble8, 8).dynamics = '>'
-		# select(upper_treble8, 9).dynamics = '!'
-		# select(lower_treble8, 1).dynamics = '<'
-		# select(lower_treble8, 11).dynamics = '!'
-		# select(lower_treble8, 29).markdown = '\\italic{dim.}'
-		# select(lower_treble8, 37).dynamics = '>'
-		# select(lower_treble8, 43).dynamics = '!'
-		# select(lower_treble8, 46).dynamics = 'p'
+		select(lower_treble4, 1).markdown = '\\italic{poco cresc.}'
+		select(lower_treble4, 1).markup = '\\italic{sempre sostenuto}'
+		select(bass4, 1).ornamentation = 'sustainOn'
+		select(bass4, 2).markdown = '\\italic{sostenuto}'
+		select(lower_treble4, 25).dynamics = '<'
+		select(lower_treble4, 31).dynamics = '!\\>'
+		select(lower_treble4, 36).dynamics = '!'
+		
+		if not self.improvements:
+			select(upper_treble4, 1).prefix = '\\clef "bass" ' + select(upper_treble4, 1).prefix
 
-		# upper_treble12 = notes('df` f` gf` af` bf` c``', ['2.', 8, 8]) + notes('df`` f`` ef``', [2, '4.', 8]) + notes('df`` c`` b`', [2, 4, 4])
-		# lower_treble12 = triple(chords(['f af', 'f af', 'f af', 'f af df`', 'af ef`', 'af c` ef`', 'af c` ef`', 'c` ef` af`', 'ef` bf`', 'ef` g` bf`', 'g` bf` df``', 'ef` bf` df``', 'ef` g` bf`', 'ef` g` bf`', 'ef` af`', 'ef` af`'], 8))
-		# bass12 = add(triple_octaves('df af f df c ef c af,'), 'af,') + add(triple_octaves('g, bf, ef, g,'), 'ef,') + add(triple_octaves('ef'), 'af,') + triple_octaves('ef') + add(triple_octaves('af'), 'ef') + add(triple(notes('b', 8)), 'af')
+		upper_treble8 = notes('fs` b` d``', ['2.', 8, 8]) + notes('d`` e` a` cs`` cs`` d` cs` e`', [4, 2, 8, 8]) + notes('cs` b c`', [2, 4, 4])
+		for i in [1, 4, 8, 12]:
+			select(upper_treble8, i).phrasing = '('
+		for i in [5, 9]:
+			select(upper_treble8, i).phrasing = ')-('
+		for i in [3, 7, 11, 14]:
+			select(upper_treble8, i).phrasing = ')'
+		if not self.improvements:
+			select(upper_treble8, 2).prefix = '\\clef "treble" ' + select(upper_treble8, 2).prefix
+		lower_treble8 = triple(chords(['fs as cs`', 'fs as cs`', 'fs b d`', 'd` fs`', 'd` e`', 'e gs b', 'e a cs`', 'cs` e`', 'd` a`', 'e b', 'e b', 'e a', 'e a', 'fs a', 'gs', 'fs gs'], 8))
+		bass8 = add(triple(notes('cs e d b, gs, d cs a, fs,', 8)) + triple_octaves('gs, a, cs') + triple(notes('e, ds e', 8)), 'e,') + triple_octaves('d')
 
-		# select(upper_treble12, 1).markdown = "\\italic{cres. poco a poco}"
-		# select(upper_treble12, 1).prefix += "\\key af \\major "
-		# select(upper_treble12, 7).dynamics = "<"
-		# select(upper_treble12, 8).dynamics = "rfz"
-		# select(upper_treble12, 10).dynamics = ">"
-		# select(upper_treble12, 12).dynamics = "p"
+		select(upper_treble8, 4).dynamics = '>'
+		select(upper_treble8, 5).dynamics = '!\\<'
+		select(upper_treble8, 7).dynamics = '!'
+		select(upper_treble8, 8).dynamics = '>'
+		select(upper_treble8, 9).dynamics = '!'
+		select(lower_treble8, 1).dynamics = '<'
+		select(lower_treble8, 11).dynamics = '!'
+		if not self.improvements:
+			select(lower_treble8, 28).prefix = '\\clef "bass" ' + select(lower_treble8, 28).prefix
+		select(lower_treble8, 29).markdown = '\\italic{dim.}'
+		select(lower_treble8, 37).dynamics = '>'
+		select(lower_treble8, 43).dynamics = '!'
+		select(lower_treble8, 46).dynamics = 'p'
 
-		# select(bass12, 1).prefix += "\\key af \\major "
+		upper_treble12 = notes('df` f` gf` af` bf` c``', ['2.', 8, 8]) + notes('df`` f`` ef``', [2, '4.', 8]) + notes('df`` c`` b`', [2, 4, 4])
+		lower_treble12 = triple(chords(['f af', 'f af', 'f af', 'f af df`', 'af ef`', 'af c` ef`', 'af c` ef`', 'c` ef` af`', 'ef` bf`', 'ef` g` bf`', 'g` bf` df``', 'ef` bf` df``', 'ef` g` bf`', 'ef` g` bf`', 'ef` af`', 'ef` af`'], 8))
+		bass12 = add(triple_octaves('df af f df c ef c af,'), 'af,') + add(triple_octaves('g, bf, ef, g,'), 'ef,') + add(triple_octaves('af,'), 'ef,') + triple_octaves('ef') + add(triple_octaves('af'), 'ef') + add(triple(notes('b', 8)), 'af')
 
-		# upper_treble16 = notes('b` e`` g``', ['2.', 8, 8]) + notes('g`` g` c`` e`` e`` e` a` c``', [4, 2, 8, 8]) + notes('c`', [2, '4.', 8])
-		# lower_treble16 = triple(chords(['ds` fs`', 'ds` a`', 'e` g`', 'g` b`', 'g` b` d``', 'b f`', 'c` e`', 'e` g`', 'e` gs`', 'fs d`', 'a c`', 'c` e`', 'f a', 'f a', 'e g', 'g bf'], 8))
-		# bass16 = add(triple(notes('a fs g e', 8)), 'b') + add(triple(chords(['f b', 'ds g', 'e', 'c'], 8)), 'g') + add(triple(notes('d b, c a,', 8)), 'e') + triple(chords(['f, c']*4, 8))
+		if not self.improvements:
+			select(upper_treble12, 4).prefix = '\\clef "treble" ' + select(upper_treble12, 4).prefix
+			for p in upper_treble12:
+				p.replace('df` f` gf` af` bf` c`` df`` f`` ef``', 'cs` es` fs` gs` as` bs` cs`` es`` ds``')
+			for p in lower_treble12:
+				p.replace('f af c` df` ef` f` gf` af` bf` c`` df`` f`` ef`` g`', 'es gs bs cs` ds` es` fs` gs` as` bs` cs`` es`` ds`` fss`')
+			for p in bass12:
+				p.replace('ef,, g,, af,, bf,, c, df, ef, f, g, af, bf, c df ef f af', 'ds,, fss,, gs,, as,, bs,, cs, ds, es, fss, gs, as, bs, cs ds es gs')
 
-		# select(upper_treble16, 1).prefix += '\\key e \\minor '
-		# select(lower_treble16, 9).dynamics = '<'
-		# select(lower_treble16, 12).dynamics = '!'
-		# select(lower_treble16, 13).dynamics = '>'
-		# select(lower_treble16, 15).dynamics = '!'
-		# select(lower_treble16, 25).dynamics = '>'
-		# select(lower_treble16, 27).dynamics = '!'
-		# select(lower_treble16, 28).dynamics = '<'
-		# select(lower_treble16, 36).dynamics = '!'
-		# select(lower_treble16, 37).dynamics = 'p'
-		# select(lower_treble16, 37).markup = '\\italic{dolce}'
-		# select(bass16, 1).prefix += '\\key e \\minor '
-		# select(bass16, 37).markdown = '\\italic{sostenutissimo}'
+		for i in [1, 4, 10]:
+			select(upper_treble12, i).phrasing = '('
+		for i in [3, 6, 12]:
+			select(upper_treble12, i).phrasing = ')'
 
-		# upper_treble19 = notes('c` f` ef` df` g a bf', 4) + chords(['bf d`', 'a c`'], 8) + notes('bf a', [2, 4])
-		# lower_treble19 = triple(chords(['f a', 'f c`', 'f c`', 'f bf', 'f', 'f g', 'e g', 'e', 'e g', 'e g', 'f'], 8))
-		# bass19 = triple(chords(['f, c'], 8)) + triple_octaves('a, bf, df c c c c') + triple(chords(['f, c', 'c, f, c', 'f, c'], 8))
+		select(upper_treble12, 1).markdown = "\\italic{cresc. poco a poco}"
+		if self.improvements:
+			select(upper_treble12, 1).prefix += "\\key af \\major "
+			select(bass12, 1).prefix += "\\key af \\major "
+		select(upper_treble12, 7).dynamics = "<"
+		select(upper_treble12, 8).dynamics = "rfz"
+		select(upper_treble12, 10).dynamics = ">"
+		select(upper_treble12, 12).dynamics = "p"
 
-		# select(upper_treble19, 1).prefix += '\\key bf \\major '
-		# select(lower_treble19, 4).dynamics = '>'
-		# select(lower_treble19, 12).dynamics = '!'
-		# select(lower_treble19, 13).dynamics = '<'
-		# select(lower_treble19, 22).dynamics = '!\\>'
-		# select(lower_treble19, 24).dynamics = '!'
-		# select(bass19, 1).prefix += '\\key bf \\major '
+		upper_treble16 = notes('b` e`` g``', ['2.', 8, 8]) + notes('g`` g` c`` e`` e`` e` a` c``', [4, 2, 8, 8]) + notes('c`', [2, '4.', 8])
+		lower_treble16 = triple(chords(['ds` fs`', 'ds` a`', 'e` g`', 'g` b`', 'g` b` d``', 'b f`', 'c` e`', 'e` g`', 'e` gs`', 'gs d`', 'a c`', 'c` e`', 'f a', 'f a', 'e g', 'g bf'], 8))
+		bass16 = add(triple(notes('a fs g e', 8)), 'b') + add(triple(chords(['f b', 'ds g', 'e', 'c'], 8)), 'g') + add(triple(notes('d b, c a,', 8)), 'e') + triple(chords(['f, c']*4, 8))
 
-		# chords1 = {
-		# 	'treble':key_signature(self.key, voices(
-		# 		upper_treble4 + upper_treble8 + upper_treble12 + upper_treble16 + upper_treble19,
-		# 		lower_treble4 + lower_treble8 + lower_treble12 + lower_treble16 + lower_treble19
-		# 	)),
-		# 	'bass': key_signature(self.key, bass4 + bass8 + bass12 + bass16 + bass19)
-		# }
+		for i in [1, 4]:
+			select(upper_treble16, i).phrasing = '('
+		for i in [3, 6]:
+			select(upper_treble16, i).phrasing = ')'
+
+		select(lower_treble16, 9).dynamics = '<'
+		select(lower_treble16, 12).dynamics = '!'
+		select(lower_treble16, 13).dynamics = '>'
+		select(lower_treble16, 15).dynamics = '!'
+		select(lower_treble16, 25).dynamics = '>'
+		select(lower_treble16, 27).dynamics = '!'
+		select(lower_treble16, 28).dynamics = '<'
+		select(lower_treble16, 36).dynamics = '!'
+		select(lower_treble16, 37).dynamics = 'p'
+		select(lower_treble16, 37).markup = '\\italic{dolce}'
+		select(bass16, 37).markdown = '\\italic{sostenutissimo}'
+
+		if self.improvements:
+			select(upper_treble16, 1).prefix += '\\key e \\minor '
+			select(bass16, 1).prefix += '\\key e \\minor '
+
+		upper_treble19 = notes('c` f` ef` df` g a bf', 4) + chords(['bf d`', 'a c`'], 8) + notes('bf a', [2, 4])
+		lower_treble19 = triple(chords(['f a', 'f c`', 'f c`', 'f bf', 'f', 'f g', 'e g', 'e', 'e g', 'e g', 'f'], 8))
+		bass19 = triple(chords(['f, c'], 8)) + triple_octaves('a, bf, df c c c c') + triple(chords(['f, c', 'c, f, c', 'f, c'], 8))
+
+		if self.improvements:
+			select(upper_treble19, 1).prefix += '\\key bf \\major '
+			select(bass19, 1).prefix += '\\key bf \\major '
+
+		if not self.improvements:
+			select(upper_treble19, 1).prefix += '\\clef "bass" '
+
+		for i in [5, 10]:
+			select(upper_treble19, i).phrasing = '('
+		for i in [9, 11]:
+			select(upper_treble19, i).phrasing = ')'
+
+		select(lower_treble19, 4).dynamics = '>'
+		select(lower_treble19, 12).dynamics = '!'
+		select(lower_treble19, 13).dynamics = '<'
+		select(lower_treble19, 22).dynamics = '!\\>'
+		select(lower_treble19, 24).dynamics = '!'
+
+		chords1 = {
+			'treble': voices(
+				upper_treble4 + upper_treble8 + upper_treble12 + upper_treble16 + upper_treble19,
+				lower_treble4 + lower_treble8 + lower_treble12 + lower_treble16 + lower_treble19
+			),
+			'bass': bass4 + bass8 + bass12 + bass16 + bass19
+		}
 
 		# ############
 		# # Chords 2 #
@@ -778,7 +831,7 @@ class Salut(Piece):
 		# 	'bass': rep(rests(1), 24)
 		# }
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2) # melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1) # chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
 	def end_score(self):
 		if self.improvements:
