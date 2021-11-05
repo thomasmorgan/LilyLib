@@ -2,7 +2,7 @@ from piece import Piece
 from points import rest, rests, note, notes, tied_note, chords, chord, arpeggio, diminished7, scale, transpose, add, merge, tied_chord
 from staves import Bass, Super
 from markup import voices, ottava, clef, key_signature, triplets, linebreak, nolinebreak, grace, pagebreak, slur, phrase, after_grace, double_barbreak
-from util import join, rep, pattern, omit, select, rep, flatten, subset
+from util import join, rep, pattern, omit, select, rep, flatten, subset, assign
 from tones import tonify
 
 class Salut(Piece):
@@ -22,7 +22,7 @@ class Salut(Piece):
 		self.opus = "Op. 45"
 		self.key = "Bf major"
 		self.auto_add_bars = True
-		self.improvements = True
+		self.improvements = False
 		if self.improvements:
 			self.staves=[Super('treble', extra_text='\\set Score.connectArpeggios = ##t', _with='\\consists "Span_arpeggio_engraver"'), Bass(_with='\\consists "Span_arpeggio_engraver"')]
 			self.piano_staff = False
@@ -357,7 +357,7 @@ class Salut(Piece):
 
 		upper_treble = subset(melody('f`', [2, 8], self.key), 1, 6) + tied_note('bf', [2, 8]) + notes('a g a', 8)
 		select(upper_treble, 2).dynamics = 'p\\<'
-		select(upper_treble, 7).articulation = ')-('
+		select(upper_treble, 7).articulation = '('
 		select(upper_treble, 11).articulation = ')'
 
 		lower_treble = rests(8, 4) + triple(notes('af g g f e ef c', 8))
@@ -373,155 +373,201 @@ class Salut(Piece):
 			'bass': bass
 		}
 
-		# #########
-		# # Plods #
-		# #########
+		#########
+		# Plods #
+		#########
 
-		# self.set_key('b minor')
+		self.set_key('b minor')
 
-		# def plod(tones):
-		# 	tones = tonify(tones)
-		# 	return grace(notes(tones, 16)) + notes(select(tonify(tones), 1), 8, articulation="!") + rests(8)
+		def plod(tones):
+			tones = tonify(tones)
+			return slur(grace(notes(tones, 16)) + notes(select(tonify(tones), 1), 8, articulation="!")) + rests(8)
 
-		# def octoplod(tones):
-		# 	plink = plod(tones)
-		# 	select(plink, 3).add(self.transpose(select(tonify(tones), 1), 1, 'octave'))
-		# 	return plink
+		def octoplod(tones):
+			plink = plod(tones)
+			select(plink, 3).add(self.transpose(select(tonify(tones), 1), 1, 'octave'))
+			return plink
 
-		# def superoctoplod(tones):
-		# 	plink = octoplod(tones)
-		# 	select(plink, 1).add(self.transpose(select(tonify(tones), 1), 1, 'octave'))
-		# 	return plink
+		def superoctoplod(tones):
+			plink = octoplod(tones)
+			select(plink, 1).add(self.transpose(select(tonify(tones), 1), 1, 'octave'))
+			return plink
 
-		# def harmoplod(tones):
-		# 	tones = tonify(tones)
-		# 	plink = plod(subset(tones, 1, 2))
-		# 	select(plink, 3).add(select(tones, 3))
-		# 	return plink
+		def harmoplod(tones):
+			tones = tonify(tones)
+			plink = plod(subset(tones, 1, 2))
+			select(plink, 3).add(select(tones, 3))
+			return plink
 
-		# def harmoctoplod(tones):
-		# 	tones = tonify(tones)
-		# 	plink = superoctoplod(subset(tones, 1, 2))
-		# 	select(plink, 1).add(select(tones, 3))
-		# 	select(plink, 3).add(select(tones, 3))
-		# 	return plink
-
-
-		# def treble_plod(one, two, three, held_note=2):
-		# 	if len(one) == 3:
-		# 		melody = chords(one, 8)
-		# 	elif len(one) == 2:
-		# 		tones = tonify(select(one, 1))
-		# 		melody = chords([subset(tones, 1, 3), subset(tones, 2, 4), select(one, 2)], 8)
-		# 	elif len(one) == 1:
-		# 		tones = tonify(select(one, 1))
-		# 		melody = chords([subset(tones, 1, 3), subset(tones, 2, 4), subset(tones, 3, 5)], 8)
-		# 	melody = triplets(melody)
-		# 	vs = voices(chords([omit(select(melody, 3).tones, held_note), two, three], ['4.', 8, 4]), notes(select(select(melody, 3).tones, held_note), 2) + [rest(4, prefix='\\omit ')])
-		# 	select(vs, 1).articulation = '('
-		# 	select(vs, 2).articulation = ')'
-		# 	melody += vs
-		# 	return melody
-
-		# def extended_treble_plod(one, two, three, four, five, six, seven, eight):
-		# 	melody = treble_plod(one, two, three)
-		# 	melody = (
-		# 		subset(melody, 1, 3) + chords([select(melody, 3).tones, two, three, three], [4, '8.', 16, 4]) +
-		# 		chords([four, five, six, seven, eight], [8, 8, '8.', 16, 4]) + rests(4)
-		# 	)
-		# 	select(melody, 4).articulation = '('
-		# 	select(melody, 5).articulation = ')'
-		# 	select(melody, 7).articulation = '('
-		# 	select(melody, 8).articulation = ')'
-		# 	select(melody, 10).articulation = '('
-		# 	select(melody, 12).articulation = ')'
-		# 	return melody
-
-		# def mini_treble_plod(one, two, three, alt=False):
-		# 	tones = tonify(select(one, 1))
-		# 	melody = (
-		# 		triplets(chords([subset(tones, 1, 3), subset(tones, 2, 4), subset(tones, 3, 5)], 8)) +
-		# 		chords([two], '8.', articulation='(') + chords([three], 16, articulation=')')
-		# 	)
-		# 	if not alt:
-		# 		return melody + chords([two], 2)
-		# 	else:
-		# 		tones = tonify(two)
-		# 		return (
-		# 			melody + 
-		# 			voices(chords([select(tones, 1, 3), three], ['4.', 8]), chords([select(tones, 2)], 2)) +
-		# 			tied_chord(two, [4, 8]) + chords([three], 8) + rep(chords([two], 8, articulation="(") + chords([three], 8, articulation=")"), 3)
-		# 		)
-
-		# treble = (
-		# 	rests(2, 4) + treble_plod(['as, cs fs as', 'e fs cs`'], 'd fs b', 'cs fs as') +
-		# 	treble_plod(['cs fs as', 'e fs cs`', 'g as e`'], 'fs d`', 'e as cs`') +
-		# 	extended_treble_plod(['e as cs`', 'g as e`', 'as e` g`'], 'as d` fs`', 'g as e`', 'fs as d`', 'e as cs`', 'd fs b', 'cs`', 'cs fs as') +
-		# 	treble_plod(['b, d fs b d`'], 'e cs`', 'd fs b', held_note=1) + treble_plod(['d d fs b d`'], 'e cs`', 'd fs b', held_note=1) +
-		# 	extended_treble_plod(['fs b d` fs` b`'], 'b d` g`', 'b d` fs`', 'g b e`', 'fs b d`', 'e as cs`', 'd`', 'd fs b') +
-		# 	treble_plod(['d es gs b d`'], 'as cs`', 'es gs b') + treble_plod(['es gs b d` es`'], 'cs` e`', 'gs b d`') +
-		# 	extended_treble_plod(['gs b d` es`', 'b d` es` gs`', 'd` es` gs` b`'], 'a d` fs` a`', 'fs a d` fs`', 'e a e`', 'd a d', 'ds a bs', 'e cs`', 'ds a bs') +
-		# 	mini_treble_plod(['ds a bs ds` a`'], 'ds` a` bs`', 'e` cs``') + mini_treble_plod(['ds` a` bs` ds`` a``'], 'ds`` a`` bs``', 'e`` cs```', alt=True) +
-		# 	merge(self.chromatic('ds``', -8, 8), self.chromatic('a``', -8, 8), self.chromatic('c```', -8, 8)) + 
-		# 	merge(self.chromatic('fs``', -8, 8), self.chromatic('c```', -8, 8), self.chromatic('ds```', -8, 8)) + 
-		# 	chords([subset(tonify('bs ds` fs` a` bs` ds`` fs`` a`` bs`` ds``` fs```'), i, i+3) for i in [8, 7, 6, 5, 4, 3, 2, 1]], 8) +
-		# 	chords(['as cs` e` g`', 'gs b d` f`', 'fs a c` ef`', 'es gs b d`'], 4, articulation='^') +
-		# 	chords(['ef fs a c`', 'd es gs b', 'as, cs fs', 'as, cs fs', 'as, cs fs', 'as, cs f'], [2, 2, 1]) + 
-		# 	voices(notes('e', 1), notes('cs', 2, articulation='(') + notes('c', 4) + notes('bf,', 4, articulation=')'))
-		# )
-		# select(treble, 43).replace('b', 'fs`')
-		# select(treble, 46).replace('fs', 'b')
-		# select(treble, 80).tones = tonify('d` fs` a` d``')
-
-		# select(treble, 1).dynamics = 'p'
-		# select(treble, 3).dynamics = '<'
-		# select(treble, 5).dynamics = '!'
-		# select(treble, 6).dynamics = '>'
-		# select(treble, 8).dynamics = '!'
-		# select(treble, 11).dynamics = '<'
-		# select(treble, 13).dynamics = '!'
-		# select(treble, 14).dynamics = '>'
-		# select(treble, 16).dynamics = '!'
-		# select(treble, 19).dynamics = '<'
-		# select(treble, 21).dynamics = '!'
-		# select(treble, 22).dynamics = '>'
-		# select(treble, 23).dynamics = '!'
-		# select(treble, 32).markdown = '\\italic{cresc. poco a poco}'
-		# select(treble, 48).dynamics = '<'
-		# select(treble, 50).dynamics = '!'
-		# select(treble, 51).dynamics = '>'
-		# select(treble, 52).dynamics = '!'
-		# select(treble, 77).dynamics = '<'
-		# select(treble, 79).dynamics = '!'
-		# select(treble, 80).dynamics = 'f\\>'
-		# select(treble, 82).dynamics = '!'
-		# select(treble, 87).markdown = '\\italic{sempre cresc. e sempre} Ped.'
-		# select(treble, 99).dynamics = 'f'
-		# select(treble, 105).dynamics = '<'
-		# select(treble, 112).dynamics = '!'
-		# select(treble, 113).dynamics = 'ff'
-		# select(treble, 114).markdown = '\\italic{sempre} Ped.'
-		# select(treble, 121).markdown = '\\italic{Poco accel.}'
-		# select(treble, 129).dynamics = 'sf'
-		# select(treble, 130).markdown = '\\italic{rinf. molto}'
-		# select(treble, 141).markdown = '\\italic{dim. poco a poco, ma sempre pedale}'
-		# select(treble, 146).markdown = '\\italic{poco rall. \\bold{p}}'
-		# select(treble, 147).markup = '\\italic{ten.}'
-		# select(treble, 148).dynamics = '>'
-		# select(treble, 150).dynamics = '!'
+		def harmoctoplod(tones):
+			tones = tonify(tones)
+			plink = superoctoplod(subset(tones, 1, 2))
+			select(plink, 1).add(select(tones, 3))
+			select(plink, 3).add(select(tones, 3))
+			return plink
 
 
-		# bass = (
-		# 	rep(plod('fs,, es,,'), 44) + rep(octoplod('fs,, es,,'), 20) +
-		# 	rep(superoctoplod('fs,, es,,'), 8) + rep(harmoctoplod('fs,, es,, cs,'), 4) + rep(superoctoplod('fs,, es,,'), 8) +
-		# 	rep(octoplod('fs,, es,,'), 8) + rep(harmoplod('fs,, es,, cs,'), 4) +
-		# 	rep(harmoplod('fs,, es,, as,,'), 2) + rep(plod('fs,, es,,'), 2)
-		# )
+		def treble_plod(one, two, three, held_note=2, omit_number=True):
+			if len(one) == 3:
+				melody = chords(one, 8)
+			elif len(one) == 2:
+				tones = tonify(select(one, 1))
+				melody = chords([subset(tones, 1, 3), subset(tones, 2, 4), select(one, 2)], 8)
+			elif len(one) == 1:
+				tones = tonify(select(one, 1))
+				melody = chords([subset(tones, 1, 3), subset(tones, 2, 4), subset(tones, 3, 5)], 8)
+			melody = triplets(melody, omit_number=omit_number)
+			vs = voices(chords([omit(select(melody, 3).tones, held_note), two, three], ['4.', 8, 4]), notes(select(select(melody, 3).tones, held_note), 2) + [rest(4, prefix='\\omit ')])
+			select(vs, 1).articulation = '('
+			select(vs, 2).articulation = ')'
+			melody += vs
+			return melody
 
-		# plods = {
-		# 	'treble': key_signature(self.key, treble),
-		# 	'bass': key_signature(self.key, ottava(bass, -1))
-		# }
+		def extended_treble_plod(one, two, three, four, five, six, seven, eight):
+			melody = treble_plod(one, two, three)
+			melody = (
+				subset(melody, 1, 3) + chords([select(melody, 3).tones, two, three, three], [4, '8.', 16, 4]) +
+				chords([four, five, six, seven, eight], [8, 8, '8.', 16, 4]) + rests(4)
+			)
+			select(melody, 4).articulation = '('
+			select(melody, 5).articulation = ')'
+			select(melody, 7).articulation = '('
+			select(melody, 8).articulation = ')'
+			select(melody, 10).articulation = '('
+			select(melody, 12).articulation = ')'
+			return melody
+
+		def mini_treble_plod(one, two, three, alt=False):
+			tones = tonify(select(one, 1))
+			melody = (
+				triplets(chords([subset(tones, 1, 3), subset(tones, 2, 4), subset(tones, 3, 5)], 8)) +
+				chords([two], '8.', articulation='(') + chords([three], 16, articulation=')')
+			)
+			if not alt:
+				return melody + chords([two], 2)
+			else:
+				tones = tonify(two)
+				return (
+					melody + 
+					voices(tied_chord(select(tones, 1, 3), [4, 8]) + [chord(three, 8)], chords([select(tones, 2)], 2)) +
+					tied_chord(two, [4, 8]) + chords([three], 8) + rep(chords([two], 8, articulation="(") + chords([three], 8, articulation=")"), 3)
+				)
+
+		treble = (
+			rests(2, 4) + treble_plod(['as, cs fs as', 'e fs cs`'], 'd fs b', 'cs fs as', omit_number=False) +
+			treble_plod(['cs fs as', 'e fs cs`', 'g as e`'], 'fs d`', 'e as cs`') +
+			extended_treble_plod(['e as cs`', 'g as e`', 'as e` g`'], 'as d` fs`', 'g as e`', 'fs as d`', 'e as cs`', 'd fs b', 'cs`', 'cs fs as') +
+			treble_plod(['b, d fs b d`'], 'e cs`', 'd fs b', held_note=1) + treble_plod(['d d fs b d`'], 'g e`', 'fs b d`', held_note=1) +
+			extended_treble_plod(['fs b d` fs` b`'], 'b d` g`', 'b d` fs`', 'g b e`', 'fs b d`', 'e as cs`', 'd`', 'd fs b') +
+			treble_plod(['d es gs b d`'], 'as cs`', 'es gs b') + treble_plod(['es gs b d` es`'], 'cs` e`', 'gs b d`') +
+			extended_treble_plod(['gs b d` es`', 'b d` es` gs`', 'd` es` gs` b`'], 'a d` fs` a`', 'fs a d` fs`', 'e a e`', 'd a d`', 'ds a bs', 'e cs`', 'ds a bs') +
+			mini_treble_plod(['ds a bs ds` a`'], 'ds` a` bs`', 'e` cs``') + mini_treble_plod(['ds` a` bs` ds`` a``'], 'ds`` a`` bs``', 'e`` cs```', alt=True) +
+			slur(merge(self.chromatic('ds``', -8, 8), notes('a`` gs`` g`` fs`` f`` e`` ds`` d``', 8), notes('bs`` b`` as`` a`` gs`` g`` fs`` es``', 8))) + 
+			slur(merge(self.chromatic('fs``', -8, 8), notes('bs`` b`` as`` a`` gs`` g`` fs`` es``', 8), self.chromatic('ds```', -8, 8))) + 
+			chords([subset(tonify('bs ds` fs` a` bs` ds`` fs`` a`` bs`` ds``` fs```'), i, i+3) for i in [8, 7, 6, 5, 4, 3, 2, 1]], 8) +
+			chords(['as cs` e` g`', 'gs b d` f`', 'fs a c` ef`', 'es gs b d`'], 4, articulation='^') +
+			chords(['ef fs a c`', 'd es gs b', 'as, cs fs', 'as, cs fs', 'as, cs fs', 'as, cs f'], [2, 2, 1]) + 
+			voices(notes('e', 1), notes('cs', 2, articulation='(') + notes('c', 4) + notes('bf,', 4, articulation=')'))
+		)
+		select(treble, 43).replace('b', 'fs`')
+		select(treble, 46).replace('fs', 'b')
+		select(treble, 80).tones = tonify('d` fs` a` d``')
+
+		select(treble, 3).dynamics = 'p\\<'
+		select(treble, 5).dynamics = '!'
+		select(treble, 6).dynamics = '>'
+		select(treble, 8).dynamics = '!'
+		select(treble, 11).dynamics = '<'
+		select(treble, 13).dynamics = '!'
+		select(treble, 14).dynamics = '>'
+		select(treble, 16).dynamics = '!'
+		select(treble, 19).dynamics = '<'
+		select(treble, 21).dynamics = '!'
+		if not self.improvements:
+			select(treble, 22).prefix += '\\clef "treble" '
+		select(treble, 22).dynamics = '>'
+		select(treble, 23).dynamics = '!'
+		if not self.improvements:
+			select(treble, 32).prefix += '\\clef "bass" '
+		select(treble, 32).markdown = '\\italic{cresc. poco a poco}'
+		select(treble, 48).dynamics = '<'
+		if not self.improvements:
+			select(treble, 49).prefix += '\\clef "treble" '
+		select(treble, 50).dynamics = '!'
+		select(treble, 51).dynamics = '>'
+		select(treble, 52).dynamics = '!'
+		if not self.improvements:
+			select(treble, 61).prefix += '\\clef "bass" '
+		if not self.improvements:
+			select(treble, 77).prefix += '\\clef "treble" '
+		select(treble, 77).dynamics = '<'
+		select(treble, 79).dynamics = '!'
+		select(treble, 80).dynamics = 'f\\>'
+		select(treble, 82).dynamics = '!'
+		select(treble, 83).articulation = ''
+		select(treble, 84).articulation = ''
+		if not self.improvements:
+			select(treble, 86).prefix += '\\clef "bass" '
+		select(treble, 86).markdown = '\\italic{sempre cresc. e sempre} Ped.'
+		select(treble, 88).dur = 2
+		assign(treble, 89, [])
+		if not self.improvements:
+			select(treble, 93).prefix += '\\clef "treble" '
+		select(treble, 99).dynamics = 'f'
+		select(treble, 102).phrasing = '('
+		select(treble, 103).phrasing = ')'
+		select(treble, 106).phrasing += '-('
+		select(treble, 107).phrasing = ')'
+		select(treble, 106).dynamics = '<'
+		select(treble, 113).dynamics = '!'
+		select(treble, 114).dynamics = 'ff'
+		select(treble, 115).markdown = '\\italic{sempre} Ped.'
+		select(treble, 122).markdown = '\\italic{Poco accel.}'
+		if not self.improvements:
+			select(treble, 130).markdown = '\\dynamic{sf}' 
+			select(treble, 130).markdown += '}_\\markup{\\dynamic{rfz} \\italic{molto}'
+		else:
+			select(treble, 130).markdown = '\\dynamic{rfz} \\italic{molto}'
+		select(treble, 142).markdown = '\\italic{dim. poco a poco, ma sempre pedale}'
+		if not self.improvements:
+			select(treble, 142).prefix += '\\clef "bass" \\grace s8 '
+		select(treble, 147).markdown = '\\italic{poco rall. \\bold{p}}'
+		select(treble, 148).markup = '\\italic{ten.}'
+		select(treble, 149).dynamics = '>'
+		select(treble, 151).dynamics = '!'
+
+
+		bass = (
+			rep(plod('fs,, es,,'), 44) + rep(octoplod('fs,, es,,'), 20) +
+			rep(superoctoplod('fs,, es,,'), 8) + rep(harmoctoplod('fs,, es,, cs,'), 4) + rep(superoctoplod('fs,, es,,'), 8) +
+			rep(octoplod('fs,, es,,'), 8) + rep(harmoplod('fs,, es,, cs,'), 4) +
+			rep(harmoplod('fs,, es,, as,,'), 2) + rep(plod('fs,, es,,'), 2)
+		)
+
+		select(bass, 1).ornamentation = 'sustainOn'
+		select(bass, 2).suffix = '^\\p' + select(bass, 2).suffix
+		if not self.improvements:
+			select(bass, 291).markup = '\\dynamic{sf}' 
+
+		if not self.improvements:
+			for p in subset(bass, 1, 28):
+				p.replace('es,, fs,,', 'f,, gf,,')
+			for p in subset(treble, 1, 9):
+				p.replace('as, cs d e fs as b cs`', 'bf, df eff ff gf bf cf` df`')
+			for p in subset(treble, 145, 151):
+				p.replace('as, cs fs', 'bf, df gf')
+			for p in subset(bass, 353, 400):
+				p.replace('fs,, es,, as,, cs, fs,', 'gf,, f,, bf,, df, gf,')
+
+
+		if self.improvements:
+			select(treble, 1).prefix = '\\grace s8 ' + select(treble, 1).prefix
+			plods = {
+				'treble': key_signature(self.key, treble),
+				'bass': key_signature(self.key, ottava(bass, -1))
+			}
+		else:
+			plods = {'treble': treble, 'bass': bass}
 
 		# #################
 		# # Bridge melody #
@@ -835,7 +881,7 @@ class Salut(Piece):
 		# 	'bass': rep(rests(1), 24)
 		# }
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3) # plods, bridge, chords4, chords5, opening_chords3)
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods) # plods, bridge, chords4, chords5, opening_chords3)
 
 	def end_score(self):
 		if self.improvements:
