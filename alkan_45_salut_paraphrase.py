@@ -569,106 +569,137 @@ class Salut(Piece):
 		else:
 			plods = {'treble': treble, 'bass': bass}
 
-		# #################
-		# # Bridge melody #
-		# #################
+		##########
+		# Bridge #
+		##########
 
-		# self.set_key('bf major')
+		self.set_key('bf major')
 
-		# treble_melody = melody('f```', [2, 4], self.key)
-		# treble_harmony = rests(8, 4, prefix='\\omit ') + chords(['c``` ef```', 'bf`` d```', 'ef`` g``', 'd`` f``', 'df`` e``', 'c`` f``'], 4)
-		# treble_harmonyb = rests(8, prefix='\\omit ') + rests(4) + rests(4, 2, prefix='\\omit ') + notes('f`', '2.')
+		treble_melody = melody('f```', [2, 4], self.key)
+		treble_harmony = rests(8, 4, prefix='\\omit ') + chords(['c``` ef```', 'bf`` d```', 'ef`` g``', 'd`` f``', 'df`` e``', 'c`` f``'], 4)
+		treble_harmonyb = rests(8, prefix='\\omit ') + rests(4) + rests(4, 2, prefix='\\omit ') + notes('f`', '2.')
 
-		# select(treble_melody, 6).articulation = ')'
-		# select(treble_melody, 7).articulation = '('
-		# select(treble_melody, 7).ornamentation = "arpeggio"
-		# select(treble_harmony, 3).prefix = '\\stemDown ' + select(treble_harmony, 3).prefix
-		# select(treble_harmony, 6).ornamentation = "arpeggio"
-		# select(treble_harmony, 8).suffix += '\\stemNeutral '
-		# select(treble_harmonyb, 5).ornamentation = "arpeggio"
+		select(treble_melody, 2).dynamics = ''
+		select(treble_melody, 4).dynamics = ''
+		select(treble_melody, 6).articulation = ')'
+		select(treble_melody, 7).articulation = '('
+		select(treble_melody, 7).ornamentation = "arpeggio"
+		select(treble_harmony, 3).prefix = '\\stemDown ' + select(treble_harmony, 3).prefix
+		select(treble_harmony, 6).ornamentation = "arpeggio"
+		select(treble_harmony, 8).suffix += '\\stemNeutral '
+		select(treble_harmonyb, 5).ornamentation = "arpeggio"
 
-		# treble_part1 = rests('2.', 8) + voices(treble_melody, treble_harmonyb, treble_harmony) + rests(4)
-		# bass_part1 = self.transpose(treble_part1, -2, 'octave')
-		# for t in bass_part1:
-		# 	t.dynamics = ''
-		# select(treble_part1, 3).markup = '\\italic{Voci principali \\bold{pp} in entrambe le mani}'
-		# select(treble_part1, 4).markdown = '\\italic{Altre voci \\bold{ppp}}'
-		# select(treble_part1, 2).suffix += '\\omit \\sustainOn'
-		# select(treble_part1, 3).suffix += '\\sustainOff'
-		# select(treble_part1, 1).prefix = '\\set Score.connectArpeggios = ##f \\set Staff.connectArpeggios = ##t\n' + select(treble_part1, 1).prefix
-		# select(bass_part1, 1).prefix = '\\set Score.connectArpeggios = ##f \\set Staff.connectArpeggios = ##t\n' + select(bass_part1, 1).prefix
+		treble_part1 = rests('2.', 8) + voices(treble_melody, treble_harmonyb, treble_harmony) + rests(4)
+		bass_part1 = self.transpose(treble_part1, -2, 'octave')
+		for t in bass_part1:
+			t.dynamics = ''
 
-		# treble_melody2 = melody('c```', [2, 4], self.key)
-		# treble_harmony2 = rests(8, 4, prefix='\\omit ') + chords(['g`` bf``', 'f`` a``', 'bf` d``', 'a` c``', 'af` b`', 'c` g` c``'], 4)
-		# treble_harmonyb2 = rests(8, prefix='\\omit ') + rests(4) + rests(4, 2, prefix='\\omit ') + notes('c`', 2) + rests(4, prefix='\\omit ')
+		if not self.improvements:
+			select(treble_part1, 3).prefix = '\\clef "treble" ' + select(treble_part1, 3).prefix
+		select(treble_part1, 1).suffix += '\\omit \\sustainOn'
+		select(treble_part1, 1).prefix += '\\tempo "A tempo"'
+		select(treble_part1, 2).suffix += '\\sustainOff'
+		select(treble_part1, 1).prefix = '\\set Score.connectArpeggios = ##f \\set Staff.connectArpeggios = ##t\n' + select(treble_part1, 1).prefix
+		select(bass_part1, 1).prefix = '\\set Score.connectArpeggios = ##f \\set Staff.connectArpeggios = ##t\n' + select(bass_part1, 1).prefix
 
-		# select(treble_melody2, 6).articulation = ')'
-		# select(treble_melody2, 7).articulation = '('
-		# select(treble_melody2, 7).ornamentation = 'arpeggio'
-		# select(treble_melody2, 8).replace('ef``', 'e``')
-		# select(treble_harmony2, 3).prefix = '\\stemDown ' + select(treble_harmony, 3).prefix
-		# select(treble_harmony2, 6).ornamentation = "arpeggio"
-		# select(treble_harmony2, 8).suffix += '\\stemNeutral '
-		# select(treble_harmonyb2, 5).ornamentation = "arpeggio"
+		select(treble_part1, 3).suffix = '^\\pp'
+		select(treble_part1, 18).dynamics = 'ppp'
 
-		# treble_part2 = rests(4, 8) + voices(treble_melody2, treble_harmonyb2, treble_harmony2) + rests(2, 8)
-		# bass_part2 = self.transpose(treble_part2, -2, 'octave')
-		# for t in bass_part2:
-		# 	t.dynamics = ''
+		select(bass_part1, 3).suffix = '^\\pp'
+		select(bass_part1, 4).suffix = '^\\<'
+		select(bass_part1, 6).suffix = '^\\!'
+		select(bass_part1, 18).dynamics = 'ppp'
+		add(select(bass_part1, 18), 'a')
 
-		# select(treble_part2, 24).ornamentation = 'arpeggio'
-		# select(bass_part2, 24).remove('c,')
+		treble_melody2 = melody('c```', [2, 4], self.key)
+		treble_harmony2 = rests(8, 4, prefix='\\omit ') + chords(['g`` bf``', 'f`` a``', 'bf` d``', 'a` c``', 'af` b`', 'c` g` c``'], 4)
+		treble_harmonyb2 = rests(8, prefix='\\omit ') + rests(4) + rests(4, 2, prefix='\\omit ') + notes('c`', 2) + rests(4, prefix='\\omit ')
 
-		# treble_melody3 = slur(notes('a` a``', [8, '2.'])) + rests(8, prefix='\\omit ') + slur(notes('bf` bf``', [8, '2.'])) + rests(8, prefix='\\omit ') + slur(notes('b` b``', [8, '2.']))
-		# treble_harmony3 = rests(8, 4, prefix = '\\omit ') + slur(chords(['e`` g``', 'fs``', 'f``'], [4, 4, 8])) + rests(8, 4, prefix='\\omit ') + slur(chords(['f`` af``', 'g``', 'gf``'], [4, 4, 8])) + rests(8, 4, prefix='\\omit ') + slur(chords(['fs`` a``', 'gs``', 'g``'], [4, 4, 8]))
-		# treble_harmonyb3 = rests(8, prefix='\\omit ') + rests(4) + rests(4, prefix='\\omit ') + notes('d``', '4.') + rests(8, prefix='\\omit ') + rests(4) + rests(4, prefix='\\omit ') + notes('ef``', '4.') + rests(8, prefix='\\omit ') + rests(4) + rests(4, prefix='\\omit ') + notes('e``', '4.')
+		select(treble_melody2, 6).articulation = ')'
+		select(treble_melody2, 7).articulation = '('
+		select(treble_melody2, 7).ornamentation = 'arpeggio'
+		select(treble_melody2, 8).replace('ef``', 'e``')
+		select(treble_harmony2, 3).prefix = '\\stemDown ' + select(treble_harmony, 3).prefix
+		select(treble_harmony2, 6).ornamentation = "arpeggio"
+		select(treble_harmony2, 8).suffix += '\\stemNeutral '
+		select(treble_harmonyb2, 5).ornamentation = "arpeggio"
 
-		# bass_melody3 = self.transpose(treble_melody3, -2, 'octave')
-		# bass_harmony3 = rests(8, prefix='\\omit ') + rests(4) + chords(['cs e', 'd fs', 'f a'], [4, 4, 8]) + rests(8, prefix='\\omit ') + rests(4) + chords(['d f', 'ef g', 'gf bf'], [4, 4, 8]) + rests(8, prefix='\\omit ') + rests(4) + chords(['ds fs', 'e gs', 'g b'], [4, 4, 8])
-		# select(treble_melody3, 1).markdown = '\\italic{Voci principali \\bold{p}, altre voci \\bold{pp}}'
-		# select(treble_melody3, 7).markdown = '\\italic{poco cresc.}'
-		# select(treble_harmony3, 3).prefix = '\\stemDown \\slurDown' + select(treble_harmony, 3).prefix
-		# select(treble_harmony3, 15).suffix += '\\stemNeutral \\slurNeutral'
-		# select(treble_harmony3, 14).markdown = '\\italic{poco rinf}'
+		treble_part2 = rests(4, 8) + voices(treble_melody2, treble_harmonyb2, treble_harmony2) + rests(2, 8)
+		bass_part2 = self.transpose(treble_part2, -2, 'octave')
+		for t in bass_part2:
+			t.dynamics = ''
 
-		# treble_part3 = voices(treble_melody3, treble_harmonyb3, treble_harmony3)
-		# bass_part3 = voices(bass_melody3, bass_harmony3)
+		select(treble_part2, 24).ornamentation = 'arpeggio'
+		add(select(bass_part2, 19), 'e')
+		select(bass_part2, 24).remove('c,')
 
-		# shared_melody = slur(notes('c``', 8) + notes('c```', 2, articulation='~')) + notes('c``` ef``` d``` bf`` g`` ef`` c`` d``', 8) + notes('ef``', 4) + chords(['ef`` g``', 'd`` f``'], 8)
-		# select(shared_melody, 1).ornamentation = '('
-		# select(shared_melody, 6).ornamentation = ')'
-		# select(shared_melody, 7).ornamentation = '('
-		# select(shared_melody, 13).ornamentation = ')'
+		treble_melody3 = slur(notes('a` a``', [8, '2.'])) + rests(8, prefix='\\omit ') + slur(notes('bf` bf``', [8, '2.'])) + rests(8, prefix='\\omit ') + slur(notes('b` b``', [8, '2.']))
+		treble_harmony3 = rests(8, 4, prefix = '\\omit ') + slur(chords(['e`` g``', 'fs``', 'f``'], [4, 4, 8])) + rests(8, 4, prefix='\\omit ') + slur(chords(['f`` af``', 'g``', 'gf``'], [4, 4, 8])) + rests(8, 4, prefix='\\omit ') + slur(chords(['fs`` a``', 'gs``', 'g``'], [4, 4, 8]))
+		treble_harmonyb3 = rests(8, prefix='\\omit ') + rests(4) + rests(4, prefix='\\omit ') + notes('d``', '4.') + rests(8, prefix='\\omit ') + rests(4) + rests(4, prefix='\\omit ') + notes('ef``', '4.') + rests(8, prefix='\\omit ') + rests(4) + rests(4, prefix='\\omit ') + notes('e``', '4.')
+
+		bass_melody3 = self.transpose(treble_melody3, -2, 'octave')
+		bass_harmony3 = rests(8, prefix='\\omit ') + rests(4) + chords(['cs e', 'd fs', 'f a'], [4, 4, 8]) + rests(8, prefix='\\omit ') + rests(4) + chords(['d f', 'ef g', 'gf bf'], [4, 4, 8]) + rests(8, prefix='\\omit ') + rests(4) + chords(['ds fs', 'e gs', 'g b'], [4, 4, 8])
+		select(treble_melody3, 1).suffix = '^\\p'
+		select(treble_melody3, 7).markdown = '\\italic{poco cresc.}'
+		select(treble_harmony3, 3).prefix = '\\stemDown \\slurDown' + select(treble_harmony, 3).prefix
+		select(treble_harmony3, 3).dynamics = 'pp'
+		select(treble_harmony3, 15).suffix += '\\stemNeutral \\slurNeutral'
+		select(treble_harmony3, 14).markdown = '\\italic{poco rinf}'
+		select(bass_melody3, 1).suffix = '^\\p'
+		select(bass_harmony3, 3).dynamics = 'pp'
+		select(bass_harmony3, 3).phrasing = '('
+		select(bass_harmony3, 5).phrasing = ')'
+		select(bass_harmony3, 8).phrasing = '('
+		select(bass_harmony3, 10).phrasing = ')'
+		select(bass_harmony3, 13).phrasing = '('
+		select(bass_harmony3, 15).phrasing = ')'
+
+		treble_part3 = voices(treble_melody3, treble_harmonyb3, treble_harmony3)
+		bass_part3 = voices(bass_melody3, bass_harmony3)
+
+		shared_melody = slur(notes('c``', 8) + notes('c```', 2, articulation='~')) + notes('c``` ef``` d``` bf`` g`` ef`` c`` d``', 8) + notes('ef``', 4) + chords(['ef`` g``', 'd`` f``'], 8)
+		select(shared_melody, 1).ornamentation = '('
+		select(shared_melody, 6).ornamentation = ')'
+		select(shared_melody, 7).ornamentation = '('
+		select(shared_melody, 13).ornamentation = ')'
 		
-		# treble_melody4 = self.harmonize(subset(shared_melody, 1, 10), -1, 'octave')  + subset(shared_melody, 11, 13) + chords(['c`` ef``', 'bf` d``'], [4, 8])
-		# treble_harmony4 = rests(8, 4) + chords(['gs`` bf``', 'a``'], 4) + rests(4, 4) + chords(['g`', 'c` g`', 'f` a`'], 4) + notes('f`', '4.')
-		# treble_harmonyb4 = rests(8, 1, 2, prefix='\\omit ') + notes('c`` bf`', 8, prefix='\\stemDown ', suffix='\\stemNeutral ') + rests(4, '4.', prefix='\\omit ')
-		# select(treble_melody4, 11).ornamentation = 'arpeggio'
-		# select(treble_melody4, 12).ornamentation = 'arpeggio'
-		# select(treble_harmony4, 8).ornamentation = 'arpeggio'
-		# select(treble_harmony4, 9).ornamentation = 'arpeggio'
+		treble_melody4 = self.harmonize(subset(shared_melody, 1, 10), -1, 'octave')  + subset(shared_melody, 11, 13) + chords(['c`` ef``', 'bf` d``'], [4, 8])
+		treble_harmony4 = rests(8, prefix='\\omit ') + rests(4) + chords(['gs`` bf``', 'a``'], 4) + rests(4, 4, prefix='\\omit ') + chords(['g`', 'c` g`', 'f` a`'], 4) + notes('f`', '4.')
+		treble_harmonyb4 = rests(8, 1, 2, prefix='\\omit ') + notes('c`` bf`', 8, prefix='\\stemDown ', suffix='\\stemNeutral ') + rests(4, '4.', prefix='\\omit ')
+		select(treble_melody4, 11).ornamentation = 'arpeggio'
+		select(treble_melody4, 12).ornamentation = 'arpeggio'
+		select(treble_harmony4, 8).ornamentation = 'arpeggio'
+		select(treble_harmony4, 9).ornamentation = 'arpeggio'
 
-		# bass_melody4 = self.transpose(shared_melody, -2, 'octave')
-		# bass_harmony4 = rests(8, 4) + chords(['e gs bf', 'f a', 'bf, f'], 4) + rests(4) + chords(['ef, g,', 'c, g,', 'f, a,'], 4)
-		# bass_harmonyb4 = rests(8, 1, 2, prefix='\\omit ') + notes('c bf,', 8, prefix='\\stemDown ', suffix='\\stemNeutral ') + rests(4, prefix='\\omit ')
-		# select(bass_melody4, 5).ornamentation = 'arpeggio'
-		# select(bass_harmony4, 5).ornamentation = 'arpeggio'
-		# select(bass_harmony4, 8).ornamentation = 'arpeggio'
-		# select(bass_harmony4, 9).ornamentation = 'arpeggio'
+		bass_melody4 = self.transpose(shared_melody, -2, 'octave')
+		bass_harmony4 = rests(8, 4) + chords(['e gs bf', 'f a', 'bf, f'], 4) + rests(4) + chords(['ef, g,', 'c, g,', 'f, a,'], 4)
+		bass_harmonyb4 = rests(8, 1, 2, prefix='\\omit ') + notes('c bf,', 8, prefix='\\stemDown ', suffix='\\stemNeutral ') + rests(4, prefix='\\omit ')
+		select(bass_melody4, 5).ornamentation = 'arpeggio'
+		select(bass_melody4, 6).ornamentation = ''
+		select(bass_melody4, 7).ornamentation = ''
+		select(bass_harmony4, 5).ornamentation = 'arpeggio'
+		select(bass_harmony4, 8).ornamentation = 'arpeggio'
+		select(bass_harmony4, 9).ornamentation = 'arpeggio'
 
-		# select(treble_melody4, 2).dynamics = '<'
-		# select(treble_melody4, 4).dynamics = '!'
-		# select(treble_melody4, 7).markdown = '\\italic{dim}'
-		# select(treble_melody4, 12).dynamics = '>'
-		# select(treble_melody4, 15).dynamics = '!'
+		select(treble_melody4, 2).dynamics = '<'
+		select(treble_melody4, 4).dynamics = '!'
+		select(treble_melody4, 7).markdown = '\\italic{dim}'
+		select(treble_melody4, 12).dynamics = '>'
+		select(treble_melody4, 15).dynamics = '!'
 
-		# treble_part4 = voices(treble_melody4, treble_harmony4, treble_harmonyb4)
-		# bass_part4 = voices(bass_melody4, bass_harmony4, bass_harmonyb4)
+		treble_part4 = voices(treble_melody4, treble_harmony4, treble_harmonyb4)
+		bass_part4 = voices(bass_melody4, bass_harmony4, bass_harmonyb4)
 
-		# bridge = {
-		# 	'treble': key_signature(self.key, ottava(treble_part1, 1) + treble_part2 + treble_part3 + treble_part4),
-		# 	'bass': key_signature(self.key, bass_part1 + bass_part2 + bass_part3 + bass_part4)
-		# }
+		if self.improvements:
+			bridge = {
+				'treble': key_signature(self.key, ottava(treble_part1, 1) + treble_part2 + treble_part3 + treble_part4),
+				'bass': key_signature(self.key, bass_part1 + bass_part2 + bass_part3 + bass_part4)
+			}
+		else:
+			bridge = {
+				'treble': treble_part1 + treble_part2 + treble_part3 + treble_part4,
+				'bass': bass_part1 + bass_part2 + bass_part3 + bass_part4
+			}
 
 		# ############
 		# # Chords 4 #
@@ -881,7 +912,7 @@ class Salut(Piece):
 		# 	'bass': rep(rests(1), 24)
 		# }
 
-		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods) # plods, bridge, chords4, chords5, opening_chords3)
+		self.score = join(opening_chords, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge) # chords4, chords5, opening_chords3)
 
 	def end_score(self):
 		if self.improvements:
