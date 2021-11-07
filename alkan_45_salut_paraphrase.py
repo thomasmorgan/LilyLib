@@ -22,7 +22,7 @@ class Salut(Piece):
 		self.opus = "Op. 45"
 		self.key = "Bf major"
 		self.auto_add_bars = True
-		self.improvements = False
+		self.improvements = True
 		if self.improvements:
 			self.staves=[Super('treble', extra_text='\\set Score.connectArpeggios = ##t', _with='\\consists "Span_arpeggio_engraver"'), Bass(_with='\\consists "Span_arpeggio_engraver"')]
 			self.piano_staff = False
@@ -856,7 +856,7 @@ class Salut(Piece):
 				'f, a, c ef a', 'f a c` ef` a`', 'f a c` ef` a`', 'f, a, c ef a',
 				'f, a, c ef a', 'f a c` ef` a`', 'f` a` c`` ef`` a``', 'f a c` ef` a`',
 				'f, a, c ef a', 'f a c` ef` a`', 'f, a, c ef a', 'f,, a,, c, ef, a,',
-				'f, a, c ef a', 'f, ef g', 'f, d f', 'f c ef'], 4, ornamentation='arpeggio')
+				'f, a, c ef a', 'f, ef g', 'f, d f', 'f, c ef'], 4, ornamentation='arpeggio')
 		)
 
 		select(bass2, 1).prefix = "\\set Staff.pedalSustainStyle = #'mixed " + select(bass2, 1).prefix
@@ -867,7 +867,8 @@ class Salut(Piece):
 		select(bass2, 15).markdown = 'Ped. \\italic{sempre}'
 		select(bass2, 28).suffix = '^\\ff'
 		select(bass2, 29).markup = '\\italic{dim poco a poco}'
-		select(bass2, 33).markdown = 'Ped. \\italic{sempre}'
+		if not self.improvements:
+			select(bass2, 33).markdown = 'Ped. \\italic{sempre}'
 		select(bass2, 33).suffix = '^\\>'
 		select(bass2, 35).prefix = '\\set Staff.pedalSustainStyle = #\'text '
 		select(bass2, 35).suffix = '\\omit \\sustainOn '
@@ -881,13 +882,19 @@ class Salut(Piece):
 		bass3 = [chord(subset(bass_tones, i, min(i+3, 8)), 4, ornamentation='arpeggio') for i in [1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2]]
 
 		select(treble3, 1).prefix = '\\set Score.connectArpeggios = ##f ' + select(treble3, 1).prefix
-		select(treble3, 1).dynamics = 'pp'
+		if not self.improvements:
+			select(treble3, 1).dynamics = 'pp'
+		else:
+			select(treble3, 3).suffix = '^\\pp ' + select(treble3, 3).suffix
 		select(treble3, 1).prefix = '\\tempo "A tempo" ' + select(treble3, 1).prefix
 		select(bass3, 1).markdown = 'Ped. \\italic{sempre}'
 		select(bass3, 12).suffix = ' \\break '
 
 		ending_treble1 = chords(['bf`` d``` f``` bf```', 'f`` bf`` d``` f```', 'd`` f`` bf`` d```'], 1) + rests(1, prefix ='\\omit ')
-		ending_treble2 = rests(4, 8, prefix ='\\omit ') + slur(notes('f f`', [8, 2])) + rests(4, 8, prefix ='\\omit ') + slur(notes('d` d``', [8, 2])) + rests(4, 8, prefix ='\\omit ') + notes('bf` bf`` bf``', [8, 2, 1])
+		ending_treble2 = rests(4, 8) + slur(notes('f f`', [8, 2])) + rests(4, 8) + slur(notes('d` d``', [8, 2])) + rests(4, 8) + notes('bf` bf`` bf``', [8, 2, 1])
+		if self.improvements:
+			for i in [1, 2, 5, 6, 9, 10]:
+				select(ending_treble2, i).prefix = '\\omit '
 		ending_bass = chords(['bf,, d, f, bf,'], [1, 1, 1]) + rests(1, prefix='\\omit ')
 
 		select(ending_treble1, 1).prefix = '\\set Staff.connectArpeggios = ##f ' + select(ending_treble1, 1).prefix
@@ -906,7 +913,10 @@ class Salut(Piece):
 		ending2_treble = chords(['d f bf d`'], [2, 2, 1])
 		ending2_bass = chords(['bf,, bf,'], [2, 2]) + chords(['bf,, f, bf,'], 1)
 
-		select(ending2_treble, 1).dynamics = 'ppp'
+		if not self.improvements:
+			select(ending2_treble, 1).dynamics = 'ppp'
+		else:
+			select(ending2_treble, 1).suffix = '^\\ppp' + select(ending2_treble, 1).suffix
 		select(ending2_treble, 1).prefix = '\\set Score.connectArpeggios = ##t ' + select(ending2_treble, 1).prefix
 		select(ending2_treble, 3).ornamentation = 'arpeggio\\fermata'
 		select(ending2_bass, 3).suffix += doublethick_barbreak
