@@ -125,7 +125,11 @@ class Salut(Piece):
 			voices(slur(self.chromatic('a,', -3, dur=[4, 4, 2])), notes('c, c,', ['2.', 4]))
 		)
 
-		select(bass, len(bass)).suffix += linebreak
+		if not self.improvements:
+			select(bass, 11).suffix += linebreak
+		else:
+			select(bass, 5).suffix += nolinebreak
+			select(bass, 20).suffix += linebreak
 
 		if self.improvements:
 			melody1 = {'treble': treble, 'bass': bass}
@@ -153,7 +157,8 @@ class Salut(Piece):
 			}
 
 		select(opening_chords2['treble'], 1).dynamics = "mf"
-		#select(opening_chords2['bass'], 2).suffix = nolinebreak
+		if self.improvements:
+			select(opening_chords2['bass'], 2).suffix += nolinebreak
 
 		# ############
 		# # Melody 2 #
@@ -173,6 +178,12 @@ class Salut(Piece):
 			notes('af gf, gf', [2, 8, 8]) + slur(notes('f e ef', [4, 4, '4.'])) + rests(8, 4) + chords(['gs, d', 'a, cs'], 4) + notes('d, d', 8) + slur(notes('cs d b, e,', [4, 4, 4, 4])),
 			notes('c df gf,', 4) + notes('af, gs,', ['2.', 4]) + rests(2, 4, prefix='\\omit ') + notes('d, e, e,', [4, '2.', 4])
 		)
+
+		if not self.improvements:
+			select(bass, 1).suffix += linebreak
+		else:
+			for i in [1, 5, 9, 14]:
+				select(bass, i).suffix += nolinebreak
 
 		if self.improvements:
 			melody2 = {'treble': treble, 'bass': bass}
@@ -366,7 +377,7 @@ class Salut(Piece):
 
 		bass = merge(triple(notes('d, ef, ef,', 8)), notes('bf, bf, bf, bf, bf, b, c c ef', 8)) + add(triple(notes('d cs c ef', 8)), 'f,')
 
-		select(bass, len(bass)).suffix += double_barbreak
+		select(bass, len(bass)).suffix += double_barbreak + pagebreak
 
 		chords3 = {
 			'treble': voices(upper_treble, lower_treble),
@@ -484,7 +495,7 @@ class Salut(Piece):
 		select(treble, 19).dynamics = '<'
 		select(treble, 21).dynamics = '!'
 		if not self.improvements:
-			select(treble, 22).prefix += '\\clef "treble" '
+			select(treble, 22).prefix += '\\clef "treble" \\grace s8 '
 		select(treble, 22).dynamics = '>'
 		select(treble, 23).dynamics = '!'
 		if not self.improvements:
@@ -558,6 +569,8 @@ class Salut(Piece):
 				p.replace('as, cs fs', 'bf, df gf')
 			for p in subset(bass, 353, 400):
 				p.replace('fs,, es,, as,, cs, fs,', 'gf,, f,, bf,, df, gf,')
+
+		select(bass, len(bass)).suffix += linebreak
 
 
 		if self.improvements:
@@ -692,6 +705,8 @@ class Salut(Piece):
 		treble_part4 = voices(treble_melody4, treble_harmony4, treble_harmonyb4)
 		bass_part4 = voices(bass_melody4, bass_harmony4, bass_harmonyb4)
 
+		select(bass_part4, len(bass_part4)).suffix += pagebreak
+
 		if self.improvements:
 			bridge = {
 				'treble': key_signature(self.key, ottava(treble_part1, 1) + treble_part2 + treble_part3 + treble_part4),
@@ -785,7 +800,7 @@ class Salut(Piece):
 		select(bass, 19).dynamics = '!'
 		select(bass, 20).dynamics = '>'
 		select(bass, 24).dynamics = '!'
-		select(bass, 24).suffix += ' \\pageBreak '
+		select(bass, len(bass)).suffix += pagebreak
 
 		chords5 = {'treble': treble, 'bass': bass}
 
@@ -816,6 +831,7 @@ class Salut(Piece):
 		for i in [3, 5, 7, 9, 13, 17, 21]:
 			select(treble, i).dynamics = '>'
 			select(treble, i+1).dynamics = '!'
+		select(bass, 8).suffix += linebreak
 
 		if self.improvements:
 			select(treble, 11).markup = '\\italic{cresc - - - - - - - - - - - - - poco - - - - - - - a - - - - - - poco}'
@@ -873,7 +889,7 @@ class Salut(Piece):
 		select(bass2, 35).prefix = '\\set Staff.pedalSustainStyle = #\'text '
 		select(bass2, 35).suffix = '\\omit \\sustainOn '
 		select(bass2, 36).dynamics = '!'
-		select(bass2, 36).suffix = '\\sustainOff \\break'
+		select(bass2, 36).suffix = '\\sustainOff ' + linebreak 
 
 		treble_tones = tonify('f` bf` d`` f`` bf`` d``` f``` bf```')
 		bass_tones = tonify('bf,, d, f, bf, d f bf d`')
@@ -888,7 +904,10 @@ class Salut(Piece):
 			select(treble3, 3).suffix = '^\\pp ' + select(treble3, 3).suffix
 		select(treble3, 1).prefix = '\\tempo "A tempo" ' + select(treble3, 1).prefix
 		select(bass3, 1).markdown = 'Ped. \\italic{sempre}'
-		select(bass3, 12).suffix = ' \\break '
+
+		##########
+		# ENDING #
+		##########
 
 		ending_treble1 = chords(['bf`` d``` f``` bf```', 'f`` bf`` d``` f```', 'd`` f`` bf`` d```'], 1) + rests(1, prefix ='\\omit ')
 		ending_treble2 = rests(4, 8) + slur(notes('f f`', [8, 2])) + rests(4, 8) + slur(notes('d` d``', [8, 2])) + rests(4, 8) + notes('bf` bf`` bf``', [8, 2, 1])
@@ -909,6 +928,10 @@ class Salut(Piece):
 		select(ending_treble2, 11).articulation = '('
 		select(ending_treble2, 12).dynamics = '!'
 		select(ending_treble2, 12).articulation = '~-)'
+
+		############
+		# ENDING 2 #
+		############
 
 		ending2_treble = chords(['d f bf d`'], [2, 2, 1])
 		ending2_bass = chords(['bf,, bf,'], [2, 2]) + chords(['bf,, f, bf,'], 1)
