@@ -182,7 +182,7 @@ class Salut(Piece):
 		if not self.improvements:
 			select(bass, 1).suffix += linebreak
 		else:
-			for i in [1, 5, 9, 14]:
+			for i in [1, 5, 14]:
 				select(bass, i).suffix += nolinebreak
 
 		if self.improvements:
@@ -190,7 +190,9 @@ class Salut(Piece):
 		else:
 			melody2 = {'treble': clef('treble', treble), 'bass': bass}
 
-		select(melody2['bass'], len(melody2['bass'])).suffix = linebreak + select(melody2['bass'], len(melody2['bass'])).suffix
+		if not self.improvements:
+			select(melody2['bass'], len(melody2['bass'])).suffix = linebreak + select(melody2['bass'], len(melody2['bass'])).suffix
+
 
 
 		############
@@ -238,6 +240,8 @@ class Salut(Piece):
 			select(upper_treble8, 2).prefix = '\\clef "treble" ' + select(upper_treble8, 2).prefix
 		lower_treble8 = triple(chords(['fs as cs`', 'fs as cs`', 'fs b d`', 'd` fs`', 'd` e`', 'e gs b', 'e a cs`', 'cs` e`', 'd` a`', 'e b', 'e b', 'e a', 'e a', 'fs a', 'gs', 'fs gs'], 8))
 		bass8 = add(triple(notes('cs e d b, gs, d cs a, fs,', 8)) + triple_octaves('gs, a, cs') + triple(notes('e, ds e', 8)), 'e,') + triple_octaves('d')
+		if self.improvements:
+			select(bass8, len(bass8)).suffix += pagebreak
 
 		select(upper_treble8, 4).dynamics = '>'
 		select(upper_treble8, 5).dynamics = '!\\<'
