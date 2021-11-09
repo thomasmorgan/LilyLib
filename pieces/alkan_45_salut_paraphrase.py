@@ -22,7 +22,7 @@ class Salut(Piece):
 		self.opus = "Op. 45"
 		self.key = "Bf major"
 		self.auto_add_bars = True
-		self.improvements = True
+		self.improvements = False
 		if self.improvements:
 			self.staves=[Super('treble', extra_text='\\set Score.connectArpeggios = ##t', _with='\\consists "Span_arpeggio_engraver"'), Bass(_with='\\consists "Span_arpeggio_engraver"')]
 			self.piano_staff = False
@@ -31,20 +31,11 @@ class Salut(Piece):
 		
 
 	def subtext(self):
-		return '''
-\\layout {
-  \\context {
-	\\Staff
-	\\RemoveEmptyStaves
-  }
-}
-\\layout {
-  \\context {
-	\\Score
-	\\consists "Span_arpeggio_engraver"
-  }
-}
-		'''
+		return (
+			'\\paper { page-count = #6 }'
+			'\\layout { \\context { \\Staff \\RemoveEmptyStaves } }'
+			'\\layout { \\context {	\\Score	\\consists "Span_arpeggio_engraver" } }'
+			)
 
 	def write_score(self):
 
@@ -125,12 +116,6 @@ class Salut(Piece):
 			voices(slur(self.chromatic('a,', -3, dur=[4, 4, 2])), notes('c, c,', ['2.', 4]))
 		)
 
-		if not self.improvements:
-			select(bass, 11).suffix += linebreak
-		else:
-			select(bass, 5).suffix += nolinebreak
-			select(bass, 20).suffix += linebreak
-
 		if self.improvements:
 			melody1 = {'treble': treble, 'bass': bass}
 		else:
@@ -157,8 +142,6 @@ class Salut(Piece):
 			}
 
 		select(opening_chords2['treble'], 1).dynamics = "mf"
-		if self.improvements:
-			select(opening_chords2['bass'], 2).suffix += nolinebreak
 
 		# ############
 		# # Melody 2 #
@@ -179,20 +162,10 @@ class Salut(Piece):
 			notes('c df gf,', 4) + notes('af, gs,', ['2.', 4]) + rests(2, 4, prefix='\\omit ') + notes('d, e, e,', [4, '2.', 4])
 		)
 
-		if not self.improvements:
-			select(bass, 1).suffix += linebreak
-		else:
-			for i in [1, 5, 14]:
-				select(bass, i).suffix += nolinebreak
-
 		if self.improvements:
 			melody2 = {'treble': treble, 'bass': bass}
 		else:
 			melody2 = {'treble': clef('treble', treble), 'bass': bass}
-
-		if not self.improvements:
-			select(melody2['bass'], len(melody2['bass'])).suffix = linebreak + select(melody2['bass'], len(melody2['bass'])).suffix
-
 
 
 		############
@@ -240,8 +213,6 @@ class Salut(Piece):
 			select(upper_treble8, 2).prefix = '\\clef "treble" ' + select(upper_treble8, 2).prefix
 		lower_treble8 = triple(chords(['fs as cs`', 'fs as cs`', 'fs b d`', 'd` fs`', 'd` e`', 'e gs b', 'e a cs`', 'cs` e`', 'd` a`', 'e b', 'e b', 'e a', 'e a', 'fs a', 'gs', 'fs gs'], 8))
 		bass8 = add(triple(notes('cs e d b, gs, d cs a, fs,', 8)) + triple_octaves('gs, a, cs') + triple(notes('e, ds e', 8)), 'e,') + triple_octaves('d')
-		if self.improvements:
-			select(bass8, len(bass8)).suffix += pagebreak
 
 		select(upper_treble8, 4).dynamics = '>'
 		select(upper_treble8, 5).dynamics = '!\\<'
@@ -381,7 +352,7 @@ class Salut(Piece):
 
 		bass = merge(triple(notes('d, ef, ef,', 8)), notes('bf, bf, bf, bf, bf, b, c c ef', 8)) + add(triple(notes('d cs c ef', 8)), 'f,')
 
-		select(bass, len(bass)).suffix += double_barbreak + pagebreak
+		select(bass, len(bass)).suffix += double_barbreak
 
 		chords3 = {
 			'treble': voices(upper_treble, lower_treble),
@@ -574,8 +545,7 @@ class Salut(Piece):
 			for p in subset(bass, 353, 400):
 				p.replace('fs,, es,, as,, cs, fs,', 'gf,, f,, bf,, df, gf,')
 
-		select(bass, len(bass)).suffix += linebreak
-
+		select(bass, len(bass)).suffix += pagebreak
 
 		if self.improvements:
 			select(treble, 1).prefix = '\\grace s8 ' + select(treble, 1).prefix
@@ -709,8 +679,6 @@ class Salut(Piece):
 		treble_part4 = voices(treble_melody4, treble_harmony4, treble_harmonyb4)
 		bass_part4 = voices(bass_melody4, bass_harmony4, bass_harmonyb4)
 
-		select(bass_part4, len(bass_part4)).suffix += pagebreak
-
 		if self.improvements:
 			bridge = {
 				'treble': key_signature(self.key, ottava(treble_part1, 1) + treble_part2 + treble_part3 + treble_part4),
@@ -804,7 +772,6 @@ class Salut(Piece):
 		select(bass, 19).dynamics = '!'
 		select(bass, 20).dynamics = '>'
 		select(bass, 24).dynamics = '!'
-		select(bass, len(bass)).suffix += pagebreak
 
 		chords5 = {'treble': treble, 'bass': bass}
 
@@ -835,7 +802,6 @@ class Salut(Piece):
 		for i in [3, 5, 7, 9, 13, 17, 21]:
 			select(treble, i).dynamics = '>'
 			select(treble, i+1).dynamics = '!'
-		select(bass, 8).suffix += linebreak
 
 		if self.improvements:
 			select(treble, 11).markup = '\\italic{cresc - - - - - - - - - - - - - poco - - - - - - - a - - - - - - poco}'
@@ -893,7 +859,9 @@ class Salut(Piece):
 		select(bass2, 35).prefix = '\\set Staff.pedalSustainStyle = #\'text '
 		select(bass2, 35).suffix = '\\omit \\sustainOn '
 		select(bass2, 36).dynamics = '!'
-		select(bass2, 36).suffix = '\\sustainOff ' + linebreak 
+		select(bass2, 36).suffix = '\\sustainOff '
+
+		select(bass2, len(bass2)).suffix += linebreak
 
 		treble_tones = tonify('f` bf` d`` f`` bf`` d``` f``` bf```')
 		bass_tones = tonify('bf,, d, f, bf, d f bf d`')
@@ -966,9 +934,9 @@ class Salut(Piece):
 
 	def end_score(self):
 		if self.improvements:
-			return '>> \\layout { } \\midi { } }'
+			return '>> \\layout { \\context { \\Score \\override SpacingSpanner.common-shortest-duration = #(ly:make-moment 1/8) } } \\midi { } }'
 		else:
-			return '>>\n>> \\layout { } \\midi { } }'
+			return '>>\n>> \\layout { \\context { \\Score \\override SpacingSpanner.common-shortest-duration = #(ly:make-moment 1/8) } } \\midi { } }'
 
 if __name__ == "__main__":
 	Salut()
