@@ -118,17 +118,19 @@ class Piece:
 
     def add_barlines(self, stave):
         num_bars = 0
-
-        bar_length = 1
-
         bar_progress = 0.0
-
         progress_at_voice_start = 0.0
         bars_at_voice_start = 0
-
         mult = 1.0
-
         stave = flatten(stave)
+
+        if self.tempo == '4/4':
+            bar_length = 1.0
+        elif self.tempo == '6/4':
+            bar_length = 1.5
+        else:
+            raise ValueError('Cannot auto add barlines with a tempo of '
+                             + self.tempo)
 
         for point in stave:
 
@@ -139,7 +141,12 @@ class Piece:
             if '\\tuplet 3/2 {' in point.prefix:
                 mult *= 2.0/3.0
 
-            if '\\grace {' in point.prefix or ' %{ start grace %}{' in point.prefix or '\\acciaccatura {' in point.prefix or ' %{ start after grace %}{' in point.prefix:
+            if (
+                '\\grace {' in point.prefix
+                or ' %{ start grace %}{' in point.prefix
+                or '\\acciaccatura {' in point.prefix
+                or ' %{ start after grace %}{' in point.prefix
+            ):
                 old_mult = mult
                 mult = 0.0
 
@@ -158,13 +165,17 @@ class Piece:
                     progress = 1 / float(int(point.dur))
             bar_progress += progress*mult
 
+            if bar_progress > bar_length:
+                raise ValueError(
+                    "Duration of notes crosses a bar line: " + str(point) +
+                    " in bar " + str(num_bars + 1) + ". "
+                    "Progress: " + str(bar_progress - progress*mult) +
+                    " -> " + str(bar_progress))
 
-            if bar_progress > 1:
-                raise ValueError("Duration of notes crosses a bar line: {} in bar {}. Progress: {} -> {}".format(str(point), num_bars+1, bar_progress - progress*mult, bar_progress))
-
-            if bar_progress == 1 and (
+            if bar_progress == bar_length and (
                 " }\n\\\\\n" not in point.suffix and
-                (progress*mult != 0.0 or '} %{ end after grace %}' in point.suffix) and
+                (progress*mult != 0.0 or
+                 '} %{ end after grace %}' in point.suffix) and
                 ' } %{ end after grace passage %} ' not in point.suffix
             ):
                 if '%{ bar %}' not in point.suffix:
@@ -179,12 +190,11 @@ class Piece:
             if '} %{ end triplets %}' in point.suffix:
                 mult /= 2.0/3.0
 
-            if '} %{ end grace %}' in point.suffix or '} %{ end acciaccatura %}' in point.suffix:
+            if ('} %{ end grace %}' in point.suffix or
+               '} %{ end acciaccatura %}' in point.suffix):
                 mult = old_mult
 
-
         return(stave)
-
 
     def scale(self, start, stop_or_length, dur=None, step=1):
         return scale(start, stop_or_length, self.key, dur, step)

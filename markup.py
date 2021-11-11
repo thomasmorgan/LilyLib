@@ -128,6 +128,26 @@ def phrase(passage):
     return passage
 
 
+def crescendo(passage, end=''):
+    passage = deepcopy(flatten([passage]))
+    passage[0].dynamics = '<'
+    if end:
+        passage[-1].dynamics = end
+    else:
+        passage[-1].dynamics = '!'
+    return passage
+
+
+def diminuendo(passage, end=''):
+    passage = deepcopy(flatten([passage]))
+    passage[0].dynamics = '>'
+    if end:
+        passage[-1].dynamics = end
+    else:
+        passage[-1].dynamics = '!'
+    return passage
+
+
 def voices(*voices):
     voices = [deepcopy(voice) for voice in voices]
     for i, voice in enumerate(voices):
