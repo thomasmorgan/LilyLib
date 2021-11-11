@@ -470,6 +470,12 @@ markup
 **phrase** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a phrasing slur encloses the passage.
 
+**diminuendo** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a diminuendo hairpin appears below the passage.
+
+**crescendo** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that a crescendo hairpin appears below the passage.
+
 **triplets** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as triplets.
 
