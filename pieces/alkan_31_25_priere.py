@@ -87,7 +87,7 @@ class Priere(Piece):
             split_chords('g c`', 'e`', 'e') +
             chords(['d` g`', 'b d` g`', 'b d` g`'], rhythm) +
             chords(['c` e` g`', 'c` e` a`', 'c` e`'], rhythm) +
-            voices(tied_note('fs`', ['2.', 4]) + notes('g`', 4),
+            voices(tied_note('fs`', ['2.', 2]) + notes('g`', 4),
                    notes('c`', 2) + notes('b c` e` d`', 4)) +
             [chord('b d` g`', '1.')]
         )
@@ -96,7 +96,7 @@ class Priere(Piece):
             add(notes('c, e, g,', rhythm), 'c') +
             split_chords('g,', 'b,') +
             voices(notes('f', rhythm),
-                   notes('f', '2.') + notes('f, a, c', 4)) +
+                   notes('f,', '2.') + notes('f, a, c', 4)) +
             split_chords('c', 'e') +
             add(notes('b, g, g,', rhythm), 'g') +
             chords(['c g', 'a, a'], '2.') +
@@ -120,7 +120,7 @@ class Priere(Piece):
             chords(['bf e` g`'], rhythm) +
             voices([chord('a a` c``', '1.')],
                    diminuendo(notes('g` f` e`', rhythm))) +
-            voices(notes('g`', '2.') + chords(['d`', 'e`', 'd` f`'], 4),
+            voices(notes('d`', '2.') + chords(['d`', 'e`', 'd` f`'], 4),
                    notes('g', rhythm)) +
             chords(['g d` f`', 'g c` e`'], '2.') +
             voices(chords(['e` g`'], rhythm),
