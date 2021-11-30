@@ -60,6 +60,16 @@ def triplets(passage, omit_number=False):
     return passage
 
 
+def quintuplets(passage, omit_number=False):
+    passage = deepcopy(passage)
+    passage = flatten([passage])
+    passage[0].prefix = '\\tuplet 5/4 {' + passage[0].prefix
+    if omit_number:
+        passage[0].prefix = '\\omit TupletNumber ' + passage[0].prefix
+    passage[-1].suffix += '} %{ end quintuplets %}'
+    return passage
+
+
 def sustain(passage):
     passage = deepcopy(passage)
     passage = flatten([passage])
