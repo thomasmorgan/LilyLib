@@ -126,21 +126,12 @@ class Piece:
         mult = 1.0
         stave = flatten(stave)
 
-        if self.tempo == '4/4':
-            bar_length = 1.0
-        elif self.tempo == '6/4':
-            bar_length = 1.5
-        else:
-            raise ValueError('Cannot auto add barlines with a tempo of '
-                             + self.tempo)
+        bar_length = self.calculate_initial_bar_length()
 
         for point in stave:
 
             if "\\time " in point.prefix:
-                if " 4/4 " in point.prefix:
-                    bar_length = 1.0
-                elif " 6/4 " in point.prefix:
-                    bar_length = 1.5
+                bar_length = self.recalculate_bar_length(point.prefix)
 
             if '%{ start alternatives %}' in point.prefix:
                 progress_at_alternative_start = bar_progress
@@ -169,19 +160,7 @@ class Piece:
                 old_mult = mult
                 mult = 0.0
 
-            if isinstance(point.dur, int):
-                progress = 1 / float(point.dur)
-            else:
-                if point.dur == '\\longa':
-                    progress = 4.0
-                elif point.dur == '\\breve':
-                    progress = 2.0
-                elif '..' in point.dur:
-                    progress = (1 / float(int(point.dur[:-2]))) * 1.75
-                elif '.' in point.dur:
-                    progress = (1 / float(int(point.dur[:-1]))) * 1.5
-                else:
-                    progress = 1 / float(int(point.dur))
+            progress = self.get_point_decimal_duration(point)
             bar_progress += progress*mult
 
             if bar_progress > bar_length:
@@ -217,6 +196,37 @@ class Piece:
                 mult = old_mult
 
         return(stave)
+
+    def calculate_initial_bar_length(self):
+        if self.tempo == '4/4':
+            return 1.0
+        elif self.tempo == '6/4':
+            return 1.5
+        else:
+            raise ValueError('Cannot auto add barlines with a tempo of '
+                             + self.tempo)
+
+    def recalculate_bar_length(self, prefix):
+        if " 4/4 " in prefix:
+            return 1.0
+        elif " 6/4 " in prefix:
+            return 1.5
+
+    def get_point_decimal_duration(self, point):
+        if isinstance(point.dur, int):
+            progress = 1 / float(point.dur)
+        else:
+            if point.dur == '\\longa':
+                progress = 4.0
+            elif point.dur == '\\breve':
+                progress = 2.0
+            elif '..' in point.dur:
+                progress = (1 / float(int(point.dur[:-2]))) * 1.75
+            elif '.' in point.dur:
+                progress = (1 / float(int(point.dur[:-1]))) * 1.5
+            else:
+                progress = 1 / float(int(point.dur))
+        return progress
 
     def scale(self, start, stop_or_length, dur=None, step=1):
         return scale(start, stop_or_length, self.key, dur, step)
