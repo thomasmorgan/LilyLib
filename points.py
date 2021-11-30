@@ -56,7 +56,10 @@ class Point:
 
     def __str__(self):
         if self.is_rest:
-            tone_string = 'r'
+            if '%{ spacer %}' in self.prefix:
+                tone_string = 's'
+            else:
+                tone_string = 'r'
         elif self.is_note:
             tone_string = self.tone
         elif self.is_chord:
