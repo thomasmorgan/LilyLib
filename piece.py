@@ -121,6 +121,8 @@ class Piece:
         bar_progress = 0.0
         progress_at_voice_start = 0.0
         bars_at_voice_start = 0
+        progress_at_alternative_start = 0.0
+        bars_at_alternative_start = 0
         mult = 1.0
         stave = flatten(stave)
 
@@ -134,12 +136,29 @@ class Piece:
 
         for point in stave:
 
+            if "\\time " in point.prefix:
+                if " 4/4 " in point.prefix:
+                    bar_length = 1.0
+                elif " 6/4 " in point.prefix:
+                    bar_length = 1.5
+
+            if '%{ start alternatives %}' in point.prefix:
+                progress_at_alternative_start = bar_progress
+                bars_at_alternative_start = num_bars
+
+            if '%{ switch alternative %}' in point.prefix:
+                bar_progress = progress_at_alternative_start
+                num_bars = bars_at_alternative_start
+
             if "\n<<\n{ " in point.prefix:
                 progress_at_voice_start = bar_progress
                 bars_at_voice_start = num_bars
 
             if '\\tuplet 3/2 {' in point.prefix:
                 mult *= 2.0/3.0
+
+            if '\\tuplet 5/4 {' in point.prefix:
+                mult *= 4.0/5.0
 
             if (
                 '\\grace {' in point.prefix
@@ -189,6 +208,9 @@ class Piece:
 
             if '} %{ end triplets %}' in point.suffix:
                 mult /= 2.0/3.0
+
+            if '} %{ end quintuplets %}' in point.suffix:
+                mult /= 4.0/5.0
 
             if ('} %{ end grace %}' in point.suffix or
                '} %{ end acciaccatura %}' in point.suffix):
