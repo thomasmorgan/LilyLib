@@ -1,7 +1,7 @@
 from piece import Piece
 from points import (
     notes, merge, rests, chord, tied_note, rest, note, add, chords,
-    tied_chord)
+    tied_chord, replace)
 from util import rep, select, subset, pattern, join
 from markup import (
     slur, thinthick_barbreak, ottava, quintuplets, clef, voices,
@@ -94,10 +94,11 @@ class LausDeo(Piece):
                 [chord('c`` e``', 1)] +
                 add(merge(notes('d`` e`` f`` g``', 2),
                           notes('f`` g`` af`` bf``', 2)), 'c``') +
-                voices(rep(slur(chords(['f`` af`` b``', 'g`` c```'], 2)), 3) +
-                       rests(1, prefix='\\omit '),
-                       notes('c``', [1, 1, 1], articulation='-') +
-                       slur(chords(['b` g``', 'a` f``'], 2)))
+                voices(
+                    rep(slur(chords(['f`` af`` b``', 'e`` g`` c```'], 2)), 3) +
+                    rests(1, prefix='\\omit '),
+                    notes('c``', [1, 1, 1], articulation='-') +
+                    slur(chords(['b` g``', 'a` f``'], 2)))
             )))
 
         walking_bass = walked_bass()
@@ -134,7 +135,8 @@ class LausDeo(Piece):
 
         v1 = (notes('e` f` d` e`', [2, 4]) +
               notes('d` c`', [8, 8, 2, '2.']))
-        v2 = (notes('g a b', [2, 4]) + tied_note('c`', [4, 4]) +
+        v2 = (notes('g a b', [2, 4]) +
+              notes('c`', 4, phrasing='~') + [chord('a c`', 4)] +
               notes('b a b g', [8, 8, 4, '2.']))
         v3 = (rests(2, 4, prefix='\\omit ') + notes('g', '2.') +
               tied_note('f', ['2.', 4]) + notes('e d e', [8, 8, 4]))
@@ -338,10 +340,14 @@ class LausDeo(Piece):
             tied_note('c`', [2, '4.'])
         )
         walking2_bass = walked_bass() + voices(
-            slur(triplets(notes('f`` e`` d``', [4, 8, 8]) +
-                          notes('e``', 4, phrasing=')~'))) +
+            slur(triplets(
+                notes('f``', 4) + notes('e``', 8, phrasing='[') +
+                notes('d``', 8, phrasing=']') +
+                notes('e``', 4, phrasing=')~'))) +
             notes('e``', '4.'),
             tied_chord('g` c``', [2, '4.']))
+
+        replace(select(walking2_bass, 16), 'b`', 'bf`')
 
         select(walking2_treble, 1).prefix = (
             '\\time 4/4 \\tempo "Al primo tempo" ' +
@@ -411,9 +417,6 @@ class LausDeo(Piece):
         outro = {'treble': outro_treble, 'bass': outro_bass}
 
         self.score = join(intro, walking, b1, walking2, outro)
-
-    # def end_score(self):
-    #     return('>>\n>> \\midi { } }\n')
 
 
 if __name__ == "__main__":
