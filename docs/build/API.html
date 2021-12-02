@@ -380,6 +380,8 @@
 </dd>
 <dt><strong>triplets</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as triplets.</p>
 </dd>
+<dt><strong>quintuplets</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as quintuplets.</p>
+</dd>
 <dt><strong>grace</strong> (<em>passage</em>)</dt><dd><p>Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.</p>
 </dd>
 <dt><strong>after_grace</strong> (<em>passage, grace</em>)</dt><dd><p>Returns a deepcopy of the passage and grace combined into a single list (passage then grace) with the first prefix and final suffix of both parts edited such that the grace appears as grace notes following the passage.</p>
@@ -412,6 +414,12 @@
 <dt><strong>Piece.__str__</strong> ()</dt><dd><p>Prints a lilypond description of the piece. It concatenates the results of the Pieces <em>header</em>, <em>subtext</em>, <em>start_score</em>, <em>write_score</em> and <em>end_score</em> functions.</p>
 </dd>
 <dt><strong>Piece.add_barlines</strong> ()</dt><dd><p>If <cite>piece.auto_add_bars</cite> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> this function will be called when the piece prints. It parses the music and attempts to add barlines (and line breaks in the output) at the end of each bar. This is useful for making the lilypond output more readable and for submitting to the mutopia project. The algorithm used is currently in development and should be considered experimental. Nonetheless it currently handles things like triplets. It is recommended to leave it off unless you are willing to contribute to its development.</p>
+</dd>
+<dt><strong>Piece.calculate_initial_bar_length</strong> ()</dt><dd><p>Used by <cite>piece.add_barlines</cite>, don’t worry about it.</p>
+</dd>
+<dt><strong>Piece.recalculate_bar_length</strong> ()</dt><dd><p>Used by <cite>piece.add_barlines</cite> to handle time signature changes, don’t worry about it.</p>
+</dd>
+<dt><strong>Piece.get_point_decimal_duration</strong> ()</dt><dd><p>Used by <cite>piece.add_barlines</cite> to convert a points duration to a decimal number, don’t worry about it.</p>
 </dd>
 <dt><strong>Piece.header</strong> ()</dt><dd><p>Returns a string containing the metadata of the piece in lilypond format.</p>
 </dd>
