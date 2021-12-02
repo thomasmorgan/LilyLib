@@ -479,6 +479,9 @@ markup
 **triplets** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as triplets.
 
+**quintuplets** (*passage*)
+	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as quintuplets.
+
 **grace** (*passage*)
 	Returns a deepcopy of the passage, with the first prefix and final suffix edited such that it appears as grace notes.
 
@@ -528,6 +531,15 @@ piece
 
 	**Piece.add_barlines** ()
 		If `piece.auto_add_bars` is set to ``True`` this function will be called when the piece prints. It parses the music and attempts to add barlines (and line breaks in the output) at the end of each bar. This is useful for making the lilypond output more readable and for submitting to the mutopia project. The algorithm used is currently in development and should be considered experimental. Nonetheless it currently handles things like triplets. It is recommended to leave it off unless you are willing to contribute to its development.
+
+	**Piece.calculate_initial_bar_length** ()
+		Used by `piece.add_barlines`, don't worry about it.
+
+	**Piece.recalculate_bar_length** ()
+		Used by `piece.add_barlines` to handle time signature changes, don't worry about it.
+
+	**Piece.get_point_decimal_duration** ()
+		Used by `piece.add_barlines` to convert a points duration to a decimal number, don't worry about it.
 
 	**Piece.header** ()
 		Returns a string containing the metadata of the piece in lilypond format.

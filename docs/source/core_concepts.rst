@@ -305,6 +305,9 @@ This code creates a string that represents the tone, but next it needs to add th
 
 Here you can see why phrasing is only for things printed as directly attached to the note, while articulartion is preceded by '-' and ornamentation is preceded by '\': it is because these characters are added infront of this information when the point is printed. This is in order to comply with lilypond. For instance, to make a note or chord staccato, lilpond wants you to add "-." to it, because the "-" is common to all articulation, LilyLib adds it for you. Ditto for dynamics and "\\": for *forte*, lilypond wants "\f", but because the slashes are always there, LilyLib lets you write ``dynamics='f'`` instead. This places some constraints on what you can put where, for instance ``articulation="."*``and ``ornamentation="staccato"`` will both produce a staccato note because "-." and "\staccato" are both acceptable lilypond, but ``articulation="staccato"`` will not because *-staccato* is not valid lilypond. For cases where you need total control, you can use the *prefix* and *suffix* values as these let you place whatever extra content you want at the start and end of the point, respectively. Various markup functions we'll come to later use these values too.
 
+.. NOTE::
+	Lilypond also includes the notion of "spacer" rests. These behave like regular rests, but they don't appear in the printed sheetmusic. They are handy for creating partial measures in the middle of a piece, or for creating empty voids. To have a rest print as a spacer rest, add '%{ spacer %}' anywhere in its prefix. Another way to make anything (rest, note or chord) invisible is to add '\\omit ' to its prefix.
+
 Points also have some other functions that make them easier to work with. Note that the *str* function calls the functions *is_rest*, *is_note* and *is_chord* to determine how to print. Here's what these functions look like:
 
 ::
