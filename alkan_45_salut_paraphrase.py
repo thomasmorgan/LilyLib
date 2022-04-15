@@ -193,19 +193,30 @@ class Salut(Piece):
         # # Melody 2 #
         # ############
 
-        upper_treble_voice = melody('af`', [2, '4.'], 'bf minor') + melody('e`', ['2.', 4], 'a major', True)
-        lower_treble_voice = rests(8, prefix='\\omit ') + rests(4) + chords(['ef`', 'df` f`', 'bf'], 4) + phrase(notes('af g', 4) + slur(notes('af gs', 4))) + rests(4) + chords(['e c`', 'e cs`'], 4) + notes('fs e fs d', [4, 4, 4, 2])
+        upper_treble_voice = (
+            melody('af`', [2, '4.'], 'bf minor') +
+            melody('e`', ['2.', 4], 'a major', True))
+        lower_treble_voice = (
+            rests(8, prefix='\\omit ') + rests(4) +
+            chords(['ef`', 'df` f`', 'bf'], 4) +
+            phrase(notes('af g', 4) + slur(notes('af gs', 4))) + rests(4) +
+            chords(['e c`', 'e cs`'], 4) + notes('fs e fs d', [4, 4, 4, 2]))
 
         select(upper_treble_voice, 1).dynamics = 'p'
         select(upper_treble_voice, 1).markup = '\\italic{dolce}'
         select(lower_treble_voice, 3).dynamics = 'pp'
-        select(upper_treble_voice, len(upper_treble_voice)-2).markdown = '\\italic{ten.}'
+        select(upper_treble_voice,
+               len(upper_treble_voice)-2).markdown = '\\italic{ten.}'
 
         treble = voices(upper_treble_voice, lower_treble_voice)
 
         bass = rests(8, 4) + voices(
-            notes('af gf, gf', [2, 8, 8]) + slur(notes('f e ef', [4, 4, '4.'])) + rests(8, 4) + chords(['gs, d', 'a, cs'], 4) + notes('d, d', 8) + slur(notes('cs d b, e,', [4, 4, 4, 4])),
-            notes('c df gf,', 4) + notes('af, gs,', ['2.', 4]) + rests(2, 4, prefix='\\omit ') + notes('d, e, e,', [4, '2.', 4])
+            (notes('af gf, gf', [2, 8, 8]) +
+             slur(notes('f e ef', [4, 4, '4.'])) + rests(8, 4) +
+             chords(['gs, d', 'a, cs'], 4) + notes('d, d', 8) +
+             slur(notes('cs d b, e,', [4, 4, 4, 4]))),
+            (notes('c df gf,', 4) + notes('af, gs,', ['2.', 4]) +
+             rests(2, 4, prefix='\\omit ') + notes('d, e, e,', [4, '2.', 4]))
         )
 
         if self.improvements:
@@ -973,7 +984,7 @@ class Salut(Piece):
                 'bass': bass + bass2 + bass3 + ending_bass + ending2_bass
             }
 
-        self.score = join(opening_chords, melody1, opening_chords2)  # , melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
+        self.score = join(opening_chords, melody1, opening_chords2, melody2)  # , chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
