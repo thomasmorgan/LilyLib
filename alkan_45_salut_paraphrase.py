@@ -173,9 +173,12 @@ class Salut(Piece):
         if self.improvements:
             opening_chords2 = {
                 'treble': rests(1, 2, 4, 8),
-                'bass': ottava(voices(select(opening_chords2, 1), select(opening_chords2, 2)), -1)
+                'bass': ottava(voices(select(opening_chords2, 1),
+                                      select(opening_chords2, 2)),
+                               -1)
             }
-            select(opening_chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##t '
+            select(opening_chords2['treble'], 1).prefix += (
+                ' \\override Rest.transparent = ##t ')
         else:
             opening_chords2 = {
                 'treble': clef('bass', select(opening_chords2, 1)),
@@ -968,7 +971,7 @@ class Salut(Piece):
                 'bass': bass + bass2 + bass3 + ending_bass + ending2_bass
             }
 
-        self.score = join(opening_chords, melody1) #, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
+        self.score = join(opening_chords, melody1, opening_chords2)  # , melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
