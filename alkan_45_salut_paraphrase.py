@@ -204,7 +204,6 @@ class Salut(Piece):
 
         select(upper_treble_voice, 1).dynamics = 'p'
         select(upper_treble_voice, 1).markup = '\\italic{dolce}'
-        select(lower_treble_voice, 3).dynamics = 'pp'
         select(upper_treble_voice,
                len(upper_treble_voice)-2).markdown = '\\italic{ten.}'
 
@@ -223,6 +222,9 @@ class Salut(Piece):
             melody2 = {'treble': treble, 'bass': bass}
         else:
             melody2 = {'treble': clef('treble', treble), 'bass': bass}
+
+        melody2['dynamics'] = (
+            rests(8, 4) + rests('2.', dynamics='pp') + rests(1, 1, 1))
 
         ############
         # Chords 1 #
