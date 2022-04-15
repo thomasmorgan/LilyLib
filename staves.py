@@ -40,3 +40,13 @@ class Super(Stave):
     def __init__(self, name=None, extra_text='', _with=''):
         super().__init__("treble", name, extra_text, _with)
         self.extra_text += " \\override Staff.StaffSymbol.line-count = #10 \n \\override Staff.StaffSymbol.line-positions = #'(-16 -14 -12 -10 -8 -4 -2 0 2 4)"
+
+
+class Dynamics(Stave):
+
+    def __init__(self, name=None):
+        super().__init__("dynamics", name)
+
+    @property
+    def start(self):
+        return '<< \\new Dynamics {{'.format(self.name, self._with, self.extra_text, self.clef)
