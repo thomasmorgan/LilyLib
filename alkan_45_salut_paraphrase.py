@@ -93,7 +93,7 @@ class Salut(Piece):
                 'bass': select(opening_chords, 2)
             }
 
-        opening_chords['dynamics'] = rests([1], dynamics='mf')
+        opening_chords['dynamics'] = rests(1, dynamics='mf') + rests(2, '4.')
         select(opening_chords['treble'], 1).prefix = (
             '\\tempo "Adagio sostenuto" 4 = 69')
 
@@ -104,9 +104,13 @@ class Salut(Piece):
         def melody(tone, durs, key, alt=False):
             tones = scale(self.transpose(tone, -1, 'octave'), 9, key=key)
             if not alt:
-                melody = notes(pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3), [8, 2, 8, 8, 8, 8]+durs)
+                melody = notes(
+                    pattern(tones, 1, 8, 8, 9, 7, 5, 4, 3),
+                    [8, 2, 8, 8, 8, 8]+durs)
             else:
-                melody = notes(pattern(tones, 1, 8, 8, 8, 9, 7, 5, 4, 4, 3, 6, 5), [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
+                melody = notes(
+                    pattern(tones, 1, 8, 8, 8, 9, 7, 5, 4, 4, 3, 6, 5),
+                    [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
 
             select(melody, 1).articulation += '('
             select(melody, 2).dynamics = '<'
@@ -121,9 +125,13 @@ class Salut(Piece):
             select(melody, len(melody)).articulation += ')'
             return(melody)
 
-        upper_treble_voice = melody('f`', [2, '4.'], self.key) + melody('c`', ['2.', 4], self.key)
+        upper_treble_voice = (melody('f`', [2, '4.'], self.key) +
+                              melody('c`', ['2.', 4], self.key))
         select(upper_treble_voice, len(upper_treble_voice)).replace('ef', 'e')
-        lower_treble_voice = rests(8, prefix='\\omit ') + rests(4) + notes('c` bf g', 4) + slur(notes('f e f ds', 4)) + rests(4) + notes('e f d', 4) + slur(notes('c b, bf,', [4, 4, 2]))
+        lower_treble_voice = (
+            rests(8, prefix='\\omit ') + rests(4) +
+            notes('c` bf g', 4) + slur(notes('f e f ds', 4)) +
+            rests(4) + notes('e f d', 4) + slur(notes('c b, bf,', [4, 4, 2])))
         if self.improvements:
             select(lower_treble_voice, 9).replace('ds', 'ef')
 
@@ -133,15 +141,18 @@ class Salut(Piece):
         select(upper_treble_voice, 1).dynamics = 'p'
         select(upper_treble_voice, 1).markup = '\\italic{dolce cantabile}'
         select(upper_treble_voice, 15).markdown = '\\italic{dim.}'
-        select(lower_treble_voice, 3).markdown = '\\dynamic{pp} \\italic{e legatissimo}'
+        select(lower_treble_voice, 3).markdown = (
+            '\\dynamic{pp} \\italic{e legatissimo}')
 
         treble = voices(upper_treble_voice, lower_treble_voice)
 
         bass = (
             rests(8, 4) + notes('a, bf,', 4) + [chord('ef, ef', 4)] +
-            voices(slur(self.chromatic('d', -3, dur=[4, 4, '4.'])) + rests(8), slur(notes('f, fs,', ['2.', 4]))) +
+            voices(slur(self.chromatic('d', -3, dur=[4, 4, '4.'])) + rests(8),
+                   slur(notes('f, fs,', ['2.', 4]))) +
             rests(4) + notes('g, a,', 4) + [chord('bf,, bf,', 4)] +
-            voices(slur(self.chromatic('a,', -3, dur=[4, 4, 2])), notes('c, c,', ['2.', 4]))
+            voices(slur(self.chromatic('a,', -3, dur=[4, 4, 2])),
+                   notes('c, c,', ['2.', 4]))
         )
 
         if self.improvements:
@@ -955,7 +966,7 @@ class Salut(Piece):
                 'bass': bass + bass2 + bass3 + ending_bass + ending2_bass
             }
 
-        self.score = join(opening_chords) #, melody1, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
+        self.score = join(opening_chords, melody1) #, opening_chords2, melody2, chords1, chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
