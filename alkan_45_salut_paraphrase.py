@@ -113,7 +113,7 @@ class Salut(Piece):
                     [8, '4.', 8, 8, 8, 8, 8, 2, 8, 8, 8, 8])
 
             select(melody, 1).articulation += '('
-            select(melody, 2).dynamics = '<'
+            select(melody, 2).suffix = '^\\<'
             if not alt:
                 select(melody, 6).articulation += ')'
                 select(melody, 7).articulation += '('
@@ -140,9 +140,7 @@ class Salut(Piece):
 
         select(upper_treble_voice, 1).dynamics = 'p'
         select(upper_treble_voice, 1).markup = '\\italic{dolce cantabile}'
-        select(upper_treble_voice, 15).markdown = '\\italic{dim.}'
-        select(lower_treble_voice, 3).markdown = (
-            '\\dynamic{pp} \\italic{e legatissimo}')
+        select(upper_treble_voice, 15).markup = '\\italic{dim.}'
 
         treble = voices(upper_treble_voice, lower_treble_voice)
 
@@ -154,11 +152,15 @@ class Salut(Piece):
             voices(slur(self.chromatic('a,', -3, dur=[4, 4, 2])),
                    notes('c, c,', ['2.', 4]))
         )
+        select(bass, 16).markup = '\\italic{dim.}'
 
         if self.improvements:
             melody1 = {'treble': treble, 'bass': bass}
         else:
             melody1 = {'treble': clef('treble', treble), 'bass': bass}
+
+        melody1['dynamics'] = rests(8, 4) + rests('2.', markdown=(
+            '\\dynamic{pp} \\italic{e legatissimo}'))
 
         ####################
         # Opening Chords 2 #
