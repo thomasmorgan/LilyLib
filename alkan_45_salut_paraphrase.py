@@ -159,8 +159,10 @@ class Salut(Piece):
         else:
             melody1 = {'treble': clef('treble', treble), 'bass': bass}
 
-        melody1['dynamics'] = rests(8, 4) + rests('2.', markdown=(
-            '\\dynamic{pp} \\italic{e legatissimo}'))
+        melody1['dynamics'] = (
+            rests(8, 4) +
+            rests('2.', markdown=('\\dynamic{pp} \\italic{e legatissimo}')) +
+            rests(1, 1, 1))
 
         ####################
         # Opening Chords 2 #
@@ -185,7 +187,7 @@ class Salut(Piece):
                 'bass': select(opening_chords2, 2)
             }
 
-        select(opening_chords2['treble'], 1).dynamics = "mf"
+        opening_chords2['dynamics'] = rests(1, dynamics='mf') + rests(2, '4.')
 
         # ############
         # # Melody 2 #
