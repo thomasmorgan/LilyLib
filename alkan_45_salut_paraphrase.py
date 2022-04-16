@@ -962,18 +962,22 @@ class Salut(Piece):
             rests('2..') + rests(8, markdown='\\italic{poco rinf.}') +
             rep(rests(1), 2))
 
-
         ############
         # Chords 4 #
         ############
 
         treble = (
-            rests(8, 4, 8) + subset(melody('f`', [4, 8], self.key), 1, 6) + slur(notes('ef` d`', [4, 8])) +
+            rests(8, 4, 8) + subset(melody('f`', [4, 8], self.key), 1, 6) +
+            slur(notes('ef` d`', [4, 8])) +
             rests(8, 4, 8) + slur(notes('f f`', [8, 4])) + rests(8) +
-            notes('f f` g` ef` c`', 8) + slur(notes('ef` d`', [4, 8])) + rests(8, 4, 8) +
-            slur(notes('bf', 8) + tied_note('bf`', [2, 8]) + notes('c`` af` fs`', 8)) + slur(notes('g` af` f` d` ef` c` af fs', 8)) +
+            notes('f f` g` ef` c`', 8) + slur(notes('ef` d`', [4, 8])) +
+            rests(8, 4, 8) +
+            slur(notes('bf', 8) + tied_note('bf`', [2, 8]) +
+                 notes('c`` af` fs`', 8)) +
+            slur(notes('g` af` f` d` ef` c` af fs', 8)) +
             slur(notes('g a bf', 8) + chords(['ef ef`'], 8)) +
-            voices(slur(chords(['bf d`', 'a c`', 'bf'], [4, '8.', 16])), notes('f', 2))
+            voices(slur(chords(['bf d`', 'a c`', 'bf'], [4, '8.', 16])),
+                   notes('f', 2))
         )
         select(treble, 4).markdown = '\\italic{dolce}'
         select(treble, 9).articulation = ')'
@@ -990,9 +994,19 @@ class Salut(Piece):
         select(treble, 46).markdown = '\\italic{ten.}'
         select(treble, len(treble)).suffix += double_barbreak
 
-        bass_harmony = triple(notes('f,', 8), omit_number=False) + rep(triple(notes('f,', 8)), 4*4 - 1) + triple(notes('f, fs, g, af, af, af, af,', 8)) + notes('af,', 8)
-        bass_melody = notes('bf,, b,,', 2) + notes('c, d, ef, a,, bf,, b,, c, d, ef, c, g,, a,, bf,, bf,, bf,, bf,, b,, c, cs,', 4) + notes('d,', 8)
-        bass_joined = notes('bf, bf c` af fs g af f d', 8) + voices(notes('ef c d g,', 8) + notes('f, ef', 4), rests(2, prefix='\\omit ') + notes('f,', 2))
+        bass_harmony = (
+            triple(notes('f,', 8), omit_number=False) +
+            rep(triple(notes('f,', 8)), 4*4 - 1) +
+            triple(notes('f, fs, g, af, af, af, af,', 8)) + notes('af,', 8))
+        bass_melody = (
+            notes('bf,, b,,', 2) +
+            notes('c, d, ef, a,, bf,, b,, c, d, ef, '
+                  'c, g,, a,, bf,, bf,, bf,, bf,, b,, c, cs,', 4) +
+            notes('d,', 8))
+        bass_joined = (
+            notes('bf, bf c` af fs g af f d', 8) +
+            voices(notes('ef c d g,', 8) + notes('f, ef', 4),
+                   rests(2, prefix='\\omit ') + notes('f,', 2)))
         select(bass_harmony, 1).suffix += ' ^\\p '
         select(bass_melody, 1).ornamentation = '('
         select(bass_melody, 6).ornamentation = ')'
@@ -1008,9 +1022,17 @@ class Salut(Piece):
         select(bass_joined, 15).ornamentation = ')'
 
         if self.improvements:
-            chords4 = {'treble': treble, 'bass': ottava(voices(bass_harmony, bass_melody), -1) + bass_joined}
+            chords4 = {
+                'treble': treble,
+                'bass': (
+                    ottava(voices(bass_harmony, bass_melody), -1) +
+                    bass_joined)
+            }
         else:
-            chords4 = {'treble': treble, 'bass': voices(bass_harmony, bass_melody) + bass_joined}
+            chords4 = {
+                'treble': treble,
+                'bass': voices(bass_harmony, bass_melody) + bass_joined
+            }
 
         ############
         # Chords 5 #
