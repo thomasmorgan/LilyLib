@@ -1114,19 +1114,19 @@ class Salut(Piece):
             select(treble, i+1).articulation = ')'
             select(bass, i).phrasing = '('
             select(bass, i+1).phrasing = ')'
-        select(treble, 1).dynamics = 'p\\<'
-        for i in [3, 5, 7, 9, 13, 17, 21]:
-            select(treble, i).dynamics = '>'
-            select(treble, i+1).dynamics = '!'
 
         if self.improvements:
             select(treble, 11).markup = (
                 '\\italic{cresc. - - - - - - - - - - - - - poco '
                 '- - - - - - - a - - - - - - poco}')
         else:
-            select(treble, 11).markdown = (
+            select(bass, 11).markup = (
                 '\\italic{cresc. - - - - - - - - - - - - - - poco '
                 '- - - - - - - - a - - - - - - poco}')
+
+        dynamics1 = (
+            rests(1, dynamics='p\\<') + rep(rests(1, dynamics='>'), 3) +
+            rep(rests(4, dynamics='>') + rests('2.', dynamics='!'), 4))
 
         treble2 = (
             chords(
@@ -1152,10 +1152,7 @@ class Salut(Piece):
             select(treble2, 5).prefix = (
                 '\\clef "treble" ' + select(treble2, 5).prefix)
         select(treble2, 7).markup = "\\italic{sempre cresc.}"
-        select(treble2, 15).dynamics = 'f'
         select(treble2, 17).markup = '\\italic{poco accel.}'
-        select(treble2, 18).markdown = '\\italic{sempre cresc.}'
-        select(treble2, 23).dynamics = '<'
         select(treble2, 27).dynamics = 'sf'
         select(treble2, 29).markdown = '\\italic{poco ritard}'
 
@@ -1183,17 +1180,24 @@ class Salut(Piece):
             select(bass2, i).suffix = '\\sustainOn\\sustainOff '
         select(bass2, 15).suffix = '\\sustainOff '
         select(bass2, 15).markdown = 'Ped. \\italic{sempre}'
-        select(bass2, 28).suffix = '^\\ff'
-        select(bass2, 29).markup = '\\italic{dim. poco a poco}'
+        select(bass2, 27).suffix = '^\\sf'
         if not self.improvements:
+            select(bass2, 27).prefix += '\\clef "treble" '
+            select(bass2, 29).prefix += '\\clef "bass" '
             select(bass2, 33).markdown = 'Ped. \\italic{sempre}'
-        select(bass2, 33).suffix = '^\\>'
         select(bass2, 35).prefix = '\\set Staff.pedalSustainStyle = #\'text '
         select(bass2, 35).suffix = '\\omit \\sustainOn '
-        select(bass2, 36).dynamics = '!'
         select(bass2, 36).suffix = '\\sustainOff '
 
         select(bass2, len(bass2)).suffix += linebreak
+
+        dynamics2 = (
+            rep(rests(1), 3) + rests(2) + rests(2, dynamics='f') +
+            rests(4) + rests('2.', markup='\\italic{sempre cresc.}') +
+            rests(2) + rests(2, dynamics='<') + rests(2) +
+            rests(2, dynamics='ff') +
+            rests(1, markup='\\italic{dim. poco a poco}') +
+            rests('2..', dynamics='>') + rests(8, dynamics='!'))
 
         treble_tones = tonify('f` bf` d`` f`` bf`` d``` f``` bf```')
         bass_tones = tonify('bf,, d, f, bf, d f bf d`')
@@ -1216,6 +1220,8 @@ class Salut(Piece):
         select(treble3, 1).prefix = (
             '\\tempo "A tempo" ' + select(treble3, 1).prefix)
         select(bass3, 1).markdown = 'Ped. \\italic{sempre}'
+
+        dynamics3 = rep(rests(1), 3)
 
         ##########
         # ENDING #
@@ -1268,10 +1274,11 @@ class Salut(Piece):
                 'treble': clef('bass', treble) + treble2 + treble3 + voices(ending_treble1, ending_treble2) + clef('bass', ending2_treble),
                 'bass': bass + bass2 + bass3 + ending_bass + ending2_bass
             }
+        opening_chords3['dynamics'] = dynamics1 + dynamics2 + dynamics3
 
         self.score = join(
             opening_chords, melody1, opening_chords2, melody2, chords1,
-            chords2, chords3, plods, bridge, chords4, chords5)  # opening_chords3)
+            chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
