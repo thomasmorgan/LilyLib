@@ -1045,18 +1045,22 @@ class Salut(Piece):
         ############
 
         bass = (
-            slur(notes('bf, d ef f g a', ['2.', 8, 8])) + slur(notes('bf d` c`', [2, '4.', 8])) + slur(notes('bf a af', [2, 4, 4])) +
-            slur(notes('g c` ef`', ['2.', 8, 8])) + slur(notes('ef` f bf d`', [4, 2, 8, 8])) + slur(notes('f ef d ef c', ['8.', 16, 2, 8, 8]))
-        )
+            slur(notes('bf, d ef f g a', ['2.', 8, 8])) +
+            slur(notes('bf d` c`', [2, '4.', 8])) +
+            slur(notes('bf a af', [2, 4, 4])) +
+            slur(notes('g c` ef`', ['2.', 8, 8])) +
+            slur(notes('ef` f bf d`', [4, 2, 8, 8])) +
+            slur(notes('f ef d ef c', ['8.', 16, 2, 8, 8])))
 
-        treble = triple(chords(['f bf d` f`', 'f bf d` f`', 'f bf d` f`', 'f bf d` f`',
-                                'bf c` f`', 'bf c` f`', 'a c` f`', 'c` f`',
-                                'g d` f`', 'g d` f`', 'g bf e`', 'g bf e`',
-                                'f c` f`', 'f c` f`', 'f c` f`', 'f c` f`',
-                                'f b d` f`', 'f b d` f`', 'f c` ef` f`', 'f f`',
-                                'f a c` f`', 'a c` ef` f`', 'bf d` f`', 'f f`',
-                                'bf d` f`', 'f bf d` f`', 'f bf d` f`'
-                                ], 8)) + triplets(chords(['f a c` f`', 'f a c` f`', 'f a ef` f`'], 8))
+        treble = (
+            triple(chords([
+                'f bf d` f`', 'f bf d` f`', 'f bf d` f`', 'f bf d` f`',
+                'bf c` f`', 'bf c` f`', 'a c` f`', 'c` f`', 'g d` f`',
+                'g d` f`', 'g bf e`', 'g bf e`', 'f c` f`', 'f c` f`',
+                'f c` f`', 'f c` f`', 'f b d` f`', 'f b d` f`', 'f c` ef` f`',
+                'f f`', 'f a c` f`', 'a c` ef` f`', 'bf d` f`', 'f f`',
+                'bf d` f`', 'f bf d` f`', 'f bf d` f`'], 8)) +
+            triplets(chords(['f a c` f`', 'f a c` f`', 'f a ef` f`'], 8)))
 
         select(treble, 1).dynamics = 'pp'
         select(treble, 1).markup = '\\italic{sostenuto sempre}'
