@@ -292,20 +292,14 @@ class Salut(Piece):
             triple_octaves('gs, a, cs') + triple(notes('e, ds e', 8)),
             'e,') + triple_octaves('d')
 
-        select(upper_treble8, 4).dynamics = '>'
-        select(upper_treble8, 5).dynamics = '!\\<'
+        select(upper_treble8, 4).suffix = '^\\>'
+        select(upper_treble8, 5).suffix = '\\!^\\<'
         select(upper_treble8, 7).dynamics = '!'
-        select(upper_treble8, 8).dynamics = '>'
+        select(upper_treble8, 8).suffix = '^\\>'
         select(upper_treble8, 9).dynamics = '!'
-        select(lower_treble8, 1).dynamics = '<'
-        select(lower_treble8, 11).dynamics = '!'
         if not self.improvements:
             select(lower_treble8, 28).prefix = (
                 '\\clef "bass" ' + select(lower_treble8, 28).prefix)
-        select(lower_treble8, 29).markdown = '\\italic{dim.}'
-        select(lower_treble8, 37).dynamics = '>'
-        select(lower_treble8, 43).dynamics = '!'
-        select(lower_treble8, 46).dynamics = 'p'
 
         upper_treble12 = (
             notes('df` f` gf` af` bf` c``', ['2.', 8, 8]) +
@@ -344,14 +338,10 @@ class Salut(Piece):
         for i in [3, 6, 12]:
             select(upper_treble12, i).phrasing = ')'
 
-        select(upper_treble12, 1).markdown = "\\italic{cresc. poco a poco}"
         if self.improvements:
             select(upper_treble12, 1).prefix += "\\key af \\major "
             select(bass12, 1).prefix += "\\key af \\major "
-        select(upper_treble12, 7).dynamics = "<"
-        select(upper_treble12, 8).dynamics = "rfz"
-        select(upper_treble12, 10).dynamics = ">"
-        select(upper_treble12, 12).dynamics = "p"
+        select(bass12, 1).ornamentation = 'sustainOn'
 
         upper_treble16 = (
             notes('b` e`` g``', ['2.', 8, 8]) +
@@ -373,17 +363,10 @@ class Salut(Piece):
         for i in [3, 6]:
             select(upper_treble16, i).phrasing = ')'
 
-        select(lower_treble16, 9).dynamics = '<'
-        select(lower_treble16, 12).dynamics = '!'
-        select(lower_treble16, 13).dynamics = '>'
-        select(lower_treble16, 15).dynamics = '!'
-        select(lower_treble16, 25).dynamics = '>'
-        select(lower_treble16, 27).dynamics = '!'
-        select(lower_treble16, 28).dynamics = '<'
-        select(lower_treble16, 36).dynamics = '!'
-        select(lower_treble16, 37).dynamics = 'p'
         select(lower_treble16, 37).markup = '\\italic{dolce}'
         select(bass16, 37).markdown = '\\italic{sostenutissimo}'
+        select(upper_treble16, 9).suffix = '^\\<'
+        select(upper_treble16, 11).dynamics = '!'
 
         if self.improvements:
             select(upper_treble16, 1).prefix += '\\key e \\minor '
@@ -413,12 +396,6 @@ class Salut(Piece):
         for i in [9, 11]:
             select(upper_treble19, i).phrasing = ')'
 
-        select(lower_treble19, 4).dynamics = '>'
-        select(lower_treble19, 12).dynamics = '!'
-        select(lower_treble19, 13).dynamics = '<'
-        select(lower_treble19, 22).dynamics = '!\\>'
-        select(lower_treble19, 24).dynamics = '!'
-
         chords1 = {
             'treble': voices(
                 (upper_treble4 + upper_treble8 + upper_treble12 +
@@ -432,7 +409,21 @@ class Salut(Piece):
         chords1['dynamics'] = (
             rests(1, markdown='\\italic{poco cresc.}') + rests(1) +
             rests(2, dynamics='<') + rests(2, dynamics='>') +
-            rests(1, dynamics='!'))
+            rests(1, dynamics='!') + rests(1, dynamics='<') +
+            rests(1, dynamics='!') + rests(4) +
+            rests('2.', markdown='\\italic{dim.}') +
+            rests('2.', dynamics='>') + rests(4, dynamics='p') +
+            rests(1, markdown='\\italic{cresc. poco a poco}') +
+            rests(1) + rests(2, dynamics='<') +
+            rests(2, dynamics='rfz') +
+            rests('2.', dynamics='>', markdown='\\italic{dim.}') +
+            rests(4, dynamics='p') + rests('2') +
+            triplets(rests(8, 8) + rests(8, dynamics='<')) +
+            rests(4) + rests(4, dynamics='>') + rests('2.', dynamics='!') +
+            rests(4, dynamics='>') + rests('2.', dynamics='<') +
+            rests(1, dynamics='p') + rests(4) + rests('2.', dynamics='>') +
+            rests('2.', dynamics='<') + rests(4, dynamics='>') +
+            rests('2.', dynamics='!'))
 
         ############
         # Chords 2 #
