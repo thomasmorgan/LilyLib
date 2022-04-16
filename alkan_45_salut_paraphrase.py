@@ -1086,16 +1086,26 @@ class Salut(Piece):
         ####################
 
         treble = (
-            chords(['g, bf,', 'a, c', 'bf, df', 'a, c', 'c ef', 'bf, df', 'ef gf', 'df f'], 2, ornamentation='arpeggio') +
-            chords(['f af', 'ef g', 'bf, d', 'bf, ef', 'g bf', 'f a', 'c e', 'c f', 'a c`', 'g bf', 'd fs', 'd g', 'b d`', 'a c`', 'ef gs', 'ef a'], 4, ornamentation='arpeggio')
+            chords(['g, bf,', 'a, c', 'bf, df', 'a, c', 'c ef', 'bf, df',
+                    'ef gf', 'df f'], 2, ornamentation='arpeggio') +
+            chords(['f af', 'ef g', 'bf, d', 'bf, ef', 'g bf', 'f a', 'c e',
+                    'c f', 'a c`', 'g bf', 'd fs', 'd g', 'b d`', 'a c`',
+                    'ef gs', 'ef a'], 4, ornamentation='arpeggio')
         )
         bass = (
-            chords(['bf,, df, e,', 'f,, c, f,', 'bf,, e, g,', 'f,, c, f,', 'a,, c, gf,', 'bf,, df, f,', 'c, ef, af,', 'df, f, af,'], 2, ornamentation='arpeggio') +
-            chords(['d, f, bf,', 'ef, g, bf,', 'af,, bf,, f,', 'g,, bf,, ef,', 'e, g, c', 'f, a, c', 'bf,, c, g,', 'a,, c, f,', 'fs, a, d', 'g, bf, d', 'c, d, a,', 'bf,, d, g,', 'gs, b, ef', 'a, c ef', 'd, ef, b,', 'c, ef, a,'], 4, ornamentation='arpeggio')
+            chords(['bf,, df, e,', 'f,, c, f,', 'bf,, e, g,', 'f,, c, f,',
+                    'a,, c, gf,', 'bf,, df, f,', 'c, ef, af,', 'df, f, af,'],
+                   2, ornamentation='arpeggio') +
+            chords(['d, f, bf,', 'ef, g, bf,', 'af,, bf,, f,', 'g,, bf,, ef,',
+                    'e, g, c', 'f, a, c', 'bf,, c, g,', 'a,, c, f,',
+                    'fs, a, d', 'g, bf, d', 'c, d, a,', 'bf,, d, g,',
+                    'gs, b, ef', 'a, c ef', 'd, ef, b,', 'c, ef, a,'],
+                   4, ornamentation='arpeggio')
         )
 
         select(treble, 1).articulation = '('
-        select(treble, 1).prefix = '\\set Score.connectArpeggios = ##t ' + select(treble, 1).prefix
+        select(treble, 1).prefix = (
+            '\\set Score.connectArpeggios = ##t ' + select(treble, 1).prefix)
         select(treble, 4).articulation = ')'
         select(bass, 1).phrasing = '('
         select(bass, 4).phrasing = ')'
@@ -1110,26 +1120,37 @@ class Salut(Piece):
             select(treble, i+1).dynamics = '!'
 
         if self.improvements:
-            select(treble, 11).markup = '\\italic{cresc. - - - - - - - - - - - - - poco - - - - - - - a - - - - - - poco}'
+            select(treble, 11).markup = (
+                '\\italic{cresc. - - - - - - - - - - - - - poco '
+                '- - - - - - - a - - - - - - poco}')
         else:
-            select(treble, 11).markdown = '\\italic{cresc. - - - - - - - - - - - - - - poco - - - - - - - - a - - - - - - poco}'
+            select(treble, 11).markdown = (
+                '\\italic{cresc. - - - - - - - - - - - - - - poco '
+                '- - - - - - - - a - - - - - - poco}')
 
         treble2 = (
             chords(
                 ['ef f c` ef`', 'd f bf d`', 'g a c` ef` g`', 'f bf d` f`',
-                'a c` ef` f` a`', 'f bf d` f` bf`', 'ef` f` c`` ef``', 'd` f` bf` d``',
-                'g` a` c`` ef`` g``', 'f` bf` d`` f``', 'a` c`` ef`` f`` a``', 'f` bf` d`` f`` bf``',
-                'ef`` f`` c``` ef```', 'd`` f`` bf`` d```', 'ef`` a`` c``` ef```', 'ef`` a`` c``` ef``` e```',
-                'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` e```', 'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` fs```',
-                'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` fs```', 'ef`` a`` c``` ef``` g```', 'ef`` a`` c``` ef``` fs```',
-                'ef`` a`` c``` ef``` g```', 'ef`` a`` c``` ef``` gs```'], 4, ornamentation = 'arpeggio') +
+                 'a c` ef` f` a`', 'f bf d` f` bf`', 'ef` f` c`` ef``',
+                 'd` f` bf` d``', 'g` a` c`` ef`` g``', 'f` bf` d`` f``',
+                 'a` c`` ef`` f`` a``', 'f` bf` d`` f`` bf``',
+                 'ef`` f`` c``` ef```', 'd`` f`` bf`` d```',
+                 'ef`` a`` c``` ef```', 'ef`` a`` c``` ef``` e```',
+                 'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` e```',
+                 'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` fs```',
+                 'ef`` a`` c``` ef``` f```', 'ef`` a`` c``` ef``` fs```',
+                 'ef`` a`` c``` ef``` g```', 'ef`` a`` c``` ef``` fs```',
+                 'ef`` a`` c``` ef``` g```', 'ef`` a`` c``` ef``` gs```'],
+                4, ornamentation='arpeggio') +
             tied_note('a```', [2, 1, 1], ornamentation='startTrillSpan')
         )
-        select(treble2, 29).prefix = '\\afterGrace ' + select(treble2, 29).prefix
+        select(treble2, 29).prefix = (
+            '\\afterGrace ' + select(treble2, 29).prefix)
         select(treble2, 29).suffix += ' { g```16\\stopTrillSpan a```16 } '
         select(treble2, 1).markup = "\\italic{sostenuto}"
         if not self.improvements:
-            select(treble2, 5).prefix = '\\clef "treble" ' + select(treble2, 5).prefix
+            select(treble2, 5).prefix = (
+                '\\clef "treble" ' + select(treble2, 5).prefix)
         select(treble2, 7).markup = "\\italic{sempre cresc.}"
         select(treble2, 15).dynamics = 'f'
         select(treble2, 17).markup = '\\italic{poco accel.}'
@@ -1140,18 +1161,23 @@ class Salut(Piece):
 
         bass2 = (
             chords(
-                ['a,, c, ef, f, a,', 'bf,, d, f, bf,', 'c, ef, f, a, ef', 'd, f, bf, d',
-                'f, a, c, ef f', 'bf,, d, f, bf, d', 'a, c ef f a', 'bf, d f bf',
-                'c ef f a ef`', 'd f bf d`', 'f a c ef` f`', 'bf, d f bf d`',
-                'a c` ef` f` a`', 'bf d` f` bf`', 'f a c` ef` a`', 'f a c` ef` a`',
-                'f a c` ef` a`', 'f a c` ef` a`', 'f a c` ef` a`', 'f a c` ef` a`',
-                'f, a, c ef a', 'f a c` ef` a`', 'f a c` ef` a`', 'f, a, c ef a',
-                'f, a, c ef a', 'f a c` ef` a`', 'f` a` c`` ef`` a``', 'f a c` ef` a`',
-                'f, a, c ef a', 'f a c` ef` a`', 'f, a, c ef a', 'f,, a,, c, ef, a,',
-                'f, a, c ef a', 'f, ef g', 'f, d f', 'f, c ef'], 4, ornamentation='arpeggio')
+                ['a,, c, ef, f, a,', 'bf,, d, f, bf,', 'c, ef, f, a, ef',
+                 'd, f, bf, d', 'f, a, c, ef f', 'bf,, d, f, bf, d',
+                 'a, c ef f a', 'bf, d f bf', 'c ef f a ef`', 'd f bf d`',
+                 'f a c ef` f`', 'bf, d f bf d`', 'a c` ef` f` a`',
+                 'bf d` f` bf`', 'f a c` ef` a`', 'f a c` ef` a`',
+                 'f a c` ef` a`', 'f a c` ef` a`', 'f a c` ef` a`',
+                 'f a c` ef` a`', 'f, a, c ef a', 'f a c` ef` a`',
+                 'f a c` ef` a`', 'f, a, c ef a', 'f, a, c ef a',
+                 'f a c` ef` a`', 'f` a` c`` ef`` a``', 'f a c` ef` a`',
+                 'f, a, c ef a', 'f a c` ef` a`', 'f, a, c ef a',
+                 'f,, a,, c, ef, a,', 'f, a, c ef a', 'f, ef g', 'f, d f',
+                 'f, c ef'], 4, ornamentation='arpeggio')
         )
 
-        select(bass2, 1).prefix = "\\set Staff.pedalSustainStyle = #'mixed " + select(bass2, 1).prefix
+        select(bass2, 1).prefix = (
+            "\\set Staff.pedalSustainStyle = #'mixed " +
+            select(bass2, 1).prefix)
         select(bass2, 1).suffix = '\\sustainOn '
         for i in [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]:
             select(bass2, i).suffix = '\\sustainOn\\sustainOff '
@@ -1172,15 +1198,23 @@ class Salut(Piece):
         treble_tones = tonify('f` bf` d`` f`` bf`` d``` f``` bf```')
         bass_tones = tonify('bf,, d, f, bf, d f bf d`')
 
-        treble3 = [chord(subset(treble_tones, max(i-3, 1), i), 4, ornamentation='arpeggio') for i in [8, 7, 6, 5, 4, 3, 2, 3, 4, 5, 6, 7]]
-        bass3 = [chord(subset(bass_tones, i, min(i+3, 8)), 4, ornamentation='arpeggio') for i in [1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2]]
+        treble3 = ([
+            chord(subset(treble_tones, max(i-3, 1), i),
+                  4, ornamentation='arpeggio')
+            for i in [8, 7, 6, 5, 4, 3, 2, 3, 4, 5, 6, 7]])
+        bass3 = ([
+            chord(subset(bass_tones, i, min(i+3, 8)),
+                  4, ornamentation='arpeggio')
+            for i in [1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2]])
 
-        select(treble3, 1).prefix = '\\set Score.connectArpeggios = ##f ' + select(treble3, 1).prefix
+        select(treble3, 1).prefix = (
+            '\\set Score.connectArpeggios = ##f ' + select(treble3, 1).prefix)
         if not self.improvements:
             select(treble3, 1).dynamics = 'pp'
         else:
             select(treble3, 3).suffix = '^\\pp ' + select(treble3, 3).suffix
-        select(treble3, 1).prefix = '\\tempo "A tempo" ' + select(treble3, 1).prefix
+        select(treble3, 1).prefix = (
+            '\\tempo "A tempo" ' + select(treble3, 1).prefix)
         select(bass3, 1).markdown = 'Ped. \\italic{sempre}'
 
         ##########
