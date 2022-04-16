@@ -744,7 +744,7 @@ class Salut(Piece):
             rests(1) + rests(1, dynamics='f') + rests('2..', dynamics='<') +
             rests(8, dynamics='!') + rests(8, dynamics='ff') +
             rests(8, markdown='\\italic{sempre } Ped.') +
-            rests('2.') + rests(1, markdown='\\italic{poco accel}') +
+            rests('2.') + rests(1, markdown='\\italic{poco accel.}') +
             rests(1, markdown='\\dynamic{rfz} \\italic{molto}') +
             rests(1) +
             rests(1,
@@ -1037,7 +1037,7 @@ class Salut(Piece):
             rep(rests(1), 4) + rests('2..') +
             rests(8, markdown='\\italic{poco cresc.}') +
             rests(1) + rests(2, 8) +
-            rests('4.', markdown='\\italic{dim}') +
+            rests('4.', markdown='\\italic{dim.}') +
             rests(1))
 
         ############
@@ -1110,9 +1110,9 @@ class Salut(Piece):
             select(treble, i+1).dynamics = '!'
 
         if self.improvements:
-            select(treble, 11).markup = '\\italic{cresc - - - - - - - - - - - - - poco - - - - - - - a - - - - - - poco}'
+            select(treble, 11).markup = '\\italic{cresc. - - - - - - - - - - - - - poco - - - - - - - a - - - - - - poco}'
         else:
-            select(treble, 11).markdown = '\\italic{cresc - - - - - - - - - - - - - - poco - - - - - - - - a - - - - - - poco}'
+            select(treble, 11).markdown = '\\italic{cresc. - - - - - - - - - - - - - - poco - - - - - - - - a - - - - - - poco}'
 
         treble2 = (
             chords(
@@ -1130,7 +1130,7 @@ class Salut(Piece):
         select(treble2, 1).markup = "\\italic{sostenuto}"
         if not self.improvements:
             select(treble2, 5).prefix = '\\clef "treble" ' + select(treble2, 5).prefix
-        select(treble2, 7).markup = "\\italic{sempre cresc}"
+        select(treble2, 7).markup = "\\italic{sempre cresc.}"
         select(treble2, 15).dynamics = 'f'
         select(treble2, 17).markup = '\\italic{poco accel.}'
         select(treble2, 18).markdown = '\\italic{sempre cresc.}'
@@ -1158,7 +1158,7 @@ class Salut(Piece):
         select(bass2, 15).suffix = '\\sustainOff '
         select(bass2, 15).markdown = 'Ped. \\italic{sempre}'
         select(bass2, 28).suffix = '^\\ff'
-        select(bass2, 29).markup = '\\italic{dim poco a poco}'
+        select(bass2, 29).markup = '\\italic{dim. poco a poco}'
         if not self.improvements:
             select(bass2, 33).markdown = 'Ped. \\italic{sempre}'
         select(bass2, 33).suffix = '^\\>'
