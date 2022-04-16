@@ -47,7 +47,7 @@ class Salut(Piece):
 
     def subtext(self):
         return (
-            # '\\paper { page-count = #6 }'
+            '\\paper { page-count = #6 }'
             '\\layout { \\context { \\Staff \\RemoveEmptyStaves } }'
             '\\layout { \\context { \\Score '
             '\\consists "Span_arpeggio_engraver" } }'
