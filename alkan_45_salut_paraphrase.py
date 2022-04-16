@@ -904,7 +904,7 @@ class Salut(Piece):
             rests(8, 1, 2, prefix='\\omit ') +
             notes('c`` bf`', 8, prefix='\\stemDown ',
                   suffix='\\stemNeutral ') +
-            rests(4, '4.', prefix='\\omit '))
+            rests(4, 4, 8, prefix='\\omit '))
         select(treble_melody4, 11).ornamentation = 'arpeggio'
         select(treble_melody4, 12).ornamentation = 'arpeggio'
         select(treble_harmony4, 8).ornamentation = 'arpeggio'
@@ -979,18 +979,16 @@ class Salut(Piece):
             voices(slur(chords(['bf d`', 'a c`', 'bf'], [4, '8.', 16])),
                    notes('f', 2))
         )
-        select(treble, 4).markdown = '\\italic{dolce}'
+        select(treble, 4).markup = '\\italic{dolce}'
         select(treble, 9).articulation = ')'
-        select(treble, 15).dynamics = '<'
+        select(treble, 15).suffix = '^\\<'
         select(treble, 16).dynamics = '!'
         select(treble, 18).articulation = '('
-        select(treble, 18).dynamics = '<'
+        select(treble, 18).suffix = '^\\<'
         select(treble, 20).dynamics = '!'
         select(treble, 22).articulation = ')'
-        select(treble, 28).markdown = '\\italic{poco cresc.}'
-        select(treble, 29).dynamics = '<'
+        select(treble, 29).suffix = '^\\<'
         select(treble, 31).dynamics = '!'
-        select(treble, 39).markdown = '\\italic{dim.}'
         select(treble, 46).markdown = '\\italic{ten.}'
         select(treble, len(treble)).suffix += double_barbreak
 
@@ -1020,6 +1018,7 @@ class Salut(Piece):
         select(bass_joined, 9).ornamentation = ')'
         select(bass_joined, 10).ornamentation = '('
         select(bass_joined, 15).ornamentation = ')'
+        select(bass_joined, -3).markdown = '\\italic{ten.}'
 
         if self.improvements:
             chords4 = {
@@ -1033,6 +1032,13 @@ class Salut(Piece):
                 'treble': treble,
                 'bass': voices(bass_harmony, bass_melody) + bass_joined
             }
+
+        chords4['dynamics'] = (
+            rep(rests(1), 4) + rests('2..') +
+            rests(8, markdown='\\italic{poco cresc.}') +
+            rests(1) + rests(2, 8) +
+            rests('4.', markdown='\\italic{dim}') +
+            rests(1))
 
         ############
         # Chords 5 #
@@ -1226,7 +1232,7 @@ class Salut(Piece):
 
         self.score = join(
             opening_chords, melody1, opening_chords2, melody2, chords1,
-            chords2, chords3, plods, bridge)  # chords4, chords5, opening_chords3)
+            chords2, chords3, plods, bridge, chords4)  # chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
