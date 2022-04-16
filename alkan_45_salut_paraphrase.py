@@ -768,8 +768,6 @@ class Salut(Piece):
             rests(8, prefix='\\omit ') + rests(4) +
             rests(4, 2, prefix='\\omit ') + notes('f`', '2.'))
 
-        select(treble_melody, 2).dynamics = ''
-        select(treble_melody, 4).dynamics = ''
         select(treble_melody, 6).articulation = ')'
         select(treble_melody, 7).articulation = '('
         select(treble_melody, 7).ornamentation = "arpeggio"
@@ -789,9 +787,7 @@ class Salut(Piece):
         if not self.improvements:
             select(treble_part1, 3).prefix = (
                 '\\clef "treble" ' + select(treble_part1, 3).prefix)
-        select(treble_part1, 1).suffix += '\\omit \\sustainOn'
         select(treble_part1, 1).prefix += '\\tempo "A tempo"'
-        select(treble_part1, 2).suffix += '\\sustainOff'
         select(treble_part1, 1).prefix = (
             '\\set Score.connectArpeggios = ##f '
             '\\set Staff.connectArpeggios = ##t\n' +
@@ -835,8 +831,6 @@ class Salut(Piece):
                                  treble_harmonyb2,
                                  treble_harmony2) + rests(2, 8))
         bass_part2 = self.transpose(treble_part2, -2, 'octave')
-        for t in bass_part2:
-            t.dynamics = ''
 
         select(treble_part2, 24).ornamentation = 'arpeggio'
         add(select(bass_part2, 19), 'e')
@@ -872,14 +866,10 @@ class Salut(Piece):
             chords(['d f', 'ef g', 'gf bf'], [4, 4, 8]) +
             rests(8, prefix='\\omit ') + rests(4) +
             chords(['ds fs', 'e gs', 'g b'], [4, 4, 8]))
-        select(treble_melody3, 1).suffix = '^\\p'
-        select(treble_melody3, 7).markdown = '\\italic{poco cresc.}'
         select(treble_harmony3, 3).prefix = (
             '\\stemDown \\slurDown' + select(treble_harmony, 3).prefix)
         select(treble_harmony3, 3).dynamics = 'pp'
         select(treble_harmony3, 15).suffix += '\\stemNeutral \\slurNeutral'
-        select(treble_harmony3, 14).markdown = '\\italic{poco rinf}'
-        select(bass_melody3, 1).suffix = '^\\p'
         select(bass_harmony3, 3).dynamics = 'pp'
         select(bass_harmony3, 3).phrasing = '('
         select(bass_harmony3, 5).phrasing = ')'
@@ -937,7 +927,7 @@ class Salut(Piece):
 
         select(treble_melody4, 2).dynamics = '<'
         select(treble_melody4, 4).dynamics = '!'
-        select(treble_melody4, 7).markdown = '\\italic{dim}'
+        select(treble_melody4, 7).markdown = '\\italic{dim.}'
         select(treble_melody4, 12).dynamics = '>'
         select(treble_melody4, 15).dynamics = '!'
         select(treble_melody4, len(treble_melody4)-1).phrasing = '('
@@ -963,6 +953,15 @@ class Salut(Piece):
                     treble_part1 + treble_part2 + treble_part3 + treble_part4),
                 'bass': bass_part1 + bass_part2 + bass_part3 + bass_part4
             }
+
+        bridge['dynamics'] = (
+            rests('2.', suffix='\\omit \\sustainOn') +
+            rests(4, suffix='\\sustainOff') + rep(rests(1), 4) +
+            rests('2..') + rests(8, dynamics='p') + rests(1) +
+            rests('2..') + rests(8, markdown='\\italic{poco cresc.}') +
+            rests('2..') + rests(8, markdown='\\italic{poco rinf.}') +
+            rep(rests(1), 2))
+
 
         ############
         # Chords 4 #
@@ -1205,7 +1204,7 @@ class Salut(Piece):
 
         self.score = join(
             opening_chords, melody1, opening_chords2, melody2, chords1,
-            chords2, chords3, plods)  # bridge, chords4, chords5, opening_chords3)
+            chords2, chords3, plods, bridge)  # chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
