@@ -459,24 +459,25 @@ class Salut(Piece):
         chords2['dynamics'] = (
             rests(4, dynamics='p') + rests(1, 2) +
             rests(2, markdown='\\italic{poco cresc.}') + rests(1))
-        # rests(1, dynamics='p') +
-        # triplets(rests(8, 8) + rests(8, markdown='\\italic{smorz.}')) +
-        # rests('2.'))
 
         ############
         # Chords 3 #
         ############
 
-        upper_treble = subset(melody('f`', [2, 8], self.key), 1, 6) + tied_note('bf', [2, 8]) + notes('a g a', 8)
-        select(upper_treble, 2).dynamics = 'p\\<'
+        upper_treble = (
+            subset(melody('f`', [2, 8], self.key), 1, 6) +
+            tied_note('bf', [2, 8]) + notes('a g a', 8))
+        select(upper_treble, 2).suffix = '^\\<'
+        select(upper_treble, 4).dynamics = '!'
         select(upper_treble, 7).articulation = '('
         select(upper_treble, 11).articulation = ')'
 
         lower_treble = rests(8, 4) + triple(notes('af g g f e ef c', 8))
         select(lower_treble, 1).prefix += ' \\override Rest.transparent = ##t '
-        select(lower_treble, 14).markdown = '\\italic{smorz.}'
 
-        bass = merge(triple(notes('d, ef, ef,', 8)), notes('bf, bf, bf, bf, bf, b, c c ef', 8)) + add(triple(notes('d cs c ef', 8)), 'f,')
+        bass = (merge(triple(notes('d, ef, ef,', 8)),
+                      notes('bf, bf, bf, bf, bf, b, c c ef', 8)) +
+                add(triple(notes('d cs c ef', 8)), 'f,'))
 
         select(bass, len(bass)).suffix += double_barbreak
 
@@ -484,6 +485,11 @@ class Salut(Piece):
             'treble': voices(upper_treble, lower_treble),
             'bass': bass
         }
+
+        chords3['dynamics'] = (
+            rests(1, dynamics='p') +
+            triplets(rests(8, 8) + rests(8, markdown='\\italic{smorz.}')) +
+            rests('2.'))
 
         #########
         # Plods #
@@ -1056,7 +1062,7 @@ class Salut(Piece):
 
         self.score = join(
             opening_chords, melody1, opening_chords2, melody2, chords1,
-            chords2)  # , chords3, plods, bridge, chords4, chords5, opening_chords3)
+            chords2, chords3)  # , plods, bridge, chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
