@@ -432,25 +432,36 @@ class Salut(Piece):
         self.set_key('bf major')
 
         def f_octave(dur):
-            return [note('f', 8, articulation="("), note('f`', dur, articulation=')')]
+            return ([note('f', 8, articulation="("),
+                    note('f`', dur, articulation=')')])
 
-        upper_bass = chords(['c ef', 'bf, d', 'gs, b,', 'a, c', 'd f', 'c ef', 'a, cs', 'bf, d', 'ef g', 'c ef', 'a, f', 'bf, d', 'g, ef', 'a, c'], 4)
+        upper_bass = chords(
+            ['c ef', 'bf, d', 'gs, b,', 'a, c', 'd f', 'c ef', 'a, cs',
+             'bf, d', 'ef g', 'c ef', 'a, f', 'bf, d', 'g, ef', 'a, c'], 4)
         select(upper_bass, 1).articulation = '('
         select(upper_bass, 4).articulation = ')'
         select(upper_bass, 5).articulation = '('
         select(upper_bass, 8).articulation = ')'
-        select(upper_bass, 8).markup = '\\italic{poco cresc.}'
         select(upper_bass, 9).articulation = '('
         select(upper_bass, 14).articulation = ')'
 
         chords2 = {
-            'treble': rep(rests(8) + f_octave('2.'), 2) + rests(8) + rep(f_octave('4.'), 2),
+            'treble': (
+                rep(rests(8) + f_octave('2.'), 2) + rests(8) +
+                rep(f_octave('4.'), 2)),
             'bass': voices(upper_bass, rep(triple(notes('f,', 8)), 14))
         }
 
-        select(chords2['treble'], 1).prefix += ' \\override Rest.transparent = ##f '
-        select(chords2['treble'], 1).dynamics = 'p'
+        select(chords2['treble'], 1).prefix += (
+            ' \\override Rest.transparent = ##f ')
         select(chords2['treble'], 1).markup = '\\italic{dolce}'
+
+        chords2['dynamics'] = (
+            rests(4, dynamics='p') + rests(1, 2) +
+            rests(2, markdown='\\italic{poco cresc.}') + rests(1))
+        # rests(1, dynamics='p') +
+        # triplets(rests(8, 8) + rests(8, markdown='\\italic{smorz.}')) +
+        # rests('2.'))
 
         ############
         # Chords 3 #
@@ -1044,7 +1055,8 @@ class Salut(Piece):
             }
 
         self.score = join(
-            opening_chords, melody1, opening_chords2, melody2, chords1)  # , chords2, chords3, plods, bridge, chords4, chords5, opening_chords3)
+            opening_chords, melody1, opening_chords2, melody2, chords1,
+            chords2)  # , chords3, plods, bridge, chords4, chords5, opening_chords3)
 
     def end_score(self):
         if self.improvements:
