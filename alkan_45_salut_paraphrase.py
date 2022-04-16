@@ -1062,7 +1062,6 @@ class Salut(Piece):
                 'bf d` f`', 'f bf d` f`', 'f bf d` f`'], 8)) +
             triplets(chords(['f a c` f`', 'f a c` f`', 'f a ef` f`'], 8)))
 
-        select(treble, 1).dynamics = 'pp'
         select(treble, 1).markup = '\\italic{sostenuto sempre}'
 
         select(bass, 1).markdown = '\\italic{dolce cantabile}'
@@ -1079,6 +1078,8 @@ class Salut(Piece):
         select(bass, 24).dynamics = '!'
 
         chords5 = {'treble': treble, 'bass': bass}
+        chords5['dynamics'] = (
+            rests(1, dynamics='pp') + rep(rests(1), 6))
 
         ####################
         # Opening Chords 3 #
@@ -1236,7 +1237,7 @@ class Salut(Piece):
 
         self.score = join(
             opening_chords, melody1, opening_chords2, melody2, chords1,
-            chords2, chords3, plods, bridge, chords4)  # chords5, opening_chords3)
+            chords2, chords3, plods, bridge, chords4, chords5)  # opening_chords3)
 
     def end_score(self):
         if self.improvements:
