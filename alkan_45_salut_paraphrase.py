@@ -1227,14 +1227,22 @@ class Salut(Piece):
         # ENDING #
         ##########
 
-        ending_treble1 = chords(['bf`` d``` f``` bf```', 'f`` bf`` d``` f```', 'd`` f`` bf`` d```'], 1) + rests(1, prefix ='\\omit ')
-        ending_treble2 = rests(4, 8) + slur(notes('f f`', [8, 2])) + rests(4, 8) + slur(notes('d` d``', [8, 2])) + rests(4, 8) + notes('bf` bf`` bf``', [8, 2, 1])
+        ending_treble1 = (
+            chords(['bf`` d``` f``` bf```', 'f`` bf`` d``` f```',
+                    'd`` f`` bf`` d```'], 1) + rests(1, prefix='\\omit '))
+        ending_treble2 = (
+            rests(4, 8) + slur(notes('f f`', [8, 2])) + rests(4, 8) +
+            slur(notes('d` d``', [8, 2])) + rests(4, 8) +
+            notes('bf` bf`` bf``', [8, 2, 1]))
         if self.improvements:
             for i in [1, 2, 5, 6, 9, 10]:
                 select(ending_treble2, i).prefix = '\\omit '
-        ending_bass = chords(['bf,, d, f, bf,'], [1, 1, 1]) + rests(1, prefix='\\omit ')
+        ending_bass = (
+            chords(['bf,, d, f, bf,'], [1, 1, 1]) + rests(1, prefix='\\omit '))
 
-        select(ending_treble1, 1).prefix = '\\set Staff.connectArpeggios = ##f ' + select(ending_treble1, 1).prefix
+        select(ending_treble1, 1).prefix = (
+            '\\set Staff.connectArpeggios = ##f ' +
+            select(ending_treble1, 1).prefix)
         select(ending_treble1, 1).ornamentation = 'arpeggio'
         select(ending_treble1, 2).markdown = '\\italic{smorzando}'
         select(ending_bass, 1).ornamentation = 'arpeggio\\sustainOn'
@@ -1252,26 +1260,38 @@ class Salut(Piece):
         ############
 
         ending2_treble = chords(['d f bf d`'], [2, 2, 1])
-        ending2_bass = chords(['bf,, bf,'], [2, 2]) + chords(['bf,, f, bf,'], 1)
+        ending2_bass = (
+            chords(['bf,, bf,'], [2, 2]) + chords(['bf,, f, bf,'], 1))
 
         if not self.improvements:
             select(ending2_treble, 1).dynamics = 'ppp'
         else:
-            select(ending2_treble, 1).suffix = '^\\ppp' + select(ending2_treble, 1).suffix
-        select(ending2_treble, 1).prefix = '\\set Score.connectArpeggios = ##t ' + select(ending2_treble, 1).prefix
+            select(ending2_treble, 1).suffix = (
+                '^\\ppp' + select(ending2_treble, 1).suffix)
+        select(ending2_treble, 1).prefix = (
+            '\\set Score.connectArpeggios = ##t ' +
+            select(ending2_treble, 1).prefix)
         select(ending2_treble, 3).ornamentation = 'arpeggio\\fermata'
         select(ending2_bass, 3).suffix += doublethick_barbreak
-        select(ending2_bass, 3).suffix = '\\sustainOff ' + select(ending2_bass, 3).suffix
+        select(ending2_bass, 3).suffix = (
+            '\\sustainOff ' + select(ending2_bass, 3).suffix)
         select(ending2_bass, 3).ornamentation = 'arpeggio\\fermata'
 
         if self.improvements:
             opening_chords3 = {
-                'treble': ottava(voices(treble, bass), -1) + voices(treble2 + treble3, bass2 + bass3) + voices(ending_treble1, ending_bass, ending_treble2) + voices(ending2_treble, ending2_bass),
+                'treble': (
+                    ottava(voices(treble, bass), -1) +
+                    voices(treble2 + treble3, bass2 + bass3) +
+                    voices(ending_treble1, ending_bass, ending_treble2) +
+                    voices(ending2_treble, ending2_bass)),
                 'bass': rep(rests(1), 24)
             }
         else:
             opening_chords3 = {
-                'treble': clef('bass', treble) + treble2 + treble3 + voices(ending_treble1, ending_treble2) + clef('bass', ending2_treble),
+                'treble': (
+                    clef('bass', treble) + treble2 + treble3 +
+                    voices(ending_treble1, ending_treble2) +
+                    clef('bass', ending2_treble)),
                 'bass': bass + bass2 + bass3 + ending_bass + ending2_bass
             }
         opening_chords3['dynamics'] = dynamics1 + dynamics2 + dynamics3
@@ -1282,9 +1302,16 @@ class Salut(Piece):
 
     def end_score(self):
         if self.improvements:
-            return '>> \\layout { \\context { \\Score \\override SpacingSpanner.common-shortest-duration = #(ly:make-moment 1/8) } } \\midi { } }'
+            return (
+                '>> \\layout { \\context { \\Score \\override '
+                'SpacingSpanner.common-shortest-duration = '
+                '#(ly:make-moment 1/8) } } \\midi { } }')
         else:
-            return '>>\n>> \\layout { \\context { \\Score \\override SpacingSpanner.common-shortest-duration = #(ly:make-moment 1/8) } } \\midi { } }'
+            return (
+                '>>\n>> \\layout { \\context { \\Score \\override '
+                'SpacingSpanner.common-shortest-duration = '
+                '#(ly:make-moment 1/8) } } \\midi { } }')
+
 
 if __name__ == "__main__":
     Salut()
