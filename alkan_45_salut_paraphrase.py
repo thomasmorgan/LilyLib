@@ -1244,9 +1244,8 @@ class Salut(Piece):
             '\\set Staff.connectArpeggios = ##f ' +
             select(ending_treble1, 1).prefix)
         select(ending_treble1, 1).ornamentation = 'arpeggio'
-        select(ending_treble1, 2).markdown = '\\italic{smorzando}'
         select(ending_bass, 1).ornamentation = 'arpeggio\\sustainOn'
-        select(ending_treble2, 3).dynamics = '<'
+        select(ending_treble2, 3).suffix += '^\\<'
         select(ending_treble2, 4).dynamics = '!'
         select(ending_treble2, 7).dynamics = '<'
         select(ending_treble2, 8).dynamics = '!'
@@ -1254,6 +1253,10 @@ class Salut(Piece):
         select(ending_treble2, 11).articulation = '('
         select(ending_treble2, 12).dynamics = '!'
         select(ending_treble2, 12).articulation = '~-)'
+
+        dynamics4 = (
+            rests(1) + rests(1, markup='\\italic{smorz.}') +
+            rests(1, 1) + rests(1, dynamics='ppp') + rests(1))
 
         ############
         # ENDING 2 #
@@ -1263,11 +1266,6 @@ class Salut(Piece):
         ending2_bass = (
             chords(['bf,, bf,'], [2, 2]) + chords(['bf,, f, bf,'], 1))
 
-        if not self.improvements:
-            select(ending2_treble, 1).dynamics = 'ppp'
-        else:
-            select(ending2_treble, 1).suffix = (
-                '^\\ppp' + select(ending2_treble, 1).suffix)
         select(ending2_treble, 1).prefix = (
             '\\set Score.connectArpeggios = ##t ' +
             select(ending2_treble, 1).prefix)
@@ -1294,7 +1292,8 @@ class Salut(Piece):
                     clef('bass', ending2_treble)),
                 'bass': bass + bass2 + bass3 + ending_bass + ending2_bass
             }
-        opening_chords3['dynamics'] = dynamics1 + dynamics2 + dynamics3
+        opening_chords3['dynamics'] = (
+            dynamics1 + dynamics2 + dynamics3 + dynamics4)
 
         self.score = join(
             opening_chords, melody1, opening_chords2, melody2, chords1,
