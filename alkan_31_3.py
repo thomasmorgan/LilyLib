@@ -1,5 +1,6 @@
 from piece import Piece
-from points import notes, tied_note, chords, rests, add, merge
+from points import (notes, tied_note, chords, rests, add, merge, scale,
+                    transpose)
 from staves import Treble, Super, Bass
 from markup import voices
 from util import select, omit, flatten
@@ -22,7 +23,7 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
-        self.improvements = True
+        self.improvements = False
         if self.improvements:
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
@@ -40,13 +41,15 @@ class GenreAncien(Piece):
             [],
             notes('af` df`` f``', [2, 4, 4]),
             notes('f`` ef`` gf``', [2, 4, 4]),
-            notes('gf`` ef`` df`` c``', 4)
+            notes('gf`` ef`` df`` c``', 4),
+            notes('af`` f`` ef`` d``', 4)
         ]
         select(upper_melody[1], 1).prefix += '\\tempo "Molto lento" '
         select(upper_melody[1], 1).markdown = '\\italic{piacévole}'
 
         lower_melody = [
             [],
+            rests(1),
             rests(1),
             rests(1),
             rests(1)
@@ -56,14 +59,17 @@ class GenreAncien(Piece):
             [],
             rests(1),
             self.scale('bf`', -4, 8) + self.scale('gf`', -4, 8),
-            omit(self.scale('c`', 7, 8), 2) + self.scale('af`', -2, 8)
+            omit(self.scale('c`', 7, 8), 2) + self.scale('af`', -2, 8),
+            (omit(scale('d`', 7, dur=8, key='ef minor harmonic'), 2) +
+             self.scale('bf`', -2, 8)),
         ]
 
         lower_harmony = [
             [],
             self.scale('f`', -8, 8),
             tied_note('gf', [2, 8]) + self.scale('ef', 3, 8),
-            self.transpose(upper_harmony[3], -2)
+            self.transpose(upper_harmony[3], -2),
+            transpose(upper_harmony[4], -2, key='ef minor harmonic')
         ]
 
         # put it all together
@@ -81,12 +87,15 @@ class GenreAncien(Piece):
                     [],
                     upper_melody[1],
                     voices(upper_melody[2], upper_harmony[2]),
-                    voices(upper_melody[3], bar3e)],
+                    voices(upper_melody[3], bar3e),
+                    voices(upper_melody[4], merge(upper_harmony[4],
+                                                  lower_harmony[4]))],
                 'bass': [
                     [],
                     lower_harmony[1],
                     lower_harmony[2],
-                    merge(upper_harmony[3], lower_harmony[3])]
+                    merge(upper_harmony[3], lower_harmony[3]),
+                    rests(1, prefix='\\omit ')]
             }
 
             select(self.score['bass'][3], 2).remove('ef`')
@@ -104,7 +113,8 @@ class GenreAncien(Piece):
             [],
             lower_harmony[1],
             voices(upper_harmony[2], lower_harmony[2]),
-            merge(upper_harmony[3], lower_harmony[3])
+            merge(upper_harmony[3], lower_harmony[3]),
+            merge(upper_harmony[4], lower_harmony[4]),
         ])
 
 
