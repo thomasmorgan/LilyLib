@@ -98,9 +98,13 @@ class GenreAncien(Piece):
                     rests(1, prefix='\\omit ')]
             }
 
+            select(self.score['bass'][3], 1).prefix = (
+                '\\override Beam.auto-knee-gap = #10 ')
             select(self.score['bass'][3], 2).remove('ef`')
             select(self.score['bass'][3], 3).prefix = (
                 '\\change Staff = "treble" \\voiceTwo ')
+            select(self.score['bass'][3], 5).prefix = (
+                '\\override Beam.auto-knee-gap = #5.5 ')
         else:
             self.score = {
                 'treble': upper_melody,
