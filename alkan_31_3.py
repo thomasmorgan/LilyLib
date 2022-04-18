@@ -1,8 +1,8 @@
 from piece import Piece
-from points import notes, tied_note, chords, rests, add
+from points import notes, tied_note, chords, rests, add, merge
 from staves import Treble, Super, Bass
 from markup import voices
-from util import select, omit
+from util import select, omit, flatten
 
 
 class GenreAncien(Piece):
@@ -22,64 +22,90 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
-        self.improvements = False
+        self.improvements = True
         if self.improvements:
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
     def subtext(self):
         return (
           "\\layout { \\context { \\PianoStaff "
-          "\\consists #Span_stem_engraver } }\n")
+          "\\consists #Span_stem_engraver } }\n"
+          "\\layout { \\context { \\Staff \\RemoveEmptyStaves } }\n")
 
     def write_score(self):
 
         # section 1
         # treble
-        s1_treble1 = notes('af` df`` f``', [2, 4, 4])
-        s1_treble2 = notes('f`` ef`` gf``', [2, 4, 4])
-        s1_treble2b = self.scale('bf`', -4, 8) + self.scale('gf`', -4, 8)
-        s1_treble3 = notes('gf`` ef`` df`` c``', 4)
-        s1_treble3b = (
-            rests(8, prefix='\\omit ') + notes('ef`', 8) +
-            rests(2, 4, prefix='\\omit '))
+        upper_melody = [
+            [],
+            notes('af` df`` f``', [2, 4, 4]),
+            notes('f`` ef`` gf``', [2, 4, 4]),
+            notes('gf`` ef`` df`` c``', 4)
+        ]
+        select(upper_melody[1], 1).prefix += '\\tempo "Molto lento" '
+        select(upper_melody[1], 1).markdown = '\\italic{piacévole}'
 
-        select(s1_treble1, 1).prefix += '\\tempo "Molto lento" '
-        select(s1_treble1, 1).markdown = '\\italic{piacévole}'
-        if not self.improvements:
-            select(s1_treble3b, 2).prefix = (
-                '\\voiceOne \\autoBeamOff \\stemDown \\crossStaff {')
-            select(s1_treble3b, 2).suffix = '} \\autoBeamOn \\stemNeutral '
+        lower_melody = [
+            [],
+            rests(1),
+            rests(1),
+            rests(1)
+        ]
 
-        # bass
-        s1_bass1 = self.scale('f`', -8, 8)
-        s1_bass2 = tied_note('gf', [2, 8]) + self.scale('ef', 3, 8)
-        s1_bass3 = (
-            chords(['af c`', 'c`'], 8) +
-            self.harmonize(self.scale('df`', 4, 8) +
-                           self.scale('f`', -2, 8), 2))
-        if not self.improvements:
-            select(s1_bass3, 3).prefix = (
-                '\\change Staff = "treble" \\voiceTwo ')
-        else:
-            add(select(s1_bass3, 2), 'ef`')
-        s1_bass4 = rests(1)
+        upper_harmony = [
+            [],
+            rests(1),
+            self.scale('bf`', -4, 8) + self.scale('gf`', -4, 8),
+            omit(self.scale('c`', 7, 8), 2) + self.scale('af`', -2, 8)
+        ]
+
+        lower_harmony = [
+            [],
+            self.scale('f`', -8, 8),
+            tied_note('gf', [2, 8]) + self.scale('ef', 3, 8),
+            self.transpose(upper_harmony[3], -2)
+        ]
 
         # put it all together
         if not self.improvements:
+            bar3e = (
+                rests(8, prefix='\\omit ') +
+                notes('ef`', 8,
+                      prefix=(
+                        '\\voiceOne \\autoBeamOff \\stemDown \\crossStaff {'),
+                      suffix='} \\autoBeamOn \\stemNeutral ') +
+                rests(2, 4, prefix='\\omit '))
+
             self.score = {
-                'treble': (
-                    s1_treble1 + voices(s1_treble2, s1_treble2b) +
-                    voices(s1_treble3, s1_treble3b)),
-                'bass': s1_bass1 + s1_bass2 + s1_bass3 + s1_bass4
+                'treble': [
+                    [],
+                    upper_melody[1],
+                    voices(upper_melody[2], upper_harmony[2]),
+                    voices(upper_melody[3], bar3e)],
+                'bass': [
+                    [],
+                    lower_harmony[1],
+                    lower_harmony[2],
+                    merge(upper_harmony[3], lower_harmony[3])]
             }
+
+            select(self.score['bass'][3], 2).remove('ef`')
+            select(self.score['bass'][3], 3).prefix = (
+                '\\change Staff = "treble" \\voiceTwo ')
         else:
             self.score = {
-                'treble': s1_treble1 + s1_treble2 + s1_treble3,
-                'middle': (
-                    s1_bass1 + voices(s1_treble2b, s1_bass2) +
-                    s1_bass3 + rests(1)),
-                'bass': rests(1, 1, 1, 1)
+                'treble': upper_melody,
+                'middle': self.merge_harmonies(upper_harmony, lower_harmony),
+                'bass': lower_melody
             }
+
+    def merge_harmonies(self, upper_harmony, lower_harmony):
+        return([
+            [],
+            lower_harmony[1],
+            voices(upper_harmony[2], lower_harmony[2]),
+            merge(upper_harmony[3], lower_harmony[3])
+        ])
 
 
 if __name__ == "__main__":
