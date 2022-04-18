@@ -42,7 +42,11 @@ class GenreAncien(Piece):
             notes('af` df`` f``', [2, 4, 4]),
             notes('f`` ef`` gf``', [2, 4, 4]),
             notes('gf`` ef`` df`` c``', 4),
-            notes('af`` f`` ef`` d``', 4)
+            notes('af`` f`` ef`` d``', 4),
+            notes('bf`` gf`` ef``', [2, 4, 4]),
+            notes('ef```', '4.') + self.scale('df```', -5, 8),
+            notes('f`` ef`` df`` ef`` c`` df``', [8, 8, 8, 8, '4.', 8]),
+            notes('df`` ', ['2.', 4])
         ]
         select(upper_melody[1], 1).prefix += '\\tempo "Molto lento" '
         select(upper_melody[1], 1).markdown = '\\italic{piacévole}'
@@ -52,7 +56,11 @@ class GenreAncien(Piece):
             rests(1),
             rests(1),
             rests(1),
-            rests(1)
+            rests(1),
+            notes('gf bf ef`', [2, 4, 4]),
+            tied_note('c`', [2, 8]) + rests(8, 4),
+            rests(2) + notes('af', 2),
+            notes('df', 4) + rests(4, 2)
         ]
 
         upper_harmony = [
@@ -89,13 +97,21 @@ class GenreAncien(Piece):
                     voices(upper_melody[2], upper_harmony[2]),
                     voices(upper_melody[3], bar3e),
                     voices(upper_melody[4], merge(upper_harmony[4],
-                                                  lower_harmony[4]))],
+                                                  lower_harmony[4])),
+                    upper_melody[5],
+                    upper_melody[6],
+                    upper_melody[7],
+                    upper_melody[8]],
                 'bass': [
                     [],
                     lower_harmony[1],
                     lower_harmony[2],
                     merge(upper_harmony[3], lower_harmony[3]),
-                    rests(1, prefix='\\omit ')]
+                    lower_melody[4],
+                    lower_melody[5],
+                    lower_melody[6],
+                    lower_melody[7],
+                    lower_melody[8]]
             }
 
             select(self.score['bass'][3], 1).prefix = (
@@ -105,6 +121,13 @@ class GenreAncien(Piece):
                 '\\change Staff = "treble" \\voiceTwo ')
             select(self.score['bass'][3], 5).prefix = (
                 '\\override Beam.auto-knee-gap = #5.5 ')
+            select(self.score['bass'][4], 1).prefix = (
+                '\\change Staff = "bass" \\omit ')
+            select(self.score['bass'][6], 3).prefix = ('\\omit ')
+            select(self.score['bass'][6], 4).prefix = ('\\omit ')
+            select(self.score['bass'][7], 1).prefix = ('\\omit ')
+            select(self.score['bass'][8], 2).prefix = ('\\omit ')
+            select(self.score['bass'][8], 3).prefix = ('\\omit ')
         else:
             self.score = {
                 'treble': upper_melody,
