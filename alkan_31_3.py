@@ -1,6 +1,6 @@
 from piece import Piece
-from points import notes, tied_note, chords, rests
-from staves import Treble, Super
+from points import notes, tied_note, chords, rests, add
+from staves import Treble, Super, Bass
 from markup import voices
 from util import select, omit
 
@@ -22,6 +22,9 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
+        self.improvements = False
+        if self.improvements:
+            self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
     def subtext(self):
         return (
@@ -42,9 +45,10 @@ class GenreAncien(Piece):
 
         select(s1_treble1, 1).prefix += '\\tempo "Molto lento" '
         select(s1_treble1, 1).markdown = '\\italic{piacévole}'
-        select(s1_treble3b, 2).prefix = (
-            '\\voiceOne \\autoBeamOff \\stemDown \\crossStaff {')
-        select(s1_treble3b, 2).suffix = '} \\autoBeamOn \\stemNeutral '
+        if not self.improvements:
+            select(s1_treble3b, 2).prefix = (
+                '\\voiceOne \\autoBeamOff \\stemDown \\crossStaff {')
+            select(s1_treble3b, 2).suffix = '} \\autoBeamOn \\stemNeutral '
 
         # bass
         s1_bass1 = self.scale('f`', -8, 8)
@@ -53,16 +57,29 @@ class GenreAncien(Piece):
             chords(['af c`', 'c`'], 8) +
             self.harmonize(self.scale('df`', 4, 8) +
                            self.scale('f`', -2, 8), 2))
-        select(s1_bass3, 3).prefix = '\\change Staff = "treble" \\voiceTwo '
+        if not self.improvements:
+            select(s1_bass3, 3).prefix = (
+                '\\change Staff = "treble" \\voiceTwo ')
+        else:
+            add(select(s1_bass3, 2), 'ef`')
         s1_bass4 = rests(1)
 
         # put it all together
-        self.score = {
-            'treble': (
-                s1_treble1 + voices(s1_treble2, s1_treble2b) +
-                voices(s1_treble3, s1_treble3b)),
-            'bass': s1_bass1 + s1_bass2 + s1_bass3 + s1_bass4
-        }
+        if not self.improvements:
+            self.score = {
+                'treble': (
+                    s1_treble1 + voices(s1_treble2, s1_treble2b) +
+                    voices(s1_treble3, s1_treble3b)),
+                'bass': s1_bass1 + s1_bass2 + s1_bass3 + s1_bass4
+            }
+        else:
+            self.score = {
+                'treble': s1_treble1 + s1_treble2 + s1_treble3,
+                'middle': (
+                    s1_bass1 + voices(s1_treble2b, s1_bass2) +
+                    s1_bass3 + rests(1)),
+                'bass': rests(1, 1, 1, 1)
+            }
 
 
 if __name__ == "__main__":
