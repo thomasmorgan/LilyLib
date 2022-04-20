@@ -23,7 +23,7 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
-        self.improvements = True
+        self.improvements = False
         if self.improvements:
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
@@ -75,7 +75,9 @@ class GenreAncien(Piece):
             (self.scale('bf`', -3, 8) + self.scale('af`', -2, 8) +
              self.scale('c`', 3, 8)),
             (self.scale('f`', 4, 8) + self.scale('af`', -3, 8) +
-             notes('gf`', 8))
+             notes('gf`', 8)),
+            (self.scale('f`', -3, 8) + self.scale('ef`', -2, 8) +
+             rests(8, 8, 8))
         ]
         select(upper_harmony[4], 8).articulation = '~'
         select(upper_harmony[5], 8).articulation = '~'
@@ -90,7 +92,10 @@ class GenreAncien(Piece):
             self.transpose(upper_harmony[6], -2),
             (self.transpose(subset(upper_harmony[7], 1, 4), -2) +
              transpose(subset(upper_harmony[7], 5, 8), -2,
-                       key='ef harmonic minor'))
+                       key='ef harmonic minor')),
+            (notes('df`', 8) +
+             self.transpose(subset(upper_harmony[8], 2, 5), -5) +
+             self.scale('af', -3, 8, step=2))
         ]
 
         # put it all together
@@ -120,7 +125,7 @@ class GenreAncien(Piece):
                     voices(upper_melody[6], merge(upper_harmony[6],
                                                   lower_harmony[6])),
                     voices(upper_melody[7], bar7f),
-                    upper_melody[8]],
+                    voices(upper_melody[8], upper_harmony[8])],
                 'bass': [
                     [],
                     lower_harmony[1],
@@ -131,7 +136,9 @@ class GenreAncien(Piece):
                     lower_melody[6],
                     voices(merge(upper_harmony[7], lower_harmony[7]),
                            lower_melody[7]),
-                    lower_melody[8]]
+                    voices(lower_melody[8],
+                           rests(8, prefix='\\omit ') +
+                           subset(lower_harmony[8], 2, 8))]
             }
 
             select(self.score['bass'][3], 1).prefix = (
@@ -158,6 +165,13 @@ class GenreAncien(Piece):
             select(self.score['bass'][7], 2).prefix += (
                 '\\change Staff = "treble" ')
             select(self.score['bass'][7], 9).prefix += '\\omit '
+            select(self.score['treble'][8], 3).add('df`')
+            select(self.score['treble'][8], 4).prefix += ('\\crossStaff { ')
+            select(self.score['treble'][8], 7).suffix = (
+                select(self.score['treble'][8], 7).suffix + ' } ')
+            select(self.score['treble'][8], 8).prefix += '\\omit '
+            select(self.score['treble'][8], 9).prefix += '\\omit '
+            select(self.score['treble'][8], 10).prefix += '\\omit '
         else:
             self.score = {
                 'treble': upper_melody,
@@ -175,6 +189,7 @@ class GenreAncien(Piece):
             merge(upper_harmony[5], lower_harmony[5]),
             merge(upper_harmony[6], lower_harmony[6]),
             merge(upper_harmony[7], lower_harmony[7]),
+            merge(upper_harmony[8], lower_harmony[8]),
         ])
 
 
