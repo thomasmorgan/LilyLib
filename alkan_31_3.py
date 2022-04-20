@@ -23,7 +23,7 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
-        self.improvements = False
+        self.improvements = True
         if self.improvements:
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
@@ -31,7 +31,9 @@ class GenreAncien(Piece):
         return (
           "\\layout { \\context { \\PianoStaff "
           "\\consists #Span_stem_engraver } }\n"
-          "\\layout { \\context { \\Staff \\RemoveEmptyStaves } }\n")
+          "\\layout { \\context { \\Staff \\RemoveEmptyStaves } }\n"
+          '\\layout { \\context { \\Voice '
+          '\\consists "Horizontal_bracket_engraver" } }')
 
     def write_score(self):
 
@@ -48,7 +50,10 @@ class GenreAncien(Piece):
             notes('f`` ef`` df`` ef`` c`` df``', [8, 8, 8, 8, '4.', 8]),
             notes('df`` ', ['2.', 4])
         ]
-        select(upper_melody[1], 1).prefix += '\\tempo "Molto lento" '
+        select(upper_melody[1], 1).prefix += (
+            '\\tempo "Molto lento" '
+            '\\mark \\markup { \\musicglyph #"scripts.segno" } '
+            '\\repeat volta 1 { ')
         select(upper_melody[1], 1).markdown = '\\italic{piacévole}'
 
         lower_melody = [
@@ -62,6 +67,12 @@ class GenreAncien(Piece):
             rests(2) + notes('af', 2),
             notes('df', 4) + rests(4, 2)
         ]
+        select(lower_melody[5], 1).suffix += '\\startGroup '
+        select(lower_melody[5], 1).markdown += '\\bold{Mani o Ped.}'
+        select(lower_melody[5], 3).suffix += '\\stopGroup '
+        select(lower_melody[7], 2).suffix += '\\startGroup '
+        select(lower_melody[7], 2).markdown += '\\bold{Mani o Ped.}'
+        select(lower_melody[8], 1).suffix += '\\stopGroup '
 
         upper_harmony = [
             [],
@@ -81,6 +92,7 @@ class GenreAncien(Piece):
         ]
         select(upper_harmony[4], 8).articulation = '~'
         select(upper_harmony[5], 8).articulation = '~'
+        select(upper_harmony[8], 5).suffix += '\\bar "||" '
 
         lower_harmony = [
             [],
@@ -97,6 +109,7 @@ class GenreAncien(Piece):
              self.transpose(subset(upper_harmony[8], 2, 5), -5) +
              self.scale('af', -3, 8, step=2))
         ]
+        select(upper_harmony[8], 4).markup = '\\italic\\bold{{Fine}}'
 
         # put it all together
         if not self.improvements:
@@ -136,9 +149,9 @@ class GenreAncien(Piece):
                     lower_melody[6],
                     voices(merge(upper_harmony[7], lower_harmony[7]),
                            lower_melody[7]),
-                    voices(lower_melody[8],
-                           rests(8, prefix='\\omit ') +
-                           subset(lower_harmony[8], 2, 8))]
+                    voices(rests(8, prefix='\\omit ') +
+                           subset(lower_harmony[8], 2, 8),
+                           lower_melody[8])]
             }
 
             select(self.score['bass'][3], 1).prefix = (
@@ -152,9 +165,6 @@ class GenreAncien(Piece):
                 '\\change Staff = "bass" \\omit ')
             select(self.score['bass'][6], 3).prefix = '\\omit '
             select(self.score['bass'][6], 4).prefix = '\\omit '
-            select(self.score['bass'][7], 5).prefix += '\\omit '
-            select(self.score['bass'][8], 2).prefix = '\\omit '
-            select(self.score['bass'][8], 3).prefix = '\\omit '
             select(self.score['bass'][6], 2).prefix += (
                 ' \\stemDown \\crossStaff { ')
             select(self.score['bass'][6], 2).suffix += ' } \\stemNeutral'
@@ -165,6 +175,10 @@ class GenreAncien(Piece):
             select(self.score['bass'][7], 2).prefix += (
                 '\\change Staff = "treble" ')
             select(self.score['bass'][7], 9).prefix += '\\omit '
+            select(self.score['bass'][7], 5).prefix += '\\omit '
+            select(self.score['bass'][8], 2).prefix = '\\stemDown '
+            select(self.score['bass'][8], 10).prefix = '\\omit '
+            select(self.score['bass'][8], 11).prefix = '\\omit '
             select(self.score['treble'][8], 3).add('df`')
             select(self.score['treble'][8], 4).prefix += ('\\crossStaff { ')
             select(self.score['treble'][8], 7).suffix = (
@@ -172,7 +186,10 @@ class GenreAncien(Piece):
             select(self.score['treble'][8], 8).prefix += '\\omit '
             select(self.score['treble'][8], 9).prefix += '\\omit '
             select(self.score['treble'][8], 10).prefix += '\\omit '
+            select(self.score['treble'][8], 10).suffix += ' } '
+
         else:
+            select(upper_melody[8], 2).suffix += ' } '
             self.score = {
                 'treble': upper_melody,
                 'middle': self.merge_harmonies(upper_harmony, lower_harmony),
