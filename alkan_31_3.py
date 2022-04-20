@@ -3,7 +3,7 @@ from points import (notes, tied_note, chords, rests, add, merge, scale,
                     transpose)
 from staves import Treble, Super, Bass
 from markup import voices, signe, italic, bold
-from util import select, omit, flatten, subset
+from util import select, omit, flatten, subset, join
 
 
 class GenreAncien(Piece):
@@ -37,7 +37,9 @@ class GenreAncien(Piece):
 
     def write_score(self):
 
-        # section 1
+        ####################
+        # Section 1 voices #
+        ####################
 
         upper_melody = [
             [],
@@ -110,7 +112,10 @@ class GenreAncien(Piece):
         ]
         select(upper_harmony[8], 4).markup = italic(bold('Fine'))
 
-        # put it all together
+        #########################
+        # Section 1 compilation #
+        #########################
+
         if not self.improvements:
             bar3e = (
                 rests(8, prefix='\\omit ') +
@@ -124,7 +129,7 @@ class GenreAncien(Piece):
                       suffix='} \\stemNeutral') +
                 rests(8, 4, 2, prefix='\\omit '))
 
-            self.score = {
+            score1 = {
                 'treble': [
                     [],
                     upper_melody[1],
@@ -153,47 +158,98 @@ class GenreAncien(Piece):
                            lower_melody[8])]
             }
 
-            select(self.score['bass'][3], 1).prefix = (
+            select(score1['bass'][3], 1).prefix = (
                 '\\override Beam.auto-knee-gap = #10 ')
-            select(self.score['bass'][3], 2).remove('ef`')
-            select(self.score['bass'][3], 3).prefix = (
+            select(score1['bass'][3], 2).remove('ef`')
+            select(score1['bass'][3], 3).prefix = (
                 '\\change Staff = "treble" \\voiceTwo ')
-            select(self.score['bass'][3], 5).prefix = (
+            select(score1['bass'][3], 5).prefix = (
                 '\\override Beam.auto-knee-gap = #5.5 ')
-            select(self.score['bass'][4], 1).prefix = (
+            select(score1['bass'][4], 1).prefix = (
                 '\\change Staff = "bass" \\omit ')
-            select(self.score['bass'][6], 3).prefix = '\\omit '
-            select(self.score['bass'][6], 4).prefix = '\\omit '
-            select(self.score['bass'][6], 2).prefix += (
+            select(score1['bass'][6], 3).prefix = '\\omit '
+            select(score1['bass'][6], 4).prefix = '\\omit '
+            select(score1['bass'][6], 2).prefix += (
                 ' \\stemDown \\crossStaff { ')
-            select(self.score['bass'][6], 2).suffix += ' } \\stemNeutral'
-            select(self.score['treble'][6], 12).prefix += (
+            select(score1['bass'][6], 2).suffix += ' } \\stemNeutral'
+            select(score1['treble'][6], 12).prefix += (
                 '\\change Staff = "bass" ')
-            select(self.score['bass'][7], 1).remove('f`')
-            select(self.score['bass'][7], 1).prefix += '\\stemDown '
-            select(self.score['bass'][7], 2).prefix += (
+            select(score1['bass'][7], 1).remove('f`')
+            select(score1['bass'][7], 1).prefix += '\\stemDown '
+            select(score1['bass'][7], 2).prefix += (
                 '\\change Staff = "treble" ')
-            select(self.score['bass'][7], 9).prefix += '\\omit '
-            select(self.score['bass'][7], 5).prefix += '\\omit '
-            select(self.score['bass'][8], 2).prefix = '\\stemDown '
-            select(self.score['bass'][8], 10).prefix = '\\omit '
-            select(self.score['bass'][8], 11).prefix = '\\omit '
-            select(self.score['treble'][8], 3).add('df`')
-            select(self.score['treble'][8], 4).prefix += ('\\crossStaff { ')
-            select(self.score['treble'][8], 7).suffix = (
-                select(self.score['treble'][8], 7).suffix + ' } ')
-            select(self.score['treble'][8], 8).prefix += '\\omit '
-            select(self.score['treble'][8], 9).prefix += '\\omit '
-            select(self.score['treble'][8], 10).prefix += '\\omit '
-            select(self.score['treble'][8], 10).suffix += ' } '
+            select(score1['bass'][7], 9).prefix += '\\omit '
+            select(score1['bass'][7], 5).prefix += '\\omit '
+            select(score1['bass'][8], 2).prefix = '\\stemDown '
+            select(score1['bass'][8], 10).prefix = '\\omit '
+            select(score1['bass'][8], 11).prefix = '\\omit '
+            select(score1['treble'][8], 3).add('df`')
+            select(score1['treble'][8], 4).prefix += ('\\crossStaff { ')
+            select(score1['treble'][8], 7).suffix = (
+                select(score1['treble'][8], 7).suffix + ' } ')
+            select(score1['treble'][8], 8).prefix += '\\omit '
+            select(score1['treble'][8], 9).prefix += '\\omit '
+            select(score1['treble'][8], 10).prefix += '\\omit '
+            select(score1['treble'][8], 10).suffix += ' } '
 
         else:
             select(upper_melody[8], 2).suffix += ' } '
-            self.score = {
+            score1 = {
                 'treble': upper_melody,
                 'middle': self.merge_harmonies(upper_harmony, lower_harmony),
                 'bass': lower_melody
             }
+
+        ####################
+        # Section 2 voices #
+        ####################
+
+        upper_melody2 = [
+            [],
+            notes('f` bf` df``', [2, 4, 4]),
+            notes('df`` c`` ef``', [2, 4, 4]),
+            notes('ef`` c`` bf` a`', 4),
+            notes('af`` f`` ef`` d``', 4),
+            notes('bf`` gf`` ef``', [2, 4, 4]),
+            notes('gf`` ef`` d`` ', ['4.', 8, 4, 4]),
+            notes('ff`` df`` c`` ', ['4.', 8, 4, 4]),
+            notes('af` df`` ff``', [2, 4, 4]),
+            notes('ff`` ef`` gf``', [2, 4, 4]),
+            notes('gf`` ef`` df`` c``', 4),
+            notes('af`` f`` ef`` d``', 4),
+            notes('ef``` bf`` gf``', [2, 4, 4]),
+            (notes('ef```', '4.') +
+             scale('cf```', -5, dur=8, key='ef minor harmonic')),
+            (scale('gf``', -3, dur=8, key='ef minor harmonic') +
+             notes('cf`` d`` ef``', [8, '4.', 8])),
+            notes('ef`` ', ['2.', 4])
+        ]
+
+        lower_melody2 = []
+        upper_harmony2 = []
+        lower_harmony2 = []
+
+        #########################
+        # Section 2 compilation #
+        #########################
+
+        if not self.improvements:
+            score2 = {
+                'treble': upper_melody2,
+                'bass': lower_melody2
+            }
+        else:
+            score2 = {
+                'treble': upper_melody2,
+                'middle': upper_harmony2,
+                'bass': lower_melody2
+            }
+
+        #####################
+        # Score compilation #
+        #####################
+
+        self.score = join(score1, score2)
 
     def merge_harmonies(self, upper_harmony, lower_harmony):
         return([
