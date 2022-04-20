@@ -225,7 +225,24 @@ class GenreAncien(Piece):
             notes('ef`` ', ['2.', 4])
         ]
 
-        lower_melody2 = []
+        lower_melody2 = [
+            [],
+            rests(1),
+            rests(1),
+            rests(1),
+            rests(1),
+            notes('bf, ef gf', [2, 4, 4]),
+            notes('f bf ', [2, 4, 4]),
+            notes('ef af ', [2, 4, 4]),
+            rests(1),
+            tied_note('gf', [2, 8]) + notes('ef ff gf', 8),
+            notes('bff af ', [2, 4, 4]),
+            notes('cf` bf ', [2, 4, 4]),
+            notes('gf bf ef`', [2, 4, 4]),
+            tied_note('cf`', [2, 8]) + notes('cf` bf af', 8),
+            notes('bf bf,', 2),
+            notes('ef  ', [4, 4, 2])
+        ]
         upper_harmony2 = []
         lower_harmony2 = []
 
