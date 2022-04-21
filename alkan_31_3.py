@@ -272,6 +272,9 @@ class GenreAncien(Piece):
             notes('gf` af` bf` cf`` bf` af` g` af`', 8),
             notes('gf` f` ef` f` ef`', 8) + rests(8, 4)
         ]
+        select(upper_harmony2[11], 8).articulation = '~'
+        select(upper_harmony2[12], 8).articulation = '~'
+
         lower_harmony2 = [
             [],
             self.scale('df`', -8, 8),
