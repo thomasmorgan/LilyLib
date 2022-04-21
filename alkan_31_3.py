@@ -252,14 +252,16 @@ class GenreAncien(Piece):
             [],
             rests(1),
             notes('gf`', 8) + self.scale('af`', -7, 8),
-            omit(scale('a', 8, 'bf minor harmonic', 8), 2) + notes('ef`', 8) +
+            (omit(scale('a', 7, 'bf minor harmonic', 8), 2) +
+             notes('f` ef`', 8)),
             (omit(scale('d`', 7, 'ef minor harmonic', 8), 2) +
              notes('bf` af`', 8)),
             scale('gf``', -8, 'ef minor', 8),
             mini_motif('a` bf` c``') + mini_motif('af` bf` cf``'),
             mini_motif('g` af` bf`') + mini_motif('gf` af` bff`'),
             scale('af`', -8, 'df minor', 8),
-            scale('bff`', -4, 'df minor', 8) + scale('gf`', -4, 'df minor', 8),
+            (scale('df``', -4, 'df minor', 8) +
+             scale('bff`', -4, 'df minor', 8)),
             pattern(scale('ef`', 5, 'df minor', 8), 1, 2, 3, 1, 4, 5, 4, 3),
             pattern(scale('f`', 5, 'ef minor harmonic', 8),
                     1, 2, 3, 1, 4, 5, 4, 3),
