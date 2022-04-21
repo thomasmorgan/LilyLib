@@ -272,7 +272,24 @@ class GenreAncien(Piece):
             notes('gf` af` bf` cf`` bf` af` g` af`', 8),
             notes('gf` f` ef` f` ef`', 8) + rests(8, 4)
         ]
-        lower_harmony2 = []
+        lower_harmony2 = [
+            [],
+            self.scale('df`', -8, 8),
+            tied_note('ef', [2, 8]) + self.scale('c', 3, 8),
+            transpose(upper_harmony2[3], -2, key='bf minor harmonic'),
+            transpose(upper_harmony2[4], -2, key='ef minor harmonic'),
+            transpose(upper_harmony2[5], -5, key='ef minor'),
+            mini_motif('c` df` ef`') + mini_motif('f` gf` af`'),
+            mini_motif('bf cf` df`') + mini_motif('ef` ff` gf`'),
+            transpose(upper_harmony2[8], -2, key='df minor'),
+            transpose(upper_harmony2[9], -2, key='df minor'),
+            transpose(upper_harmony2[10], -2, key='df minor harmonic'),
+            transpose(upper_harmony2[11], -2, key='ef minor harmonic'),
+            transpose(upper_harmony2[12], -2, key='ef minor harmonic'),
+            transpose(upper_harmony2[13], -2, key='ef minor harmonic'),
+            notes('ef` f` gf` af` gf` f` e` f`', 8),
+            notes('ef` af gf af gf bf gf ef', 8)
+            ]
 
         #########################
         # Section 2 compilation #
@@ -286,7 +303,8 @@ class GenreAncien(Piece):
         else:
             score2 = {
                 'treble': upper_melody2,
-                'middle': upper_harmony2,
+                'middle': self.merge_harmonies2(upper_harmony2,
+                                                lower_harmony2),
                 'bass': lower_melody2
             }
 
@@ -307,6 +325,26 @@ class GenreAncien(Piece):
             merge(upper_harmony[6], lower_harmony[6]),
             merge(upper_harmony[7], lower_harmony[7]),
             merge(upper_harmony[8], lower_harmony[8]),
+        ])
+
+    def merge_harmonies2(self, upper_harmony2, lower_harmony2):
+        return([
+            [],
+            lower_harmony2[1],
+            voices(upper_harmony2[2], lower_harmony2[2]),
+            merge(upper_harmony2[3], lower_harmony2[3]),
+            merge(upper_harmony2[4], lower_harmony2[4]),
+            merge(upper_harmony2[5], lower_harmony2[5]),
+            merge(upper_harmony2[6], lower_harmony2[6]),
+            merge(upper_harmony2[7], lower_harmony2[7]),
+            merge(upper_harmony2[8], lower_harmony2[8]),
+            merge(upper_harmony2[9], lower_harmony2[9]),
+            merge(upper_harmony2[10], lower_harmony2[10]),
+            merge(upper_harmony2[11], lower_harmony2[11]),
+            merge(upper_harmony2[12], lower_harmony2[12]),
+            merge(upper_harmony2[13], lower_harmony2[13]),
+            merge(upper_harmony2[14], lower_harmony2[14]),
+            merge(upper_harmony2[15], lower_harmony2[15])
         ])
 
 
