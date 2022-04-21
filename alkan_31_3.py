@@ -3,7 +3,7 @@ from points import (notes, tied_note, chords, rests, add, merge, scale,
                     transpose)
 from staves import Treble, Super, Bass
 from markup import voices, signe, italic, bold
-from util import select, omit, flatten, subset, join
+from util import select, omit, flatten, subset, join, pattern
 
 
 class GenreAncien(Piece):
@@ -23,7 +23,7 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
-        self.improvements = False
+        self.improvements = True
         if self.improvements:
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
@@ -243,7 +243,33 @@ class GenreAncien(Piece):
             notes('bf bf,', 2),
             notes('ef  ', [4, 4, 2])
         ]
-        upper_harmony2 = []
+
+        def mini_motif(n):
+            n = notes(n, 8)
+            return pattern(n, 3, 1, 2, 3)
+
+        upper_harmony2 = [
+            [],
+            rests(1),
+            notes('gf`', 8) + self.scale('af`', -7, 8),
+            omit(scale('a', 8, 'bf minor harmonic', 8), 2) + notes('ef`', 8) +
+            (omit(scale('d`', 7, 'ef minor harmonic', 8), 2) +
+             notes('bf` af`', 8)),
+            scale('gf``', -8, 'ef minor', 8),
+            mini_motif('a` bf` c``') + mini_motif('af` bf` cf``'),
+            mini_motif('g` af` bf`') + mini_motif('gf` af` bff`'),
+            scale('af`', -8, 'df minor', 8),
+            scale('bff`', -4, 'df minor', 8) + scale('gf`', -4, 'df minor', 8),
+            pattern(scale('ef`', 5, 'df minor', 8), 1, 2, 3, 1, 4, 5, 4, 3),
+            pattern(scale('f`', 5, 'ef minor harmonic', 8),
+                    1, 2, 3, 1, 4, 5, 4, 3),
+            pattern(scale('f`', 4, 'ef minor harmonic', 8),
+                    3, 1, 2, 3, 2, 3, 4, 4),
+            pattern(scale('f`', 4, 'ef minor harmonic', 8),
+                    4, 4, 3, 2, 3, 1, 2, 3),
+            notes('gf` af` bf` cf`` bf` af` g` af`', 8),
+            notes('gf` f` ef` f` ef`', 8) + rests(8, 4)
+        ]
         lower_harmony2 = []
 
         #########################
