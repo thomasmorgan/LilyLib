@@ -23,7 +23,7 @@ class GenreAncien(Piece):
         self.opus = "Op. 31, No. 3"
         self.auto_add_bars = True
         self.key = 'bf minor'
-        self.improvements = True
+        self.improvements = False
         if self.improvements:
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
@@ -300,9 +300,66 @@ class GenreAncien(Piece):
 
         if not self.improvements:
             score2 = {
-                'treble': upper_melody2,
-                'bass': lower_melody2
+                'treble': [
+                    [],
+                    upper_melody2[1],
+                    voices(upper_melody2[2], upper_harmony2[2]),
+                    upper_melody2[3],
+                    voices(upper_melody2[4],
+                           merge(upper_harmony2[4], lower_harmony2[4])),
+                    voices(upper_melody2[5],
+                           merge(upper_harmony2[5], lower_harmony2[5])),
+                    voices(upper_melody2[6], upper_harmony2[6]),
+                    voices(upper_melody2[7],
+                           subset(upper_harmony2[7], 1, 4) +
+                           merge(subset(upper_harmony2[7], 5, 8),
+                                 subset(lower_harmony2[7], 5, 8))),
+                    voices(upper_melody2[8], upper_harmony2[8]),
+                    voices(upper_melody2[9],
+                           merge(upper_harmony2[9], lower_harmony2[9])),
+                    voices(upper_melody2[10],
+                           merge(upper_harmony2[10], lower_harmony2[10])),
+                    voices(upper_melody2[11],
+                           merge(upper_harmony2[11], lower_harmony2[11])),
+                    voices(upper_melody2[12],
+                           merge(upper_harmony2[12], lower_harmony2[12])),
+                    voices(upper_melody2[13],
+                           merge(upper_harmony2[13], lower_harmony2[13])),
+                    voices(upper_melody2[14],
+                           merge(upper_harmony2[14], lower_harmony2[14])),
+                    voices(upper_melody2[15], upper_harmony2[15])
+                ],
+                'bass': [
+                    [],
+                    lower_harmony2[1],
+                    lower_harmony2[2],
+                    merge(upper_harmony2[3], lower_harmony2[3]),
+                    rests(1, prefix='\\omit '),
+                    lower_melody2[5],
+                    voices(lower_harmony2[6], lower_melody2[6]),
+                    voices(subset(lower_harmony2[7], 1, 4) +
+                           rests(2, prefix='\\omit '),
+                           lower_melody2[7]),
+                    lower_harmony2[8],
+                    lower_melody2[9],
+                    lower_melody2[10],
+                    lower_melody2[11],
+                    lower_melody2[12],
+                    lower_melody2[13],
+                    lower_melody2[14],
+                    voices(lower_harmony2[15], lower_melody2[15])
+                ]
             }
+            select(score2['bass'][3], 5).prefix += (
+                '\\stemDown \\change Staff = "treble" ')
+            select(score2['bass'][3], 8).suffix += (
+                ' \\stemNeutral \\change Staff = "bass" ')
+            select(score2['treble'][6], 4).prefix += '\\omit '
+            select(score2['bass'][15], 1).prefix += (
+                '\\stemDown \\change Staff = "treble" ')
+            select(score2['bass'][15], 1).suffix += (
+                ' \\stemNeutral \\change Staff = "bass" ')
+
         else:
             score2 = {
                 'treble': upper_melody2,
