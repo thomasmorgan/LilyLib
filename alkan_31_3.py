@@ -225,6 +225,8 @@ class GenreAncien(Piece):
             notes('ef`` ', ['2.', 4])
         ]
 
+        select(upper_melody2[1], 1).prefix += '\\repeat volta 1 { '
+
         lower_melody2 = [
             [],
             rests(1),
@@ -243,6 +245,16 @@ class GenreAncien(Piece):
             notes('bf bf,', 2),
             notes('ef  ', [4, 4, 2])
         ]
+
+        select(lower_melody2[5], 1).suffix += '\\startGroup '
+        select(lower_melody2[5], 1).markdown += bold('Mani o Ped.')
+        select(lower_melody2[5], 3).suffix += '\\stopGroup '
+        select(lower_melody2[9], 1).suffix += '\\startGroup '
+        select(lower_melody2[9], 1).markdown += bold('Mani o Ped.')
+        select(lower_melody2[9], 5).suffix += '\\stopGroup '
+        select(lower_melody2[12], 1).suffix += '\\startGroup '
+        select(lower_melody2[12], 1).markdown += bold('Mani o Ped.')
+        select(lower_melody2[12], 3).suffix += '\\stopGroup '
 
         def mini_motif(n):
             n = notes(n, 8)
@@ -382,6 +394,7 @@ class GenreAncien(Piece):
                 "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
                 "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) "
                 "\\once \\override Beam.transparent = ##t")
+            select(score2['treble'][15], 10).suffix += ' } ' + signe
 
         else:
             score2 = {
