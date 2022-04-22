@@ -366,6 +366,9 @@ class GenreAncien(Piece):
             select(score2['bass'][15], 1).suffix += (' \\stemNeutral ')
             select(score2['treble'][15], 7).suffix += (
                 ' \\stemNeutral \\change Staff = "bass" ')
+            select(score2['treble'][15], 2).prefix += '\\omit '
+            select(score2['bass'][15], 10).prefix += '\\omit '
+            select(score2['bass'][15], 11).prefix += '\\omit '
 
         else:
             score2 = {
