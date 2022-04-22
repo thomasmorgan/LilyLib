@@ -2,7 +2,7 @@ from piece import Piece
 from points import (notes, tied_note, chords, rests, add, merge, scale,
                     transpose)
 from staves import Treble, Super, Bass
-from markup import voices, signe, italic, bold
+from markup import voices, signe, italic, bold, linebreak
 from util import select, omit, flatten, subset, join, pattern
 
 
@@ -28,12 +28,15 @@ class GenreAncien(Piece):
             self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
     def subtext(self):
-        return (
+        text = (
           "\\layout { \\context { \\PianoStaff "
           "\\consists #Span_stem_engraver } }\n"
           "\\layout { \\context { \\Staff \\RemoveEmptyStaves } }\n"
           '\\layout { \\context { \\Voice '
           '\\consists "Horizontal_bracket_engraver" } }')
+        if not self.improvements:
+            text += '\n\\paper { page-count = #1 }'
+        return text
 
     def write_score(self):
 
@@ -94,6 +97,7 @@ class GenreAncien(Piece):
         select(upper_harmony[4], 8).articulation = '~'
         select(upper_harmony[5], 8).articulation = '~'
         select(upper_harmony[8], 5).suffix += '\\bar "||" '
+        select(upper_harmony[8], 8).suffix += linebreak
 
         lower_harmony = [
             [],
@@ -255,6 +259,7 @@ class GenreAncien(Piece):
         select(lower_melody2[12], 1).suffix += '\\startGroup '
         select(lower_melody2[12], 1).markdown += bold('Mani o Ped.')
         select(lower_melody2[12], 3).suffix += '\\stopGroup '
+        select(lower_melody2[15], 1).markdown += italic(bold('D.S. al Fine'))
 
         def mini_motif(n):
             n = notes(n, 8)
@@ -282,7 +287,7 @@ class GenreAncien(Piece):
             pattern(scale('f`', 4, 'ef minor harmonic', 8),
                     4, 4, 3, 2, 3, 1, 2, 3),
             notes('gf` af` bf` cf`` bf` af` g` af`', 8),
-            notes('gf` f` ef` f` ef`', 8) + rests(8, 4)
+            notes('gf` f` ef` f` ef`', 8) + rests(8, 8, 8)
         ]
         select(upper_harmony2[11], 8).articulation = '~'
         select(upper_harmony2[12], 8).articulation = '~'
@@ -403,6 +408,7 @@ class GenreAncien(Piece):
                                                 lower_harmony2),
                 'bass': lower_melody2
             }
+            select(score2['treble'][15], 2).suffix += ' } ' + signe
 
         #####################
         # Score compilation #
