@@ -327,7 +327,9 @@ class GenreAncien(Piece):
                            merge(upper_harmony2[13], lower_harmony2[13])),
                     voices(upper_melody2[14],
                            merge(upper_harmony2[14], lower_harmony2[14])),
-                    voices(upper_melody2[15], upper_harmony2[15])
+                    voices(upper_melody2[15],
+                           subset(upper_harmony2[15], 1, 5) +
+                           notes('bf gf ef', 8))
                 ],
                 'bass': [
                     [],
@@ -360,6 +362,10 @@ class GenreAncien(Piece):
             select(score2['bass'][15], 1).suffix += (
                 ' \\stemNeutral \\change Staff = "bass" ')
             add(select(score2['treble'][15], 3), 'ef`')
+            select(score2['bass'][15], 5).prefix += ('\\stemUp ')
+            select(score2['bass'][15], 1).suffix += (' \\stemNeutral ')
+            select(score2['treble'][15], 7).suffix += (
+                ' \\stemNeutral \\change Staff = "bass" ')
 
         else:
             score2 = {
