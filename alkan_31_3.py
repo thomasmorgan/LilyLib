@@ -369,6 +369,19 @@ class GenreAncien(Piece):
             select(score2['treble'][15], 2).prefix += '\\omit '
             select(score2['bass'][15], 10).prefix += '\\omit '
             select(score2['bass'][15], 11).prefix += '\\omit '
+            select(score2['treble'][15], 4).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) ")
+            select(score2['treble'][15], 5).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) ")
+            select(score2['treble'][15], 6).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) ")
+            select(score2['treble'][15], 7).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) "
+                "\\once \\override Beam.transparent = ##t")
 
         else:
             score2 = {
