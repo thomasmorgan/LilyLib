@@ -31,7 +31,6 @@ class GenreAncien(Piece):
         text = (
           "\\layout { \\context { \\PianoStaff "
           "\\consists #Span_stem_engraver } }\n"
-          "\\layout { \\context { \\Staff \\RemoveEmptyStaves } }\n"
           '\\layout { \\context { \\Voice '
           '\\consists "Horizontal_bracket_engraver" } }')
         if not self.improvements:
