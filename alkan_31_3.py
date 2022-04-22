@@ -359,6 +359,7 @@ class GenreAncien(Piece):
                 '\\stemDown \\change Staff = "treble" ')
             select(score2['bass'][15], 1).suffix += (
                 ' \\stemNeutral \\change Staff = "bass" ')
+            add(select(score2['treble'][15], 3), 'ef`')
 
         else:
             score2 = {
