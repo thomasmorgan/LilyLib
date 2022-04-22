@@ -130,6 +130,8 @@ class GenreAncien(Piece):
                    '\\change Staff = "treble" \\stemDown ')
             select(lower_harmony[8], 1).suffix += (
                    '\\change Staff = "bass" \\stemUp ')
+            select(lower_melody[8], 2).prefix += '\\omit '
+            select(lower_melody[8], 3).prefix += '\\omit '
             bar3e = (
                 rests(8, prefix='\\omit ') +
                 notes('ef`', 8,
