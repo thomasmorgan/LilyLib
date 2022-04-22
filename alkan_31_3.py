@@ -91,12 +91,10 @@ class GenreAncien(Piece):
             (self.scale('f`', 4, 8) + self.scale('af`', -3, 8) +
              notes('gf`', 8)),
             (self.scale('f`', -3, 8) + self.scale('ef`', -2, 8) +
-             rests(8, 8, 8))
+             notes('af f df', 8))
         ]
         select(upper_harmony[4], 8).articulation = '~'
         select(upper_harmony[5], 8).articulation = '~'
-        select(upper_harmony[8], 5).suffix += '\\bar "||" '
-        select(upper_harmony[8], 8).suffix += linebreak
 
         lower_harmony = [
             [],
@@ -114,12 +112,24 @@ class GenreAncien(Piece):
              self.scale('af', -3, 8, step=2))
         ]
         select(upper_harmony[8], 4).markup = italic(bold('Fine'))
+        select(upper_harmony[8], 5).suffix += '\\bar "||" '
+        select(lower_harmony[8], 5).articulation = '['
+        select(upper_harmony[8], 5).articulation = '['
+        select(lower_harmony[8], 8).articulation = ']'
+        select(upper_harmony[8], 8).articulation = ']'
+        select(upper_harmony[8], 8).suffix += linebreak
 
         #########################
         # Section 1 compilation #
         #########################
 
         if not self.improvements:
+            select(upper_harmony[8], 6).prefix += (
+                   '\\change Staff = "bass" \\stemUp ')
+            select(lower_harmony[8], 1).prefix += (
+                   '\\change Staff = "treble" \\stemDown ')
+            select(lower_harmony[8], 1).suffix += (
+                   '\\change Staff = "bass" \\stemUp ')
             bar3e = (
                 rests(8, prefix='\\omit ') +
                 notes('ef`', 8,
@@ -156,8 +166,7 @@ class GenreAncien(Piece):
                     lower_melody[6],
                     voices(merge(upper_harmony[7], lower_harmony[7]),
                            lower_melody[7]),
-                    voices(rests(8, prefix='\\omit ') +
-                           subset(lower_harmony[8], 2, 8),
+                    voices(lower_harmony[8],
                            lower_melody[8])]
             }
 
@@ -183,16 +192,22 @@ class GenreAncien(Piece):
                 '\\change Staff = "treble" ')
             select(score1['bass'][7], 9).prefix += '\\omit '
             select(score1['bass'][7], 5).prefix += '\\omit '
-            select(score1['bass'][8], 2).prefix = '\\stemDown '
-            select(score1['bass'][8], 10).prefix = '\\omit '
-            select(score1['bass'][8], 11).prefix = '\\omit '
-            select(score1['treble'][8], 3).add('df`')
-            select(score1['treble'][8], 4).prefix += ('\\crossStaff { ')
-            select(score1['treble'][8], 7).suffix = (
-                select(score1['treble'][8], 7).suffix + ' } ')
-            select(score1['treble'][8], 8).prefix += '\\omit '
-            select(score1['treble'][8], 9).prefix += '\\omit '
-            select(score1['treble'][8], 10).prefix += '\\omit '
+            select(score1['treble'][8], 3).prefix += (
+                "\\once \\override Beam.transparent = ##t ")
+            select(score1['treble'][8], 4).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.15 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.15 . 0.0) ")
+            select(score1['treble'][8], 5).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.15 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.15 . 0.0) ")
+            select(score1['treble'][8], 6).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.15 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.15 . 0.0) ")
+            select(score1['treble'][8], 7).prefix += (
+                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) "
+                "\\once \\override Stem.length-fraction = #1.2 "
+                "\\once \\override Beam.transparent = ##t ")
             select(score1['treble'][8], 10).suffix += ' } '
 
         else:
@@ -386,14 +401,14 @@ class GenreAncien(Piece):
             select(score2['bass'][15], 10).prefix += '\\omit '
             select(score2['bass'][15], 11).prefix += '\\omit '
             select(score2['treble'][15], 4).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) ")
+                "\\once \\override NoteHead.extra-offset = #'(1.15 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.15 . 0.0) ")
             select(score2['treble'][15], 5).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) ")
+                "\\once \\override NoteHead.extra-offset = #'(1.15 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.15 . 0.0) ")
             select(score2['treble'][15], 6).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) ")
+                "\\once \\override NoteHead.extra-offset = #'(1.15 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.15 . 0.0) ")
             select(score2['treble'][15], 7).prefix += (
                 "\\once \\override NoteHead.extra-offset = #'(1.1 . 0.0) "
                 "\\once \\override Stem.extra-offset = #'(1.1 . 0.0) "
