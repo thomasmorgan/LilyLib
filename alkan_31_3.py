@@ -25,7 +25,7 @@ class GenreAncien(Piece):
         self.key = 'bf minor'
         self.improvements = False
         staff_with = ('\\override Beam.beam-thickness = #0.35 '
-                      '\\override Stem.thickness = #0.8 ')
+                      '\\override Stem.thickness = #0.9 ')
         if self.improvements:
             self.staves = [
                 Treble("treble", _with=staff_with),
@@ -341,6 +341,8 @@ class GenreAncien(Piece):
         #########################
 
         if not self.improvements:
+            select(upper_melody2[1], 1).prefix = (
+                select(upper_melody2[1], 1).prefix + '\\stemUp ')
             score2 = {
                 'treble': [
                     [],
