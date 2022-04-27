@@ -25,7 +25,6 @@ class GenreAncien(Piece):
         self.key = 'bf minor'
         self.improvements = False
         staff_with = ('\\override Beam.beam-thickness = #0.35 '
-                      '\\override Stem.thickness = #0.9 ')
         if self.improvements:
             self.staves = [
                 Treble("treble", _with=staff_with),
