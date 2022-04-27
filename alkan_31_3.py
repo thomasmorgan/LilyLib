@@ -400,6 +400,10 @@ class GenreAncien(Piece):
                 '\\stemDown \\change Staff = "treble" ')
             select(score2['bass'][3], 8).suffix += (
                 ' \\stemNeutral \\change Staff = "bass" ')
+            select(score2['treble'][10], 5).tones[0] = (
+                select(score2['treble'][10], 5).tones[0] + "!")
+            select(score2['treble'][11], 5).tones[1] = (
+                select(score2['treble'][11], 5).tones[1] + "!")
             select(score2['treble'][6], 4).prefix += '\\omit '
             select(score2['bass'][15], 1).prefix += (
                 '\\stemDown \\change Staff = "treble" ')
