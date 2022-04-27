@@ -212,11 +212,11 @@ class GenreAncien(Piece):
                 "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
                 "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
             select(score1['treble'][8], 6).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.25 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.25 . 0.0) ")
+                "\\once \\override NoteHead.extra-offset = #'(1.18 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.18 . 0.0) ")
             select(score1['treble'][8], 7).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) "
+                "\\once \\override NoteHead.extra-offset = #'(1.18 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.18 . 0.0) "
                 "\\once \\override Stem.length-fraction = #1.2 "
                 "\\once \\override Beam.transparent = ##t ")
             select(score1['treble'][8], 10).suffix += ' } '
@@ -424,8 +424,8 @@ class GenreAncien(Piece):
                 "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
                 "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
             select(score2['treble'][15], 6).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.25 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.25 . 0.0) ")
+                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
+                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
             select(score2['treble'][15], 7).prefix += (
                 "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
                 "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) "
