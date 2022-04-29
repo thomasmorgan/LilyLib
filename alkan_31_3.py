@@ -15,7 +15,7 @@ class GenreAncien(Piece):
         self.date = "1847"
         self.mutopiacomposer = "AlkanCV"
         self.mutopiainstrument = "piano"
-        self.source = "A.M. Schlesinger, 1847"
+        self.source = "Bardus, 1847"
         self.style = "Romantic"
         self.license = "Creative Commons Attribution-ShareAlike 4.0"
         self.maintainer = "Thomas Morgan"
