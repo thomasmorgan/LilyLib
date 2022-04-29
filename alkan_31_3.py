@@ -65,9 +65,9 @@ class GenreAncien(Piece):
             notes('df`` ', ['2.', 4])
         ]
         select(upper_melody[1], 1).prefix += (
-            '\\tempo "Molto lento" ' + signe +
+            '\\tempo "Très lentement" ' + signe +
             '\\repeat volta 1 { ')
-        select(upper_melody[1], 1).markdown = italic('piacévole')
+        select(upper_melody[1], 1).markdown = 'Plaintivement'
 
         lower_melody = [
             [],
@@ -81,10 +81,10 @@ class GenreAncien(Piece):
             notes('df', 4) + rests(4, 2)
         ]
         select(lower_melody[5], 1).suffix += '\\startGroup '
-        select(lower_melody[5], 1).markdown += 'Mani o Ped.'
+        select(lower_melody[5], 1).markdown += 'mains ou pieds'
         select(lower_melody[5], 3).suffix += '\\stopGroup '
         select(lower_melody[7], 2).suffix += '\\startGroup '
-        select(lower_melody[7], 2).markdown += 'Mani o Ped.'
+        select(lower_melody[7], 2).markdown += 'mains ou pieds'
         select(lower_melody[8], 1).suffix += '\\stopGroup '
 
         upper_harmony = [
@@ -121,7 +121,7 @@ class GenreAncien(Piece):
              self.transpose(subset(upper_harmony[8], 2, 5), -5) +
              self.scale('af', -3, 8, step=2))
         ]
-        select(upper_harmony[8], 4).markup = italic('Fine')
+        select(upper_harmony[8], 5).markup = '    Fin.'
         select(upper_harmony[8], 5).suffix += '\\bar "||" '
         select(lower_harmony[8], 5).articulation = '['
         select(upper_harmony[8], 5).articulation = '['
@@ -277,15 +277,14 @@ class GenreAncien(Piece):
         ]
 
         select(lower_melody2[5], 1).suffix += '\\startGroup '
-        select(lower_melody2[5], 1).markdown += 'Mani o Ped.'
+        select(lower_melody2[5], 1).markdown += 'mains ou pieds'
         select(lower_melody2[5], 3).suffix += '\\stopGroup '
         select(lower_melody2[9], 1).suffix += '\\startGroup '
-        select(lower_melody2[9], 1).markdown += 'Mani o Ped.'
+        select(lower_melody2[9], 1).markdown += 'mains ou pieds'
         select(lower_melody2[9], 5).suffix += '\\stopGroup '
         select(lower_melody2[12], 1).suffix += '\\startGroup '
-        select(lower_melody2[12], 1).markdown += 'Mani o Ped.'
+        select(lower_melody2[12], 1).markdown += 'mains ou pieds'
         select(lower_melody2[12], 3).suffix += '\\stopGroup '
-        select(lower_melody2[15], 1).markdown += italic('D.S. al Fine')
 
         def mini_motif(n):
             n = notes(n, 8)
