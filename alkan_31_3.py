@@ -35,6 +35,10 @@ pushNC = """pushNC =
         0)))\n"""
 
 
+def courtesy(point, index):
+    point.tones[index-1] = select(point.tones, index) + "!"
+
+
 class GenreAncien(Piece):
 
     def details(self):
@@ -231,6 +235,7 @@ class GenreAncien(Piece):
             select(score1['bass'][7], 9).prefix += '\\omit '
             select(score1['bass'][7], 5).prefix += '\\omit '
             select(score1['treble'][8], 10).suffix += ' } '
+            courtesy(select(score1['treble'][8], 3), 1)
 
         else:
             select(upper_melody[8], 2).suffix += ' } '
@@ -410,13 +415,20 @@ class GenreAncien(Piece):
                 '\\stemDown \\change Staff = "treble" ')
             select(score2['bass'][3], 8).suffix += (
                 ' \\stemNeutral \\change Staff = "bass" ')
-            select(score2['treble'][10], 5).tones[0] = (
-                select(score2['treble'][10], 5).tones[0] + "!")
-            select(score2['treble'][11], 5).tones[1] = (
-                select(score2['treble'][11], 5).tones[1] + "!")
-            select(score2['treble'][6], 4).prefix += '\\omit '
+            courtesy(select(score2['treble'][4], 1), 1)
+            courtesy(select(score2['treble'][4], 7), 2)
+            courtesy(select(score2['treble'][4], 9), 1)
+            courtesy(select(score2['treble'][5], 7), 2)
+            courtesy(select(score2['treble'][6], 1), 1)
+            courtesy(select(score2['treble'][6], 5), 1)
+            courtesy(select(score2['treble'][10], 5), 1)
+            courtesy(select(score2['treble'][11], 5), 2)
+            courtesy(select(score2['treble'][11], 6), 2)
+            courtesy(select(score2['treble'][14], 6), 1)
             select(score2['treble'][15], 3).add('ef`')
             select(score2['bass'][15], 1).remove('ef`')
+            courtesy(select(score2['treble'][15], 3), 1)
+            courtesy(select(score2['treble'][15], 3), 2)
             select(score2['bass'][15], 1).prefix += '\\omit '
             select(score2['treble'][15], 8).prefix += (
                 '\\change Staff = "bass" \\stemUp ')
