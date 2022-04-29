@@ -39,12 +39,17 @@ class GenreAncien(Piece):
 
     def subtext(self):
         text = (
+          '#(set-default-paper-size "letter")\n'
           "\\layout { \\context { \\PianoStaff "
           "\\consists #Span_stem_engraver } }\n"
           '\\layout { \\context { \\Voice '
-          '\\consists "Horizontal_bracket_engraver" } }')
-        if not self.improvements:
-            text += '\n\\paper { page-count = #1 }'
+          '\\consists "Horizontal_bracket_engraver" } }'
+          "\\layout { \\context { \\PianoStaff \\override "
+          "StaffGrouper.staff-staff-spacing.basic-distance = #11 } }\n"
+          "\\paper { system-system-spacing = #'((basic-distance . 12) "
+          "(minimum-distance . 8) (padding . 12) (stretchability . 60)) }\n"
+          "\\layout { \\context { \\Score \\override "
+          "SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/25) } }")
         return text
 
     def write_score(self):
