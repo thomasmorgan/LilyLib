@@ -24,18 +24,11 @@ class GenreAncien(Piece):
         self.auto_add_bars = True
         self.key = 'bf minor'
         self.improvements = False
-        staff_with = ('\\override Beam.beam-thickness = #0.35 '
-                      "\\override StaffSymbol.ledger-line-thickness = "
-                      "#'(1.25 . 0.0) ")
         if self.improvements:
             self.staves = [
-                Treble("treble", _with=staff_with),
-                Super("middle", _with=staff_with),
-                Bass("bass", _with=staff_with)]
-        else:
-            self.staves = [
-                Treble("treble", _with=staff_with),
-                Bass("bass", _with=staff_with)]
+                Treble("treble"),
+                Super("middle"),
+                Bass("bass")]
 
     def subtext(self):
         text = (
