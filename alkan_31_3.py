@@ -325,7 +325,7 @@ class GenreAncien(Piece):
             pattern(scale('f`', 4, 'ef minor harmonic', 8),
                     4, 4, 3, 2, 3, 1, 2, 3),
             notes('gf` af` bf` cf`` bf` af` g` af`', 8),
-            notes('gf` f` ef` f` ef`', 8) + rests(8, 8, 8)
+            notes('gf` f` ef` f` ef` bf gf ef', 8)
         ]
         select(upper_harmony2[11], 8).articulation = '~'
         select(upper_harmony2[12], 8).articulation = '~'
@@ -346,7 +346,7 @@ class GenreAncien(Piece):
             transpose(upper_harmony2[12], -2, key='ef minor harmonic'),
             transpose(upper_harmony2[13], -2, key='ef minor harmonic'),
             notes('ef` f` gf` af` gf` f` e` f`', 8),
-            notes('ef` af gf af gf bf gf ef', 8)
+            notes('ef` af gf af gf', 8) + rests(8, 8, 8, prefix='\\omit ')
             ]
 
         #########################
@@ -418,31 +418,18 @@ class GenreAncien(Piece):
             select(score2['treble'][11], 5).tones[1] = (
                 select(score2['treble'][11], 5).tones[1] + "!")
             select(score2['treble'][6], 4).prefix += '\\omit '
-            select(score2['bass'][15], 1).prefix += (
-                '\\stemDown \\change Staff = "treble" ')
-            select(score2['bass'][15], 1).suffix += (
-                ' \\stemNeutral \\change Staff = "bass" ')
-            add(select(score2['treble'][15], 3), 'ef`')
-            select(score2['bass'][15], 5).prefix += ('\\stemUp ')
-            select(score2['bass'][15], 1).suffix += (' \\stemNeutral ')
-            select(score2['treble'][15], 7).suffix += (
-                ' \\stemNeutral \\change Staff = "bass" ')
-            select(score2['treble'][15], 2).prefix += '\\omit '
+            select(score2['treble'][15], 3).add('ef`')
+            select(score2['bass'][15], 1).remove('ef`')
+            select(score2['bass'][15], 1).prefix += '\\omit '
+            select(score2['treble'][15], 8).prefix += (
+                '\\change Staff = "bass" \\stemUp ')
+            for i in [4, 5, 6, 7]:
+                select(score2['treble'][15], i).prefix += '\\pushNC '
+            select(score2['bass'][15], 2).prefix += (
+                '\\autoBeamOff \\crossStaff { ')
+            select(score2['bass'][15], 5).suffix += ' } '
             select(score2['bass'][15], 10).prefix += '\\omit '
             select(score2['bass'][15], 11).prefix += '\\omit '
-            select(score2['treble'][15], 4).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
-            select(score2['treble'][15], 5).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
-            select(score2['treble'][15], 6).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
-            select(score2['treble'][15], 7).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Beam.transparent = ##t")
             select(score2['treble'][15], 10).suffix += ' } ' + signe
 
         else:
