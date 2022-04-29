@@ -195,8 +195,10 @@ class GenreAncien(Piece):
                                                   lower_harmony[4])),
                     voices(upper_melody[5], merge(upper_harmony[5],
                                                   lower_harmony[5])),
-                    voices(upper_melody[6], merge(upper_harmony[6],
-                                                  lower_harmony[6])),
+                    voices(upper_melody[6],
+                           merge(upper_harmony[6][0:5],
+                                 lower_harmony[6][0:5]) +
+                           rests(8, 8, 8, prefix='\\omit ')),
                     voices(upper_melody[7], bar7f),
                     voices(upper_melody[8], upper_harmony[8])],
                 'bass': [
@@ -206,7 +208,8 @@ class GenreAncien(Piece):
                     merge(upper_harmony[3], lower_harmony[3]),
                     lower_melody[4],
                     lower_melody[5],
-                    lower_melody[6],
+                    lower_melody[6][0:2] + merge(upper_harmony[6][5:8],
+                                                 lower_harmony[6][5:8]),
                     voices(merge(upper_harmony[7], lower_harmony[7]),
                            lower_melody[7]),
                     voices(lower_harmony[8],
@@ -222,13 +225,8 @@ class GenreAncien(Piece):
                 '\\override Beam.auto-knee-gap = #5.5 ')
             select(score1['bass'][4], 1).prefix = (
                 '\\change Staff = "bass" \\omit ')
-            select(score1['bass'][6], 3).prefix = '\\omit '
-            select(score1['bass'][6], 4).prefix = '\\omit '
-            select(score1['bass'][6], 2).prefix += (
-                ' \\stemDown \\crossStaff { ')
-            select(score1['bass'][6], 2).suffix += ' } \\stemNeutral'
-            select(score1['treble'][6], 12).prefix += (
-                '\\change Staff = "bass" ')
+            select(score1['treble'][6], 11).prefix += '\\crossStaff { '
+            select(score1['treble'][6], 11).suffix += ' } '
             select(score1['bass'][7], 1).remove('f`')
             select(score1['bass'][7], 1).prefix += '\\stemDown '
             select(score1['bass'][7], 2).prefix += (
