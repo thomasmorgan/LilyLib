@@ -6,6 +6,35 @@ from markup import voices, signe, italic, linebreak
 from util import select, omit, flatten, subset, join, pattern
 
 
+pushNC = """pushNC =
+\\once \\override NoteColumn.X-offset =
+  #(lambda (grob)
+    (let* ((p-c (ly:grob-parent grob X))
+           (p-c-elts (ly:grob-object p-c 'elements))
+           (stems
+             (if (ly:grob-array? p-c-elts)
+                 (filter
+                   (lambda (elt)(grob::has-interface elt 'stem-interface))
+                   (ly:grob-array->list p-c-elts))
+                 #f))
+           (stems-x-exts
+             (if stems
+                 (map
+                   (lambda (stem)
+                     (ly:grob-extent
+                       stem
+                       (ly:grob-common-refpoint grob stem X)
+                       X))
+                   stems)
+                 '()))
+           (sane-ext
+             (filter interval-sane? stems-x-exts))
+           (cars (map car sane-ext)))
+    (if (pair? cars)
+        (abs (- (apply max cars)  (apply min cars)))
+        0)))\n"""
+
+
 class GenreAncien(Piece):
 
     def details(self):
@@ -32,6 +61,7 @@ class GenreAncien(Piece):
 
     def subtext(self):
         text = (
+          pushNC +
           '#(set-default-paper-size "letter")\n'
           "\\layout{\\context{\\PianoStaff \\consists #Span_stem_engraver }}\n"
           '\\layout { \\context { \\Voice '
@@ -100,7 +130,7 @@ class GenreAncien(Piece):
             (self.scale('f`', 4, 8) + self.scale('af`', -3, 8) +
              notes('gf`', 8)),
             (self.scale('f`', -3, 8) + self.scale('ef`', -2, 8) +
-             notes('af f df', 8))
+             self.scale('af', -3, 8, step=2))
         ]
         select(upper_harmony[4], 8).articulation = '~'
         select(upper_harmony[5], 8).articulation = '~'
@@ -118,13 +148,11 @@ class GenreAncien(Piece):
                        key='ef harmonic minor')),
             (notes('df`', 8) +
              self.transpose(subset(upper_harmony[8], 2, 5), -5) +
-             self.scale('af', -3, 8, step=2))
+             rests(8, 8, 8, prefix='\\omit '))
         ]
         select(upper_harmony[8], 5).markup = '    Fin.'
         select(upper_harmony[8], 5).suffix += '\\bar "||" '
-        select(lower_harmony[8], 5).articulation = '['
         select(upper_harmony[8], 5).articulation = '['
-        select(lower_harmony[8], 8).articulation = ']'
         select(upper_harmony[8], 8).articulation = ']'
         select(upper_harmony[8], 8).suffix += linebreak
 
@@ -133,12 +161,16 @@ class GenreAncien(Piece):
         #########################
 
         if not self.improvements:
-            select(upper_harmony[8], 6).prefix += (
-                   '\\change Staff = "bass" \\stemUp ')
-            select(lower_harmony[8], 1).prefix += (
-                   '\\change Staff = "treble" \\stemDown ')
-            select(lower_harmony[8], 1).suffix += (
-                   '\\change Staff = "bass" \\stemUp ')
+            for i in [1, 2, 3, 4]:
+                upper_harmony[8][i].prefix += "\\pushNC "
+            upper_harmony[8][0].add('df`')
+            lower_harmony[8][0].remove('df`')
+            lower_harmony[8][0].prefix += '\\omit '
+            lower_harmony[8][1].prefix += '\\autoBeamOff \\crossStaff { '
+            lower_harmony[8][3].suffix += ' } '
+            upper_harmony[8][5].prefix += '\\change Staff = "bass" \\stemUp '
+            lower_harmony[8][4].prefix += '\\crossStaff { '
+            lower_harmony[8][4].suffix += ' } '
             select(lower_melody[8], 2).prefix += '\\omit '
             select(lower_melody[8], 3).prefix += '\\omit '
             bar3e = (
@@ -203,22 +235,6 @@ class GenreAncien(Piece):
                 '\\change Staff = "treble" ')
             select(score1['bass'][7], 9).prefix += '\\omit '
             select(score1['bass'][7], 5).prefix += '\\omit '
-            select(score1['treble'][8], 3).prefix += (
-                "\\once \\override Beam.transparent = ##t ")
-            select(score1['treble'][8], 4).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
-            select(score1['treble'][8], 5).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.2 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.2 . 0.0) ")
-            select(score1['treble'][8], 6).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.18 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.18 . 0.0) ")
-            select(score1['treble'][8], 7).prefix += (
-                "\\once \\override NoteHead.extra-offset = #'(1.18 . 0.0) "
-                "\\once \\override Stem.extra-offset = #'(1.18 . 0.0) "
-                "\\once \\override Stem.length-fraction = #1.2 "
-                "\\once \\override Beam.transparent = ##t ")
             select(score1['treble'][8], 10).suffix += ' } '
 
         else:
