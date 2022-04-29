@@ -54,10 +54,7 @@ class GenreAncien(Piece):
         self.key = 'bf minor'
         self.improvements = False
         if self.improvements:
-            self.staves = [
-                Treble("treble"),
-                Super("middle"),
-                Bass("bass")]
+            self.staves = [Treble("treble"), Super("middle"), Bass("bass")]
 
     def subtext(self):
         text = (
