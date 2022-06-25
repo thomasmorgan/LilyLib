@@ -22,6 +22,16 @@ triple_barbreak = ' \\bar "|.|" %{ bar %}\n'
 
 thinthick_barbreak = ' \\bar "|." %{ bar %}\n'
 
+signe = '\\mark \\markup { \\musicglyph #"scripts.segno" } '
+
+
+def italic(text):
+    return('\\italic{' + text + '}')
+
+
+def bold(text):
+    return('\\bold{' + text + '}')
+
 
 def clef(clef, passage, end_clef=""):
     passage = deepcopy(passage)

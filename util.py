@@ -38,7 +38,7 @@ def pattern(List, *indexes):
     indexes = flatten(list(indexes))
     new_list = []
     for i in indexes:
-        new_list.append(List[i - 1])
+        new_list.append(deepcopy(List[i - 1]))
     return new_list
 
 

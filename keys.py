@@ -342,6 +342,20 @@ class CSharpMinorH(Key):
         self.name = "c sharp minor harmonic"
 
 
+class DFlatMinor(Key):
+    def define(self):
+        self.root = 'df'
+        self.letters = ['df', 'ef', 'ff', 'gf', 'af', 'bff', 'cf']
+        self.name = 'd flat minor'
+
+
+class DFlatMinorH(Key):
+    def define(self):
+        self.root = 'df'
+        self.letters = ['df', 'ef', 'ff', 'gf', 'af', 'bff', 'c']
+        self.name = 'd flat minor harmonic'
+
+
 class DMinor(Key):
     def define(self):
         self.root = 'd'
@@ -545,6 +559,7 @@ key_dictionary = {
     "minor": {
         "c": CMinor(),
         "cs": CSharpMinor(),
+        "df": DFlatMinor(),
         "d": DMinor(),
         "ds": DSharpMinor(),
         "ef": EFlatMinor(),
@@ -563,6 +578,7 @@ key_dictionary = {
         "c": CMinorH(),
         "cs": CSharpMinorH(),
         "d": DMinorH(),
+        "df": DFlatMinorH(),
         "ds": DSharpMinorH(),
         "ef": EFlatMinorH(),
         "e": EMinorH(),
