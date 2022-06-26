@@ -91,7 +91,7 @@ class Piece:
 
     def start_score(self):
         if self.piano_staff:
-            return('\\score { << \n\\new PianoStaff <<\n')
+            return('\\score { << \n\\new PianoStaff \\with { instrumentName = "Piano" } <<\n')
         else:
             return('\\score { <<\n')
 
