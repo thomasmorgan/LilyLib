@@ -1,6 +1,7 @@
 from piece import Piece
 from points import chord, rests, tied_note, notes, tied_chord, chords
-from markup import slur, voices, clef, italic, diminuendo
+from markup import (
+    slur, voices, clef, italic, diminuendo, thick_barbreak, pagebreak)
 from util import rep, subset, select
 from staves import Treble, Bass, Dynamics
 
@@ -36,6 +37,12 @@ class MinunKultani(Piece):
                     '\\override Staff.Arpeggio.X-extent = '
                     '#ly:grob::stencil-width\n'
                     '\\revert Staff.Arpeggio.dash-definition\n'))]
+
+    def subtext(self):
+        return (
+            "\\layout { \\context { \\Score \\override "
+            "SpacingSpanner.base-shortest-duration = "
+            "#(ly:make-moment 1/24)}}\n")
 
     def write_score(self):
 
@@ -142,6 +149,7 @@ class MinunKultani(Piece):
         select(treble_3, 16).dynamics = '>'
         select(treble_3, 17).dynamics = '!'
         select(treble_3, 19).markup = italic('dim.')
+        select(treble_3, 20).suffix += pagebreak
         select(treble_3, 77).suffix = '\\sustainOn '
         select(treble_3, 78).suffix = '\\sustainOff '
 
@@ -187,7 +195,8 @@ class MinunKultani(Piece):
         select(low_bass_3, 18).suffix = '\\sustainOn '
         select(low_bass_3, 20).suffix = '\\sustainOn '
         select(low_bass_3, 21).suffix = (
-            '\\tweak X-offset 5 \\tweak Y-offset -4.5 \\sustainOff')
+            '\\tweak X-offset 5 \\tweak Y-offset -4.5 \\sustainOff' +
+            thick_barbreak)
 
         dynamics_3 = (
             rep(rests(1), 4) + rests(2, 4, 4) + rests(1, 1, 1) +
