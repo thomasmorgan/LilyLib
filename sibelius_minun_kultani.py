@@ -1,6 +1,6 @@
 from piece import Piece
-from points import chord, rests, tied_note, notes, tied_chord
-from markup import slur, voices, clef, italic
+from points import chord, rests, tied_note, notes, tied_chord, chords
+from markup import slur, voices, clef, italic, diminuendo
 from util import rep, subset, select
 from staves import Treble, Bass, Dynamics
 
@@ -22,7 +22,20 @@ class MinunKultani(Piece):
         self.auto_add_bars = True
         self.key = 'fs minor'
         self.tempo_name = "Allegretto"
-        self.staves = [Treble(), Dynamics(), Bass()]
+        self.staves = [
+            Treble(),
+            Dynamics(),
+            Bass(
+                _with=(
+                    '\\override Beam.breakable = ##t\n'
+                    '\\consists "Span_arpeggio_engraver"'),
+                extra_text=(
+                    '\\set Staff.connectArpeggios = ##t\n'
+                    '\\override Staff.Arpeggio.stencil = '
+                    '#ly:arpeggio::brew-chord-slur\n'
+                    '\\override Staff.Arpeggio.X-extent = '
+                    '#ly:grob::stencil-width\n'
+                    '\\revert Staff.Arpeggio.dash-definition\n'))]
 
     def write_score(self):
 
@@ -30,9 +43,16 @@ class MinunKultani(Piece):
         # part 1
         ###########
 
+        def split_note(note):
+            notes = chords([note], [8, 8])
+            select(notes, 1).phrasing += '_~['
+            select(notes, 2).phrasing += ']'
+            return notes
+
         def chord_motif(*args):
+            split_notes = split_note('fs')
             motif = slur(self.harmonize(
-                notes('gs fs e', 4) + tied_note('fs', [8, 8]), -2))
+                notes('gs fs e', 4) + split_notes, -2))
             if "short" in args:
                 motif = subset(motif, 1, 4)
                 select(motif, 4).phrasing = ')'
@@ -42,6 +62,8 @@ class MinunKultani(Piece):
             rests(8) + rep(chord_motif(), 2) + chord_motif("short") +
             rests(4) + tied_chord('b, d', ['2.', 1, 1]))
         bass_1 = rep(chord('e, b,', 1), 3) + tied_chord('b,, fs,', [1, 1, 1])
+        select(bass_1, 6).prefix = '\\afterGrace 15/16 {'
+        select(bass_1, 6).suffix = '} { s32 \\sustainOff } '
 
         for i in [1, 7, 11, 16]:
             select(treble_1, i).suffix += '\\sustainOn'
@@ -79,6 +101,69 @@ class MinunKultani(Piece):
         # part 3
         ###########
 
+        mini_motif_2 = (
+            notes('fs cs d b, cs fs, b, d', 4, articulation='-') +
+            slur(diminuendo(notes('fs e', ['4.', 8]))) +
+            notes('d cs', 4, articulation='-') + notes('b,', 2) +
+            tied_note('b,', [2, 1]))
+
+        high_treble_3 = (
+            clef('treble', rep(rests(1, prefix='%{ spacer %}'), 5)) +
+            self.transpose(treble_2, 1, 'octave') +
+            self.transpose(mini_motif_2, 1, 'octave') +
+            rep(rests(1, prefix='%{ spacer %}'), 3))
+        select(high_treble_3, 6).prefix = ''
+        select(high_treble_3, 6).markup = ''
+        for i in [16, 18, 19, 25, 26, 27, 28]:
+            select(high_treble_3, i).articulation = ''
+        select(high_treble_3, 18).dynamics = ''
+        select(high_treble_3, 19).dynamics = ''
+
+        treble_3 = (
+            rests(8) + rep(chord('gs b', 4), 3) +
+            split_note('gs b') + rep(chord('as cs`', 4), 2) +
+            [chord('gs d`', 4)] +
+            rep(split_note('gs d`') +
+                rep(chord('gs d`', 4), 3), 4) +
+            split_note('gs d`') + [chord('g cs`', 4)] +
+            chords(['g as'], [4, 4]) + split_note('g as') +
+            chords(['f b'], [4, 4]) + [chord('d f', 4)] +
+            split_note('f b') +
+            rep(chords(['e as'], [4, 4, 4]) + split_note('e as'), 2) +
+            chords(['e as'], [4, 4]) + [chord('e gs', 4)] +
+            split_note('e gs') + chords(['e as'], [4, 4]) +
+            chords(['e gs'], [4, 8]) +
+            rests(8) + chords(['g cs`'], [4, 8]) +
+            rests(8) + chords(['e as'], [4, 8]) +
+            rests(8) + rep(chord_motif(), 2) + chord_motif("short") +
+            rests(4) + tied_chord('b, d', ['2.', 1]))
+        select(treble_3, 16).dynamics = '>'
+        select(treble_3, 17).dynamics = '!'
+        select(treble_3, 19).markup = italic('dim.')
+
+        bass_3 = mini_motif_2 + rep(notes('fs', 4), 4)
+        select(bass_3, 1).prefix += '\\voiceFour '
+        select(bass_3, 14).dynamics = '>'
+        select(bass_3, 15).dynamics = '!'
+        select(bass_3, 16).prefix += (
+            '\\once \\override NoteColumn.force-hshift = #0.7 ')
+        select(bass_3, 16).suffix = '\\arpeggio '
+
+        low_bass_3 = (
+            rep(rests(1, prefix='%{ spacer %}'), 5) +
+            notes('e,', 1) + tied_note('e,', [1, 2]) +
+            notes('e,', 2) + tied_note('e,', [1, 1]) +
+            tied_note('e,', [1, 2]) + notes('e,', 2) +
+            tied_note('e,', [1, 2]) + tied_chord('e, b,', [2, 1, 1]) +
+            tied_chord('b,, fs,', [1, 1]))
+        select(low_bass_3, 6).prefix += (
+            '\\once \\override NoteColumn.force-hshift = #0.7 ')
+        select(low_bass_3, 6).suffix = '\\arpeggio '
+        select(low_bass_3, 16).add('b,')
+
+        dynamics_3 = rep(rests(1), 4) + rests(2, 4, 4)
+        select(dynamics_3, 7).dynamics = 'mf'
+
         ###########
         # combine
         ###########
@@ -86,9 +171,11 @@ class MinunKultani(Piece):
         self.score = {
             'treble': (
                 rep(rests(1, prefix='%{ spacer %}'), 4) + rests(1) +
-                treble_2),
-            'dynamics': dynamics_1 + dynamics_2,
-            'bass': voices(treble_1, bass_1) + bass_2
+                treble_2 + high_treble_3),
+            'dynamics': dynamics_1 + dynamics_2 + dynamics_3,
+            'bass': (
+                voices(treble_1, bass_1) + bass_2 +
+                voices(treble_3, low_bass_3, bass_3))
         }
 
 
