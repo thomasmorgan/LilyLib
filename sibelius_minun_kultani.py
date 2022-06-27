@@ -101,6 +101,8 @@ class MinunKultani(Piece):
         # part 3
         ###########
 
+        shift = '\\once \\override NoteColumn.force-hshift = #0.7 '
+
         mini_motif_2 = (
             notes('fs cs d b, cs fs, b, d', 4, articulation='-') +
             slur(diminuendo(notes('fs e', ['4.', 8]))) +
@@ -152,10 +154,11 @@ class MinunKultani(Piece):
         select(bass_3, 1).prefix += '\\voiceFour '
         select(bass_3, 14).dynamics = '>'
         select(bass_3, 15).dynamics = '!'
-        select(bass_3, 16).prefix += (
-            '\\once \\override NoteColumn.force-hshift = #0.7 ')
+        select(bass_3, 16).prefix += shift
         select(bass_3, 16).suffix = '\\arpeggio '
         select(bass_3, 16).markup = ''
+        select(bass_3, 31).prefix += shift
+        select(bass_3, 31).suffix = '\\arpeggio '
 
         low_bass_3 = (
             rep(rests(1, prefix='%{ spacer %}'), 5) +
@@ -164,13 +167,16 @@ class MinunKultani(Piece):
             tied_note('e,', [1, 2]) + notes('e,', 2) +
             tied_note('e,', [1, 2]) + tied_chord('e, b,', [2, 1, 1]) +
             tied_chord('b,, fs,', [1, 1]))
-        select(low_bass_3, 6).prefix += (
-            '\\once \\override NoteColumn.force-hshift = #0.7 ')
+        select(low_bass_3, 6).prefix += shift
         select(low_bass_3, 6).suffix = '\\arpeggio \\omit \\sustainOn'
         select(low_bass_3, 7).suffix = '\\sustainOff \\sustainOn'
         select(low_bass_3, 8).suffix = '\\sustainOff \\sustainOn'
         select(low_bass_3, 10).suffix = '\\sustainOff \\sustainOn'
         select(low_bass_3, 11).suffix = '\\sustainOn'
+        select(low_bass_3, 12).prefix += (
+            "\\once \\override Staff.Arpeggio.positions = #'(-3 . 0) " +
+            '\\once \\override Staff.Arpeggio.X-offset = #0.9 ' + shift)
+        select(low_bass_3, 12).suffix = '\\arpeggio '
         select(low_bass_3, 16).add('b,')
 
         dynamics_3 = (
