@@ -123,6 +123,7 @@ def ottava(passage, shift):
     passage[-1].suffix += '\\ottava #0 '
     return passage
 
+
 def slur(passage):
     passage = deepcopy(flatten([passage]))
     if passage[0].phrasing == '':
@@ -134,6 +135,7 @@ def slur(passage):
     else:
         passage[-1].phrasing += ')'
     return passage
+
 
 def phrase(passage):
     passage = deepcopy(flatten([passage]))
@@ -187,7 +189,8 @@ def voices(*voices):
 def repeat(passage, times=2):
     passage = deepcopy(passage)
     passage = flatten([passage])
-    passage[0].prefix = "\\repeat volta " + str(times) + '{' + passage[0].prefix
+    passage[0].prefix = (
+        "\\repeat volta " + str(times) + '{' + passage[0].prefix)
     if times > 2:
         passage[-1].suffix += '^"x' + str(times) + '"'
     passage[-1].suffix += '}'
