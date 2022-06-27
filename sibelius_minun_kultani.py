@@ -142,6 +142,8 @@ class MinunKultani(Piece):
         select(treble_3, 16).dynamics = '>'
         select(treble_3, 17).dynamics = '!'
         select(treble_3, 19).markup = italic('dim.')
+        select(treble_3, 77).suffix = '\\sustainOn '
+        select(treble_3, 78).suffix = '\\sustainOff '
 
         bass_3 = (
             mini_motif_2 +
@@ -159,6 +161,10 @@ class MinunKultani(Piece):
         select(bass_3, 16).markup = ''
         select(bass_3, 31).prefix += shift
         select(bass_3, 31).suffix = '\\arpeggio '
+        select(bass_3, 33).suffix = '\\sustainOn '
+        select(bass_3, 35).suffix = '\\sustainOn '
+        select(bass_3, 37).suffix = '\\sustainOn '
+        select(bass_3, 39).suffix = '\\sustainOn '
 
         low_bass_3 = (
             rep(rests(1, prefix='%{ spacer %}'), 5) +
@@ -176,8 +182,10 @@ class MinunKultani(Piece):
         select(low_bass_3, 12).prefix += (
             "\\once \\override Staff.Arpeggio.positions = #'(-3 . 0) " +
             '\\once \\override Staff.Arpeggio.X-offset = #0.9 ' + shift)
-        select(low_bass_3, 12).suffix = '\\arpeggio '
+        select(low_bass_3, 12).suffix = '\\arpeggio \\sustainOff \\sustainOn '
         select(low_bass_3, 16).add('b,')
+        select(low_bass_3, 18).suffix = '\\sustainOn '
+        select(low_bass_3, 20).suffix = '\\sustainOn '
 
         dynamics_3 = (
             rep(rests(1), 4) + rests(2, 4, 4) + rests(1, 1, 1) +
