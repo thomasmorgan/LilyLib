@@ -141,13 +141,21 @@ class MinunKultani(Piece):
         select(treble_3, 17).dynamics = '!'
         select(treble_3, 19).markup = italic('dim.')
 
-        bass_3 = mini_motif_2 + rep(notes('fs', 4), 4)
+        bass_3 = (
+            mini_motif_2 +
+            self.transpose(
+                subset(high_treble_3, 6, len(high_treble_3)), -1, 'octave'))
+        for note in subset(bass_3, 15, len(bass_3)):
+            note.dynamics = ''
+            if note.articulation == '-':
+                note.articulation = ''
         select(bass_3, 1).prefix += '\\voiceFour '
         select(bass_3, 14).dynamics = '>'
         select(bass_3, 15).dynamics = '!'
         select(bass_3, 16).prefix += (
             '\\once \\override NoteColumn.force-hshift = #0.7 ')
         select(bass_3, 16).suffix = '\\arpeggio '
+        select(bass_3, 16).markup = ''
 
         low_bass_3 = (
             rep(rests(1, prefix='%{ spacer %}'), 5) +
@@ -158,11 +166,21 @@ class MinunKultani(Piece):
             tied_chord('b,, fs,', [1, 1]))
         select(low_bass_3, 6).prefix += (
             '\\once \\override NoteColumn.force-hshift = #0.7 ')
-        select(low_bass_3, 6).suffix = '\\arpeggio '
+        select(low_bass_3, 6).suffix = '\\arpeggio \\omit \\sustainOn'
+        select(low_bass_3, 7).suffix = '\\sustainOff \\sustainOn'
+        select(low_bass_3, 8).suffix = '\\sustainOff \\sustainOn'
+        select(low_bass_3, 10).suffix = '\\sustainOff \\sustainOn'
+        select(low_bass_3, 11).suffix = '\\sustainOn'
         select(low_bass_3, 16).add('b,')
 
-        dynamics_3 = rep(rests(1), 4) + rests(2, 4, 4)
+        dynamics_3 = (
+            rep(rests(1), 4) + rests(2, 4, 4) + rests(1, 1, 1) +
+            rests('16.', 32, 8, 4, 2) + rests(1))
         select(dynamics_3, 7).dynamics = 'mf'
+        select(dynamics_3, 11).dynamics = '>'
+        select(dynamics_3, 12).dynamics = '!'
+        select(dynamics_3, 15).dynamics = '>'
+        select(dynamics_3, 16).dynamics = '!'
 
         ###########
         # combine
