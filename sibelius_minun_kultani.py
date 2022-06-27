@@ -186,15 +186,22 @@ class MinunKultani(Piece):
         select(low_bass_3, 16).add('b,')
         select(low_bass_3, 18).suffix = '\\sustainOn '
         select(low_bass_3, 20).suffix = '\\sustainOn '
+        select(low_bass_3, 21).suffix = (
+            '\\tweak X-offset 5 \\tweak Y-offset -4.5 \\sustainOff')
 
         dynamics_3 = (
             rep(rests(1), 4) + rests(2, 4, 4) + rests(1, 1, 1) +
-            rests('16.', 32, 8, 4, 2) + rests(1))
+            rests('16.', 32, 8, 4, 2) + rests(1, 1) +
+            rests('4.', 8, 4, 8, 8, 1, 1, 1, 1, 4, 4, 2, '2..', 8))
         select(dynamics_3, 7).dynamics = 'mf'
         select(dynamics_3, 11).dynamics = '>'
         select(dynamics_3, 12).dynamics = '!'
         select(dynamics_3, 15).dynamics = '>'
         select(dynamics_3, 16).dynamics = '!'
+        select(dynamics_3, 19).dynamics = '<'
+        select(dynamics_3, 21).dynamics = '!'
+        select(dynamics_3, 25).markup = italic('dim.')
+        select(dynamics_3, 28).dynamics = 'p'
 
         ###########
         # combine
