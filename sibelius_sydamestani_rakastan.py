@@ -111,9 +111,19 @@ class SydamestaniRakastan(Piece):
             chords(['e,', 'e, cs'], 16, phrasing='~') +
             tied_chord('e, cs g', [8, '2.', 1]) +
             voices(
-                slur(chords(['fs, ds', 'g, e'], 2)),
+                chords(['fs, ds', 'g, e'], 2),
                 notes('e,', 1)) +
-            slur(chords(['cs g', 'ds a', 'e g'], [2, 2, 1])))
+            chords(['cs g', 'ds a', 'e g'], [2, 2, 1]))
+
+        ###########
+        # part 5
+        ###########
+
+        high_treble_5 = (
+            notes('e`', '2.') + melody_2() + notes('e`', 1, phrasing='~') +
+            notes('e`', 1))
+
+        bass_5 = rep(subset(bass_4, 1, 10), 1) + tied_chord('e g', [1, 1, 1])
 
         ###########
         # combine
@@ -123,10 +133,11 @@ class SydamestaniRakastan(Piece):
             'treble': (
                 voices(rests(1, 1, 1, prefix='\\omit ') + high_treble_2,
                        treble_1 + low_treble_2) +
-                voices(high_treble_3 + high_treble_4, low_treble_345)),
+                voices(high_treble_3 + high_treble_4 + high_treble_5,
+                       low_treble_345)),
             'dynamics': dynamics_1,
             'bass': (
-                bass_1 + bass_2 + bass_3 + bass_4)
+                bass_1 + bass_2 + bass_3 + bass_4 + bass_5)
         }
 
 
