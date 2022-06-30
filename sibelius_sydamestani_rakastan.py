@@ -126,6 +126,17 @@ class SydamestaniRakastan(Piece):
         bass_5 = rep(subset(bass_4, 1, 10), 1) + tied_chord('e g', [1, 1, 1])
 
         ###########
+        # part 6
+        ###########
+
+        treble_6 = rep(subset(treble_1, 1, 6), 1) + tied_chord('b e`', [2, 1])
+        bass_6 = (
+            rep(subset(bass_1, 1, 6), 1) +
+            voices(
+                tied_chord('e g', [2, 1]),
+                rests(2, prefix='\\omit ') + [chord('e,, g,, e,', 1)]))
+
+        ###########
         # combine
         ###########
 
@@ -134,10 +145,10 @@ class SydamestaniRakastan(Piece):
                 voices(rests(1, 1, 1, prefix='\\omit ') + high_treble_2,
                        treble_1 + low_treble_2) +
                 voices(high_treble_3 + high_treble_4 + high_treble_5,
-                       low_treble_345)),
+                       low_treble_345) + treble_6),
             'dynamics': dynamics_1,
             'bass': (
-                bass_1 + bass_2 + bass_3 + bass_4 + bass_5)
+                bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6)
         }
 
 
