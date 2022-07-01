@@ -1,7 +1,7 @@
 from piece import Piece
 from points import chord, rests, tied_note, notes, tied_chord, chords, replace
 from markup import (
-    slur, voices, clef, italic, diminuendo, thick_barbreak, pagebreak)
+    slur, voices, clef, italic, diminuendo, thinthick_barbreak, pagebreak)
 from util import rep, subset, select
 from staves import Treble, Bass, Dynamics
 
@@ -114,7 +114,11 @@ class SydamestaniRakastan(Piece):
             voices(
                 chords(['fs, ds', 'g, e'], 2),
                 notes('e,', 1)) +
-            chords(['cs g', 'ds a', 'e g'], [2, 2, 1]))
+            [chord('cs g', 2, phrasing='_(^(')] +
+            [chord('ds a', 2, phrasing='_)_(^)^(')] +
+            [chord('e g', 1, phrasing='_)^)')])
+        select(bass_4, 6).phrasing = '_(^('
+        select(bass_4, 7).phrasing = ')'
 
         ###########
         # part 5
@@ -124,7 +128,11 @@ class SydamestaniRakastan(Piece):
             notes('e`', '2.') + melody_2() + notes('e`', 1, phrasing='~') +
             notes('e`', 1))
 
-        bass_5 = rep(subset(bass_4, 1, 10), 1) + tied_chord('e g', [1, 1, 1])
+        bass_5 = (
+            rep(subset(bass_4, 1, 10), 1) +
+            [chord('e g', 1, phrasing='_)^)~')] +
+            [chord('e g', 1, phrasing='~')] +
+            [chord('e g', 1)])
 
         ###########
         # part 6
@@ -177,6 +185,15 @@ class SydamestaniRakastan(Piece):
                                     '\\musicglyph "scripts.ufermata" }') +
             rests(1, 1, 2) +
             rests(2, suffix=on) + rests(2, 4, 8) + rests(8, suffix=off))
+
+        ###########
+        # markup
+        ###########
+
+        select(high_treble_2, 3).markup = italic('cantabile')
+        select(treble_6, 1).prefix = '\\tempo "  Lento"'
+        select(treble_6, len(treble_6)).ornamentation = 'fermata'
+        select(treble_6, len(treble_6)).suffix += thinthick_barbreak
 
         ###########
         # combine
