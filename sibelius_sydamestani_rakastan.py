@@ -1,7 +1,6 @@
 from piece import Piece
 from points import chord, rests, tied_note, notes, tied_chord, chords, replace
-from markup import (
-    slur, voices, clef, italic, diminuendo, thinthick_barbreak, pagebreak)
+from markup import slur, voices, italic, thinthick_barbreak, pagebreak
 from util import rep, subset, select
 from staves import Treble, Bass, Dynamics
 
