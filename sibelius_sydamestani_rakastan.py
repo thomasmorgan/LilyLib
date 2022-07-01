@@ -51,7 +51,6 @@ class SydamestaniRakastan(Piece):
             self.transpose(opening_scale(), -1, 'octave'), -2)
         replace(bass_1, 'd', 'ds')
         replace(bass_1, 'c', 'cs')
-        dynamics_1 = rests(1, 1, 1)
 
         ###########
         # part 2
@@ -137,6 +136,24 @@ class SydamestaniRakastan(Piece):
                 rests(2, prefix='\\omit ') + [chord('e,, g,, e,', 1)]))
 
         ###########
+        # dynamics
+        ###########
+
+        dynamics = (
+            rests(1, markup='\\dynamic{p} \\italic{dolce}') + rests(1, 2) +
+            rests(2, dynamics='>') + rests(4) + rests('2', dynamics='!') +
+            rests(4, markup=italic('dolce')) + rep(rests(1), 7) +
+            rests(8, dynamics='>') + rests(8, dynamics='!') + rests('2.', 1) +
+            rests(2, dynamics='>') + rests(2, dynamics='!') + rests(1, 1) +
+            rests(4, dynamics='>') + rests(4, dynamics='!') + rests(8) +
+            rests(8, markdown=italic('  più ') + '\\dynamic{p}') + rests(4) +
+            rests(1) + rests('4.', dynamics='>') + rests(8, dynamics='!') +
+            rests(2) + rests(2, 4, 8) +
+            rests(8, markup=italic('dim. e allargando')) + rests(2, 8) +
+            rests('4.', dynamics='>') + rests(1) + rests(1, dynamics='!') +
+            rests(1, dynamics='pp') + rests(1, 1, 1))
+
+        ###########
         # combine
         ###########
 
@@ -146,7 +163,7 @@ class SydamestaniRakastan(Piece):
                        treble_1 + low_treble_2) +
                 voices(high_treble_3 + high_treble_4 + high_treble_5,
                        low_treble_345) + treble_6),
-            'dynamics': dynamics_1,
+            'dynamics': dynamics,
             'bass': (
                 bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6)
         }
