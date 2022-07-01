@@ -169,7 +169,11 @@ class SydamestaniRakastan(Piece):
             rests(1) + rests(1, suffix=on) + rests(2, 4, 8) +
             rests(8, suffix=off) + rests(1, 1, 1) + rests(1, suffix=on) +
             rests(2, 4, 8) + rests(8, suffix=off) + rests(1) +
-            rests(2, 2, 1, suffix=on) + rests(1, 1, 1, 1, 2) +
+            rests(2, 2, 1, suffix=on) + rests(1) +
+            rests(2, 4, 8, 16, 32, 64, 128) +
+            rests(128, suffix=off + '\\mark \\markup { '
+                                    '\\musicglyph "scripts.ufermata" }') +
+            rests(1, 1, 2) +
             rests(2, suffix=on) + rests(2, 4, 8) + rests(8, suffix=off))
 
         ###########
