@@ -26,7 +26,8 @@ class SydamestaniRakastan(Piece):
         self.staves = [
             Treble(_with='\\override Beam.breakable = ##t\n'),
             Dynamics(),
-            Bass()]
+            Bass(),
+            Dynamics("pedal")]
 
     # def subtext(self):
     #     return (
@@ -154,6 +155,24 @@ class SydamestaniRakastan(Piece):
             rests(1, dynamics='pp') + rests(1, 1, 1))
 
         ###########
+        # pedal
+        ###########
+
+        on = '\\sustainOn '
+        off = '\\sustainOff '
+
+        pedal = (
+            rests(1, 1, 2) + rests(2, suffix=on) + rests(2, 4, 8) +
+            rests(8, suffix=off) + rests(1, 1, 1) + rests(1, suffix=on) +
+            rests('4.') + rests(8, suffix=off) + rests(2) +
+            rests('4.', suffix=on) + rests(8, suffix=off) + rests(2) +
+            rests(1) + rests(1, suffix=on) + rests(2, 4, 8) +
+            rests(8, suffix=off) + rests(1, 1, 1) + rests(1, suffix=on) +
+            rests(2, 4, 8) + rests(8, suffix=off) + rests(1) +
+            rests(2, 2, 1, suffix=on) + rests(1, 1, 1, 1, 2) +
+            rests(2, suffix=on) + rests(2, 4, 8) + rests(8, suffix=off))
+
+        ###########
         # combine
         ###########
 
@@ -165,7 +184,8 @@ class SydamestaniRakastan(Piece):
                        low_treble_345) + treble_6),
             'dynamics': dynamics,
             'bass': (
-                bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6)
+                bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6),
+            'pedal': pedal
         }
 
 
