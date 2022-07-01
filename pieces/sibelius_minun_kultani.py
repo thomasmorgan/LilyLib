@@ -3,7 +3,7 @@ from points import chord, rests, tied_note, notes, tied_chord, chords
 from markup import (
     slur, voices, clef, italic, diminuendo, thick_barbreak, pagebreak)
 from util import rep, subset, select
-from staves import Treble, Bass, Dynamics
+from staves import Treble, Bass, Dynamics, Super
 
 
 class MinunKultani(Piece):
@@ -23,6 +23,7 @@ class MinunKultani(Piece):
         self.auto_add_bars = True
         self.key = 'fs minor'
         self.tempo_name = "Allegretto"
+        self.improvements = True
         self.staves = [
             Treble(),
             Dynamics(),
@@ -37,6 +38,12 @@ class MinunKultani(Piece):
                     '\\override Staff.Arpeggio.X-extent = '
                     '#ly:grob::stencil-width\n'
                     '\\revert Staff.Arpeggio.dash-definition\n'))]
+        if self.improvements:
+            self.staves[0] = Super(
+                name='treble',
+                _with=(
+                    '\\override Beam.breakable = ##t\n'
+                    '\\consists "Span_arpeggio_engraver"'))
 
     def subtext(self):
         return (
@@ -87,8 +94,11 @@ class MinunKultani(Piece):
         mini_motif = (
             slur(notes('fs e', ['4.', 8])) +
             notes('cs e', 4, articulation='-'))
-        treble_2 = (
-            clef('bass', rep(notes('fs', 4, articulation='-'), 4)) +
+        if self.improvements:
+            treble_2 = rep(notes('fs', 4, articulation='-'), 4)
+        else:
+            treble_2 = clef('bass', rep(notes('fs', 4, articulation='-'), 4))
+        treble_2 += (
             mini_motif + self.transpose(mini_motif, -1) +
             notes('d', 2, articulation='-') +
             tied_note('cs', [2, 1], articulation='-')
@@ -116,8 +126,13 @@ class MinunKultani(Piece):
             notes('d cs', 4, articulation='-') + notes('b,', 2) +
             tied_note('b,', [2, 1]))
 
-        high_treble_3 = (
-            clef('treble', rep(rests(1, prefix='%{ spacer %}'), 5)) +
+        if self.improvements:
+            high_treble_3 = rep(rests(1, prefix='%{ spacer %}'), 5)
+        else:
+            high_treble_3 = (
+                clef('treble', rep(rests(1, prefix='%{ spacer %}'), 5)))
+
+        high_treble_3 += (
             self.transpose(treble_2, 1, 'octave') +
             self.transpose(mini_motif_2, 1, 'octave') +
             rep(rests(1, prefix='%{ spacer %}'), 3))
@@ -161,7 +176,8 @@ class MinunKultani(Piece):
             note.dynamics = ''
             if note.articulation == '-':
                 note.articulation = ''
-        select(bass_3, 1).prefix += '\\voiceFour '
+        if not self.improvements:
+            select(bass_3, 1).prefix += '\\voiceFour '
         select(bass_3, 14).dynamics = '>'
         select(bass_3, 15).dynamics = '!'
         select(bass_3, 16).prefix += shift
@@ -216,15 +232,26 @@ class MinunKultani(Piece):
         # combine
         ###########
 
-        self.score = {
-            'treble': (
-                rep(rests(1, prefix='%{ spacer %}'), 4) + rests(1) +
-                treble_2 + high_treble_3),
-            'dynamics': dynamics_1 + dynamics_2 + dynamics_3,
-            'bass': (
-                voices(treble_1, bass_1) + bass_2 +
-                voices(treble_3, low_bass_3, bass_3))
-        }
+        if not self.improvements:
+            self.score = {
+                'treble': (
+                    rep(rests(1, prefix='%{ spacer %}'), 4) + rests(1) +
+                    treble_2 + high_treble_3),
+                'dynamics': dynamics_1 + dynamics_2 + dynamics_3,
+                'bass': (
+                    voices(treble_1, bass_1) + bass_2 +
+                    voices(treble_3, low_bass_3, bass_3))
+            }
+        else:
+            self.score = {
+                'treble': (
+                    rep(rests(1, prefix='%{ spacer %}'), 4) + rests(1) +
+                    treble_2 + voices(high_treble_3, treble_3)),
+                'dynamics': dynamics_1 + dynamics_2 + dynamics_3,
+                'bass': (
+                    voices(treble_1, bass_1) + bass_2 +
+                    voices(bass_3, low_bass_3))
+            }
 
 
 if __name__ == "__main__":
