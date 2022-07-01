@@ -42,7 +42,7 @@ class MinunKultani(Piece):
         return (
             "\\layout { \\context { \\Score \\override "
             "SpacingSpanner.base-shortest-duration = "
-            "#(ly:make-moment 1/24)}}\n")
+            "#(ly:make-moment 1/28)}}\n")
 
     def write_score(self):
 
@@ -156,7 +156,7 @@ class MinunKultani(Piece):
         bass_3 = (
             mini_motif_2 +
             self.transpose(
-                subset(high_treble_3, 6, len(high_treble_3)), -1, 'octave'))
+                subset(high_treble_3, 6, len(high_treble_3)-6), -1, 'octave'))
         for note in subset(bass_3, 15, len(bass_3)):
             note.dynamics = ''
             if note.articulation == '-':
