@@ -29,11 +29,12 @@ class SydamestaniRakastan(Piece):
             Bass(),
             Dynamics("pedal")]
 
-    # def subtext(self):
-    #     return (
-    #         "\\layout { \\context { \\Score \\override "
-    #         "SpacingSpanner.base-shortest-duration = "
-    #         "#(ly:make-moment 1/24)}}\n")
+    def subtext(self):
+        return (
+            "\\layout { \\context { \\Score \\override "
+            "SpacingSpanner.base-shortest-duration = "
+            "#(ly:make-moment 1/36)}}\n"
+            '\\paper { #(set-paper-size "letter")}\n')
 
     def write_score(self):
 
@@ -167,7 +168,8 @@ class SydamestaniRakastan(Piece):
             rests('4.') + rests(8, suffix=off) + rests(2) +
             rests('4.', suffix=on) + rests(8, suffix=off) + rests(2) +
             rests(1) + rests(1, suffix=on) + rests(2, 4, 8) +
-            rests(8, suffix=off) + rests(1, 1, 1) + rests(1, suffix=on) +
+            rests(8, suffix=off + pagebreak) + rests(1, 1, 1) +
+            rests(1, suffix=on) +
             rests(2, 4, 8) + rests(8, suffix=off) + rests(1) +
             rests(2, 2, 1, suffix=on) + rests(1) +
             rests(2, 4, 8, 16, 32, 64, 128) +
