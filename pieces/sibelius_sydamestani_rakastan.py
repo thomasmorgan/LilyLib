@@ -23,9 +23,9 @@ class SydamestaniRakastan(Piece):
         self.key = 'e minor'
         self.tempo_name = "Andante"
         self.staves = [
-            Treble(_with='\\override Beam.breakable = ##t\n'),
+            Treble(_with='\\override Beam.breakable = ##t'),
             Dynamics(),
-            Bass(),
+            Bass(_with='\\consists "Mark_engraver"'),
             Dynamics("pedal")]
 
     def subtext(self):
@@ -133,6 +133,13 @@ class SydamestaniRakastan(Piece):
             [chord('e g', 1, phrasing='~')] +
             [chord('e g', 1)])
 
+        select(bass_5, len(bass_5)).prefix = select(bass_5, 1).prefix + (
+            '\\override Staff.RehearsalMark.direction = #DOWN\n'
+            "\\override Staff.RehearsalMark.rotation = #'(180 0 0)")
+        select(bass_5, len(bass_5)).suffix += (
+            '\\mark \\markup { \\smaller \\smaller '
+            '\\musicglyph "scripts.ufermata" }')
+
         ###########
         # part 6
         ###########
@@ -180,8 +187,7 @@ class SydamestaniRakastan(Piece):
             rests(2, 4, 8) + rests(8, suffix=off) + rests(1) +
             rests(2, 2, 1, suffix=on) + rests(1) +
             rests(2, 4, 8, 16, 32, 64, 128) +
-            rests(128, suffix=off + '\\mark \\markup { '
-                                    '\\musicglyph "scripts.ufermata" }') +
+            rests(128, suffix='\\tweak X-offset #-0.4 ' + off) +
             rests(1, 1, 2) +
             rests(2, suffix=on) + rests(2, 4, 8) + rests(8, suffix=off))
 
