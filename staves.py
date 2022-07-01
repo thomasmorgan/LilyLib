@@ -53,7 +53,7 @@ class Super(Stave):
 
 class Dynamics(Stave):
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, extra_text='', _with=''):
         super().__init__("dynamics", name)
 
     @property
