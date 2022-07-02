@@ -4,6 +4,7 @@ from points import notes, rests, chords, merge, chord, add
 from util import rep, flatten, subset, select
 from markup import slur, voices
 from copy import deepcopy
+from tones import tonify
 
 
 class IltaTulee(Piece):
@@ -52,9 +53,13 @@ class IltaTulee(Piece):
         ###########
 
         def lh_motif(top, bottom, held_note):
-            high_chords = merge(notes(top, 4), notes(bottom, 4))
+            length = max([len(tonify(top)), len(tonify(bottom)),
+                          len(tonify(held_note))])
+            high_chords = merge(notes(top, [4]*length),
+                                notes(bottom, [4]*length))
             low_notes = flatten(
-                [[n] + notes(held_note, 8) for n in notes(bottom, 8)])
+                [[n] + notes(held_note, 8)
+                 for n in notes(bottom, [8]*length)])
             return(voices(high_chords, low_notes))
 
         high_treble_2 = deepcopy(high_treble_1)
@@ -116,13 +121,28 @@ class IltaTulee(Piece):
             lh_motif_2('gs', 'b,', 'e,'))
 
         ###########
+        # part 5
+        ###########
+
+        high_treble_5 = deepcopy(high_treble_1)
+        low_treble_5 = (
+            rep(tremolo(), 3) + subset(tremolo(), 1, 11) +
+            self.scale('e`', 5, 16))
+        select(low_treble_5, 25).tones = []
+        treble_5 = voices(high_treble_5, low_treble_5)
+
+        bass_5 = (
+            lh_motif('fs a gs es fs a', 'ds', 'b,') +
+            deepcopy(subset(bass_3, 19, len(bass_3))))
+
+        ###########
         # combine
         ###########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3 + treble_4,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
             'dynamics': rests(1, 1, 1, 1),
-            'bass': bass_1 + bass_2 + bass_3 + bass_4,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
             'pedal': rests(1, 1, 1, 1)
         }
 
