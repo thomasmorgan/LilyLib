@@ -93,7 +93,7 @@ class IltaTulee(Piece):
         ###########
 
         def lh_motif_2(top, bottom, held_note):
-            high_chords = add(notes(bottom, 8), top)
+            high_chords = add(notes(bottom, [8, 8, 8, 8]), top)
             melody = []
             for i in range(4):
                 melody += notes(held_note, 8) + [high_chords[i]]
@@ -111,7 +111,9 @@ class IltaTulee(Piece):
         select(treble_4, 13).prefix = (
             select(treble_4, 13).prefix + '\\mergeDifferentlyHeadedOn ')
 
-        bass_4 = rep(lh_motif_2('gs', 'b, bs, bs, cs', 'e,'), 4)
+        bass_4 = (
+            rep(lh_motif_2('gs', 'b, bs, bs, cs', 'e,'), 3) +
+            lh_motif_2('gs', 'b,', 'e,'))
 
         ###########
         # combine
