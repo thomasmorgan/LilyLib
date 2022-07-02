@@ -1,6 +1,6 @@
 from piece import Piece
 from staves import Treble, Dynamics, Bass
-from points import notes, rests, chords, merge, chord
+from points import notes, rests, chords, merge, chord, add
 from util import rep, flatten, subset, select
 from markup import slur, voices
 from copy import deepcopy
@@ -85,17 +85,42 @@ class IltaTulee(Piece):
             voices(chords(['ds fs'], [2, 2]),
                    rep(slur(notes('ds b,, fs, ds', 8)), 2)))
         select(bass_3, 38).prefix = (
-            select(bass_3, 38).prefix + '\\mergeDifferentlyHeadedOn')
+            select(bass_3, 38).prefix + '\\mergeDifferentlyHeadedOn ')
         select(bass_3, 43).phrasing += '~'
+
+        ###########
+        # part 4
+        ###########
+
+        def lh_motif_2(top, bottom, held_note):
+            high_chords = add(notes(bottom, 8), top)
+            melody = []
+            for i in range(4):
+                melody += notes(held_note, 8) + [high_chords[i]]
+            return melody
+
+        treble_4 = (
+            voices(
+                rep(notes('gs`` e`` ds`` cs``', 4, articulation='>'), 3),
+                rep(notes('gs`` gs` b` gs` e`` e` gs` e` '
+                          'ds`` ds` gs` ds` cs`` cs` gs` cs`', 16), 3)) +
+            voices(
+                notes('b` gs`', 2, articulation='>'),
+                notes('b` b', 16) + rep(notes('e` b', 16), 3) +
+                notes('gs` b', 16) + rep(notes('e` b', 16), 3)))
+        select(treble_4, 13).prefix = (
+            select(treble_4, 13).prefix + '\\mergeDifferentlyHeadedOn ')
+
+        bass_4 = rep(lh_motif_2('gs', 'b, bs, bs, cs', 'e,'), 4)
 
         ###########
         # combine
         ###########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4,
             'dynamics': rests(1, 1, 1, 1),
-            'bass': bass_1 + bass_2 + bass_3,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4,
             'pedal': rests(1, 1, 1, 1)
         }
 
