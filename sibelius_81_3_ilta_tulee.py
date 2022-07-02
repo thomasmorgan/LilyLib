@@ -1,8 +1,9 @@
 from piece import Piece
 from staves import Treble, Dynamics, Bass
-from points import notes, rests, chords, merge, chord, add
+from points import (
+    notes, rests, chords, merge, chord, add, replace, tied_note, tied_chord)
 from util import rep, flatten, subset, select
-from markup import slur, voices
+from markup import slur, voices, italic, clef
 from copy import deepcopy
 from tones import tonify
 
@@ -170,15 +171,50 @@ class IltaTulee(Piece):
         bass_6 = rep(bass_6, 2)
 
         ###########
+        # part 7
+        ###########
+
+        treble_7 = (
+            rep(voices(notes('cs``', 1, articulation='>'), tremolo()), 5) +
+            rep(voices(notes('cs``', 1, articulation='>',
+                             markup=italic('m. s.')),
+                       rep(notes('ds` cs`', 16), 8)), 2) +
+            [chord('a fs`', 1, ornamentation='fermata')])
+
+        def rumblet():
+            return notes('es, a,, es,', 8)
+
+        def rumble():
+            return subset(rumblet(), 1, 2) + tied_note('es,', [8, 8])
+
+        bass_7 = (
+            voices(
+                notes('e cs', 1),
+                slur(replace(notes('cs', 8) + rumble() + rumblet(),
+                             'es,', 'e,')) +
+                notes('cs', 8) + rep(rumble(), 5) + rumblet() +
+                tied_chord('a,, es,', [1, 1, '2.']) + rests(4)) +
+            clef('treble', notes('cs``', 1, suffix='_\\fermata',
+                                 articulation='>')))
+        select(bass_7, 11).phrasing += '('
+        select(bass_7, 18).phrasing += ')'
+        select(bass_7, 19).prefix = '\\stemUp '
+        select(bass_7, 19).phrasing += '('
+        select(bass_7, 26).phrasing += ')'
+        select(bass_7, 27).phrasing += '('
+        select(bass_7, 34).phrasing += ')~'
+
+        ###########
         # combine
         ###########
 
         self.score = {
             'treble': (
                 treble_1 + treble_2 + treble_3 + treble_4 +
-                treble_5 + treble_6),
+                treble_5 + treble_6 + treble_7),
             'dynamics': rests(1, 1, 1, 1),
-            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6,
+            'bass': (
+                bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 + bass_7),
             'pedal': rests(1, 1, 1, 1)
         }
 
