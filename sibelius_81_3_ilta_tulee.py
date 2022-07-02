@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Treble, Dynamics, Bass
-from points import notes, rests, chords, merge
-from util import rep, flatten
+from points import notes, rests, chords, merge, chord
+from util import rep, flatten, subset, select
 from markup import slur, voices
 from copy import deepcopy
 
@@ -51,29 +51,51 @@ class IltaTulee(Piece):
         # part 2
         ###########
 
+        def lh_motif(top, bottom, held_note):
+            high_chords = merge(notes(top, 4), notes(bottom, 4))
+            low_notes = flatten(
+                [[n] + notes(held_note, 8) for n in notes(bottom, 8)])
+            return(voices(high_chords, low_notes))
+
         high_treble_2 = deepcopy(high_treble_1)
         low_treble_2 = rep(tremolo(), 4)
         treble_2 = voices(high_treble_2, low_treble_2)
-        top_scale = 'cs` a gs fs'
-        bottom_scale = 'e es es fs'
-        high_bass_chords = merge(notes(top_scale, 4), notes(bottom_scale, 4))
-        high_bass_2 = (
-            rep(high_bass_chords, 3) +
-            notes('e cs', 2))
-        low_bass_notes = flatten(
-            [[n] + notes('a,', 8) for n in notes(bottom_scale, 8)])
-        low_bass_2 = (
-            rep(low_bass_notes, 3) + slur(notes('e e, a,, e,', 8)) +
-            slur(notes('cs es, a,, es,', 8)))
-        bass_2 = voices(high_bass_2, low_bass_2)
+
+        bass_2 = (
+            rep(lh_motif('cs` a gs fs', 'e es es fs', 'a,'), 3) +
+            voices(notes('e cs', 2),
+                   slur(notes('e e, a,, e,', 8)) +
+                   slur(notes('cs es, a,, es,', 8))))
+
+        ###########
+        # part 3
+        ###########
+
+        treble_3 = voices(
+            deepcopy(high_treble_1),
+            subset(deepcopy(low_treble_2), 1, 53) +
+            self.scale('cs`', 'fs``', 16))
+        select(treble_3, 29).tones = []
+
+        bass_3 = (
+            lh_motif('fs a gs es fs a', 'cs fs es cs cs cs', 'a,') +
+            voices([chord('ds cs`', 2)],
+                   rests('8.') + notes('b,, fs, b, ds fs', 16)) +
+            lh_motif('cs` a gs es', 'a ds ds ds', 'b,') +
+            voices(chords(['ds fs'], [2, 2]),
+                   rep(slur(notes('ds b,, fs, ds', 8)), 2)))
+        select(bass_3, 38).prefix = (
+            select(bass_3, 38).prefix + '\\mergeDifferentlyHeadedOn')
+        select(bass_3, 43).phrasing += '~'
+
         ###########
         # combine
         ###########
 
         self.score = {
-            'treble': treble_1 + treble_2,
+            'treble': treble_1 + treble_2 + treble_3,
             'dynamics': rests(1, 1, 1, 1),
-            'bass': bass_1 + bass_2,
+            'bass': bass_1 + bass_2 + bass_3,
             'pedal': rests(1, 1, 1, 1)
         }
 
