@@ -136,13 +136,49 @@ class IltaTulee(Piece):
             deepcopy(subset(bass_3, 19, len(bass_3))))
 
         ###########
+        # part 6
+        ###########
+
+        def mini():
+            return notes('cs` ds` cs`', 16)
+
+        def minis():
+            return (notes('cs``', 16) + mini() + notes('a`', 16) + mini() +
+                    notes('gs`', 16) + mini() + notes('fs`', 16) + mini())
+
+        treble_6 = voices(
+            notes('cs``', [1, 1, 1, 1], articulation='>'),
+            minis() + tremolo() + minis() + tremolo(),
+            (rep(notes('cs``', 4, prefix='\\tweak X-offset #-0.25 '
+                                         '\\tweak Stem.X-offset #1 ') +
+             notes('a` gs` fs`', 4, articulation='>') +
+             rests(1, prefix='%{ spacer %}'), 2)))
+        select(treble_6, 1).prefix = (
+            select(treble_6, 1).prefix + '\\mergeDifferentlyHeadedOn ')
+
+        bass_6 = (
+            lh_motif('e es es fs', 'cs', 'a,') +
+            lh_motif('cs` a gs fs', 'e es es fs', 'a,'))
+        select(bass_6, 1).phrasing = '('
+        select(bass_6, 2).phrasing = ')'
+        select(bass_6, 3).phrasing = '('
+        select(bass_6, 4).phrasing = ')'
+        select(bass_6, 13).articulation = '>'
+        select(bass_6, 14).articulation = '>'
+        select(bass_6, 15).articulation = '>'
+        select(bass_6, 16).articulation = '>'
+        bass_6 = rep(bass_6, 2)
+
+        ###########
         # combine
         ###########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
+            'treble': (
+                treble_1 + treble_2 + treble_3 + treble_4 +
+                treble_5 + treble_6),
             'dynamics': rests(1, 1, 1, 1),
-            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6,
             'pedal': rests(1, 1, 1, 1)
         }
 
