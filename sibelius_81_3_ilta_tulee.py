@@ -1,8 +1,9 @@
 from piece import Piece
 from staves import Treble, Dynamics, Bass
-from points import notes, rests
-from util import rep
+from points import notes, rests, chords, merge
+from util import rep, flatten
 from markup import slur, voices
+from copy import deepcopy
 
 
 class IltaTulee(Piece):
@@ -29,11 +30,7 @@ class IltaTulee(Piece):
             Dynamics("pedal")]
 
     def subtext(self):
-        return (
-            "\\layout { \\context { \\Score \\override "
-            "SpacingSpanner.base-shortest-duration = "
-            "#(ly:make-moment 1/36)}}\n"
-            '\\paper { #(set-paper-size "letter")}\n')
+        return '\\paper { #(set-paper-size "letter")}\n'
 
     def write_score(self):
 
@@ -51,13 +48,32 @@ class IltaTulee(Piece):
         bass_1 = rests(1, 1, 1, 1, prefix='%{ spacer %}')
 
         ###########
+        # part 2
+        ###########
+
+        high_treble_2 = deepcopy(high_treble_1)
+        low_treble_2 = rep(tremolo(), 4)
+        treble_2 = voices(high_treble_2, low_treble_2)
+        top_scale = 'cs` a gs fs'
+        bottom_scale = 'e es es fs'
+        high_bass_chords = merge(notes(top_scale, 4), notes(bottom_scale, 4))
+        high_bass_2 = (
+            rep(high_bass_chords, 3) +
+            notes('e cs', 2))
+        low_bass_notes = flatten(
+            [[n] + notes('a,', 8) for n in notes(bottom_scale, 8)])
+        low_bass_2 = (
+            rep(low_bass_notes, 3) + slur(notes('e e, a,, e,', 8)) +
+            slur(notes('cs es, a,, es,', 8)))
+        bass_2 = voices(high_bass_2, low_bass_2)
+        ###########
         # combine
         ###########
 
         self.score = {
-            'treble': treble_1,
+            'treble': treble_1 + treble_2,
             'dynamics': rests(1, 1, 1, 1),
-            'bass': bass_1,
+            'bass': bass_1 + bass_2,
             'pedal': rests(1, 1, 1, 1)
         }
 
