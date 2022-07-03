@@ -230,6 +230,44 @@ class IltaTulee(Piece):
             diminuendo(rests(4, 4, 4, 4)) + rests(1, dynamics='ppp'))
 
         ###########
+        # pedal
+        ###########
+
+        on = '\\sustainOn '
+        off = '\\sustainOff '
+
+        pedal = (
+            rests(1, suffix=on) +  # bar 1
+            rests(1, 1, 1) +  # bars 2-4
+            rep(rests(4, 4, suffix=on) + rests(16) + rests(16, suffix=off) +
+                rests(8, 4), 3) +  # bars 5 - 7
+            rep(rests('4.', suffix=on) + rests(8, suffix=off), 2) +  # bar 8
+            rests(2, suffix=on) + rests(16) + rests(16, suffix=off) +
+            rests(8, 4) +  # bar 9
+            rests(4, suffix=on) + rests(16) + rests(16, suffix=off) +
+            rests(8) + rests(2, suffix=on) +  # bar 10
+            rests(16) + rests(16, suffix=off) + rests(8) +
+            rests(2, suffix=on) + rests(16) + rests(16, suffix=off) +
+            rests(8) +  # bar 11
+            rests(1, suffix=on) +  # bar 12
+            rep(rests(4, 4, suffix=on) + rests(4) +
+                rests(4, suffix=off), 3) +  # bars 13 - 15
+            rests('2..', suffix=on) + rests(8, suffix=off) +  # bar 16
+            rests(1, suffix=on) +  # bar 17
+            rests('4.', 8, suffix=on) + rests(2) +  # bar 18
+            rests(8) + rests(8, suffix=off) + rests(4, suffix=on) +
+            rests('8.') + rests(16, suffix=off) + rests(4) +  # bar 19
+            rests('2..', suffix=on) + rests(8, suffix=off) +  # bar 20
+            rep(rests(4, 2, suffix=on) + rests(4, suffix=off), 2) +  # b 21-22
+            rests(4, '4.', suffix=on) + rests('4.', suffix=off) +  # bar 23
+            rests(4, 2, suffix=on) + rests(4, suffix=off) +  # bar 24
+            rests(1, 1, suffix=on) +  # bars 25-26
+            rests(1, 1, 1, 1) +  # bars 27-30
+            rests('2..') + rests(8, suffix=off) +  # bar 31
+            rests(1, suffix=on)  # bar 32
+        )
+
+        ###########
         # combine
         ###########
 
@@ -240,7 +278,7 @@ class IltaTulee(Piece):
             'dynamics': dynamics,
             'bass': (
                 bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 + bass_7),
-            'pedal': rests(1, 1, 1, 1)
+            'pedal': pedal
         }
 
 
