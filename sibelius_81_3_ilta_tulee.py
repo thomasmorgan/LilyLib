@@ -3,7 +3,7 @@ from staves import Treble, Dynamics, Bass
 from points import (
     notes, rests, chords, merge, chord, add, replace, tied_note, tied_chord)
 from util import rep, flatten, subset, select
-from markup import slur, voices, italic, clef
+from markup import slur, voices, italic, clef, crescendo, diminuendo
 from copy import deepcopy
 from tones import tonify
 
@@ -205,6 +205,31 @@ class IltaTulee(Piece):
         select(bass_7, 34).phrasing += ')~'
 
         ###########
+        # dynamics
+        ###########
+
+        dynamics = (
+            rests(1, dynamics='pp') + rests(1) +  # part 1
+            rests(1, markup=italic('segue legato')) + rests(1) +
+            rests(1, markup='\\dynamic{mp} \\italic{ ben marcato}') +  # part 2
+            rests(1, 1, 1) +
+            rests(1) + crescendo(rests('4..', 16)) + rests(2) +  # part 3
+            rests('4.') + diminuendo(rests(8, 2, 4)) +
+            rests(16) + rests(16, dynamics='<') + rests(8, 2) +
+            rests(4, dynamics='!', markup=italic('poco ') + '\\dynamic{f}') +
+            diminuendo(rests(2, 16, '8.')) + diminuendo(rests('2.', 4)) +
+            rests('8.') + diminuendo(rests(16, 4, 4, 4)) + rests(1) +
+            rests(1, dynamics='mf') + crescendo(rests('4..', 16)) + rests(2) +
+            rests('4.') +
+            rests(8, prefix='\\once \\override Hairpin.to-barline = ##f ',
+                  dynamics='>') + rests(2) + rests(1, dynamics='!') +
+            rests(1, dynamics='mf') + rests(1) +
+            rests(1, markup=italic('poco a poco dim.')) + rests(1, 1, 1) +
+            rests(2, 8) + rests('4.', markup=italic('dim. molto')) +
+            rests(1, 1) + rests(1, dynamics='pp') +
+            diminuendo(rests(4, 4, 4, 4)) + rests(1, dynamics='ppp'))
+
+        ###########
         # combine
         ###########
 
@@ -212,7 +237,7 @@ class IltaTulee(Piece):
             'treble': (
                 treble_1 + treble_2 + treble_3 + treble_4 +
                 treble_5 + treble_6 + treble_7),
-            'dynamics': rests(1, 1, 1, 1),
+            'dynamics': dynamics,
             'bass': (
                 bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 + bass_7),
             'pedal': rests(1, 1, 1, 1)
