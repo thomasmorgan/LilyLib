@@ -3,7 +3,8 @@ from staves import Treble, Dynamics, Bass
 from points import (
     notes, rests, chords, merge, chord, add, replace, tied_note, tied_chord)
 from util import rep, flatten, subset, select
-from markup import slur, voices, italic, clef, crescendo, diminuendo
+from markup import (
+    slur, voices, italic, clef, crescendo, diminuendo, thinthick_barbreak)
 from copy import deepcopy
 from tones import tonify
 
@@ -203,6 +204,7 @@ class IltaTulee(Piece):
         select(bass_7, 26).phrasing += ')'
         select(bass_7, 27).phrasing += '('
         select(bass_7, 34).phrasing += ')~'
+        select(bass_7, len(bass_7)).suffix += thinthick_barbreak
 
         ###########
         # dynamics
