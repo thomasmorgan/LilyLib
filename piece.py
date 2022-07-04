@@ -215,6 +215,8 @@ class Piece:
             return 1.0
         elif self.tempo == '6/4':
             return 1.5
+        elif self.tempo == '2/4':
+            return 0.5
         else:
             raise ValueError('Cannot auto add barlines with a tempo of '
                              + self.tempo)
@@ -224,6 +226,11 @@ class Piece:
             return 1.0
         elif " 6/4 " in prefix:
             return 1.5
+        elif ' 2/4 ' in prefix:
+            return 0.5
+        else:
+            raise ValueError(
+                'Cannot auto add barlines with a tempo change of: ' + prefix)
 
     def get_point_decimal_duration(self, point):
         if isinstance(point.dur, int):
