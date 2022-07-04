@@ -27,6 +27,7 @@ class Piece:
         self.opus = ""
         self.staves = [Treble(), Bass()]
         self.tempo = "4/4"
+        self.beaming = ""
         self.tempo_name = ""
         self.key = "C Major"
         self.score = {}
@@ -61,6 +62,8 @@ class Piece:
             printed_score += stave.start
             printed_score += initial_key
             printed_score += "\\time {}\n".format(self.tempo)
+            if self.beaming:
+                printed_score += self.beaming + '\n'
             if self.tempo_name:
                 printed_score += '\\tempo "{}"\n'.format(self.tempo_name)
             printed_score += self.print_stave(stave)
