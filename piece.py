@@ -111,7 +111,8 @@ class Piece:
 
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
-            return " ".join([str(item) for item in flatten([self.score[stave.name]])])
+            return " ".join(
+                [str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
         if isinstance(stave, Point):
@@ -125,7 +126,8 @@ class Piece:
             stave = re.sub('\n ', '\n', stave)
             return(stave)
         else:
-            raise TypeError("stave with value {} cannot be printed".format(stave))
+            raise TypeError(
+                "stave with value {} cannot be printed".format(stave))
 
     def add_barlines(self, stave):
         num_bars = 0
@@ -258,7 +260,8 @@ class Piece:
         return chromatic(start, stop_or_length, self.key, dur, step)
 
     def scale_subset(self, positions, start, stop_or_length, dur=None, step=1):
-        return scale_subset(positions, start, stop_or_length, self.key, dur, step)
+        return scale_subset(
+            positions, start, stop_or_length, self.key, dur, step)
 
     def transpose(self, item, shift, mode="scale", clean=False):
         return transpose(item, shift, self.key, mode, clean)
@@ -279,7 +282,9 @@ class Piece:
                 new_root2 = equivalent_letters[new_root]
                 return key_dictionary[mode][new_root2]
             except KeyError:
-                raise KeyError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
+                raise KeyError(
+                    "Error: No {} key exists with root {} or {}"
+                    .format(mode, new_root, new_root2))
 
     def relative_major_key(self, relationship):
         return self.relative_key("major", relationship)
