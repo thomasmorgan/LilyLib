@@ -4,7 +4,9 @@ from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
 from tones import equivalent_letters
-from points import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose, harmonize
+from points import (
+    Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic,
+    scale_subset, transpose, harmonize)
 from markup import barbreak
 
 
@@ -37,7 +39,8 @@ class Piece:
         print(self)
 
     def details():
-        raise NotImplementedError("You must overwrite details to create a piece")
+        raise NotImplementedError(
+            "You must overwrite details to create a piece")
 
     def set_key(self, key):
         self.key = keyify(key)
@@ -47,7 +50,8 @@ class Piece:
         return str(self.key)
 
     def write_score(self):
-        raise NotImplementedError("You must overwrite write_score to create a piece")
+        raise NotImplementedError(
+            "You must overwrite write_score to create a piece")
 
     def __str__(self):
         printed_score = self.header() + self.subtext() + self.start_score()
@@ -91,7 +95,8 @@ class Piece:
 
     def start_score(self):
         if self.piano_staff:
-            return('\\score { << \n\\new PianoStaff \\with { instrumentName = "Piano" } <<\n')
+            return('\\score { << \n\\new PianoStaff '
+                   '\\with { instrumentName = "Piano" } <<\n')
         else:
             return('\\score { <<\n')
 
