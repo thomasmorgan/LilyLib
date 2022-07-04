@@ -25,7 +25,7 @@ class Stave:
         start += '{'
         if self.extra_text:
             start += '\n{}\n'.format(self.extra_text)
-        start += '\\clef {}\n'.format(self.clef)
+        start += '\n\\clef {}\n'.format(self.clef)
         return start
 
     @property
