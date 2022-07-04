@@ -24,8 +24,14 @@ class TLDR(Piece):
         self.key = 'E Major'
 
     def write_score(self):
-        self.score["treble"] = self.scale('e`', 8, 8) + self.dominant7('d``', -4, 4) + chord(self.arpeggio('e`', 4), 1)
-        self.score["bass"] = self.arpeggio('e`', -4, 4) + chord(self.dominant7('e', 5), 1) + chord(self.arpeggio('e,', 4), 1)
+        self.score["treble"] = (
+            self.scale('e`', 8, 8) +
+            self.dominant7('d``', -4, 4) +
+            chord(self.arpeggio('e`', 4), 1))
+        self.score["bass"] = (
+            self.arpeggio('e`', -4, 4) +
+            chord(self.dominant7('e', 5), 1) +
+            chord(self.arpeggio('e,', 4), 1))
 ```
 
 Executing this in the terminal prints out the following lilypond:
