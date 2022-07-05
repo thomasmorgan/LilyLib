@@ -141,13 +141,27 @@ class TuopaTytto(Piece):
             rests(2, 2, prefix='%{ spacer %}'))
 
         #########
+        # part 5
+        #########
+
+        melody = tonify('af g f g af g f g af g af c`')
+
+        treble_5 = blend(melody, 'd` c` d`')
+
+        bass_5 = notes(melody, 8)
+        for i in [1, 5, 9, 11]:
+            select(bass_5, i).phrasing += '('
+        for i in [3, 7, 10, 12]:
+            select(bass_5, i).phrasing += ')'
+
+        #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3 + treble_4,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3 + bass_4,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
             'pedal': []
         }
 
