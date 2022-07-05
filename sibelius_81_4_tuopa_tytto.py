@@ -49,13 +49,31 @@ class TuopaTytto(Piece):
             '\\change Staff = "treble" \\clef "treble" ')
 
         #########
+        # part 2
+        #########
+
+        treble_2 = (
+            rep(notes('c`` e` c` e`', 32), 12) +
+            rep(notes('c`` fs` c` fs`', 32), 8))
+
+        bass_2 = (
+            rep(slur(notes('bf a g', 8)) + notes('a', 8), 2) +
+            slur(notes('bf a', 8)) + slur(notes('bf d`', 8)) +
+            notes('a', 4, articulation='-') +
+            tied_chord('c, a, fs a', [4, 2], suffix='^>'))
+        select(bass_2, 1).prefix += (
+            '\\change Staff = "bass"\n'
+            '\\set Staff.baseMoment = #(ly:make-moment 1/4)\n'
+            '\\set Staff.beatStructure = 1, 1\n')
+
+        #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1,
+            'treble': treble_1 + treble_2,
             'dynamics': [],
-            'bass': bass_1,
+            'bass': bass_1 + bass_2,
             'pedal': []
         }
 
