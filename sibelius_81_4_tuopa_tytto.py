@@ -167,15 +167,49 @@ class TuopaTytto(Piece):
         select(treble_6, 58).prefix += '\\change Staff = "bass"\n'
 
         #########
+        # part 7
+        #########
+
+        melody = tonify('bf a d` c` bf a')
+
+        treble_7 = (
+            blend(melody, 'fs` c` fs`') + [chord('c` g`', 8)] +
+            rests(8, prefix=' %{ space %} '))
+        bass_7 = (
+            notes(melody, 8, articulation='.') +
+            notes('g', 8, articulation='>') +
+            slur(notes('c, g, c e g c` e` g`', 64)))
+        for i in [1, 3, 5]:
+            select(bass_7, i).phrasing += '('
+            select(bass_7, i+1).phrasing += ')'
+        select(bass_7, 8).prefix += '\\stemDown '
+        select(bass_7, 8).phrasing += '['
+        select(bass_7, 11).phrasing += ']'
+        select(bass_7, 12).phrasing += '['
+        select(bass_7, 12).prefix += '\\stemUp '
+        select(bass_7, 13).prefix += '\\change Staff = "treble" '
+        select(bass_7, 15).phrasing += ']'
+        select(bass_7, 15).suffix += ' \\change Staff = "bass" \\stemNeutral '
+
+        treble_7 = rep(treble_7, 2)
+        bass_7 = rep(bass_7, 2)
+
+        for i in [16, 17, 18, 19, 20]:
+            select(bass_7, i).articulation = ''
+        select(bass_7, 22).add('c')
+
+        #########
         # combine
         #########
 
         self.score = {
             'treble': (
                 treble_1 + treble_2 + treble_3 + treble_4 + treble_5 +
-                treble_6),
+                treble_6 + treble_7),
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6,
+            'bass': (
+                bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 +
+                bass_7),
             'pedal': []
         }
 
