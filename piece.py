@@ -176,6 +176,11 @@ class Piece:
             progress = self.get_point_decimal_duration(point)
             bar_progress += progress*mult
 
+            if (
+              (bar_length - bar_progress) > 0 and
+              (bar_length - bar_progress) < 0.00000000001):
+                bar_progress = bar_length
+
             if bar_progress > bar_length:
                 raise ValueError(
                     "Duration of notes crosses a bar line: " + str(point) +
