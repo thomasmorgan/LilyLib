@@ -134,7 +134,7 @@ class Key:
         return [t for t in self.all_tones if letter(t) in custom_letters]
 
     def bias(self):
-        num_sharps = len([let for let in self.letters if "s" in l])
+        num_sharps = len([let for let in self.letters if "s" in let])
         num_flats = len([let for let in self.letters
                          if "f" in let and let not in ['f', 'fs', 'fss']])
 
