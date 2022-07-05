@@ -4,6 +4,7 @@ from points import chord, tied_chord, notes, rests, chords
 from markup import slur, voices, triplets
 from util import rep, select, flatten, subset
 from tones import tonify
+from copy import deepcopy
 
 
 class TuopaTytto(Piece):
@@ -155,13 +156,26 @@ class TuopaTytto(Piece):
             select(bass_5, i).phrasing += ')'
 
         #########
+        # part 6
+        #########
+
+        treble_6 = deepcopy(treble_4)
+        bass_6 = deepcopy(bass_4)
+        select(treble_6, 18).prefix = '%{ spacer %} '
+        select(treble_6, 54).prefix = ''
+        select(treble_6, 22).prefix += '\\change Staff = "bass"\n'
+        select(treble_6, 58).prefix += '\\change Staff = "bass"\n'
+
+        #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
+            'treble': (
+                treble_1 + treble_2 + treble_3 + treble_4 + treble_5 +
+                treble_6),
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6,
             'pedal': []
         }
 
