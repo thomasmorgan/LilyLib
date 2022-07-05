@@ -78,6 +78,21 @@ class TuopaTytto(Piece):
             melody = self.transpose(notes(melody, 32), 1, 'octave')
             return flatten([[note] + notes(backing, 32) for note in melody])
 
+        treble_3 = (
+            blend(subset(melody, 1, 4), 'fs` c` fs`') +
+            blend(subset(melody, 5, 8), 'e` c` e`') +
+            blend(subset(melody, 9, 12), 'fs` c` fs`'))
+
+        bass_3 = notes(melody, 8)
+        for i in [1, 3, 5, 9, 11]:
+            select(bass_3, i).phrasing += '('
+        for i in [2, 4, 7, 10, 12]:
+            select(bass_3, i).phrasing += ')'
+
+        #########
+        # part 4
+        #########
+
         def fast_chords(chord_list, alt=False):
             output = []
             for c in chord_list:
@@ -103,10 +118,7 @@ class TuopaTytto(Piece):
                     '\\stemDown ' + select(melody, 1).prefix)
             return melody
 
-        treble_3 = (
-            blend(subset(melody, 1, 4), 'fs` c` fs`') +
-            blend(subset(melody, 5, 8), 'e` c` e`') +
-            blend(subset(melody, 9, 12), 'fs` c` fs`') +
+        treble_4 = (
             voices(
                 rests(8) + fast_chords(
                     ['e`` g``', 'c`` e``', 'g` c``', 'e` g`', 'c` e`',
@@ -119,27 +131,23 @@ class TuopaTytto(Piece):
             slur(trio('c, g, c', 32, "down") + trio('e g c`', 32, "up") +
                  trio('g, c e', 32, "down") + trio('g c` e`', 32, "up") +
                  trio('c e g', 32, "down") + trio('c` e` g`', 32, "up")))
-        select(treble_3, 66).prefix += '\\change Staff = "bass"\n'
-        select(treble_3, 102).prefix += '\\change Staff = "bass"\n'
-        select(treble_3, 118).prefix += '\\change Staff = "bass"\n'
-        select(treble_3, 133).prefix += '\\change Staff = "treble"\n'
+        select(treble_4, 18).prefix += '\\change Staff = "bass"\n'
+        select(treble_4, 54).prefix += '\\change Staff = "bass"\n'
+        select(treble_4, 70).prefix += '\\change Staff = "bass"\n'
+        select(treble_4, 85).prefix += '\\change Staff = "treble"\n'
 
-        bass_3 = (
-            notes(melody, 8) + [chord('c, g, c g', 2, suffix='^>')] +
+        bass_4 = (
+            [chord('c, g, c g', 2, suffix='^>')] +
             rests(2, 2, prefix='%{ spacer %}'))
-        for i in [1, 3, 5, 9, 11]:
-            select(bass_3, i).phrasing += '('
-        for i in [2, 4, 7, 10, 12]:
-            select(bass_3, i).phrasing += ')'
 
         #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4,
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4,
             'pedal': []
         }
 
