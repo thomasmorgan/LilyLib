@@ -1,7 +1,8 @@
 from piece import Piece
 from staves import Bass, Dynamics
 from points import chord, tied_chord, notes, rests, chords
-from markup import slur, voices, triplets, clef, italic, thinthick_barbreak
+from markup import (
+    slur, voices, triplets, clef, italic, thinthick_barbreak, pagebreak)
 from util import rep, select, flatten, subset
 from tones import tonify
 from copy import deepcopy
@@ -34,7 +35,11 @@ class TuopaTytto(Piece):
             Dynamics('pedal')]
 
     def subtext(self):
-        return '\\paper { #(set-paper-size "letter")}\n'
+        return (
+            '#(set-global-staff-size 19)\n'
+            '\\paper { #(set-paper-size "letter")}\n'
+            '\\paper { page-count = #2 }\n'
+        )
 
     def write_score(self):
 
@@ -298,6 +303,7 @@ class TuopaTytto(Piece):
 
         select(treble_4, 71).phrasing = '^\\<'
         select(treble_4, 85).dynamics = '!'
+        select(treble_5, len(treble_5)).suffix += pagebreak
         select(treble_6, 58).phrasing = '[_\\>'
         select(treble_6, 66).dynamics = '!'
         select(treble_6, 71).phrasing = '^\\<'
