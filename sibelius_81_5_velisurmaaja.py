@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Treble, Bass, Dynamics
-from points import rests, notes, chords, tied_note, chord
-from markup import slur, voices, clef
+from points import rests, notes, chords, tied_note, chord, tied_chord
+from markup import slur, voices, clef, thinthick_barbreak
 from util import select, rep, subset
 
 
@@ -96,13 +96,55 @@ class Velisurmaaja(Piece):
         select(bass_3, len(bass_3)).phrasing = ')'
 
         #########
+        # part 4
+        #########
+
+        treble_4 = (
+            clef('treble', notes('e` e` e` e` b` b` fs` g` a`', 4)) +
+            notes('a` b`', 8) + notes('a` g`', 4))
+
+        bass_4 = voices(
+            chord_motif('e g cs`') +
+            rep(chord_motif('e g cs`', 'fs a ds`'), 2),
+            rests(2) + tied_note('fs,,', [2, 4]) + rests(4, 2, 1))
+        select(bass_4, 8).articulation = '>'
+        select(bass_4, 13).articulation = '>'
+
+        #########
+        # part 5
+        #########
+
+        treble_5 = (
+            tied_chord('c` fs`', [1, 4]) + rests(4, 2, 1) +
+            rep(
+                notes('fs fs fs', 4) + notes('gs fs', 8) +
+                slur(notes('e ds', ['4.', 8])) + notes('cs', 4) +
+                notes('cs ds', 8) + notes('e', [4, 8, 8]) +
+                notes('ds ds', 4) + notes('cs', 1) + rests(1), 2) +
+            rests(1, 1)
+            )
+        select(treble_5, 1).phrasing = '^~'
+        select(treble_5, 6).prefix += '\\clef "bass" '
+
+        bass_5 = voices(
+            tied_chord('ds a', [1, 4]) + rests(4, 2) +
+            rep(rests(1, prefix='%{ spacer %}'), 13),
+            rests(1, 8) + rep(bass_motif(), 13)
+        )
+        select(bass_5, 27).prefix += '\\stemUp '
+        select(bass_5, len(bass_5)).dur = 1
+        select(bass_5, len(bass_5)).suffix = (
+            '^\\fermata' + select(bass_5, len(bass_5)).suffix)
+        select(bass_5, len(bass_5)).suffix += thinthick_barbreak
+
+        #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
             'pedal': []
         }
 
