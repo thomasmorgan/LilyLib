@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Bass, Dynamics
 from points import chord, tied_chord, notes, rests, chords
-from markup import slur, voices, triplets, clef
+from markup import slur, voices, triplets, clef, italic
 from util import rep, select, flatten, subset
 from tones import tonify
 from copy import deepcopy
@@ -33,6 +33,9 @@ class TuopaTytto(Piece):
             Bass(),
             Dynamics('pedal')]
 
+    def subtext(self):
+        return '\\paper { #(set-paper-size "letter")}\n'
+
     def write_score(self):
 
         #########
@@ -40,6 +43,9 @@ class TuopaTytto(Piece):
         #########
 
         treble_1 = [chord('c, g,', 2)] + tied_chord('c, g,', [2, 2, 2])
+        select(treble_1, 2).phrasing = '^~'
+        select(treble_1, 3).phrasing = '^~'
+
         bass_1 = (
             slur(rep(notes('e, e c e', 32), 5) +
                  rep(notes('e` g e g', 32), 3)) +
@@ -47,7 +53,9 @@ class TuopaTytto(Piece):
                  rep(notes('e`` g` e` g`', 32), 2) +
                  notes('d`` e` d` e`', 32)))
         select(bass_1, 1).phrasing = '_('
+        select(bass_1, 21).prefix += '\\stemUp '
         select(bass_1, 33).phrasing = '_('
+        select(bass_1, 33).prefix = '\\stemNeutral '
         select(bass_1, 53).prefix += (
             '\\change Staff = "treble" \\clef "treble" ')
 
@@ -242,6 +250,35 @@ class TuopaTytto(Piece):
             notes('a,,', 4))
 
         #########
+        # dynamics
+        #########
+
+        dynamics = (
+            rests(2, dynamics='mp') +
+            rests(4) + rests(4, markup=italic('cresc.')) +
+            rests(2, 2) + rests(2, markup='\\dynamic{f} \\italic{ marcato}') +
+            rests(2, 2, 2, 2, 2, 2, 2) + rests(2, dynamics='f') +
+            rests(4) + rests(4, dynamics='>') + rests(8, dynamics='!') +
+            rests(8, 4) + rests(2, dynamics='mf') + rests(2, 2) +
+            rests(2, dynamics='f') + rests(2, 2) + rests(2, dynamics='mf') +
+            rests(4, 8, 16, 64) + rests('32.', dynamics='<') +
+            rests(2, dynamics='f') + rests(2, dynamics='f') +
+            rests(2, markup='\\italic{più } \\dynamic{f}') +
+            rests(32) + rests('16.', markup=italic('cresc.')) + rests(8, 4) +
+            rests(2) + rests(2, dynamics='ff') + rests(4) +
+            rests(4, markup=italic('dim. molto')) + rests(2, 2) +
+            rests('4.', dynamics='p') + rests(8, markup=italic('dim.')) +
+            rests(2)
+        )
+
+        #########
+        # markup
+        #########
+
+        select(treble_4, 71).phrasing = '^\\<'
+        select(treble_4, 85).dynamics = '!'
+
+        #########
         # combine
         #########
 
@@ -249,7 +286,7 @@ class TuopaTytto(Piece):
             'treble': (
                 treble_1 + treble_2 + treble_3 + treble_4 + treble_5 +
                 treble_6 + treble_7 + treble_8 + treble_9 + treble_10),
-            'dynamics': [],
+            'dynamics': dynamics,
             'bass': (
                 bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 +
                 bass_7 + bass_8 + bass_9 + bass_10),
