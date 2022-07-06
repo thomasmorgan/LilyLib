@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Bass, Dynamics
 from points import chord, tied_chord, notes, rests, chords
-from markup import slur, voices, triplets
+from markup import slur, voices, triplets, clef
 from util import rep, select, flatten, subset
 from tones import tonify
 from copy import deepcopy
@@ -174,7 +174,7 @@ class TuopaTytto(Piece):
 
         treble_7 = (
             blend(melody, 'fs` c` fs`') + [chord('c` g`', 8)] +
-            rests(8, prefix=' %{ space %} '))
+            rests(8, prefix=' %{ spacer %} '))
         bass_7 = (
             notes(melody, 8, articulation='.') +
             notes('g', 8, articulation='>') +
@@ -199,17 +199,60 @@ class TuopaTytto(Piece):
         select(bass_7, 22).add('c')
 
         #########
+        # part 8
+        #########
+
+        melody = tonify('bf a d` c` bf a g a bf a bf d`')
+
+        treble_8 = (
+            blend(subset(melody, 1, 4), 'fs` c` fs`') +
+            blend(subset(melody, 5, 8), 'e` c` e`') +
+            notes('bf` fs` c` fs` c`` fs` c` fs`', 32) +
+            notes('d`` bf` d` bf` f`` bf` f` bf`', 32))
+
+        bass_8 = notes(melody, 8, articulation='-')
+
+        #########
+        # part 9
+        #########
+
+        treble_9 = (
+            [chord('a` c`` f`` a``', 8)] +
+            voices(
+                fast_chords(['c`` f``', 'a` c``', 'f` a`', 'c` f`',
+                             'a c`', 'f a', 'c f'], alt=True),
+                fast_chords(['a` e``', 'f` b`', 'c` gs`', 'a e`',
+                             'f b', 'c gs', 'a, e'])))
+        select(treble_9, 18).prefix += '\\change Staff = "bass" '
+        select(treble_9, 46).prefix += '\\change Staff = "bass" '
+        bass_9 = [chord('c a c`', 8)] + rests(8, 4, 2, prefix='%{ spacer %}')
+
+        #########
+        # part 10
+        #########
+
+        treble_10 = (
+            rests(2, prefix='%{ spacer %}') +
+            clef('bass', [chord('f,, c,', 2, articulation='>')]) +
+            tied_chord('f,, c,', [2, 2]))
+        bass_10 = (
+            voices(notes('c', 2),
+                   rep(notes('a,, a, f, a,', 32), 4)) +
+            rep(notes('a,, a, f, a,', 32), 10) +
+            notes('a,,', 4))
+
+        #########
         # combine
         #########
 
         self.score = {
             'treble': (
                 treble_1 + treble_2 + treble_3 + treble_4 + treble_5 +
-                treble_6 + treble_7),
+                treble_6 + treble_7 + treble_8 + treble_9 + treble_10),
             'dynamics': [],
             'bass': (
                 bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 +
-                bass_7),
+                bass_7 + bass_8 + bass_9 + bass_10),
             'pedal': []
         }
 
