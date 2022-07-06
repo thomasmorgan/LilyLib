@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Bass, Dynamics
 from points import chord, tied_chord, notes, rests, chords
-from markup import slur, voices, triplets, clef, italic
+from markup import slur, voices, triplets, clef, italic, thinthick_barbreak
 from util import rep, select, flatten, subset
 from tones import tonify
 from copy import deepcopy
@@ -298,6 +298,11 @@ class TuopaTytto(Piece):
 
         select(treble_4, 71).phrasing = '^\\<'
         select(treble_4, 85).dynamics = '!'
+        select(treble_6, 58).phrasing = '[_\\>'
+        select(treble_6, 66).dynamics = '!'
+        select(treble_6, 71).phrasing = '^\\<'
+        select(treble_6, 85).dynamics = '!'
+        select(treble_10, 4).suffix += thinthick_barbreak
 
         #########
         # combine
