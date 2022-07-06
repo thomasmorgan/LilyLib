@@ -32,7 +32,7 @@ class Velisurmaaja(Piece):
         return (
             "\\layout { \\context { \\Score \\override "
             "SpacingSpanner.base-shortest-duration = "
-            "#(ly:make-moment 1/32)}}\n"
+            "#(ly:make-moment 1/16)}}\n"
             '\\paper { page-count = #2 }\n'
             '\\paper { #(set-paper-size "letter")}\n')
 
