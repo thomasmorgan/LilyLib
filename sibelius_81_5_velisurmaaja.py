@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Treble, Bass, Dynamics
-from points import rests, notes
-from markup import slur
+from points import rests, notes, chords, tied_note
+from markup import slur, voices
 from util import select, rep, subset
 
 
@@ -51,13 +51,35 @@ class Velisurmaaja(Piece):
         select(bass_1, 32).phrasing = ')'
 
         #########
+        # part 2
+        #########
+
+        def chord_motif(chord1, chord2=None):
+            if chord2:
+                return (
+                    rests(8) +
+                    chords([chord1, chord2, chord2, chord1], [4, 4, 4, 8]))
+            else:
+                return rests(8) + chords([chord1], [4, 4, 4, 8])
+
+        treble_2 = (
+            notes('cs` cs` cs` cs` gs` gs` ds` e` fs`', 4, articulation='-') +
+            notes('fs` gs`', 8) + notes('fs` e`', 4, articulation='-'))
+
+        bass_2 = voices(
+          chord_motif('cs e as') + rep(chord_motif('cs e as', 'ds fs bs'), 2),
+          rests(2) + tied_note('fs,,', [2, 4]) + rests(4, 2, 1)
+        )
+        select(bass_2, 13).articulation = '>'
+
+        #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1,
+            'treble': treble_1 + treble_2,
             'dynamics': [],
-            'bass': bass_1,
+            'bass': bass_1 + bass_2,
             'pedal': []
         }
 
