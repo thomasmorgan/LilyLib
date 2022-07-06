@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Treble, Bass, Dynamics
-from points import rests, notes, chords, tied_note
-from markup import slur, voices
+from points import rests, notes, chords, tied_note, chord
+from markup import slur, voices, clef
 from util import select, rep, subset
 
 
@@ -73,13 +73,36 @@ class Velisurmaaja(Piece):
         select(bass_2, 13).articulation = '>'
 
         #########
+        # part 3
+        #########
+
+        treble_3 = (
+            [chord('fs a ds`', 1)] + rests(1, 1) +
+            clef('bass', notes('fs fs fs', 4, articulation='-')) +
+            notes('gs fs', 8) + slur(notes('e ds', ['4.', 8])) +
+            notes('cs', 4, articulation='-') + notes('cs ds', 8) +
+            notes('e', 4, articulation='-') + notes('e e', 8) +
+            notes('ds ds', 4, articulation='-') + notes('cs', 1) +
+            rests(1)
+        )
+
+        bass_3 = voices(
+            notes('bs,', 1) + rep(rests(1, prefix='%{ spacer %}'), 7),
+            rests(8) + rep(bass_motif(), 6) + subset(bass_motif(), 1, 5) +
+            notes('fs ds a fs bs a ds` bs fs` ds`', 8)
+        )
+        select(bass_3, 10).phrasing = '_('
+        select(bass_3, 17).prefix = '\\stemUp '
+        select(bass_3, len(bass_3)).phrasing = ')'
+
+        #########
         # combine
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2,
+            'treble': treble_1 + treble_2 + treble_3,
             'dynamics': [],
-            'bass': bass_1 + bass_2,
+            'bass': bass_1 + bass_2 + bass_3,
             'pedal': []
         }
 
