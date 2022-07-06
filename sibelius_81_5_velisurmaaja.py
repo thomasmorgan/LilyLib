@@ -165,6 +165,33 @@ class Velisurmaaja(Piece):
         )
 
         #########
+        # pedal
+        #########
+
+        def on(dur):
+            return rests(dur, suffix='\\sustainOn')
+
+        def off(dur):
+            return rests(dur, suffix='\\sustainOff')
+
+        pedal = (
+            on(2) + rests(8) + off('4.') +
+            on(2) + rests(8) + off('4.') +
+            on(1) + rests('2..') + off(8) +
+            on(1) + rests(8) + off(8) + on(2) + off(4) +
+            rests('4.') + on('4.') + off(4) +
+            rep(on(2) + rests('8.') + off(16) + rests(4), 6) +
+            on(1) + rests(2, 4, 8, 16) + off(16) +
+            rests(8) + on(8) + rests('2.') +
+            rests(8) + off(8) + on(2) + off(4) +
+            rests('4.') + on('4.') + off(4) + on(1) +
+            rests(2, '8.') + off('8.') + rests(8) +
+            rep(on(2) + rests('8.') + off('8.') + rests(8), 7) +
+            on(1) +
+            rep(on(2) + rests('8.') + off('8.') + rests(8), 5)
+        )
+
+        #########
         # combine
         #########
 
@@ -172,7 +199,7 @@ class Velisurmaaja(Piece):
             'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
             'dynamics': dynamics,
             'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
-            'pedal': []
+            'pedal': pedal
         }
 
 
