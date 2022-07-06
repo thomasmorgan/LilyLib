@@ -272,6 +272,27 @@ class TuopaTytto(Piece):
         )
 
         #########
+        # pedal
+        #########
+
+        on = '\\sustainOn '
+        off = '\\sustainOff '
+
+        pedal = (
+            rests(2, suffix=on) + rests(2, 2, '4.') + rests(8, suffix=off) +
+            rests(2, 2, 2, 4) + rests(4, suffix=on) +
+            rests(4, 8, 16, 32, 64, 128) + rests(128, suffix=off) +
+            rests(2, 2, 2) + rests(2, suffix=on) +
+            rests(2, 2, 2, 2, 2, 2, 2, 2, 2, 4) + rests(4, suffix=on) +
+            rests(2, 4) + rests(4, 4, 4, suffix=on) +
+            rep(rests(8, suffix=on) + rests(8, suffix=off), 4) +
+            rests(2, suffix=on) + rests(2) +
+            rests(4, 8, 16, 32, 64, 128) + rests(128, suffix=off) +
+            rests(2, suffix=on) + rests(2) +
+            rests(4, 8, 16, 32, 64, 128) + rests(128, suffix=off)
+        )
+
+        #########
         # markup
         #########
 
@@ -290,7 +311,7 @@ class TuopaTytto(Piece):
             'bass': (
                 bass_1 + bass_2 + bass_3 + bass_4 + bass_5 + bass_6 +
                 bass_7 + bass_8 + bass_9 + bass_10),
-            'pedal': []
+            'pedal': pedal
         }
 
 
