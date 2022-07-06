@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Treble, Bass, Dynamics
 from points import rests, notes, chords, tied_note, chord, tied_chord
-from markup import slur, voices, clef, thinthick_barbreak
+from markup import slur, voices, clef, thinthick_barbreak, italic
 from util import select, rep, subset
 
 
@@ -29,7 +29,12 @@ class Velisurmaaja(Piece):
             Dynamics('pedal')]
 
     def subtext(self):
-        return '\\paper { #(set-paper-size "letter")}\n'
+        return (
+            "\\layout { \\context { \\Score \\override "
+            "SpacingSpanner.base-shortest-duration = "
+            "#(ly:make-moment 1/32)}}\n"
+            '\\paper { page-count = #2 }\n'
+            '\\paper { #(set-paper-size "letter")}\n')
 
     def write_score(self):
 
@@ -88,12 +93,12 @@ class Velisurmaaja(Piece):
 
         bass_3 = voices(
             notes('bs,', 1) + rep(rests(1, prefix='%{ spacer %}'), 7),
-            rests(8) + rep(bass_motif(), 6) + subset(bass_motif(), 1, 5) +
-            notes('fs ds a fs bs a ds` bs fs` ds`', 8)
+            rests(8) + rep(bass_motif(), 6) +
+            slur(notes('b, bs, a, ds b, fs ds a fs bs a ds` bs fs` ds`', 8))
         )
         select(bass_3, 10).phrasing = '_('
         select(bass_3, 17).prefix = '\\stemUp '
-        select(bass_3, len(bass_3)).phrasing = ')'
+        select(bass_3, len(bass_3)-14).phrasing = '^('
 
         #########
         # part 4
@@ -138,12 +143,34 @@ class Velisurmaaja(Piece):
         select(bass_5, len(bass_5)).suffix += thinthick_barbreak
 
         #########
+        # dynamics
+        #########
+
+        dynamics = (
+            rests(1, dynamics='p') + rests(1, 4) + rests('2.', dynamics='<') +
+            rests(2) + rests(2, dynamics='!') + rests(4, dynamics='mf') +
+            rests('2.', dynamics='<') + rests(16) + rests(16, dynamics='!') +
+            rests(16, 4) + rests(4, dynamics='>') + rests(4, dynamics='!') +
+            rests(16) + rests(1) + rests(4, dynamics='>') +
+            rests('4.', dynamics='!') + rests('4.', markup=italic('dim.')) +
+            rests(1, 1) + rests(1, dynamics='mp') + rests(1, 1, 2) +
+            rests(2, dynamics='<') + rests(2, 8) + rests('4.', dynamics='!') +
+            rests(8, dynamics='mf') + rests('2..', dynamics='<') +
+            rests(1, dynamics='!') + rests(1, 1, 2) +
+            rests(2, markup=italic('dim.')) + rests(1) +
+            rests(1, dynamics='mp') + rests(1, 1, 2) +
+            rests(2, markup=italic('dim.')) + rests(1) +
+            rests(1, markup='\\italic{più } \\dynamic{p}') + rests(1, 2) +
+            rests(2, markup=italic('dim. e allarg.')) + rests(1, 1, 1, 1)
+        )
+
+        #########
         # combine
         #########
 
         self.score = {
             'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
-            'dynamics': [],
+            'dynamics': dynamics,
             'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
             'pedal': []
         }
