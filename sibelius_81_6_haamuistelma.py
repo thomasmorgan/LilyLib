@@ -2,7 +2,8 @@ from piece import Piece
 from staves import Treble, Bass, Dynamics
 from points import rests, notes, chord, chords, tied_note
 from markup import slur, voices, clef
-from util import select, rep
+from util import select, rep, subset
+from copy import deepcopy
 
 
 class Haamuistelma(Piece):
@@ -81,6 +82,19 @@ class Haamuistelma(Piece):
         )
 
         #########
+        # part 3
+        #########
+
+        treble_3 = rests(8) + deepcopy(subset(treble_1, 10, len(treble_1)))
+        bass_3 = voices(
+            rests(8) + deepcopy(subset(bass_1, 10, len(bass_1))),
+            [chord('df, af,', 1)] + rests(1, prefix='%{ spacer %} ')
+            )
+        select(treble_3, 2).phrasing = '('
+        select(bass_3, 2).phrasing = '('
+        select(treble_3, 9).prefix = '\\clef "bass" '
+
+        #########
         # markup
         #########
 
@@ -91,9 +105,9 @@ class Haamuistelma(Piece):
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2,
+            'treble': treble_1 + treble_2 + treble_3,
             'dynamics': [],
-            'bass': bass_1 + bass_2,
+            'bass': bass_1 + bass_2 + bass_3,
             'pedal': []
         }
 
