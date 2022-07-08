@@ -23,7 +23,14 @@ class Velisurmaaja(Piece):
         self.key = 'cs minor'
         self.tempo_name = 'Andante con moto'
         self.staves = [
-            Treble(),
+            Treble(
+                _with='\\consists "Span_arpeggio_engraver"',
+                extra_text=(
+                    '\\set Score.connectArpeggios = ##t\n'
+                    '\\override Score.Arpeggio.stencil = '
+                    '#ly:arpeggio::brew-chord-slur\n'
+                    "\\override Score.Arpeggio.X-extent = #'(-0.9 . -0.2)\n"
+                    '\\revert Score.Arpeggio.dash-definition\n')),
             Dynamics(),
             Bass(),
             Dynamics('pedal')]
@@ -128,7 +135,7 @@ class Velisurmaaja(Piece):
                 notes('ds ds', 4) + notes('cs', 1) + rests(1), 2) +
             rests(1, 1)
             )
-        select(treble_5, 1).phrasing = '^~'
+        select(treble_5, 1).phrasing = '^~\\arpeggio'
         select(treble_5, 6).prefix += '\\clef "bass" '
 
         bass_5 = voices(
@@ -136,6 +143,7 @@ class Velisurmaaja(Piece):
             rep(rests(1, prefix='%{ spacer %}'), 13),
             rests(1, 8) + rep(bass_motif(), 13)
         )
+        select(bass_5, 1).ornamentation = 'arpeggio'
         select(bass_5, 27).prefix += '\\stemUp '
         select(bass_5, len(bass_5)).dur = 1
         select(bass_5, len(bass_5)).suffix = (
