@@ -54,7 +54,7 @@ class Velisurmaaja(Piece):
             select(motif, 1).phrasing = '^('
             return motif
 
-        treble_1 = rests(1, 1, 1, 1)
+        treble_1 = rests(1, 1, 1, 1, prefix='%{ full %} ')
         bass_1 = (
             notes('fs,,', 8) + rep(bass_motif(), 2) +
             subset(bass_motif(), 1, 5) +
@@ -89,13 +89,13 @@ class Velisurmaaja(Piece):
         #########
 
         treble_3 = (
-            [chord('fs a ds`', 1)] + rests(1, 1) +
+            [chord('fs a ds`', 1)] + rests(1, 1, prefix='%{ full %} ') +
             clef('bass', notes('fs fs fs', 4, articulation='-')) +
             notes('gs fs', 8) + slur(notes('e ds', ['4.', 8])) +
             notes('cs', 4, articulation='-') + notes('cs ds', 8) +
             notes('e', 4, articulation='-') + notes('e e', 8) +
             notes('ds ds', 4, articulation='-') + notes('cs', 1) +
-            rests(1)
+            rests(1, prefix='%{ full %} ')
         )
 
         bass_3 = voices(
@@ -127,13 +127,15 @@ class Velisurmaaja(Piece):
         #########
 
         treble_5 = (
-            tied_chord('c` fs`', [1, 4]) + rests(4, 2, 1) +
+            tied_chord('c` fs`', [1, 4]) + rests(4, 2) +
+            rests(1, prefix='%{ full %} ') +
             rep(
                 notes('fs fs fs', 4) + notes('gs fs', 8) +
                 slur(notes('e ds', ['4.', 8])) + notes('cs', 4) +
                 notes('cs ds', 8) + notes('e', [4, 8, 8]) +
-                notes('ds ds', 4) + notes('cs', 1) + rests(1), 2) +
-            rests(1, 1)
+                notes('ds ds', 4) + notes('cs', 1) +
+                rests(1, prefix='%{ full %} '), 2) +
+            rests(1, 1, prefix='%{ full %} ')
             )
         select(treble_5, 1).phrasing = '^~\\arpeggio'
         select(treble_5, 6).prefix += '\\clef "bass" '
