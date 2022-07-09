@@ -1,7 +1,7 @@
 from piece import Piece
 from staves import Treble, Bass, Dynamics
 from points import rests, notes, chord, chords, tied_note
-from markup import slur, voices, clef
+from markup import slur, voices, clef, italic, thinthick_barbreak
 from util import select, rep, subset
 from copy import deepcopy
 
@@ -33,10 +33,10 @@ class Haamuistelma(Piece):
         return (
             "\\layout { \\context { \\Score \\override "
             "SpacingSpanner.base-shortest-duration = "
-            "#(ly:make-moment 1/64)}}\n"
+            "#(ly:make-moment 1/52)}}\n"
             '\\paper { #(set-paper-size "letter")}\n'
             "\\paper { system-system-spacing = #'((basic-distance . 10) "
-            "(minimum-distance . 6) (padding . 8) (stretchability . 60))}\n"
+            "(minimum-distance . 6) (padding . 7) (stretchability . 60))}\n"
             "\\layout { \\context { \\PianoStaff \\override "
             "StaffGrouper.staff-staff-spacing.basic-distance = #12 } }\n")
 
@@ -66,7 +66,7 @@ class Haamuistelma(Piece):
         treble_2 = voices(
             rests(2) + clef("treble",
                             [chord('ef` c`` ef``', 2, articulation='>')]) +
-            rests(2, prefix='%{ spacer %}') +
+            rests(2) +
             notes('ef``', 2, articulation='>') +
             rests(2) + chords(['ef` ef``'], 2, articulation='>') +
             rep(rests(1, prefix='%{ spacer %}'), 3),
@@ -81,8 +81,7 @@ class Haamuistelma(Piece):
             notes('f` g`', 4) + tied_note('af`', [2, 1])
         )
 
-        select(treble_2, 17).prefix = '\\slurDown '
-        select(treble_2, 28).prefix = '\\slurUp '
+        select(treble_2, 20).phrasing = '_('
 
         bass_2 = (
             rep(lh_motif('c, af,') + lh_motif('af, ef'), 3) +
@@ -121,8 +120,8 @@ class Haamuistelma(Piece):
             slur(notes('ef` af`', [4, 8])) + notes('af` bf` c``', [8, 4, 4]) +
             chords(['c` af`', 'ef` c``', 'f` df``'], [4, 8, 8]) +
             slur(chords(['ef` ef``', 'c` c``'], 8)) +
-            [chord('bf f` bf`', 4, articulation='>')] +
-            chords(['bf f`', 'g df` g`'], 2, articulation='>')
+            [chord('bf f` bf`', 4, phrasing='_\\accent ')] +
+            chords(['bf f`', 'g df` g`'], 2, phrasing='_\\accent ')
         )
 
         bass_4 = (
@@ -161,6 +160,7 @@ class Haamuistelma(Piece):
             rests(4, ornamentation='fermata')
         )
         select(bass_5, 2).phrasing = '('
+        select(bass_5, len(bass_5)).suffix += thinthick_barbreak
 
         #########
         # dynamics
@@ -173,7 +173,8 @@ class Haamuistelma(Piece):
             rests(8) + dyn(8, 'p') + rests('2.', 1, 1, 1) +
             dyn(1, 'mf') + rests(16) + dyn('2.', '<') + dyn('8.', '!') +
             rests(4) + dyn(2, '>') + dyn(4, '!') + rests(1, 1) +
-            dyn(1, 'p') + rests(1, 1) + dyn(1, 'mf') +
+            rests(16) + dyn(16, 'p') + rests(8, 4, 2) +
+            rests(1, 1) + dyn(1, 'mf') +
             rests(16) + dyn(16, '<') + rests('4.', '8.') + dyn(16, '!') +
             rests(4) + rests(1, markdown='\\italic{poco }\\dynamic{f}') +
             rests(1, 16) + dyn(16, 'p') + rests(8, 4, 2, 1) + dyn(1, '>') +
@@ -205,6 +206,9 @@ class Haamuistelma(Piece):
         #########
 
         select(treble_1, 17).prefix = '\\clef "bass" '
+        select(treble_2, 3).markup = italic('cantabile')
+        select(treble_4, 3).markup = italic('cantabile')
+        select(treble_4, len(treble_4)-2).markup = italic('ten.')
 
         #########
         # combine
