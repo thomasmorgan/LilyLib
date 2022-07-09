@@ -54,12 +54,16 @@ class Haamuistelma(Piece):
         #########
 
         def lh_motif(c, cs=['f', 'af', 'f']):
-            return slur([chord(c, 8)] + chords(cs, 8))
+            motif = slur([chord(c, 8)] + chords(cs, 8))
+            select(motif, 1).prefix += '\\stemUp '
+            select(motif, 4).suffix += '\\stemNeutral '
+            return motif
 
         treble_2 = voices(
             rests(2) + clef("treble",
                             [chord('ef` c`` ef``', 2, articulation='>')]) +
-            rests(2) + notes('ef``', 2, articulation='>') +
+            rests(2, prefix='%{ spacer %}') +
+            notes('ef``', 2, articulation='>') +
             rests(2) + chords(['ef` ef``'], 2, articulation='>') +
             rep(rests(1, prefix='%{ spacer %}'), 3),
             rests(1, prefix='%{ spacer %}') +
@@ -95,6 +99,38 @@ class Haamuistelma(Piece):
         select(treble_3, 9).prefix = '\\clef "bass" '
 
         #########
+        # part 4
+        #########
+
+        treble_4 = voices(
+            rests(2) + clef("treble",
+                            [chord('ef` c`` ef``', 2, articulation='>')]) +
+            rests(2, prefix='%{ spacer %}') +
+            notes('ef``', 2, articulation='>') +
+            rests(2) + chords(['ef` ef``'], 2, articulation='>') +
+            rep(rests(1, prefix='%{ spacer %}'), 2),
+            rests(1, prefix='%{ spacer %}') +
+            notes('c` c`', 1) + rests(1, 1, prefix='%{ spacer %}'),
+            [chord('c ef', 1)] +
+            slur(notes('ef` af`', [4, 8])) + notes('g`', 8) +
+            slur(notes('f` g`', 8)) + notes('af`', 4) +
+            slur(notes('ef` af`', [4, 8])) + notes('af` bf` c``', [8, 4, 4]) +
+            chords(['c` af`', 'ef` c``', 'f` df``'], [4, 8, 8]) +
+            slur(chords(['ef` ef``', 'c` c``'], 8)) +
+            [chord('bf f` bf`', 4, articulation='>')] +
+            chords(['bf f`', 'g df` g`'], 2, articulation='>')
+        )
+
+        bass_4 = (
+            rep(lh_motif('c, af,') + lh_motif('af, ef'), 3) +
+            [chord('af, ef', 4)] + chords(['c af', 'df'], 8) +
+            slur(chords(['c, af, ef', 'c'], 8)) +
+            [chord('df, af, df af', 4)] +
+            lh_motif('bf,, df', ['f', 'bf, af', 'f']) +
+            lh_motif('ef, bf,', ['ef', 'bf', 'ef'])
+        )
+
+        #########
         # markup
         #########
 
@@ -105,9 +141,9 @@ class Haamuistelma(Piece):
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4,
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4,
             'pedal': []
         }
 
