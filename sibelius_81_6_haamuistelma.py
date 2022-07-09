@@ -131,6 +131,34 @@ class Haamuistelma(Piece):
         )
 
         #########
+        # part 5
+        #########
+
+        treble_5 = (
+            voices(
+                deepcopy(subset(treble_3, 1, 16)),
+                [chord('af df` af`', 1,
+                       prefix='\\arpeggioParenthesis ',
+                       articulation='>',
+                       ornamentation='arpeggio')] +
+                rests(1, prefix='%{ spacer %}')
+            ) + slur(chords(['c ef', 'df f', 'c af'], [2, 2, '2.'])) +
+            rests(4, ornamentation='fermata')
+        )
+        bass_5 = (
+            voices(
+                rests(8) + deepcopy(subset(bass_1, 10, len(bass_1))),
+                [chord('df, af, f', 1,
+                       prefix='\\arpeggioParenthesis ',
+                       ornamentation='arpeggio')] +
+                rests(1, prefix='%{ spacer %}')
+            ) + slur(chords(['c, af,', 'bf,, af,', 'af,, ef, af,'],
+                            [2, 2, '2.'])) +
+            rests(4, ornamentation='fermata')
+        )
+        select(bass_5, 2).phrasing = '('
+
+        #########
         # markup
         #########
 
@@ -141,9 +169,9 @@ class Haamuistelma(Piece):
         #########
 
         self.score = {
-            'treble': treble_1 + treble_2 + treble_3 + treble_4,
+            'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
             'dynamics': [],
-            'bass': bass_1 + bass_2 + bass_3 + bass_4,
+            'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
             'pedal': []
         }
 
