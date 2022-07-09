@@ -33,8 +33,12 @@ class Haamuistelma(Piece):
         return (
             "\\layout { \\context { \\Score \\override "
             "SpacingSpanner.base-shortest-duration = "
-            "#(ly:make-moment 1/36)}}\n"
-            '\\paper { #(set-paper-size "letter")}\n')
+            "#(ly:make-moment 1/64)}}\n"
+            '\\paper { #(set-paper-size "letter")}\n'
+            "\\paper { system-system-spacing = #'((basic-distance . 10) "
+            "(minimum-distance . 6) (padding . 8) (stretchability . 60))}\n"
+            "\\layout { \\context { \\PianoStaff \\override "
+            "StaffGrouper.staff-staff-spacing.basic-distance = #12 } }\n")
 
     def write_score(self):
 
