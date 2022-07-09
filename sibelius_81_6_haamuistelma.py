@@ -178,6 +178,25 @@ class Haamuistelma(Piece):
         )
 
         #########
+        # pedal
+        #########
+
+        def on(dur):
+            return rests(dur, suffix='\\sustainOn')
+
+        def off(dur):
+            return rests(dur, suffix='\\sustainOff')
+
+        pedal = (
+            rests(1, 1, 1) + on(1) + rep(on(2) + off(2), 3) + rep(on(1), 2) +
+            on(2) + rests(4, 16) + off(16) + rests(8, 1) + on(2) +
+            rests('8.') + off(16) + rests(4) +
+            rep(on(2) + rests(8) + off('4.'), 2) +
+            on(2) + rests(8) + off(8) + on(4) + rep(on(2), 2) + on(1) +
+            off(1) + rests(1, 1)
+        )
+
+        #########
         # markup
         #########
 
@@ -191,7 +210,7 @@ class Haamuistelma(Piece):
             'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
             'dynamics': dynamics,
             'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
-            'pedal': []
+            'pedal': pedal
         }
 
 
