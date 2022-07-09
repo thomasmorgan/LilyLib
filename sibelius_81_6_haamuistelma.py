@@ -159,6 +159,25 @@ class Haamuistelma(Piece):
         select(bass_5, 2).phrasing = '('
 
         #########
+        # dynamics
+        #########
+
+        def dyn(dur, dy):
+            return rests(dur, dynamics=dy)
+
+        dynamics = (
+            rests(8) + dyn(8, 'p') + rests('2.', 1, 1, 1) +
+            dyn(1, 'mf') + rests(16) + dyn('2.', '<') + dyn('8.', '!') +
+            rests(4) + dyn(2, '>') + dyn(4, '!') + rests(1, 1) +
+            dyn(1, 'p') + rests(1, 1) + dyn(1, 'mf') +
+            rests(16) + dyn(16, '<') + rests('4.', '8.') + dyn(16, '!') +
+            rests(4) + rests(1, markdown='\\italic{poco }\\dynamic{f}') +
+            rests(1, 16) + dyn(16, 'p') + rests(8, 4, 2, 1) + dyn(1, '>') +
+            dyn(1, '!')
+
+        )
+
+        #########
         # markup
         #########
 
@@ -170,7 +189,7 @@ class Haamuistelma(Piece):
 
         self.score = {
             'treble': treble_1 + treble_2 + treble_3 + treble_4 + treble_5,
-            'dynamics': [],
+            'dynamics': dynamics,
             'bass': bass_1 + bass_2 + bass_3 + bass_4 + bass_5,
             'pedal': []
         }
