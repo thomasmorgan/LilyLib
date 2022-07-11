@@ -33,7 +33,11 @@ class IltaTulee(Piece):
             Dynamics("pedal")]
 
     def subtext(self):
-        return '\\paper { #(set-paper-size "letter")}\n'
+        return (
+            '\\paper { #(set-paper-size "letter")}\n'
+            '#(set-global-staff-size 19)\n'
+            '\\paper { page-count = #2 }\n'
+        )
 
     def write_score(self):
 
