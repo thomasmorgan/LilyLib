@@ -58,6 +58,8 @@ class Point:
         if self.is_rest:
             if '%{ spacer %}' in self.prefix:
                 tone_string = 's'
+            elif '%{ full %}' in self.prefix:
+                tone_string = 'R'
             else:
                 tone_string = 'r'
         elif self.is_note:

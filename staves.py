@@ -19,10 +19,14 @@ class Stave:
 
     @property
     def start(self):
-        return (
-            '<< \\new Staff = "{}" '.format(self.name) +
-            '\\with {{\n{}\n}}{{\n{}\n\\clef {}\n'.format(
-                self._with, self.extra_text, self.clef))
+        start = '<< \\new Staff = "{}" '.format(self.name)
+        if self._with:
+            start += '\\with {{\n{}\n}}'.format(self._with)
+        start += '{'
+        if self.extra_text:
+            start += '\n{}\n'.format(self.extra_text)
+        start += '\n\\clef {}\n'.format(self.clef)
+        return start
 
     @property
     def end(self):
@@ -53,7 +57,7 @@ class Super(Stave):
 
 class Dynamics(Stave):
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, extra_text='', _with=''):
         super().__init__("dynamics", name)
 
     @property

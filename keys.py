@@ -5,9 +5,11 @@ from inspect import isclass
 
 
 class Key:
-    """ A set of Tones represented by a key signature. Needs to be subclassed to be meaningful.
+    """ A set of Tones represented by a key signature. Needs to be subclassed
+    to be meaningful.
     util.all_tones returns every possible Tone
-    Key.all_tones returns all unique tones in the key (i.e. excluding equivalent tones)
+    Key.all_tones returns all unique tones in the key (i.e. excluding
+    equivalent tones)
     Key.tones returns all Tones in the scale of the key
     Key.arpeggio_tones returns all Tones in the arpeggio of the key. """
 
@@ -25,69 +27,116 @@ class Key:
 
     def confirm_definition(self):
         if None in [self.root, self.letters, self.name]:
-            raise ValueError("Must define root, letters and name of Key {}".format(self))
+            raise ValueError(
+                "Must define root, letters and name of Key {}".format(self))
 
     def generate_tones(self):
-        self.all_letters = [l for l in self.letters]
-        for l in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
-            if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
-                self.all_letters.append(l)
+        self.all_letters = [let for let in self.letters]
+        for let in ['c', 'd', 'e', 'f', 'g', 'a', 'b']:
+            if (
+              let not in self.all_letters and
+              equivalent_letters[let] not in self.all_letters):
+                self.all_letters.append(let)
 
         if self.bias() == "sharp":
-            for l in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
-                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
-                    self.all_letters.append(l)
+            for let in ['cs', 'ds', 'es', 'fs', 'gs', 'as', 'bs']:
+                if (
+                  let not in self.all_letters and
+                  equivalent_letters[let] not in self.all_letters):
+                    self.all_letters.append(let)
         if self.bias() == "flat":
-            for l in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
-                if l not in self.all_letters and equivalent_letters[l] not in self.all_letters:
-                    self.all_letters.append(l)
-        self.all_letters = [l for l in tones.all_letters if l in self.all_letters]
+            for let in ['cf', 'df', 'ef', 'ff', 'gf', 'af', 'bf']:
+                if (
+                  let not in self.all_letters and
+                  equivalent_letters[let] not in self.all_letters):
+                    self.all_letters.append(let)
+        self.all_letters = [let for let in tones.all_letters
+                            if let in self.all_letters]
 
-        self.all_tones = [t for t in tones.all_tones if letter(t) in self.all_letters]
+        self.all_tones = [t for t in tones.all_tones
+                          if letter(t) in self.all_letters]
 
         self.tones = [t for t in self.all_tones if letter(t) in self.letters]
 
         index_of_root = self.letters.index(self.root)
-        self.arpeggio_letters = [(self.letters * 2)[i] for i in [index_of_root, index_of_root + 2, index_of_root + 4]]
+        self.arpeggio_letters = [
+            (self.letters * 2)[i] for i in
+            [index_of_root, index_of_root + 2, index_of_root + 4]]
 
-        self.arpeggio_tones = [t for t in self.all_tones if letter(t) in self.arpeggio_letters]
+        self.arpeggio_tones = [
+            t for t in self.all_tones if letter(t) in self.arpeggio_letters]
 
         self.arpeggio7_tones = self.scale_subset([1, 3, 5, 7])
 
         if "major" in self.name:
-            self.dominant7_letters = self.arpeggio_letters + [tones.flatten(self.VII)]
+            self.dominant7_letters = (
+                self.arpeggio_letters + [tones.flatten(self.VII)])
         elif "harmonic" in self.name:
-            self.dominant7_letters = [self.root, tones.sharpen(self.iii), self.V, tones.flatten(self.VII)]
+            self.dominant7_letters = ([
+                self.root,
+                tones.sharpen(self.iii),
+                self.V,
+                tones.flatten(self.VII)])
         elif "minor" in self.name:
-            self.dominant7_letters = [self.root, tones.sharpen(self.iii), self.V, self.VII]
+            self.dominant7_letters = ([
+                self.root,
+                tones.sharpen(self.iii),
+                self.V,
+                self.VII])
         else:
-            raise ValueError("Cannot provide dominant 7 tones for key {}".format(self.name))
+            raise ValueError(
+                "Cannot provide dominant 7 tones for key {}".format(self.name))
 
-        self.dominant7_tones = [t for t in tones.all_tones if letter(t) in self.dominant7_letters]
+        self.dominant7_tones = ([
+            t for t in tones.all_tones if letter(t) in self.dominant7_letters])
 
         if "major" in self.name:
-            self.diminished7_letters = [self.root, tones.flatten(self.III), tones.flatten(self.V), tones.flatten(tones.flatten(self.VII))]
+            self.diminished7_letters = ([
+                self.root,
+                tones.flatten(self.III),
+                tones.flatten(self.V),
+                tones.flatten(tones.flatten(self.VII))])
         elif "harmonic" in self.name:
-            self.diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
+            self.diminished7_letters = ([
+                self.root,
+                self.iii,
+                tones.flatten(self.V),
+                tones.flatten(self.vii)])
         elif "minor" in self.name:
-            self.diminished7_letters = [self.root, self.iii, tones.flatten(self.V), tones.flatten(self.vii)]
+            self.diminished7_letters = ([
+                self.root,
+                self.iii,
+                tones.flatten(self.V),
+                tones.flatten(self.vii)])
         else:
-            raise ValueError("Cannot provide diminished 7 tones for key {}".format(self.name))
-        self.diminished7_tones = [t for t in tones.all_tones if letter(t) in self.diminished7_letters]
+            raise ValueError(
+                "Cannot provide diminished 7 tones for key {}"
+                .format(self.name))
+        self.diminished7_tones = (
+            [t for t in tones.all_tones
+             if letter(t) in self.diminished7_letters])
 
-        self.descending_chromatic_letters = ['c', 'df', 'd', 'ef', 'e', 'f', 'gf', 'g', 'af', 'a', 'bf', 'b']
-        self.descending_chromatic_tones = [t for t in tones.all_tones if letter(t) in self.descending_chromatic_letters]
-        self.ascending_chromatic_letters = ['c', 'cs', 'd', 'ds', 'e', 'f', 'fs', 'g', 'gs', 'a', 'as', 'b']
-        self.ascending_chromatic_tones = [t for t in tones.all_tones if letter(t) in self.ascending_chromatic_letters]
+        self.descending_chromatic_letters = (
+            ['c', 'df', 'd', 'ef', 'e', 'f', 'gf', 'g', 'af', 'a', 'bf', 'b'])
+        self.descending_chromatic_tones = (
+            [t for t in tones.all_tones
+             if letter(t) in self.descending_chromatic_letters])
+        self.ascending_chromatic_letters = (
+            ['c', 'cs', 'd', 'ds', 'e', 'f', 'fs', 'g', 'gs', 'a', 'as', 'b'])
+        self.ascending_chromatic_tones = (
+            [t for t in tones.all_tones
+             if letter(t) in self.ascending_chromatic_letters])
 
     def scale_subset(self, positions):
         index_of_root = self.letters.index(self.root)
-        custom_letters = [(self.letters * 2)[index_of_root + p - 1] for p in positions]
+        custom_letters = (
+            [(self.letters * 2)[index_of_root + p - 1] for p in positions])
         return [t for t in self.all_tones if letter(t) in custom_letters]
 
     def bias(self):
-        num_sharps = len([l for l in self.letters if "s" in l])
-        num_flats = len([l for l in self.letters if "f" in l and l not in ['f', 'fs', 'fss']])
+        num_sharps = len([let for let in self.letters if "s" in let])
+        num_flats = len([let for let in self.letters
+                         if "f" in let and let not in ['f', 'fs', 'fss']])
 
         if "harmonic" in self.name:
             num_flats -= 1
@@ -609,6 +658,7 @@ def keyify(key):
                 mode = 'harmonic'
             return key_dictionary[mode][letter]
         except Exception:
-            raise ValueError("{} is not a valid string format for a key".format(key))
+            raise ValueError(
+                "{} is not a valid string format for a key".format(key))
     else:
         raise ValueError("{} is not a valid key".format(key))

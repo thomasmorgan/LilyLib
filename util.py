@@ -17,9 +17,12 @@ def split_and_flatten(item):
     item = flatten([item])
     for subitem in item:
         if not isinstance(subitem, str) and not isinstance(subitem, int):
-            raise ValueError("Cannot split and flatten {} as it is not a string or int".format(subitem))
+            raise ValueError(
+                "Cannot split and flatten {} as it is not a string or int"
+                .format(subitem))
 
-    return flatten([subitem.split(" ") if isinstance(subitem, str) else subitem for subitem in item])
+    return flatten([subitem.split(" ") if isinstance(subitem, str)
+                    else subitem for subitem in item])
 
 
 def assign(List, index, value):

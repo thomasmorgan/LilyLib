@@ -4,7 +4,9 @@ from keys import key_dictionary, keyify
 from staves import Treble, Bass
 from util import flatten
 from tones import equivalent_letters
-from points import Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic, scale_subset, transpose, harmonize
+from points import (
+    Point, scale, arpeggio, arpeggio7, dominant7, diminished7, chromatic,
+    scale_subset, transpose, harmonize)
 from markup import barbreak
 
 
@@ -25,6 +27,8 @@ class Piece:
         self.opus = ""
         self.staves = [Treble(), Bass()]
         self.tempo = "4/4"
+        self.beaming = ""
+        self.tempo_name = ""
         self.key = "C Major"
         self.score = {}
         self.auto_add_bars = False
@@ -36,7 +40,8 @@ class Piece:
         print(self)
 
     def details():
-        raise NotImplementedError("You must overwrite details to create a piece")
+        raise NotImplementedError(
+            "You must overwrite details to create a piece")
 
     def set_key(self, key):
         self.key = keyify(key)
@@ -46,7 +51,8 @@ class Piece:
         return str(self.key)
 
     def write_score(self):
-        raise NotImplementedError("You must overwrite write_score to create a piece")
+        raise NotImplementedError(
+            "You must overwrite write_score to create a piece")
 
     def __str__(self):
         printed_score = self.header() + self.subtext() + self.start_score()
@@ -56,6 +62,10 @@ class Piece:
             printed_score += stave.start
             printed_score += initial_key
             printed_score += "\\time {}\n".format(self.tempo)
+            if self.beaming:
+                printed_score += self.beaming + '\n'
+            if self.tempo_name:
+                printed_score += '\\tempo "{}"\n'.format(self.tempo_name)
             printed_score += self.print_stave(stave)
             printed_score += stave.end
         printed_score += self.end_score()
@@ -88,7 +98,8 @@ class Piece:
 
     def start_score(self):
         if self.piano_staff:
-            return('\\score { << \n\\new PianoStaff <<\n')
+            return('\\score { << \n\\new PianoStaff '
+                   '\\with { instrumentName = "Piano" } <<\n')
         else:
             return('\\score { <<\n')
 
@@ -100,7 +111,8 @@ class Piece:
 
     def print_stave(self, stave):
         if type(self.score[stave.name]) is dict:
-            return " ".join([str(item) for item in flatten([self.score[stave.name]])])
+            return " ".join(
+                [str(item) for item in flatten([self.score[stave.name]])])
 
         stave = self.score[stave.name]
         if isinstance(stave, Point):
@@ -114,7 +126,8 @@ class Piece:
             stave = re.sub('\n ', '\n', stave)
             return(stave)
         else:
-            raise TypeError("stave with value {} cannot be printed".format(stave))
+            raise TypeError(
+                "stave with value {} cannot be printed".format(stave))
 
     def add_barlines(self, stave):
         num_bars = 0
@@ -163,6 +176,11 @@ class Piece:
             progress = self.get_point_decimal_duration(point)
             bar_progress += progress*mult
 
+            if (
+              (bar_length - bar_progress) > 0 and
+              (bar_length - bar_progress) < 0.00000000001):
+                bar_progress = bar_length
+
             if bar_progress > bar_length:
                 raise ValueError(
                     "Duration of notes crosses a bar line: " + str(point) +
@@ -202,6 +220,8 @@ class Piece:
             return 1.0
         elif self.tempo == '6/4':
             return 1.5
+        elif self.tempo == '2/4':
+            return 0.5
         else:
             raise ValueError('Cannot auto add barlines with a tempo of '
                              + self.tempo)
@@ -211,6 +231,11 @@ class Piece:
             return 1.0
         elif " 6/4 " in prefix:
             return 1.5
+        elif ' 2/4 ' in prefix:
+            return 0.5
+        else:
+            raise ValueError(
+                'Cannot auto add barlines with a tempo change of: ' + prefix)
 
     def get_point_decimal_duration(self, point):
         if isinstance(point.dur, int):
@@ -247,7 +272,8 @@ class Piece:
         return chromatic(start, stop_or_length, self.key, dur, step)
 
     def scale_subset(self, positions, start, stop_or_length, dur=None, step=1):
-        return scale_subset(positions, start, stop_or_length, self.key, dur, step)
+        return scale_subset(
+            positions, start, stop_or_length, self.key, dur, step)
 
     def transpose(self, item, shift, mode="scale", clean=False):
         return transpose(item, shift, self.key, mode, clean)
@@ -268,7 +294,9 @@ class Piece:
                 new_root2 = equivalent_letters[new_root]
                 return key_dictionary[mode][new_root2]
             except KeyError:
-                raise KeyError("Error: No {} key exists with root {} or {}".format(mode, new_root, new_root2))
+                raise KeyError(
+                    "Error: No {} key exists with root {} or {}"
+                    .format(mode, new_root, new_root2))
 
     def relative_major_key(self, relationship):
         return self.relative_key("major", relationship)
